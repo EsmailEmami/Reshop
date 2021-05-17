@@ -1,0 +1,91 @@
+﻿@model Tuple<IAsyncEnumerable<ProductViewModel>, int, int>
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<div class="row pb-3">
+    <div class="col-sm-12 col-md-6 col-lg-3">
+        <div class="card h-100 py-2 rounded">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-dark text-uppercase mb-2">
+                            تعداد محصولات
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            1,000
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-3">
+        <div class="card h-100 py-2 rounded">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-dark text-uppercase mb-2">
+                            تعداد محصولات
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            1,000
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<a asp-action="AddOrEditMobile" class="btn btn-success text-white mb-2">افزودن موبایل</a>
+<a asp-action="AddOrEditLaptop" class="btn btn-success text-white mb-2">افزودن لپتاپ</a>
+<a asp-action="AddOrEditMobileCover" class="btn btn-success text-white mb-2">افزودن کاور موبایل</a>
+<a asp-action="AddOrEditTablet" class="btn btn-success text-white mb-2">افزودن تبلت</a>
+<a asp-action="AddOrEditSpeaker" class="btn btn-success text-white mb-2">افزودن اسپیکر</a>
+<a asp-action="AddOrEditHandsfree" class="btn btn-success text-white mb-2">افزودن هندزفری </a>
+<a asp-action="AddOrEditHeadPhone" class="btn btn-success text-white mb-2">افزودن هدفون </a>
+<a asp-action="AddOrEditFlashMemory" class="btn btn-success text-white mb-2">افزودن فلش مموری</a>
+<a asp-action="AddOrEditWristWatch" class="btn btn-success text-white mb-2">افزودن مچ بند</a>
+<a asp-action="AddOrEditSmartWatch" class="btn btn-success text-white mb-2">افزودن ساعت هوشمند</a>
+
+
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">نام کالا</th>
+                <th scope="col">برند کالا</th>
+                <th scope="col">قیمت کالا</th>
+                <th scope="col">دستورات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @await foreach (var item in Model.Item1)
+            {
+                <tr>
+                    <td>@item.ProductTitle</td>
+                    <td>@item.BrandName</td>
+                    <td>@item.ProductPrice.ToToman()</td>
+                    <td>
+                        <a asp-action="EditProduct" asp-route-productId="@item.ProductId" class="btn btn-warning text-white"><i class="fal fa-user-edit"></i> ویرایش</a>
+                        <a asp-action="UserDetail" asp-route-userId="@item.ProductTitle" class="btn btn-info text-white"><i class="fal fa-file-user"></i> جزئیات</a>
+                        <form asp-action="DeleteMobile" asp-route-productId="@item.ProductId" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger text-white"><i class="fal fa-user-minus"></i> حذف</button>
+                        </form>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

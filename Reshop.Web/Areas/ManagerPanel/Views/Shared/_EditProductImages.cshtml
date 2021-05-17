@@ -1,0 +1,9 @@
+﻿@model AddOrEditProductImageViewModel
+
+<div class="col-sm-12 pt-3">
+    <div class="custom-file">
+        <label class="custom-file-label">عکس شماره</label>
+        <input type="hidden" asp-for="ProductGalleryId" />
+        <input asp-for="Image" accept="image/*" placeholder="انتخاب عکس" title="عکسی انتخاب نشده است" class="custom-file-input" name="SelectedImages" />
+    </div>
+</div>

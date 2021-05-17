@@ -1,0 +1,31 @@
+﻿@model IAsyncEnumerable<CategoriesDropdownViewModel>
+
+
+<nav class="main-nav d-none d-lg-block text-center mx-auto">
+    <ul>
+        <li><a href="/">خانه</a></li>
+        <li><a asp-controller="Account" asp-action="AddShopper">افزودن فروشنده</a></li>
+        <li><a asp-area="AdminManagerPanel" asp-controller="FullAdminPanel" asp-action="Index">مدیریت کل</a></li>
+
+        @await foreach (var item in Model)
+        {
+            if (item.ChildCategories.Any())
+            {
+                <li class="drop-down">
+                    <a href="#">@item.CategoryTitle</a>
+
+                    <div class="mega-dropdown">
+                        @foreach (var childCategory in item.ChildCategories)
+                        {
+                            <ul>
+                                <li class="child-category-title"><a href="#">@childCategory.ChildCategoryTitle</a></li>
+                            </ul>
+                        }
+                    </div>
+                </li>
+            }
+            <li><a href="/">@item.CategoryTitle</a></li>
+        }
+
+    </ul>
+</nav>

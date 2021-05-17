@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Role>
+
+@{
+    ViewData["Title"] = "مدیریت مقام ها";
+    int rowCount = 1;
+}
+
+<p>
+    <a asp-action="AddOrEditRole" class="btn btn-success text-white">
+        <i class="fal fa-layer-plus"></i> افزودن مقام جدید
+    </a>
+</p>
+
+@if (Model == null)
+{
+    <div class="alert alert-warning mt-2">
+        متاسفانه مقامی پیدا نشد!
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoleTitle)
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@rowCount</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoleTitle)
+                </td>
+                <td>
+                    <a asp-action="AddOrEditRole" asp-route-roleId="@item.RoleId" class="btn btn-warning text-white">
+                        <i class="fal fa-marker"></i> ویرایش
+                    </a>
+                    <form asp-action="RemoveRole" asp-route-roleId="@item.RoleId" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger text-white">
+                            <i class="fal fa-trash-alt"></i> حذف
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+
+            rowCount++;
+        }
+        </tbody>
+    </table>
+
+}

@@ -1,0 +1,111 @@
+﻿@model User
+@{
+    ViewData["Title"] = $"پنل مدیریت - {Model.FullName}";
+}
+
+<div class="row">
+
+    <div class="col-sm-12 col-md-4 col-lg-3">
+
+        <div class="profile-menu box-shadow">
+            <div class="user-img d-flex justify-content-center flex-column align-self-center">
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit">  <i class="far fa-power-off"></i></button>
+                </form>
+
+                <img src="/images/UserImages/@Model.UserAvatar">
+
+                <p class="text-center">@Model.FullName</p>
+            </div>
+
+            <div class="items">
+                <a asp-action="Index" class="active"><i class="far fa-user"></i> اطلاعات حساب</a>
+                <a asp-action="PayedOrders"><i class="far fa-calendar-week"></i> سفارش های من</a>
+                <a asp-action="FavoriteProducts"><i class="far fa-heart"></i> علاقه مندی ها</a>
+                <a asp-action="UserComments"><i class="far fa-comments-alt"></i> نظرات</a>
+                <a asp-action="ChangePassword"><i class="far fa-comments-alt"></i>ویرایش رمز عبور</a>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="col-sm-12 col-md-8 col-lg-9">
+        <div class="row">
+            <div class="col-12">
+                <div class="profile-nav box-shadow">
+                    <ul>
+                        <li class="active"><a asp-action="Index">اطلاعات شخصی</a> </li>
+                        <li><a asp-action="UserAddresses">آدرس</a> </li>
+                    </ul>
+
+                    <div class="search-profile">
+                        <a href="#"><i class="far fa-search"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <div class="user-data box-shadow">
+                    <div class="row">
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="user-item-data">
+                                <div>
+                                    <h5>نام و نام خانوادگی</h5>
+                                    <label><i class="far fa-edit"></i></label>
+                                </div>
+
+                                <p>@Model.FullName</p>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="user-item-data">
+                                <div>
+                                    <h5>شماره تلفن</h5>
+                                    <label><i class="far fa-edit"></i></label>
+                                </div>
+
+                                <p>@Model.PhoneNumber</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="user-item-data">
+                                <div>
+                                    <h5>ایمیل</h5>
+                                    <label><i class="far fa-edit"></i></label>
+                                </div>
+
+                                <p>@Model.Email</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="user-item-data">
+                                <div>
+                                    <h5>کد ملی</h5>
+                                    <label><i class="far fa-edit"></i></label>
+                                </div>
+
+                                <p>@Model.NationalCode</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-lg-6">
+                            <div class="user-item-data">
+                                <div>
+                                    <h5>کد پستی</h5>
+                                    <label><i class="far fa-edit"></i></label>
+                                </div>
+
+                                <p>@Model.PostalCode</p>
+                            </div>
+                        </div>
+                       
+                        
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+﻿@model IAsyncEnumerable<ProductViewModel>
+
+<section class="product-section box-shadow">
+    
+    <div class="shape-divider">
+        <img class="shape-divider-product-img" src="/icons/shape-divider.svg" alt="" srcset="">
+    </div>
+
+    <div class="product-section-header">
+        <div>
+            <h2 class="section-title"><i class="far fa-tv" style="color: crimson"></i> پر بازدید ترین ها</h2>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="carousel-product owl-carousel owl-theme">
+                @await Html.PartialAsync("Product/_CarouselBoxProducts",Model)
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-more-and-nav-slider">
+        <button class="btn btn-more-info">مشاهده ی همه</button>
+    </div>
+    
+
+
+</section>

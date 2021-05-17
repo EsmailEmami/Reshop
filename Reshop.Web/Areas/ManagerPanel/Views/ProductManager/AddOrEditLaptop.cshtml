@@ -1,0 +1,105 @@
+﻿@model AddOrEditLaptopProductViewModel
+
+@{
+    ViewData["Title"] = "AddOrEditLaptop";
+}
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddOrEditLaptop" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+           
+            <input type="hidden" asp-for="ProductId"/>
+
+            <div class="form-group">
+                <label asp-for="ProductTitle" class="control-label"></label>
+                <input asp-for="ProductTitle" class="form-control" />
+                <span asp-validation-for="ProductTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuantityInStock" class="control-label"></label>
+                <input asp-for="QuantityInStock" class="form-control" />
+                <span asp-validation-for="QuantityInStock" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RAMCapacity" class="control-label"></label>
+                <input asp-for="RAMCapacity" class="form-control" />
+                <span asp-validation-for="RAMCapacity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InternalMemory" class="control-label"></label>
+                <input asp-for="InternalMemory" class="form-control" />
+                <span asp-validation-for="InternalMemory" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GPUManufacturer" class="control-label"></label>
+                <input asp-for="GPUManufacturer" class="form-control" />
+                <span asp-validation-for="GPUManufacturer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Size" class="control-label"></label>
+                <input asp-for="Size" class="form-control" />
+                <span asp-validation-for="Size" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <input asp-for="Category" class="form-control" />
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProcessorSeries" class="control-label"></label>
+                <input asp-for="ProcessorSeries" class="form-control" />
+                <span asp-validation-for="ProcessorSeries" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RAMType" class="control-label"></label>
+                <input asp-for="RAMType" class="form-control" />
+                <span asp-validation-for="RAMType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScreenAccuracy" class="control-label"></label>
+                <input asp-for="ScreenAccuracy" class="form-control" />
+                <span asp-validation-for="ScreenAccuracy" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsMatteScreen" /> @Html.DisplayNameFor(model => model.IsMatteScreen)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsTouchScreen" /> @Html.DisplayNameFor(model => model.IsTouchScreen)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="OperatingSystem" class="control-label"></label>
+                <input asp-for="OperatingSystem" class="form-control" />
+                <span asp-validation-for="OperatingSystem" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsHDMIPort" /> @Html.DisplayNameFor(model => model.IsHDMIPort)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

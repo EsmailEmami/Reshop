@@ -1,0 +1,43 @@
+﻿@model LoginViewModel
+@inject IOptions<GoogleReCaptchaKey> ReCaptchaKey;
+@{
+    ViewData["Title"] = "ورود به سایت";
+}
+<script src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
+
+<h1>ورود به سایت</h1>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Login" asp-route-possibilityAttempt="@ViewData["PossibilityAttempt"]" asp-route-lockTime="@ViewData["LockTime"]" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="RememberMe" /> @Html.DisplayNameFor(model => model.RememberMe)
+                </label>
+            </div>
+            <div class="form-group  form-check">
+                <div class="g-recaptcha" data-sitekey="@ReCaptchaKey.Value.RecapchaSiteKey"></div>
+                <span class="text-danger">@ViewBag.RecaptchaErrorMessage</span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

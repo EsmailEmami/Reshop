@@ -1,0 +1,90 @@
+﻿@model IAsyncEnumerable<Address>
+@{
+    ViewData["Title"] = "UserAddresses";
+
+    int addressCounter = 1;
+}
+
+
+<div class="row">
+
+    <div class="col-sm-12 col-md-4 col-lg-3" >
+
+        <div class="profile-menu box-shadow">
+            <div class="user-img d-flex justify-content-center flex-column align-self-center">
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit">  <i class="far fa-power-off"></i></button>
+                </form>
+
+                <img src="/images/UserImages/@User.FindFirstValue(ClaimTypes.Actor)">
+
+                <p class="text-center">@User.FindFirstValue(ClaimTypes.GivenName)</p>
+            </div>
+
+            <div class="items">
+                <a href="/profile.html" class="active"><i class="far fa-user"></i> اطلاعات حساب</a>
+                <a href="/order.html"><i class="far fa-calendar-week"></i> سفارش های من</a>
+                <a href=""><i class="far fa-heart"></i> علاقه مندی ها</a>
+                <a href=""><i class="far fa-comments-alt"></i> نظرات</a>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="col-sm-12 col-md-8 col-lg-9">
+        <div class="row">
+            <div class="col-12">
+                <div class="profile-nav box-shadow">
+                    <ul>
+                        <li><a asp-action="Index">اطلاعات شخصی</a> </li>
+                        <li class="active"><a asp-action="UserAddresses">آدرس</a> </li>
+                    </ul>
+
+                    <div class="search-profile">
+                        <a href="#"><i class="far fa-search"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <div class="user-data box-shadow">
+                    <div class="row">
+
+
+                        @if (Model == null)
+                        {
+                            <div class="col-sm-12">
+                                <div class="alert alert-warning text-muted">
+                                    آدرسی برای شما ثبت نشده است. برای ثبت ادرس جدید بر روی لینک زیر کلیک کنید.
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            @await foreach (var address in Model)
+                            {
+                                <div class="col-sm-12">
+                                    <div class="user-item-data">
+                                        <div>
+                                            <h5>ادرس شماره @addressCounter</h5>
+                                            <span>
+                                                <label style="margin-left: 10px;"> <i class="far fa-map-marker-check"></i></label>
+                                                <label><i class="far fa-edit"></i></label>
+                                            </span>
+                                        </div>
+
+                                        <p>@address.AddressText</p>
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>

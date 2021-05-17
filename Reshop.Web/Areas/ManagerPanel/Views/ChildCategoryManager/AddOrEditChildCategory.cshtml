@@ -1,0 +1,49 @@
+﻿@model AddOrEditChildCategoryViewModel
+
+@{
+    ViewData["Title"] = ((Model.ChildCategoryId == 0) ? "افزودن زیر گروه" : "ویرایش زیر گروه");
+}
+
+
+<form asp-action="AddOrEditChildCategory" method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ChildCategoryId" />
+
+            <div class="form-field">
+                <input asp-for="ChildCategoryTitle">
+                <label><i class="far fa-list-alt"></i> نام زیر گروه</label>
+                <span asp-validation-for="ChildCategoryTitle" class="text-danger"></span>
+            </div>
+
+            <div class="form-field">
+                <input type="submit" value="@((Model.ChildCategoryId == 0) ? "افزودن" : "ویرایش")" class="btn btn-success" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+           @if (Model.Categories is not null)
+           {
+               @foreach (var item in Model.Categories)
+               {
+                   <div class="form-check">
+                       <input type="checkbox" name="SelectedCategories" value="@item.CategoryId" @((Model.ChildCategoryId != 0 && Model.SelectedCategories.Any(c => c == item.CategoryId) ? "checked" : "")) /> 
+                       <label>@item.CategoryTitle</label>
+                   </div>
+               }
+           }
+           else
+           {
+               <div class="alert alert-warning">
+                   وب سایت شما هیچ گروهی برای نمایش ندارد.
+               </div>
+           }
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

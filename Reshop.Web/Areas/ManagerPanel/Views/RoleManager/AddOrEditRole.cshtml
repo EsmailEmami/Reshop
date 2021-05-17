@@ -1,0 +1,31 @@
+﻿@model AddOrEditRoleViewModel
+
+@{
+    ViewData["Title"] = "افزودن مقام جدید";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="AddOrEditRole" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="RoleId" />
+
+            <div class="form-field">
+                <input asp-for="RoleTitle">
+                <label><i class="far fa-list-alt"></i> نام مقام</label>
+                <span asp-validation-for="RoleTitle" class="text-danger"></span>
+            </div>
+
+            <div class="form-field">
+                <button type="submit" class="btn btn-success">
+                    @((Model.RoleId == "") ? "افزودن" : "ویرایش")
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

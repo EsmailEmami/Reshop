@@ -1,0 +1,25 @@
+﻿@model ProductDetailViewModel
+
+@{
+    ViewData["Title"] = ViewData["ProductName"];
+}
+
+<h3>@Model.Product.ProductTitle</h3>
+
+@switch (Model.Product.ProductType)
+{
+    case "Mobile":
+    {
+        <p>@Model.Product.MobileDetail.PhotoResolution</p>
+                                                  <p>mobile</p>
+        break;
+    }
+
+    case "Laptop":
+    {
+        <p>@Model.Product.LaptopDetail.GPUManufacturer</p>
+        break;
+    }
+}
+
+<a href="#">content</a>

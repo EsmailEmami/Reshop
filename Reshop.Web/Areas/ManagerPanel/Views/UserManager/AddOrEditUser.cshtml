@@ -1,0 +1,124 @@
+﻿@model AddOrEditUserViewModel
+
+@{
+    ViewData["Title"] = "AddOrEditUser";
+}
+
+
+<form asp-action="AddOrEditUser" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+
+        <div class="col-sm-12 col-md-9">
+            <div class="row">
+                <input type="hidden" asp-for="UserId" />
+
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-field">
+                        <input asp-for="FullName">
+                        <label><i class="far fa-user"></i> نام و نام خانوادگی</label>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-field">
+                        <input asp-for="Email">
+                        <label><i class="far fa-envelope"></i> ایمیل</label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-field">
+                        <input asp-for="PhoneNumber">
+                        <label><i class="far fa-phone"></i> شماره تلفن </label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-field">
+                        <input asp-for="NationalCode">
+                        <label><i class="fal fa-address-card"></i> کد ملی</label>
+                        <span asp-validation-for="NationalCode" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-field">
+                        <input asp-for="PostalCode">
+                        <label><i class="far fa-tag"></i> کد پستی </label>
+                        <span asp-validation-for="PostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-field">
+                        <input asp-for="Score">
+                        <label><i class="far fa-tag"></i> امتیاز </label>
+                        <span asp-validation-for="Score" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-8">
+                    <div class="form-field">
+                        <input asp-for="AccountBalance">
+                        <label><i class="far fa-tag"></i> موجودی حساب </label>
+                        <span asp-validation-for="Score" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-check">
+                        <input type="checkbox" asp-for="IsBlocked">
+                        <label>ایا کاربر مسدود است.</label>
+                    </div>
+                </div>
+                
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-check">
+                        <input type="checkbox" asp-for="IsPhoneNumberActive">
+                        <label>ایا شماره تلفن فعال است.</label>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-field">
+                        <button type="submit" class="btn  btn-success mt-2">ثبت نام</button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-sm-12 col-md-3">
+            @if (Model.Roles.Any())
+            {
+                @foreach (var item in Model.Roles)
+                {
+                    <div class="form-check">
+                        <input type="checkbox" name="SelectedRoles" value="@item.RoleId" @((!string.IsNullOrEmpty(Model.UserId) && Model.SelectedRoles.Any(c => c == item.RoleId) ? "checked" : "")) />
+                        <label>@item.RoleTitle</label>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    مقامی برای نمایش یافت نشد.
+                </div>
+            }
+        </div>
+
+    </div>
+</form>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,191 @@
+﻿@model AddOrEditShopperViewModel
+@{
+    ViewData["Title"] = "ثبتنامفروشنده";
+}
+
+@section Css
+{
+    <link href="~/css/calender.css" rel="stylesheet" />
+}
+
+<div class="register-shopper-area">
+
+    <h1>
+        سلام فروشنده عزیز! به فروشگاه <strong>ریشاپ</strong>خوش آمدید .
+    </h1>
+    <hr>
+
+    <form asp-action="AddShopper" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <h5 class="menu-title">اطلاعات شخصی</h5>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12">
+                        <div class="form-field">
+                            <input asp-for="FullName">
+                            <label><i class="far  fa-user"></i> نام و نام خانوادگی</label>
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-field">
+                            <input asp-for="BirthDay" class="date-picker" readonly>
+                            <label><i class="far fa-user"></i> تاریخ تولد</label>
+                            <span asp-validation-for="BirthDay" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-field">
+                            <input asp-for="NationalCode">
+                            <label><i class="fal fa-address-card"></i> کد ملی</label>
+                            <span asp-validation-for="NationalCode" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-field">
+                            <input asp-for="PhoneNumber">
+                            <label><i class="far fa-phone"></i> شماره تلفن</label>
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 ">
+                        <div class="form-field">
+                            <input asp-for="Email">
+                            <label><i class="far  fa-envelope"></i> ایمیل</label>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-file">
+                            <input asp-for="OnNationalCardImageName">
+                            <label>عکس روی کارت ملی</label>
+                            <span asp-validation-for="OnNationalCardImageName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-file">
+                            <input asp-for="BackNationalCardImageName">
+                            <label>عکس پشت کارت ملی</label>
+                            <span asp-validation-for="BackNationalCardImageName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-6 mt-md-0">
+                <h5 class="menu-title">اطلاعات فروشنده</h5>
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-field">
+                            <input asp-for="StoreName">
+                            <label><i class="far  fa-store"></i> نام فروشگاه</label>
+                            <span asp-validation-for="StoreName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-field">
+                            <input type="text">
+                            <label><i class="far  fa-clipboard"></i> عنوان فروشگاه</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-field">
+                            <select>
+                                <option value="">12</option>
+                                <option value="">12</option>
+                                <option value="">12</option>
+                                <option value="">12</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-field">
+                            <select>
+                                <option value="">12</option>
+                                <option value="">12</option>
+                                <option value="">12</option>
+                                <option value="">12</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="form-field">
+                            <select>
+                                <option value="">12</option>
+                                <option value="">12</option>
+                                <option value="">12</option>
+                                <option value="">12</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 ">
+                        <div class="form-field">
+                            <textarea asp-for="AddressText"></textarea>
+                            <label><i class="far  fa-map-marker-alt"></i> آدرس</label>
+                            <span asp-validation-for="AddressText" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-field">
+                            <input asp-for="PostalCode">
+                            <label><i class="far  fa-tag"></i> کد پستی</label>
+                            <span asp-validation-for="PostalCode" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-6">
+                        <div class="form-field">
+                            <input asp-for="LandlinePhoneNumber">
+                            <label><i class="far  fa-phone"></i> شماره تلفن ثابت</label>
+                            <span asp-validation-for="LandlinePhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 ">
+                        <div class="form-file">
+                            <input asp-for="BusinessLicenseImageName">
+                            <label>تصویر مجوز کسب وکار</label>
+                            <span asp-validation-for="BusinessLicenseImageName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12">
+                <hr>
+
+                <div class="form-check">
+                    <input type="checkbox">
+                    <label>شرایط را قبول دارم.</label>
+                </div>
+
+                <div class="submit-shopper-btn">
+                    <button type="submit">ثبت نام</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+
+@section Scripts{
+    <script src="js/Input.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_CalenderDatePickerPartial");
+    }
+}

@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "مدیریت گروه ها";
+    int rowCount = 1;
+}
+<p>
+    <a asp-action="AddOrEditCategory" class="btn btn-success text-white">
+        <i class="fal fa-layer-plus"></i> افزودن گروه جدید
+    </a>
+</p>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryTitle)
+            </th>
+            <th>دستورات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@rowCount</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryTitle)
+                </td>
+                <td>
+                    <a asp-action="AddOrEditCategory" asp-route-categoryId="@item.CategoryId" class="btn btn-warning text-white">
+                        <i class="fal fa-marker"></i> ویرایش
+                    </a>
+                    <form asp-action="RemoveCategory" asp-route-categoryId="@item.CategoryId" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger text-white">
+                            <i class="fal fa-trash-alt"></i> حذف
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            rowCount++;
+        }
+    </tbody>
+</table>

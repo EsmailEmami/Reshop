@@ -1,0 +1,58 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Reshop.Domain.Entities.User
+{
+    public class OrderDetail
+    {
+        public OrderDetail()
+        {
+
+        }
+
+
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string OrderDetailId { get; set; }
+
+        [ForeignKey("Order")]
+        public string OrderId { get; set; }
+
+        [ForeignKey("Product")]
+        public int ProductId { get; set; }
+
+        [ForeignKey("User")]
+        public string ShopperUserId { get; set; }
+
+        [Display(Name = "قیمت کالا")]
+        [Required]
+        public decimal Price { get; set; }
+
+        [Display(Name = "تاریخ ثبت محصول")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public DateTime CreateDate { get; set; }
+
+        [Display(Name = "کد پیگیری")]
+        [Required]
+        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string TrackingCode { get; set; }
+
+        [Display(Name = "تعداد کالا")]
+        [Required]
+        [MaxLength(3)]
+        public int Count { get; set; }
+
+        [Display(Name = "جمع کل")]
+        [Required]
+        public decimal Sum { get; set; }
+
+        #region Relations
+
+
+        public virtual Order Order { get; set; }
+        public virtual Product.Product Product { get; set; }
+        public virtual User User { get; set; }
+
+        #endregion
+    }
+}

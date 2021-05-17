@@ -1,0 +1,53 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Reshop.Domain.Entities.User
+{
+    public class Order
+    {
+        public Order()
+        {
+
+        }
+
+
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string OrderId { get; set; }
+
+        [Required]
+        public string UserId { get; set; }
+
+        [Display(Name = "کد پیگیری")]
+        [Required]
+        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string TrackingCode { get; set; }
+
+        [Display(Name = "تاریخ ثبت سفارش")]
+        public DateTime CreateDate { get; set; }
+
+        [Display(Name = "جمع فاکتور")]
+        [Required]
+        public decimal Sum { get; set; }
+
+        [Display(Name = "وضعیت پرداخت")]
+        [Required]
+        public bool IsPayed { get; set; }
+
+        [Display(Name = "تاریخ پرداخت")]
+        public DateTime PayDate { get; set; }
+
+        [Display(Name = "وضعیت تحویل")]
+        [Required]
+        public bool IsReceived { get; set; }
+
+        #region Relations
+
+        [ForeignKey("UserId")]
+        public User User { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
+
+        #endregion
+    }
+}

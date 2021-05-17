@@ -1,0 +1,201 @@
+﻿@model AddOrEditMobileProductViewModel
+
+@{
+    ViewData["Title"] = "ویرایش موبایل";
+}
+
+<h1>ویرایش موبایل</h1>
+
+<hr />
+
+<div class="row">
+    <form asp-action="AddOrEditMobile" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="alert alert-warning"></div>
+
+
+        <input type="hidden" asp-for="ProductId" />
+
+        <div class="row">
+            <div class="col-sm-12 col-md-9">
+
+                <div class="row">
+
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label asp-for="ProductTitle" class="control-label"></label>
+                            <input asp-for="ProductTitle" class="form-control" />
+                            <span asp-validation-for="ProductTitle" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Price" class="control-label"></label>
+                            <input asp-for="Price" class="form-control" type="number" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="QuantityInStock" class="control-label"></label>
+                            <input asp-for="QuantityInStock" class="form-control" min="0" />
+                            <span asp-validation-for="QuantityInStock" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" class="form-control"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="ProductBrand" class="control-label"></label>
+                            <input asp-for="ProductBrand" class="form-control" />
+                            <span asp-validation-for="ProductBrand" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="BrandProduct" class="control-label"></label>
+                            <input asp-for="BrandProduct" class="form-control" />
+                            <span asp-validation-for="BrandProduct" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="InternalMemory" class="control-label"></label>
+                            <input asp-for="InternalMemory" class="form-control" />
+                            <span asp-validation-for="InternalMemory" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="BackCameras" class="control-label"></label>
+                            <input asp-for="BackCameras" class="form-control" />
+                            <span asp-validation-for="BackCameras" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="PhotoResolution" class="control-label"></label>
+                            <input asp-for="PhotoResolution" class="form-control" />
+                            <span asp-validation-for="PhotoResolution" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="RAMValue" class="control-label"></label>
+                            <input asp-for="RAMValue" class="form-control" />
+                            <span asp-validation-for="RAMValue" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Size" class="control-label"></label>
+                            <input asp-for="Size" class="form-control" />
+                            <span asp-validation-for="Size" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="QuantitySIMCard" class="control-label"></label>
+                            <input asp-for="QuantitySIMCard" class="form-control"/>
+                            <span asp-validation-for="QuantitySIMCard" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3">
+                        <div class="form-group">
+                            <label asp-for="OperatingSystemVersion" class="control-label"></label>
+                            <input asp-for="OperatingSystemVersion" class="form-control" />
+                            <span asp-validation-for="OperatingSystemVersion" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-12 col-md-9">
+                        <div class="form-group">
+                            <label asp-for="OperatingSystem" class="control-label"></label>
+                            <input asp-for="OperatingSystem" class="form-control" />
+                            <span asp-validation-for="OperatingSystem" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 ">
+
+                        <div class="form-group">
+                            <label asp-for="CommunicationNetworks" class="control-label"></label>
+                            <input asp-for="CommunicationNetworks" class="form-control" />
+                            <span asp-validation-for="CommunicationNetworks" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label asp-for="SIMCardDescription" class="control-label"></label>
+                            <textarea asp-for="SIMCardDescription" class="form-control"></textarea>
+                            <span asp-validation-for="SIMCardDescription" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label asp-for="DisplayTechnology" class="control-label"></label>
+                            <textarea asp-for="DisplayTechnology" class="form-control"></textarea>
+                            <span asp-validation-for="DisplayTechnology" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <label asp-for="Features" class="control-label"></label>
+                            <textarea asp-for="Features" class="form-control"></textarea>
+                            <span asp-validation-for="Features" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-3">
+                <div class="row">
+
+                    @for (int i = 1; i <= 6; i++)
+                    {
+                        <div class="col-sm-12 col-md-4 pb-3">
+                            <div class="custom-file">
+                                <label class="custom-file-label">عکس شماره @i</label>
+                                <input type="file" accept="image/*" placeholder="انتخاب عکس" title="عکسی انتخاب نشده است" class="custom-file-input" name="SelectedImages" />
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="form-group">
+                    <input type="submit" value="ثبت کالا" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+
+
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</div>
