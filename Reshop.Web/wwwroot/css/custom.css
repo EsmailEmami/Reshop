@@ -1933,6 +1933,11 @@ header .top-menu {
     border-radius: 8px;
 }
 
+.Category-shortcut p {
+    color: #fff;
+    margin: 0;
+}
+
     .Category-shortcut a:hover {
         background-color: #202020;
     }
@@ -1951,10 +1956,7 @@ header .top-menu {
     font-size: 24px;
 }
 
-.Category-shortcut p {
-    color: #fff;
-    margin: 0;
-}
+
 
 .img-ad {
     width: 100%;
@@ -1966,6 +1968,7 @@ header .top-menu {
 /* -------------------------------------- footer -------------------------------------- */
 
 footer {
+    margin-top: 2rem;
     background-color: #424242;
     padding: 0;
 }

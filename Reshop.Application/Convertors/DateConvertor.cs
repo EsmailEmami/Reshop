@@ -23,30 +23,10 @@ namespace Reshop.Application.Convertors
             return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, new PersianCalendar());
         }
 
+
         public static DateTime ConvertPersianDateTimeToEnglishDateTime(this string dateTime)
         {
-            string englishDateTime = PersianToEnglish(dateTime);
-
-            string PersianToEnglish(string persianStr)
-            {
-                Dictionary<string, string> LettersDictionary = new Dictionary<string, string>
-                {
-                    ["۰"] = "0",
-                    ["۱"] = "1",
-                    ["۲"] = "2",
-                    ["۳"] = "3",
-                    ["۴"] = "4",
-                    ["۵"] = "5",
-                    ["۶"] = "6",
-                    ["۷"] = "7",
-                    ["۸"] = "8",
-                    ["۹"] = "9"
-                };
-                return LettersDictionary.Aggregate(persianStr, (current, item) =>
-                    current.Replace(item.Key, item.Value));
-            }
-
-
+            string englishDateTime = Fixer.PersianNumberToLatinNumber(dateTime);
 
             string[] dateTimeSplit = englishDateTime.Split(" ");
             string[] time = dateTimeSplit[0].Split(":");
@@ -57,6 +37,21 @@ namespace Reshop.Application.Convertors
                 int.Parse(date[2]),
                 int.Parse(time[0]),
                 int.Parse(time[1]),
+                0,
+                new PersianCalendar());
+        }
+
+        public static DateTime ConvertPersianDateToEnglishDate(this string date)
+        {
+            string englishDate = Fixer.PersianNumberToLatinNumber(date);
+
+            string[] dateSplit = englishDate.Split("/");
+
+            return new DateTime(int.Parse(dateSplit[0]),
+                int.Parse(dateSplit[1]),
+                int.Parse(dateSplit[2]),
+                0,
+                0,
                 0,
                 new PersianCalendar());
         }

@@ -291,7 +291,7 @@ namespace Reshop.Web.Controllers.User
             var shopper = new Shopper()
             {
                 StoreName = model.StoreName,
-                BirthDay = model.BirthDay.ConvertPersianDateTimeToEnglishDateTime(),
+                BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate(),
                 RegisterShopper = DateTime.Now,
                 LandlinePhoneNumber = model.LandlinePhoneNumber,
                 Condition = false,

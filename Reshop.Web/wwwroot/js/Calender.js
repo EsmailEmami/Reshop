@@ -9,7 +9,7 @@ for (let i = 0; i < datePickers.length; i++) {
         initialValue: true,
         autoClose: false,
         position: "auto",
-        format: "HH:mm YYYY/MM/DD",
+        format: "YYYY/MM/DD",
         onlyTimePicker: false,
         onlySelectOnDate: false,
         calendarType: "persian",
