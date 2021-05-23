@@ -21,6 +21,7 @@ namespace Reshop.Domain.Entities.User
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string FullName { get; set; }
 
+#nullable enable
         [Display(Name = "ایمیل")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         [EmailAddress(ErrorMessage = "ایمیل وارد شده معتبر نمی باشد")]
