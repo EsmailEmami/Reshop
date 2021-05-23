@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Role>
+﻿@model IAsyncEnumerable<Role>
 
 @{
     ViewData["Title"] = "مدیریت مقام ها";
@@ -24,13 +24,13 @@ else
         <tr>
             <th>#</th>
             <th>
-                @Html.DisplayNameFor(model => model.RoleTitle)
+           نام مقام
             </th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model)
+        @await foreach (var item in Model)
         {
             <tr>
                 <td>@rowCount</td>

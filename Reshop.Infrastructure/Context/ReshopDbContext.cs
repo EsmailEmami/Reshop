@@ -56,6 +56,8 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<MemoryCardDetail> MemoryCardDetails { get; set; }
         public virtual DbSet<ShopperStoreTitle> ShopperStoreTitles { get; set; }
         public virtual DbSet<StoreTitle> StoreTitles { get; set; }
+        public virtual DbSet<State> States { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

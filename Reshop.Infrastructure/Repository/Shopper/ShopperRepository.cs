@@ -49,6 +49,12 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
                     }).SingleOrDefaultAsync();
 
+        public async Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId)
+            =>
+                await _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId).SingleOrDefaultAsync();
+
+        public void UpdateShopperProduct(ShopperProduct shopperProduct) => _context.ShopperProducts.Update(shopperProduct);
+
         public async Task AddStoreTitleAsync(StoreTitle storeTitle)
             =>
                 await _context.StoreTitles.AddAsync(storeTitle);

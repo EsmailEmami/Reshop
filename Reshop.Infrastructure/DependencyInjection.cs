@@ -5,31 +5,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.Category;
 using Reshop.Application.Interfaces.Product;
+using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security.GoogleRecaptcha;
 using Reshop.Application.Senders;
 using Reshop.Application.Services.Category;
 using Reshop.Application.Services.Product;
+using Reshop.Application.Services.Shopper;
 using Reshop.Application.Services.User;
 using Reshop.Domain.Interfaces.Category;
 using Reshop.Domain.Interfaces.Product;
+using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
 using Reshop.Infrastructure.Context;
 using Reshop.Infrastructure.Repository.Category;
 using Reshop.Infrastructure.Repository.Product;
+using Reshop.Infrastructure.Repository.Shopper;
 using Reshop.Infrastructure.Repository.User;
 using System;
-using Quartz;
-using Quartz.Impl;
-using Quartz.Spi;
-using Reshop.Application.Interfaces.Shopper;
-using Reshop.Application.Jobs.Cart;
-using Reshop.Application.Services.Shopper;
-using Reshop.Domain.Interfaces.Shopper;
-using Reshop.Infrastructure.Repository.Shopper;
 
 namespace Reshop.Infrastructure
 {
@@ -52,6 +49,8 @@ namespace Reshop.Infrastructure
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IShopperService, ShopperService>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IStateService, StateService>();
 
             //repository
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -59,6 +58,8 @@ namespace Reshop.Infrastructure
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<IShopperRepository, ShopperRepository>();
+            services.AddScoped<IRoleRepository,RoleRepository>();
+            services.AddScoped<IStateRepository, StateRepository>();
 
 
 
@@ -94,7 +95,7 @@ namespace Reshop.Infrastructure
 
             #endregion
 
-            //#region Quartz
+            #region Quartz
 
             //services.AddSingleton<IJobFactory, JobFactory>();
             //services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
@@ -104,7 +105,7 @@ namespace Reshop.Infrastructure
 
             //services.AddHostedService<QuartzHostedService>();
 
-            //#endregion
+            #endregion
 
             #region Configure
 

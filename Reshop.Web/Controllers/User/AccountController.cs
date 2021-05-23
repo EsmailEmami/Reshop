@@ -33,14 +33,16 @@ namespace Reshop.Web.Controllers.User
         private readonly IMessageSender _messageSender;
         private readonly IOptions<GoogleReCaptchaKey> _captchaKey;
         private readonly IShopperService _shopperService;
+        private readonly IRoleService _roleService;
 
-        public AccountController(IUserService userService, IViewRenderService viewRender, IMessageSender messageSender, IOptions<GoogleReCaptchaKey> captchaKey, IShopperService shopperService)
+        public AccountController(IUserService userService, IViewRenderService viewRender, IMessageSender messageSender, IOptions<GoogleReCaptchaKey> captchaKey, IShopperService shopperService, IRoleService roleService)
         {
             _userService = userService;
             _viewRender = viewRender;
             _messageSender = messageSender;
             _captchaKey = captchaKey;
             _shopperService = shopperService;
+            _roleService = roleService;
         }
 
         #endregion
@@ -388,7 +390,7 @@ namespace Reshop.Web.Controllers.User
 
             if (addShopper is not null)
             {
-                var addUserT0RoleResult = await _userService.AddUserToRoleAsync(addShopper, "Shopper");
+                var addUserT0RoleResult = await _roleService.AddUserToRoleAsync(addShopper.UserId, "Shopper");
 
                 if (addUserT0RoleResult == ResultTypes.Failed)
                 {

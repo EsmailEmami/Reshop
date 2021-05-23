@@ -14,12 +14,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
     {
         #region constructor
 
-        private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
 
-        public RoleManagerController(IUserService userService)
+        public RoleManagerController(IRoleService roleService)
         {
-            _userService = userService;
+            _roleService = roleService;
         }
+
 
         #endregion
 
@@ -27,7 +28,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(_userService.GetRoles());
+            return View(_roleService.GetRoles());
         }
 
         [HttpGet]
@@ -39,9 +40,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                if (!await _userService.IsRoleExistAsync(roleId)) return NotFound();
+                if (!await _roleService.IsRoleExistAsync(roleId)) return NotFound();
 
-                return View(await _userService.GetRoleDataAsync(roleId));
+                return View(await _roleService.GetRoleDataAsync(roleId));
             }
         }
 
@@ -58,17 +59,17 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     RoleTitle = model.RoleTitle,
                 };
 
-                await _userService.AddRoleAsync(role);
+                await _roleService.AddRoleAsync(role);
             }
             else
             {
-                var role = await _userService.GetRoleByIdAsync(model.RoleId);
+                var role = await _roleService.GetRoleByIdAsync(model.RoleId);
 
                 if (role == null) return NotFound();
 
                 role.RoleTitle = model.RoleTitle;
 
-                await _userService.EditRoleAsync(role);
+                await _roleService.EditRoleAsync(role);
             }
 
             return RedirectToAction("Index");
@@ -78,9 +79,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveRole(string roleId)
         {
-            if (!await _userService.IsRoleExistAsync(roleId)) return NotFound();
+            if (!await _roleService.IsRoleExistAsync(roleId)) return NotFound();
 
-            await _userService.RemoveRoleAsync(roleId);
+            await _roleService.RemoveRoleAsync(roleId);
 
             return RedirectToAction("Index");
         }

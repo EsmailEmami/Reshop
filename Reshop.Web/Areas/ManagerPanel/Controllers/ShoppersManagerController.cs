@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
@@ -12,17 +13,17 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
     [Authorize]
     public class ShoppersManager : Controller
     {
-        private readonly IUserService _userService;
+        private readonly IShopperService _shopperService;
 
-        public ShoppersManager(IUserService userService)
+        public ShoppersManager(IShopperService shopperService)
         {
-            _userService = userService;
+            _shopperService = shopperService;
         }
 
         [HttpGet]
         public IActionResult Index(int pageId = 1, int take = 24)
         {
-            return View(_userService.GetShoppersInformationWithPagination(pageId, take));
+            return View(/*_shopperService.GetShoppersInformationWithPagination(pageId, take)*/);
         }
     }
 }

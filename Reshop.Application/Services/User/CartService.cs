@@ -11,6 +11,7 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.Order;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Product;
+using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
 
 namespace Reshop.Application.Services.User
@@ -22,12 +23,14 @@ namespace Reshop.Application.Services.User
         private readonly IProductRepository _productRepository;
         private readonly ICartRepository _cartRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IShopperRepository _shopperRepository;
 
-        public CartService(IProductRepository productRepository, ICartRepository cartRepository, IUserRepository userRepository)
+        public CartService(IProductRepository productRepository, ICartRepository cartRepository, IUserRepository userRepository, IShopperRepository shopperRepository)
         {
             _productRepository = productRepository;
             _cartRepository = cartRepository;
             _userRepository = userRepository;
+            _shopperRepository = shopperRepository;
         }
 
         #endregion
@@ -43,7 +46,7 @@ namespace Reshop.Application.Services.User
                 if (product is null)
                     return ResultTypes.Failed;
 
-                var shopperProduct = await _userRepository.GetShopperProductAsync(shopperUserId, product.ProductId);
+                var shopperProduct = await _shopperRepository.GetShopperProductAsync(shopperUserId, product.ProductId);
                 if (shopperProduct is null)
                     return ResultTypes.Failed;
 
@@ -136,7 +139,7 @@ namespace Reshop.Application.Services.User
 
 
                 shopperProduct.SaleCount += 1;
-                _userRepository.UpdateShopperProduct(shopperProduct);
+                _shopperRepository.UpdateShopperProduct(shopperProduct);
                 await _cartRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;

@@ -5,6 +5,7 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
@@ -19,10 +20,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region constructor
 
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
 
-        public UserManagerController(IUserService userService)
+        public UserManagerController(IUserService userService, IRoleService roleService)
         {
             _userService = userService;
+            _roleService = roleService;
         }
 
         #endregion
@@ -42,7 +45,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 var model = new AddOrEditUserViewModel()
                 {
-                    Roles = _userService.GetRoles()
+                    Roles = _roleService.GetRoles() as IEnumerable<Role>
                 };
                 return View(model);
             }
@@ -84,7 +87,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (addUser == ResultTypes.Successful)
                 {
-                    if (model.SelectedRoles != null )
+                    if (model.SelectedRoles != null)
                     {
                         foreach (var role in model.SelectedRoles)
                         {
@@ -94,13 +97,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                                 RoleId = role
                             };
 
-                            await _userService.AddUserRoleAsync(userRole);
+                            await _roleService.AddUserRoleAsync(userRole);
                         }
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("","عنگام ثبت کاربر مشکلی غیر منتظره به وجود آمده است.");
+                    ModelState.AddModelError("", "عنگام ثبت کاربر مشکلی غیر منتظره به وجود آمده است.");
                     return View(model);
                 }
             }
@@ -128,10 +131,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (editUser == ResultTypes.Successful)
                 {
                     // remove user roles
-                    await _userService.RemoveUserRolesByUserIdAsync(user.UserId);
+                    var removeUserRoles = await _roleService.RemoveAllUserRolesByUserIdAsync(user.UserId);
 
+                    if (removeUserRoles is not ResultTypes.Successful)
+                    {
+                        ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش مقام ها به مشکلی غیر منتطره برخودیم. لطفا دوباره تلاش کنید.");
+                        return View(model);
+                    }
 
-                    if (model.SelectedRoles != null)
+                    if (model.SelectedRoles.Any())
                     {
                         foreach (var roleId in model.SelectedRoles)
                         {
@@ -140,7 +148,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                                 UserId = user.UserId,
                                 RoleId = roleId
                             };
-                            await _userService.AddUserRoleAsync(userRole);
+                            await _roleService.AddUserRoleAsync(userRole);
                         }
                     }
                 }

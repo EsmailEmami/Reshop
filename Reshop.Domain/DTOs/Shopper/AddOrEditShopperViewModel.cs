@@ -10,7 +10,7 @@ namespace Reshop.Domain.DTOs.Shopper
 {
     public class AddOrEditShopperViewModel
     {
-        public string? UserId { get; set; }
+        public string UserId { get; set; }
 
 
         [Display(Name = "نام و نام خانوادگی")]

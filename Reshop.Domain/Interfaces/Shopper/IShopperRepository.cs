@@ -10,7 +10,15 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task<Entities.User.User> GetShopperByIdAsync(string userId);
         Task AddShopperAsync(Entities.Shopper.Shopper shopper);
         Task<AddOrEditShopperViewModel> GetShopperDataForEditAsync(string userId);
-        
+
+        #region shopper product
+
+        Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId);
+        void UpdateShopperProduct(ShopperProduct shopperProduct);
+
+        #endregion
+
+
         #region store title
 
         Task AddStoreTitleAsync(StoreTitle storeTitle);

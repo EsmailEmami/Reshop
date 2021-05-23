@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.Product;
+using Reshop.Domain.Interfaces.Shopper;
 
 namespace Reshop.Application.Services.User
 {
@@ -18,10 +19,14 @@ namespace Reshop.Application.Services.User
         #region constructor
 
         private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
+        private readonly IShopperRepository _shopperRepository;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IShopperRepository shopperRepository)
         {
             _userRepository = userRepository;
+            _roleRepository = roleRepository;
+            _shopperRepository = shopperRepository;
         }
 
         #endregion
@@ -29,8 +34,8 @@ namespace Reshop.Application.Services.User
         public async Task<AddOrEditUserViewModel> GetUserDataAsync(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            var roles = _userRepository.GetRoles();
-            var userRoles = _userRepository.GetRolesIdOfUser(userId);
+            var roles = _roleRepository.GetRoles();
+            var userRoles = _roleRepository.GetRolesIdOfUser(userId);
 
             return new AddOrEditUserViewModel()
             {
@@ -44,8 +49,8 @@ namespace Reshop.Application.Services.User
                 PostalCode = user.PostalCode,
                 IsPhoneNumberActive = user.IsPhoneNumberActive,
                 IsBlocked = user.IsBlocked,
-                Roles = roles,
-                SelectedRoles = userRoles
+                Roles = roles as IEnumerable<Role>,
+                SelectedRoles = userRoles as IEnumerable<string>
             };
         }
 
@@ -61,7 +66,7 @@ namespace Reshop.Application.Services.User
             return (deposit - withdraw);
         }
 
-        public IEnumerable<Domain.Entities.User.User> GetUsers()
+        public IAsyncEnumerable<Domain.Entities.User.User> GetUsers()
         {
             return _userRepository.GetUsers();
         }
@@ -71,18 +76,18 @@ namespace Reshop.Application.Services.User
                 _userRepository.GetUsersInformation();
 
 
-        public async Task<Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>> GetShoppersInformationWithPagination(int pageId = 1, int take = 18)
-        {
-            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+        //public async Task<Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>> GetShoppersInformationWithPagination(int pageId = 1, int take = 18)
+        //{
+        //    int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
-            int productsCount = await _userRepository.GetShoppersCountAsync();
+        //    int productsCount = await _shopperRepository.GetShoppersCountAsync();
 
-            var shoppers = _userRepository.GetShoppersWithPagination(skip, take);
+        //    var shoppers = _userRepository.GetShoppersWithPagination(skip, take);
 
-            int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
+        //    int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
-            return new Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>(shoppers, pageId, totalPages);
-        }
+        //    return new Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>(shoppers, pageId, totalPages);
+        //}
 
         public IAsyncEnumerable<Address> GetUserAddresses(string userId)
             =>
@@ -120,12 +125,6 @@ namespace Reshop.Application.Services.User
             string hashPassword = PasswordHelper.EncodePasswordMd5(login.Password);
 
             return null;
-        }
-
-        public async Task AddUserRoleAsync(UserRole userRole)
-        {
-            await _userRepository.AddUserRoleAsync(userRole);
-            await _userRepository.SaveChangesAsync();
         }
 
         public async Task<ResultTypes> EditUserAsync(Domain.Entities.User.User user)
@@ -170,110 +169,35 @@ namespace Reshop.Application.Services.User
             return await _userRepository.GetUserByIdAsync(userId);
         }
 
-        public async Task RemoveUserRolesByUserIdAsync(string userId)
+        public async Task<ResultTypes> RemoveUserAsync(string userId)
         {
-            var userRoles = _userRepository.GetUserRolesByUserId(userId);
-            if (userRoles != null)
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user is null) return ResultTypes.Failed;
+
+            var userRoles = _roleRepository.GetUserRolesByUserId(user.UserId);
+            try
             {
-                foreach (var userRole in userRoles)
+                if (userRoles is not null)
                 {
-                    _userRepository.RemoveUserRole(userRole);
+                    await foreach (var userRole in userRoles)
+                    {
+                     _roleRepository.RemoveUserRole(userRole);   
+                    }
+
+                    await _roleRepository.SaveChangesAsync();
                 }
 
+                _userRepository.RemoveUser(user);
                 await _userRepository.SaveChangesAsync();
+
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
             }
         }
 
-        public async Task RemoveUserAsync(string userId)
-        {
-            var user = await _userRepository.GetUserByIdAsync(userId);
-            _userRepository.RemoveUser(user);
-            await _userRepository.SaveChangesAsync();
-        }
-
-        public async Task RemoveUserRole(UserRole userRole)
-        {
-            _userRepository.RemoveUserRole(userRole);
-            await _userRepository.SaveChangesAsync();
-        }
-
-        public IEnumerable<Role> GetRoles()
-        {
-            return _userRepository.GetRoles();
-        }
-
-        public async Task<AddOrEditRoleViewModel> GetRoleDataAsync(string roleId)
-        {
-            var role = await _userRepository.GetRoleByIdAsync(roleId);
-
-            return new AddOrEditRoleViewModel()
-            {
-                RoleId = role.RoleId,
-                RoleTitle = role.RoleTitle,
-            };
-        }
-
-        public async Task AddRoleAsync(Role role)
-        {
-            await _userRepository.AddRoleAsync(role);
-            await _userRepository.SaveChangesAsync();
-        }
-
-        public async Task EditRoleAsync(Role role)
-        {
-            _userRepository.EditRole(role);
-            await _userRepository.SaveChangesAsync();
-        }
-
-        public async Task<Role> GetRoleByIdAsync(string roleId)
-        {
-            return await _userRepository.GetRoleByIdAsync(roleId);
-        }
-
-        public async Task RemoveRoleAsync(string roleId)
-        {
-            var role = await _userRepository.GetRoleByIdAsync(roleId);
-
-            _userRepository.RemoveRole(role);
-            await _userRepository.SaveChangesAsync();
-        }
-
-        public async Task<bool> IsRoleExistAsync(string roleId)
-        {
-            return await _userRepository.IsRoleExistAsync(roleId);
-        }
-
-        public async Task<ResultTypes> AddUserToRoleAsync(Domain.Entities.User.User user, string roleName)
-        {
-            var role = await _userRepository.GetRoleByNameAsync(roleName);
-            if (role is null)
-                return ResultTypes.Failed;
-
-
-
-            var userRole = new UserRole(user.UserId, role.RoleId);
-
-            await _userRepository.AddUserRoleAsync(userRole);
-            await _userRepository.SaveChangesAsync();
-
-            return ResultTypes.Successful;
-        }
-
-        public async Task<ResultTypes> RemoveUserFromRoleAsync(Domain.Entities.User.User user, string roleName)
-        {
-            var role = await _userRepository.GetRoleByNameAsync(roleName);
-            if (role is null)
-                return ResultTypes.Failed;
-
-            var userRole = await _userRepository.GetUserRoleAsync(user.UserId, role.RoleId);
-            if (userRole is null)
-                return ResultTypes.Failed;
-
-
-            _userRepository.RemoveUserRole(userRole);
-            await _userRepository.SaveChangesAsync();
-
-            return ResultTypes.Successful;
-        }
     }
 }
