@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.Entities.User;
+using Reshop.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Infrastructure.Context;
 
 namespace Reshop.Api.Controllers.StateAndCity
 {
@@ -22,7 +22,7 @@ namespace Reshop.Api.Controllers.StateAndCity
         }
 
         [HttpGet]
-        public IActionResult GetCitiesOfState()
+        public IActionResult GetCities()
         {
 
             var cities = _stateService.GetCities();
