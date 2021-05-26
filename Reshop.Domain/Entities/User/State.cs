@@ -23,7 +23,7 @@ namespace Reshop.Domain.Entities.User
 
         #region Relations
 
-        public virtual ICollection<City> Cities { get; set; }
+        public ICollection<StateCity> StateCities { get; set; }
 
         #endregion
     }

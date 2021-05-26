@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Reshop.Domain.Entities.User;
 
 namespace Reshop.Domain.DTOs.Shopper
 {
@@ -90,5 +91,8 @@ namespace Reshop.Domain.DTOs.Shopper
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public IFormFile BusinessLicenseImageName { get; set; }
+
+
+        public IEnumerable<State> States { get; set; }
     }
 }

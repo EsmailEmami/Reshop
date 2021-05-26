@@ -1,0 +1,43 @@
+﻿@model IAsyncEnumerable<Reshop.Domain.Entities.User.State>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="AddOrEditState" class="btn btn-success text-white">ساخت شهر جدید</a>
+</p>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+               نام استان
+            </th>
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @await  foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StateName)
+                </td>
+                <td>
+                    <a asp-action="AddOrEditState" asp-route-stateId="@item.StateId"
+                       class="btn btn-warning text-white">
+                        ویرایش
+                    </a>
+                    
+                    <form asp-action="DeleteState" asp-route-stateId="@item.StateId" method="post"
+                          class="d-inline">
+                        <button type="submit" class="btn btn-danger text-white">حذف</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

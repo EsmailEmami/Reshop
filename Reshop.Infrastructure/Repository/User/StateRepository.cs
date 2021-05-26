@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Reshop.Domain.Entities.User;
+﻿using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
 using Reshop.Infrastructure.Context;
 using System.Collections.Generic;
@@ -30,10 +29,9 @@ namespace Reshop.Infrastructure.Repository.User
 
         public void UpdateState(State state) => _context.States.Update(state);
 
-        public async Task<State> GetStateWithCitiesByIdAsync(int stateId)
+        public async Task<State> GetStateByIdAsync(int stateId)
             =>
-                await _context.States.Where(c => c.StateId == stateId)
-                    .Include(c => c.Cities).SingleOrDefaultAsync();
+                await _context.States.FindAsync(stateId);
 
         #endregion
 
@@ -46,15 +44,44 @@ namespace Reshop.Infrastructure.Repository.User
         public void RemoveCity(City city) => _context.Cities.Remove(city);
 
         public void UpdateCity(City city) => _context.Cities.Update(city);
-        public IAsyncEnumerable<City> GetCitiesOfState(int stateId)
-        {
-            return _context.States.Where(c => c.StateId == stateId)
-                .Select(c => c.Cities).SingleOrDefaultAsync() as IAsyncEnumerable<City>;
-        }
 
         public async Task<City> GetCityByIdAsync(int cityId)
             =>
                 await _context.Cities.FindAsync(cityId);
+
+        #endregion
+
+        #region stateCity
+
+        public async Task AddStateCityAsync(StateCity stateCity)
+            =>
+                await _context.StateCities.AddAsync(stateCity);
+
+        public void RemoveStateCity(StateCity stateCity)
+            =>
+                _context.StateCities.Remove(stateCity);
+
+        public void UpdateStateCity(StateCity stateCity)
+            =>
+                _context.StateCities.Update(stateCity);
+
+        public IAsyncEnumerable<City> GetCitiesOfState(int stateId)
+            =>
+                _context.StateCities.Where(c => c.StateId == stateId)
+                    .Select(c => c.City) as IAsyncEnumerable<City>;
+
+        public IAsyncEnumerable<StateCity> GetStateCitiesByStateId(int stateId)
+            =>
+                _context.StateCities.Where(c => c.StateId == stateId) as IAsyncEnumerable<StateCity>;
+
+        public IAsyncEnumerable<StateCity> GetStateCitiesByCityId(int cityId)
+            =>
+                _context.StateCities.Where(c => c.CityId == cityId) as IAsyncEnumerable<StateCity>;
+
+        public IAsyncEnumerable<int> GetCitiesIdOfState(int stateId)
+            =>
+                _context.StateCities.Where(c => c.StateId == stateId)
+                    .Select(c => c.CityId) as IAsyncEnumerable<int>;
 
         #endregion
 

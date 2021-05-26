@@ -28,6 +28,11 @@ namespace Reshop.Infrastructure.Repository.User
 
         public async Task<bool> IsUserExistAsync(string userId) => await _context.Users.AnyAsync(c => c.UserId == userId);
 
+        public async Task<Domain.Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber)
+        {
+            return await _context.Users.SingleOrDefaultAsync(c=> c.PhoneNumber == phoneNumber);
+        }
+
         public IAsyncEnumerable<Address> GetUserAddresses(string userId)
             =>
                 _context.Users.Where(c => c.UserId == userId)

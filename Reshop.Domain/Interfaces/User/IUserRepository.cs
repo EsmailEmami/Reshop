@@ -11,11 +11,12 @@ namespace Reshop.Domain.Interfaces.User
     {
         #region User
 
-        IAsyncEnumerable<Domain.Entities.User.User> GetUsers();
+        IAsyncEnumerable<Entities.User.User> GetUsers();
         IAsyncEnumerable<UserInformationViewModel> GetUsersInformation();
         Task<Entities.User.User> GetUserByActiveCodeAsync(string activeCode);
         Task<Entities.User.User> GetUserByInviteCodeAsync(string inviteCode);
         Task<Entities.User.User> GetUserByIdAsync(string userId);
+        Task<Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber);
         IAsyncEnumerable<Address> GetUserAddresses(string userId);
         Task AddUserAsync(Entities.User.User user);
         Task AddUserInviteAsync(UserInvite userInvite);

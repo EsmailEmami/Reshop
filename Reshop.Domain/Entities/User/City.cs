@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Reshop.Domain.Entities.User
 {
@@ -11,5 +12,11 @@ namespace Reshop.Domain.Entities.User
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string CityName { get; set; }
+
+        #region Relations
+
+        public ICollection<StateCity> StateCities { get; set; }
+
+        #endregion
     }
 }

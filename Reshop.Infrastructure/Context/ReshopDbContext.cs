@@ -58,6 +58,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<StoreTitle> StoreTitles { get; set; }
         public virtual DbSet<State> States { get; set; }
         public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<StateCity> StateCities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -78,6 +79,9 @@ namespace Reshop.Infrastructure.Context
 
             modelBuilder.Entity<ShopperStoreTitle>()
                 .HasKey(c => new { c.ShopperId, c.StoreTitleId });
+
+            modelBuilder.Entity<StateCity>()
+                .HasKey(c => new { c.StateId, c.CityId });
 
             modelBuilder.Entity<Product>(i =>
             {

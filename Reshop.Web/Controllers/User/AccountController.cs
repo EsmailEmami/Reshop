@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.User;
 
 namespace Reshop.Web.Controllers.User
 {
@@ -34,8 +35,9 @@ namespace Reshop.Web.Controllers.User
         private readonly IOptions<GoogleReCaptchaKey> _captchaKey;
         private readonly IShopperService _shopperService;
         private readonly IRoleService _roleService;
+        private readonly IStateService _stateService;
 
-        public AccountController(IUserService userService, IViewRenderService viewRender, IMessageSender messageSender, IOptions<GoogleReCaptchaKey> captchaKey, IShopperService shopperService, IRoleService roleService)
+        public AccountController(IUserService userService, IViewRenderService viewRender, IMessageSender messageSender, IOptions<GoogleReCaptchaKey> captchaKey, IShopperService shopperService, IRoleService roleService, IStateService stateService)
         {
             _userService = userService;
             _viewRender = viewRender;
@@ -43,7 +45,9 @@ namespace Reshop.Web.Controllers.User
             _captchaKey = captchaKey;
             _shopperService = shopperService;
             _roleService = roleService;
+            _stateService = stateService;
         }
+ 
 
         #endregion
 
@@ -60,19 +64,19 @@ namespace Reshop.Web.Controllers.User
         [Route("Register")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(IFormCollection form, RegisterViewModel model, string inviteCode = null)
+        public async Task<IActionResult> Register(RegisterViewModel model, string inviteCode = null)
         {
-            #region recaptcha
+            //#region recaptcha
 
-            bool googleRecaptcha = GoogleReCaptchaValidation.IsGoogleRecaptchaValid(form, _captchaKey.Value.RecapchaSecretKey);
+            //bool googleRecaptcha = GoogleReCaptchaValidation.IsGoogleRecaptchaValid(form, _captchaKey.Value.RecapchaSecretKey);
 
-            if (!googleRecaptcha)
-            {
-                ViewBag.RecaptchaErrorMessage = "لطفا هویت خود را تایید کنید.";
-                return View();
-            }
+            //if (!googleRecaptcha)
+            //{
+            //    ViewBag.RecaptchaErrorMessage = "لطفا هویت خود را تایید کنید.";
+            //    return View();
+            //}
 
-            #endregion
+            //#endregion
 
 
 
@@ -133,15 +137,7 @@ namespace Reshop.Web.Controllers.User
         {
             if (User.Identity.IsAuthenticated)
                 return Redirect("/");
-
-
-            ViewData["PossibilityAttempt"] = 10;
-
             ViewData["ReturnUrl"] = returnUrl;
-
-            ViewData["LockTime"] = TimeSpan.Zero;
-
-
             return View();
         }
 
@@ -150,59 +146,34 @@ namespace Reshop.Web.Controllers.User
         [Route("Login")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(IFormCollection form, LoginViewModel model, int possibilityAttempt, TimeSpan lockTime, string returnUrl = null)
+        public async Task<IActionResult> Login(/*IFormCollection form,*/ LoginViewModel model, string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
                 return Redirect("/");
 
-            if (possibilityAttempt < 0)
-            {
-                ViewData["LockTime"] = TimeSpan.FromMinutes(10);
-                ModelState.AddModelError("", $"دسترسی شما به مدت {ViewData["LockTime"]} قفل شده است.");
-            }
+            //#region recaptcha
 
+            //bool googleRecaptcha = GoogleReCaptchaValidation.IsGoogleRecaptchaValid(form, _captchaKey.Value.RecapchaSecretKey);
 
-            if (lockTime != TimeSpan.Zero)
-            {
-                ModelState.AddModelError("", $"اکانت شما به مدت {lockTime} دقیقه قفل شده است.");
-                return View(model);
-            }
+            //if (!googleRecaptcha)
+            //{
+            //    ViewBag.RecaptchaErrorMessage = "لطفا هویت خود را تایید کنید.";
+            //    return View();
+            //}
 
-
-
-            #region recaptcha
-
-            bool googleRecaptcha = GoogleReCaptchaValidation.IsGoogleRecaptchaValid(form, _captchaKey.Value.RecapchaSecretKey);
-
-            if (!googleRecaptcha)
-            {
-                ViewBag.RecaptchaErrorMessage = "لطفا هویت خود را تایید کنید.";
-                return View();
-            }
-
-            #endregion
+            //#endregion
 
             ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid)
             {
-
-                if (possibilityAttempt == 1)
-                {
-                    ViewData["PossibilityAttempt"] = 5;
-                    ViewData["LockTime"] = TimeSpan.FromMinutes(10);
-                    ModelState.AddModelError("", $"دسترسی شما به مدت {ViewData["LockTime"]} قفل شده است.");
-                }
-                else
-                {
-                    possibilityAttempt -= 10;
-                    ViewData["PossibilityAttempt"] = possibilityAttempt;
-
-                    ModelState.AddModelError("", $"تلاش شما برای ورود موفقیت امیز نبود. شما میتوانید {possibilityAttempt} بار دیگر اقدام به ورود کنید.");
-                }
+                ModelState.AddModelError("", "تلاش شما برای ورود موفقیت امیز نبود. شما میتوانید بار دیگر اقدام به ورود کنید.");
                 return View(model);
             }
 
-            var user = await _userService.LoginUserAsync(model);
+
+
+
+            var user = await _userService.GetUserByPhoneNumberAsync(model.PhoneNumber);
 
             if (user != null)
             {
@@ -240,19 +211,7 @@ namespace Reshop.Web.Controllers.User
                 return Redirect("/");
             }
 
-            if (possibilityAttempt == 1)
-            {
-                ViewData["PossibilityAttempt"] = 5;
-                ViewData["LockTime"] = TimeSpan.FromMinutes(10);
-                ModelState.AddModelError("", $"دسترسی شما به مدت {ViewData["LockTime"]} قفل شده است.");
-            }
-            else
-            {
-                possibilityAttempt -= 1;
-                ViewData["PossibilityAttempt"] = possibilityAttempt;
-
-                ModelState.AddModelError("", $"تلاش شما برای ورود موفقیت امیز نبود. شما میتوانید {possibilityAttempt} بار دیگر اقدام به ورود کنید.");
-            }
+            ModelState.AddModelError("", "تلاش شما برای ورود موفقیت امیز نبود. شما میتوانید بار دیگر اقدام به ورود کنید.");
             return View(model);
         }
 
@@ -278,7 +237,13 @@ namespace Reshop.Web.Controllers.User
         [HttpGet]
         public IActionResult AddShopper()
         {
-            return View(new AddOrEditShopperViewModel());
+            var model = new AddOrEditShopperViewModel()
+            {
+                States = _stateService.GetStates() as IEnumerable<State>
+            };
+            
+
+            return View(model);
         }
 
         [Route("NewShopper")]

@@ -20,7 +20,7 @@ namespace Reshop.Application.Interfaces.User
         Task<bool> IsPhoneExistAsync(string phone);
         Task<bool> IsUserExistAsync(string userId);
         Task<ResultTypes> AddUserAsync(Domain.Entities.User.User user);
-        Task<Domain.Entities.User.User> LoginUserAsync(LoginViewModel login);
+        Task<Domain.Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber);
         Task AddUserToInvitesAsync(string inviteCode, string invitedUserId);
         Task<ResultTypes> EditUserAsync(Domain.Entities.User.User user);
         Task<Domain.Entities.User.User> GetUserByIdAsync(string userId);

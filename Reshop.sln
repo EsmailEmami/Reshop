@@ -21,8 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{6CB1BDED-8FBD-4AA3-B073-B2FB634C009B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reshop.Api", "Reshop.Api\Reshop.Api.csproj", "{F27B262C-C78F-4C5A-9386-39D56ABF48C2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,10 +43,6 @@ Global
 		{8A25BA54-AD02-4424-99FD-7B238A054D20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A25BA54-AD02-4424-99FD-7B238A054D20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A25BA54-AD02-4424-99FD-7B238A054D20}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F27B262C-C78F-4C5A-9386-39D56ABF48C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F27B262C-C78F-4C5A-9386-39D56ABF48C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F27B262C-C78F-4C5A-9386-39D56ABF48C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F27B262C-C78F-4C5A-9386-39D56ABF48C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,7 +56,6 @@ Global
 		{6D232031-493F-47FA-A5ED-7836A71F6ADF} = {C0AE27EE-2DC8-4EE9-A0A7-919BEC5E4057}
 		{FB55FEE2-FB87-420F-8ADA-CF826B10A0C1} = {C0AE27EE-2DC8-4EE9-A0A7-919BEC5E4057}
 		{6CB1BDED-8FBD-4AA3-B073-B2FB634C009B} = {C0AE27EE-2DC8-4EE9-A0A7-919BEC5E4057}
-		{F27B262C-C78F-4C5A-9386-39D56ABF48C2} = {6CB1BDED-8FBD-4AA3-B073-B2FB634C009B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BC16BBC8-77C5-4AA7-B65C-A740D9B20059}

@@ -4,6 +4,7 @@ using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.User;
 
 namespace Reshop.Application.Services.User
 {
@@ -40,22 +41,25 @@ namespace Reshop.Application.Services.User
 
         public async Task<ResultTypes> RemoveStateAsync(int stateId)
         {
-            var state = await _stateRepository.GetStateWithCitiesByIdAsync(stateId);
+            var state = await _stateRepository.GetStateByIdAsync(stateId);
             if (state is null) return ResultTypes.Failed;
 
             try
             {
-                if (state.Cities is not null)
+                var stateCities = _stateRepository.GetStateCitiesByStateId(state.StateId);
+
+                if (stateCities is not null)
                 {
-                    foreach (var city in state.Cities)
+                    await foreach (var stateCity in stateCities)
                     {
-                        _stateRepository.RemoveCity(city);
+                        _stateRepository.RemoveStateCity(stateCity);
                     }
 
                     await _stateRepository.SaveChangesAsync();
                 }
 
                 _stateRepository.RemoveState(state);
+
                 await _stateRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
@@ -80,9 +84,25 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<State> GetStateWithCitiesByIdAsync(int stateId)
+        public async Task<AddOrEditStateViewModel> GetStateDataForEditAsync(int stateId)
+        {
+            var state = await _stateRepository.GetStateByIdAsync(stateId);
+            if (state == null) return null;
+
+            var stateCitiesId = _stateRepository.GetCitiesIdOfState(stateId);
+
+            return new AddOrEditStateViewModel()
+            {
+                StateId = state.StateId,
+                StateName = state.StateName,
+                SelectedCities = stateCitiesId as IEnumerable<int>,
+                Cities = _stateRepository.GetCities() as IEnumerable<City>
+            };
+        }
+
+        public async Task<State> GetStateByIdAsync(int stateId)
             =>
-                await _stateRepository.GetStateWithCitiesByIdAsync(stateId);
+                await _stateRepository.GetStateByIdAsync(stateId);
 
         public IAsyncEnumerable<City> GetCities() => _stateRepository.GetCities();
 
@@ -100,10 +120,26 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<ResultTypes> RemoveCityAsync(City city)
+        public async Task<ResultTypes> RemoveCityAsync(int cityId)
         {
+            var city = await _stateRepository.GetCityByIdAsync(cityId);
+
+            if (city is null) return ResultTypes.Failed;
+
             try
             {
+                var statesOfCity = _stateRepository.GetStateCitiesByCityId(city.CityId);
+
+                if (statesOfCity is not null)
+                {
+                    await foreach (var stateCity in statesOfCity)
+                    {
+                        _stateRepository.RemoveStateCity(stateCity);
+                    }
+
+                    await _stateRepository.SaveChangesAsync();
+                }
+
                 _stateRepository.RemoveCity(city);
                 await _stateRepository.SaveChangesAsync();
                 return ResultTypes.Successful;
@@ -114,11 +150,11 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<ResultTypes> UpdateCityAsync(City city)
+        public async Task<ResultTypes> EditCityAsync(City city)
         {
             try
             {
-                _stateRepository.RemoveCity(city);
+                _stateRepository.UpdateCity(city);
                 await _stateRepository.SaveChangesAsync();
                 return ResultTypes.Successful;
             }
@@ -131,5 +167,31 @@ namespace Reshop.Application.Services.User
         public async Task<City> GetCityByIdAsync(int cityId)
             =>
                 await _stateRepository.GetCityByIdAsync(cityId);
+
+        public IAsyncEnumerable<City> GetCitiesOfState(int stateId)
+            =>
+                _stateRepository.GetCitiesOfState(stateId);
+
+        public async Task RemoveCitiesOfStateAsync(int stateId)
+        {
+            var stateCities = _stateRepository.GetStateCitiesByStateId(stateId);
+
+
+            if (stateCities is not null)
+            {
+                await foreach (var stateCity in stateCities)
+                {
+                    _stateRepository.RemoveStateCity(stateCity);
+                }
+
+                await _stateRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task AddStateCityAsync(StateCity stateCity)
+        {
+            await _stateRepository.AddStateCityAsync(stateCity);
+            await _stateRepository.SaveChangesAsync();
+        }
     }
 }

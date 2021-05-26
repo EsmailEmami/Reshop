@@ -16,7 +16,7 @@ namespace Reshop.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Reshop.Domain.Entities.Category.Category", b =>
@@ -876,7 +876,7 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("ShopperProducts");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.ShopperTitle", b =>
+            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.ShopperStoreTitle", b =>
                 {
                     b.Property<string>("ShopperId")
                         .HasColumnType("nvarchar(450)");
@@ -888,7 +888,7 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.HasIndex("StoreTitleId");
 
-                    b.ToTable("ShopperTitles");
+                    b.ToTable("ShopperStoreTitles");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreTitle", b =>
@@ -942,6 +942,23 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Addresses");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.City", b =>
+                {
+                    b.Property<int>("CityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CityName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("CityId");
+
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Comment", b =>
@@ -1197,6 +1214,38 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.State", b =>
+                {
+                    b.Property<int>("StateId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("StateName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("StateId");
+
+                    b.ToTable("States");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.StateCity", b =>
+                {
+                    b.Property<int>("StateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StateId", "CityId");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("StateCities");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.User", b =>
@@ -1547,7 +1596,7 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.ShopperTitle", b =>
+            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.ShopperStoreTitle", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.Shopper.Shopper", "Shopper")
                         .WithMany("ShopperTitles")
@@ -1677,6 +1726,25 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.User.StateCity", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.User.City", "City")
+                        .WithMany("StateCities")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.State", "State")
+                        .WithMany("StateCities")
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("State");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.User", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.Shopper.Shopper", "Shopper")
@@ -1792,6 +1860,11 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("ShopperTitles");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.User.City", b =>
+                {
+                    b.Navigation("StateCities");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.Comment", b =>
                 {
                     b.Navigation("CommentAnswers");
@@ -1815,6 +1888,11 @@ namespace Reshop.Infrastructure.Migrations
             modelBuilder.Entity("Reshop.Domain.Entities.User.Role", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.State", b =>
+                {
+                    b.Navigation("StateCities");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.User", b =>

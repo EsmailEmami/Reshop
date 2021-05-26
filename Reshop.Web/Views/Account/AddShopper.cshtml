@@ -99,34 +99,29 @@
                             <label><i class="far  fa-clipboard"></i> عنوان فروشگاه</label>
                         </div>
                     </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4">
+                    <div class="col-sm-12 col-md-6 col-lg-5">
                         <div class="form-field">
-                            <select>
-                                <option value="">12</option>
-                                <option value="">12</option>
-                                <option value="">12</option>
-                                <option value="">12</option>
+                            <select onchange="GetCitiesOfState(this.value)">
+                                <option value="0">لطفا استان را انتخاب کنید</option>
+                                @foreach (var state in Model.States)
+                                {
+                                    <option value="@state.StateId">@state.StateName</option>
+                                }
                             </select>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-field">
-                            <select>
-                                <option value="">12</option>
-                                <option value="">12</option>
-                                <option value="">12</option>
-                                <option value="">12</option>
+                            <select id="city">
+                                <option value="0">لطفا استان را انتخاب کنید</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-12 col-lg-4">
+                    <div class="col-sm-12 col-lg-3">
                         <div class="form-field">
-                            <select>
-                                <option value="">12</option>
-                                <option value="">12</option>
-                                <option value="">12</option>
-                                <option value="">12</option>
-                            </select>
+                            <input asp-for="Plaque">
+                            <label><i class="fal fa-address-card"></i> پلاک</label>
+                            <span asp-validation-for="Plaque" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -188,4 +183,24 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
         await Html.RenderPartialAsync("_CalenderDatePickerPartial");
     }
+
+    <script>
+        function GetCitiesOfState(stateId) {
+            if (stateId != 0) {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/State?stateId=" + stateId,
+                }).done(function (res) {
+                    $("#city").empty();
+                    $("#city").append('  <option value="0">لطفا شهر را انتخاب کنید</option>');
+                    $.each(res, function (index, value) {
+                        $("#city").append('<option value="' + value.cityId + '">' + value.cityName + '</option>');
+                    });
+                });
+            } else if (stateId == 0) {
+                $("#city").empty();
+                $("#city").append('  <option value="0">لطفا استان را انتخاب کنید</option>');
+            }
+        }
+    </script>
 }

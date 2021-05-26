@@ -1,0 +1,51 @@
+﻿@model AddOrEditStateViewModel
+
+@{
+    ViewData["Title"] = ((Model.StateId == 0) ? "افزودن گروه" : "ویرایش گروه");
+}
+
+
+<form asp-action="AddOrEditState" method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="StateId" />
+
+            <div class="form-field">
+                <input asp-for="StateName">
+                <label><i class="far fa-list-alt"></i> نام گروه</label>
+                <span asp-validation-for="StateName" class="text-danger"></span>
+            </div>
+
+            <div class="form-field">
+                <button type="submit" class="btn btn-success">
+                    @((Model.StateId == 0) ? "افزودن" : "ویرایش")
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            @if (Model.Cities.Any())
+            {
+                @foreach (var item in Model.Cities)
+                {
+                    <div class="form-check">
+                        <input type="checkbox" name="SelectedCities" value="@item.CityId" @(Model.StateId != 0 && Model.SelectedCities.Any(c => c == item.CityId) ? "checked" : "") />
+                        <label>@item.CityName</label>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    وب سایت شما هیچ زیر گروهی برای نمایش ندارد.
+                </div>
+            }
+        </div>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

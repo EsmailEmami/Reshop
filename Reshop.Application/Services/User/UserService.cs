@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Interfaces.Shopper;
@@ -119,12 +120,16 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<Domain.Entities.User.User> LoginUserAsync(LoginViewModel login)
+        public async Task<Domain.Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber)
         {
-            string userName = login.UserName.Trim();
-            string hashPassword = PasswordHelper.EncodePasswordMd5(login.Password);
-
-            return null;
+            try
+            {
+                return await _userRepository.GetUserByPhoneNumberAsync(phoneNumber);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public async Task<ResultTypes> EditUserAsync(Domain.Entities.User.User user)
@@ -181,7 +186,7 @@ namespace Reshop.Application.Services.User
                 {
                     await foreach (var userRole in userRoles)
                     {
-                     _roleRepository.RemoveUserRole(userRole);   
+                        _roleRepository.RemoveUserRole(userRole);
                     }
 
                     await _roleRepository.SaveChangesAsync();

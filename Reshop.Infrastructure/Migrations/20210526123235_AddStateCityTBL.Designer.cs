@@ -10,15 +10,15 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    [Migration("20210427113830_user")]
-    partial class user
+    [Migration("20210526123235_AddStateCityTBL")]
+    partial class AddStateCityTBL
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.4")
+                .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Reshop.Domain.Entities.Category.Category", b =>
@@ -818,16 +818,21 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<DateTime>("BirthDay")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Condition")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FatherFullName")
+                    b.Property<string>("BusinessLicenseImageName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("Condition")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LandlinePhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("OnNationalCardImageName")
                         .IsRequired()
@@ -837,10 +842,10 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<DateTime>("RegisterShopper")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ShopperWithNationalCardImageName")
+                    b.Property<string>("StoreName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("ShopperId");
 
@@ -873,6 +878,38 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("ShopperProducts");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.ShopperStoreTitle", b =>
+                {
+                    b.Property<string>("ShopperId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StoreTitleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ShopperId", "StoreTitleId");
+
+                    b.HasIndex("StoreTitleId");
+
+                    b.ToTable("ShopperStoreTitles");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreTitle", b =>
+                {
+                    b.Property<int>("StoreTitleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("StoreTitleName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("StoreTitleId");
+
+                    b.ToTable("StoreTitles");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.Address", b =>
                 {
                     b.Property<string>("AddressId")
@@ -889,6 +926,11 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("Plaque")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
                     b.Property<string>("State")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -902,6 +944,23 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Addresses");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.City", b =>
+                {
+                    b.Property<int>("CityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CityName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("CityId");
+
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Comment", b =>
@@ -1011,6 +1070,9 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.Property<bool>("IsReceived")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("PayDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("Sum")
                         .HasColumnType("Money");
@@ -1156,6 +1218,38 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.User.State", b =>
+                {
+                    b.Property<int>("StateId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("StateName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("StateId");
+
+                    b.ToTable("States");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.StateCity", b =>
+                {
+                    b.Property<int>("StateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StateId", "CityId");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("StateCities");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.User", b =>
                 {
                     b.Property<string>("UserId")
@@ -1188,9 +1282,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<bool>("IsBlocked")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsEmailActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsPhoneNumberActive")
                         .HasColumnType("bit");
 
@@ -1201,11 +1292,6 @@ namespace Reshop.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -1227,11 +1313,6 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserAvatar")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -1517,6 +1598,25 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.ShopperStoreTitle", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Shopper.Shopper", "Shopper")
+                        .WithMany("ShopperTitles")
+                        .HasForeignKey("ShopperId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.Shopper.StoreTitle", "StoreTitle")
+                        .WithMany("ShopperTitles")
+                        .HasForeignKey("StoreTitleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shopper");
+
+                    b.Navigation("StoreTitle");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.Address", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.User.User", "User")
@@ -1628,6 +1728,25 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.User.StateCity", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.User.City", "City")
+                        .WithMany("StateCities")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.State", "State")
+                        .WithMany("StateCities")
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("State");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.User", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.Shopper.Shopper", "Shopper")
@@ -1734,6 +1853,18 @@ namespace Reshop.Infrastructure.Migrations
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.Shopper", b =>
                 {
                     b.Navigation("ShopperProducts");
+
+                    b.Navigation("ShopperTitles");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreTitle", b =>
+                {
+                    b.Navigation("ShopperTitles");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.City", b =>
+                {
+                    b.Navigation("StateCities");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Comment", b =>
@@ -1759,6 +1890,11 @@ namespace Reshop.Infrastructure.Migrations
             modelBuilder.Entity("Reshop.Domain.Entities.User.Role", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.State", b =>
+                {
+                    b.Navigation("StateCities");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.User", b =>

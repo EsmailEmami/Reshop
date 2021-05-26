@@ -21,7 +21,6 @@ namespace Reshop.Domain.Entities.User
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string FullName { get; set; }
 
-#nullable enable
         [Display(Name = "ایمیل")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         [EmailAddress(ErrorMessage = "ایمیل وارد شده معتبر نمی باشد")]
@@ -35,7 +34,7 @@ namespace Reshop.Domain.Entities.User
         [Display(Name = "شماره تلفن")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        [RegularExpression(@"^09(?=[0-9]){11}$", ErrorMessage = "لطفا شماره تلفن خود را درست وارد کنید.")]
+        //[RegularExpression(@"^09(?=[0-9]){11}$", ErrorMessage = "لطفا شماره تلفن خود را درست وارد کنید.")]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 

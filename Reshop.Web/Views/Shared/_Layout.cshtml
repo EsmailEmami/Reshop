@@ -39,7 +39,7 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <a asp-controller="AccountManager" asp-action="Index">
-                            <i class="far fa-user"></i> @User.FindFirstValue(ClaimTypes.GivenName)
+                            <i class="far fa-user"></i> @User.FindFirstValue(ClaimTypes.Name)
                         </a>
                     }
                     else

@@ -18,8 +18,8 @@ namespace Reshop.Domain.DTOs.User
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string StateName { get; set; }
 
-        public IAsyncEnumerable<City> Cities { get; set; }
+        public IEnumerable<City> Cities { get; set; }
 
-        public IEnumerable<City> SelectedCities { get; set; }
+        public IEnumerable<int> SelectedCities { get; set; }
     }
 }

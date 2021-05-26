@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Enums.Product;
+using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Enums.Product;
-using Reshop.Application.Interfaces.Product;
-using Reshop.Application.Security;
-using Reshop.Domain.DTOs.User;
-using Reshop.Infrastructure.Migrations;
 
 namespace Reshop.Web.Controllers.User
 {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Reshop.Infrastructure.Migrations
 {
-    public partial class Table : Migration
+    public partial class Tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -228,12 +228,13 @@ namespace Reshop.Infrastructure.Migrations
                 columns: table => new
                 {
                     ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StoreName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RegisterShopper = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FatherFullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    LandlinePhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
                     OnNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     BackNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ShopperWithNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    BusinessLicenseImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Condition = table.Column<bool>(type: "bit", nullable: false),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -286,6 +287,32 @@ namespace Reshop.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SpeakerDetails", x => x.SpeakerDetailId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "States",
+                columns: table => new
+                {
+                    StateId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StateName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_States", x => x.StateId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoreTitles",
+                columns: table => new
+                {
+                    StoreTitleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreTitleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoreTitles", x => x.StoreTitleId);
                 });
 
             migrationBuilder.CreateTable(
@@ -387,25 +414,22 @@ namespace Reshop.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     UserAvatar = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    InviteCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    InviteCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     InviteCount = table.Column<int>(type: "int", nullable: false),
                     Score = table.Column<int>(type: "int", nullable: false),
-                    ActiveCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ActiveCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     NationalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     AccountBalance = table.Column<decimal>(type: "Money", nullable: false),
                     PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     RegisteredDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsPhoneNumberActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsEmailActive = table.Column<bool>(type: "bit", nullable: false),
                     IsBlocked = table.Column<bool>(type: "bit", nullable: false),
                     IsUserShopper = table.Column<bool>(type: "bit", nullable: false),
-                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -415,6 +439,50 @@ namespace Reshop.Infrastructure.Migrations
                         column: x => x.ShopperId,
                         principalTable: "Shoppers",
                         principalColumn: "ShopperId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cities",
+                columns: table => new
+                {
+                    CityId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CityName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cities", x => x.CityId);
+                    table.ForeignKey(
+                        name: "FK_Cities_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "StateId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShopperStoreTitles",
+                columns: table => new
+                {
+                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StoreTitleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopperStoreTitles", x => new { x.ShopperId, x.StoreTitleId });
+                    table.ForeignKey(
+                        name: "FK_ShopperStoreTitles_Shoppers_ShopperId",
+                        column: x => x.ShopperId,
+                        principalTable: "Shoppers",
+                        principalColumn: "ShopperId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShopperStoreTitles_StoreTitles_StoreTitleId",
+                        column: x => x.StoreTitleId,
+                        principalTable: "StoreTitles",
+                        principalColumn: "StoreTitleId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -532,6 +600,7 @@ namespace Reshop.Infrastructure.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     City = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     State = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Plaque = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     AddressText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false)
                 },
                 constraints: table =>
@@ -555,6 +624,7 @@ namespace Reshop.Infrastructure.Migrations
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Sum = table.Column<decimal>(type: "Money", nullable: false),
                     IsPayed = table.Column<bool>(type: "bit", nullable: false),
+                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsReceived = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -932,6 +1002,11 @@ namespace Reshop.Infrastructure.Migrations
                 column: "ChildCategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cities_StateId",
+                table: "Cities",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CommentAnswers_CommentId",
                 table: "CommentAnswers",
                 column: "CommentId");
@@ -1082,6 +1157,11 @@ namespace Reshop.Infrastructure.Migrations
                 column: "ShopperId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ShopperStoreTitles_StoreTitleId",
+                table: "ShopperStoreTitles",
+                column: "StoreTitleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserDiscountCodes_DiscountId",
                 table: "UserDiscountCodes",
                 column: "DiscountId");
@@ -1124,6 +1204,9 @@ namespace Reshop.Infrastructure.Migrations
                 name: "ChildCategoryToCategories");
 
             migrationBuilder.DropTable(
+                name: "Cities");
+
+            migrationBuilder.DropTable(
                 name: "CommentAnswers");
 
             migrationBuilder.DropTable(
@@ -1145,6 +1228,9 @@ namespace Reshop.Infrastructure.Migrations
                 name: "ShopperProducts");
 
             migrationBuilder.DropTable(
+                name: "ShopperStoreTitles");
+
+            migrationBuilder.DropTable(
                 name: "UserDiscountCodes");
 
             migrationBuilder.DropTable(
@@ -1163,6 +1249,9 @@ namespace Reshop.Infrastructure.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
+                name: "States");
+
+            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
@@ -1173,6 +1262,9 @@ namespace Reshop.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Questions");
+
+            migrationBuilder.DropTable(
+                name: "StoreTitles");
 
             migrationBuilder.DropTable(
                 name: "Discounts");

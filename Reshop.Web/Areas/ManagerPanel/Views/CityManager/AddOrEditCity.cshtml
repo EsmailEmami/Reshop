@@ -1,0 +1,35 @@
+﻿@model City
+
+@{
+    ViewData["Title"] = ((Model.CityId == 0) ? "افزودن شهر" : "ویرایش شهر");
+}
+
+<h1>AddOrEditCity</h1>
+
+<h4>City</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddOrEditCity" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CityId"/>
+
+            <div class="form-field">
+                <input asp-for="CityName">
+                <label><i class="far fa-list-alt"></i> نام شهر</label>
+                <span asp-validation-for="CityName" class="text-danger"></span>
+            </div>
+
+            <div class="form-field">
+                <button type="submit" class="btn btn-success">
+                    @((Model.CityId == 0) ? "افزودن" : "ویرایش")
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
