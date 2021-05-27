@@ -25,26 +25,17 @@ namespace Reshop.Application.Services.Shopper
         #endregion
 
 
-        public async Task<Domain.Entities.User.User> AddShopperAsync(Domain.Entities.User.User user, Domain.Entities.Shopper.Shopper shopper)
+        public async Task<string> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper)
         {
             try
             {
                 await _shopperRepository.AddShopperAsync(shopper);
                 await _shopperRepository.SaveChangesAsync();
 
-                user.ShopperId = shopper.ShopperId;
-                user.Shopper = shopper;
-                user.IsUserShopper = true;
-
-                await _userRepository.AddUserAsync(user);
-                await _userRepository.SaveChangesAsync();
-
-                return user;
+                return shopper.ShopperId;
             }
-            catch (DbUpdateException e)
+            catch
             {
-                Console.WriteLine(e);
-
                 return null;
             }
         }

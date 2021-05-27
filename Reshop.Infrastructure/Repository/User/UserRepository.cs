@@ -27,6 +27,11 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task<bool> IsPhoneExistAsync(string phone) => await _context.Users.AnyAsync(c => c.PhoneNumber == phone);
 
         public async Task<bool> IsUserExistAsync(string userId) => await _context.Users.AnyAsync(c => c.UserId == userId);
+        public async Task AddAddressAsync(Address address) => await _context.Addresses.AddAsync(address);
+
+        public void UpdateAddress(Address address) => _context.Addresses.Update(address);
+
+        public void RemoveAddress(Address address) => _context.Addresses.Remove(address);
 
         public async Task<Domain.Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber)
         {

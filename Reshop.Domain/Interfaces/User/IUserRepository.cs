@@ -17,13 +17,19 @@ namespace Reshop.Domain.Interfaces.User
         Task<Entities.User.User> GetUserByInviteCodeAsync(string inviteCode);
         Task<Entities.User.User> GetUserByIdAsync(string userId);
         Task<Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber);
-        IAsyncEnumerable<Address> GetUserAddresses(string userId);
+
         Task AddUserAsync(Entities.User.User user);
         Task AddUserInviteAsync(UserInvite userInvite);
         void UpdateUser(Entities.User.User user);
         void RemoveUser(Entities.User.User user);
         Task<bool> IsPhoneExistAsync(string phone);
         Task<bool> IsUserExistAsync(string userId);
+
+
+        Task AddAddressAsync(Address address);
+        void UpdateAddress(Address address);
+        void RemoveAddress(Address address);
+        IAsyncEnumerable<Address> GetUserAddresses(string userId);
 
         #endregion
 

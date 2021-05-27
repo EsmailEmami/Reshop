@@ -26,5 +26,12 @@ namespace Reshop.Application.Interfaces.User
         Task<Domain.Entities.User.User> GetUserByIdAsync(string userId);
         Task<ResultTypes> RemoveUserAsync(string userId);
 
+
+        #region address
+
+        Task<ResultTypes> AddUserAddressAsync(Address address);
+
+        #endregion
+
     }
 }

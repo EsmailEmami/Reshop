@@ -36,7 +36,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (roleId == "")
             {
-                return View();
+                return View(new AddOrEditRoleViewModel() { RoleId = "" });
             }
             else
             {

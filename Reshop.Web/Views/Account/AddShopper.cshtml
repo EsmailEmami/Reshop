@@ -1,6 +1,6 @@
 ﻿@model AddOrEditShopperViewModel
 @{
-    ViewData["Title"] = "ثبتنامفروشنده";
+    ViewData["Title"] = "ثبت نام فروشنده";
 }
 
 @section Css
@@ -11,11 +11,11 @@
 <div class="register-shopper-area">
 
     <h1>
-        سلام فروشنده عزیز! به فروشگاه <strong>ریشاپ</strong>خوش آمدید .
+        سلام فروشنده عزیز! به فروشگاه <strong>ریشاپ </strong>خوش آمدید .
     </h1>
     <hr>
 
-    <form asp-action="AddShopper" method="post">
+    <form asp-action="AddShopper" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="row">
             <div class="col-sm-12 col-md-6">
@@ -65,7 +65,7 @@
 
                     <div class="col-sm-12 col-lg-6">
                         <div class="form-file">
-                            <input asp-for="OnNationalCardImageName">
+                            <input type="file" asp-for="OnNationalCardImageName">
                             <label>عکس روی کارت ملی</label>
                             <span asp-validation-for="OnNationalCardImageName" class="text-danger"></span>
                         </div>
@@ -73,7 +73,7 @@
 
                     <div class="col-sm-12 col-lg-6">
                         <div class="form-file">
-                            <input asp-for="BackNationalCardImageName">
+                            <input type="file" asp-for="BackNationalCardImageName">
                             <label>عکس پشت کارت ملی</label>
                             <span asp-validation-for="BackNationalCardImageName" class="text-danger"></span>
                         </div>
@@ -101,7 +101,7 @@
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-5">
                         <div class="form-field">
-                            <select onchange="GetCitiesOfState(this.value)">
+                            <select onchange="GetCitiesOfState(this.value)" asp-for="State">
                                 <option value="0">لطفا استان را انتخاب کنید</option>
                                 @foreach (var state in Model.States)
                                 {
@@ -112,7 +112,7 @@
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-field">
-                            <select id="city">
+                            <select id="city" asp-for="City">
                                 <option value="0">لطفا استان را انتخاب کنید</option>
                             </select>
                         </div>
@@ -150,7 +150,7 @@
 
                     <div class="col-sm-12 ">
                         <div class="form-file">
-                            <input asp-for="BusinessLicenseImageName">
+                            <input type="file" asp-for="BusinessLicenseImageName">
                             <label>تصویر مجوز کسب وکار</label>
                             <span asp-validation-for="BusinessLicenseImageName" class="text-danger"></span>
                         </div>

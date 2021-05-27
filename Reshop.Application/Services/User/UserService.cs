@@ -204,5 +204,19 @@ namespace Reshop.Application.Services.User
             }
         }
 
+        public async Task<ResultTypes> AddUserAddressAsync(Address address)
+        {
+            try
+            {
+                await _userRepository.AddAddressAsync(address);
+                await _userRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
     }
 }

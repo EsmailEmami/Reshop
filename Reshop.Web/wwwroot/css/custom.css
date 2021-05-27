@@ -1993,7 +1993,7 @@ h5 {
 footer a,
 p,
 span {
-    color: #ebebeb;
+    /*color: #ebebeb;*/
     transition: 0.3s;
 }
 

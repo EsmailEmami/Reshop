@@ -30,8 +30,8 @@
 
   <ItemGroup>
     <Folder Include="Views\Shared\Account\" />
+    <Folder Include="wwwroot\images\shoppersCardImages\" />
     <Folder Include="wwwroot\images\ProductImages\" />
-    <Folder Include="wwwroot\images\ShoppersCardImages\" />
   </ItemGroup>
 
 </Project>

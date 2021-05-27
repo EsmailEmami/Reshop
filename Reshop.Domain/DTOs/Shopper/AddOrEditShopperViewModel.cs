@@ -27,13 +27,11 @@ namespace Reshop.Domain.DTOs.Shopper
         [Display(Name = "شماره تلفن")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        [RegularExpression(@"/^09/(?=[0-9]){11}$", ErrorMessage = "لطفا شماره تلفن خود را درست وارد کنید.")]
         public string PhoneNumber { get; set; }
 
         [Display(Name = "شماره تلفن ثابت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        [RegularExpression(@"^0(?=[0-9]){3,11}$", ErrorMessage = "لطغا {0}  خود را درست وارد کنید.")]
         public string LandlinePhoneNumber { get; set; }
 
 
@@ -79,17 +77,14 @@ namespace Reshop.Domain.DTOs.Shopper
 
         [Display(Name = "تصویر روی کارت ملی فروشنده")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public IFormFile OnNationalCardImageName { get; set; }
 
         [Display(Name = "تصویر پشت کارت ملی فروشنده")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public IFormFile BackNationalCardImageName { get; set; }
 
         [Display(Name = "جواز کسب و کار")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public IFormFile BusinessLicenseImageName { get; set; }
 
 

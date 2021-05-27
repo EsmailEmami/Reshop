@@ -47,7 +47,7 @@ namespace Reshop.Web.Controllers.User
             _roleService = roleService;
             _stateService = stateService;
         }
- 
+
 
         #endregion
 
@@ -241,7 +241,7 @@ namespace Reshop.Web.Controllers.User
             {
                 States = _stateService.GetStates() as IEnumerable<State>
             };
-            
+
 
             return View(model);
         }
@@ -251,6 +251,9 @@ namespace Reshop.Web.Controllers.User
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddShopper(AddOrEditShopperViewModel model)
         {
+            // this is states when page reload states is not null
+            model.States = _stateService.GetStates() as IEnumerable<State>;
+
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -265,7 +268,7 @@ namespace Reshop.Web.Controllers.User
                 IsApproved = false,
             };
 
-            #region cards
+            #region shopper cards
 
             if (model.OnNationalCardImageName.Length > 0)
             {
@@ -276,7 +279,8 @@ namespace Reshop.Web.Controllers.User
 
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                     "wwwroot",
-                    "ShoppersCardImages",
+                    "images",
+                    "shoppersCardImages",
                     imgName + imgFileName);
 
 
@@ -296,7 +300,8 @@ namespace Reshop.Web.Controllers.User
 
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                     "wwwroot",
-                    "ShoppersCardImages",
+                    "images",
+                    "shoppersCardImages",
                     imgName + imgFileName);
 
 
@@ -316,7 +321,8 @@ namespace Reshop.Web.Controllers.User
 
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                     "wwwroot",
-                    "ShoppersCardImages",
+                    "images",
+                    "shoppersCardImages",
                     imgName + imgFileName);
 
 
@@ -330,48 +336,68 @@ namespace Reshop.Web.Controllers.User
             #endregion
 
 
+            var addShopper = await _shopperService.AddShopperAsync(shopper);
 
-
-            var user = new Domain.Entities.User.User
+            if (!string.IsNullOrEmpty(addShopper))
             {
-                ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
-                FullName = model.FullName,
-                RegisteredDate = DateTime.Now,
-                UserAvatar = "userAvatar.jpg",
-                PhoneNumber = model.PhoneNumber,
-                InviteCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
-                InviteCount = 0,
-                Score = 0,
-                NationalCode = model.NationalCode,
-                PostalCode = model.PostalCode,
-                Email = model.Email,
-                IsPhoneNumberActive = false,
-                IsBlocked = false,
-                IsUserShopper = true,
-            };
 
-
-            var addShopper = await _shopperService.AddShopperAsync(user, shopper);
-
-            if (addShopper is not null)
-            {
-                var addUserT0RoleResult = await _roleService.AddUserToRoleAsync(addShopper.UserId, "Shopper");
-
-                if (addUserT0RoleResult == ResultTypes.Failed)
+                var user = new Domain.Entities.User.User
                 {
-                    ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
-                    return View(model);
-                }
+                    ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
+                    FullName = model.FullName,
+                    RegisteredDate = DateTime.Now,
+                    UserAvatar = "userAvatar.jpg",
+                    PhoneNumber = model.PhoneNumber,
+                    InviteCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
+                    InviteCount = 0,
+                    Score = 0,
+                    NationalCode = model.NationalCode,
+                    PostalCode = model.PostalCode,
+                    Email = model.Email,
+                    IsPhoneNumberActive = false,
+                    IsBlocked = false,
+                    IsUserShopper = true,
+                    ShopperId = addShopper
+                };
+                var addUser = await _userService.AddUserAsync(user);
 
-                return Redirect("/");
+                if (addUser == ResultTypes.Successful)
+                {
+                    var cityName = _stateService.GetCityNameById(int.Parse(model.City));
+                    var stateName = _stateService.GetStateNameById(int.Parse(model.State));
+                    var address = new Address()
+                    {
+                        UserId = user.UserId,
+                        State = stateName,
+                        City = cityName,
+                        AddressText = model.AddressText,
+                        Plaque = model.Plaque,
+                    };
+
+                    var addAddress = await _userService.AddUserAddressAsync(address);
+                    if (addAddress == ResultTypes.Successful)
+                    {
+                        user.Addresses.Add(address);
+                        await _userService.EditUserAsync(user);
+                    }
+
+
+
+                    var addUserToRoleResult = await _roleService.AddUserToRoleAsync(user.UserId, "Shopper");
+
+                    if (addUserToRoleResult == ResultTypes.Successful)
+                        return Redirect("/");
+                }
             }
-            else
-            {
-                ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return View(model);
-            }
+
+
+            ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
+            return View(model);
         }
 
         #endregion
     }
 }
+
+
+

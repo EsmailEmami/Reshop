@@ -33,6 +33,10 @@ namespace Reshop.Infrastructure.Repository.User
             =>
                 await _context.States.FindAsync(stateId);
 
+        public string GetStateNameById(int stateId)
+            =>
+                _context.States.SingleOrDefault(c => c.StateId == stateId)?.StateName;
+
         #endregion
 
         #region city
@@ -48,6 +52,10 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task<City> GetCityByIdAsync(int cityId)
             =>
                 await _context.Cities.FindAsync(cityId);
+
+        public string GetCityNameById(int cityId)
+            =>
+                _context.Cities.SingleOrDefault(c => c.CityId == cityId)?.CityName;
 
         #endregion
 

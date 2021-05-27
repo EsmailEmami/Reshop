@@ -16,6 +16,7 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> EditStateAsync(State state);
         Task<AddOrEditStateViewModel> GetStateDataForEditAsync(int stateId);
         Task<State> GetStateByIdAsync(int stateId);
+        string GetStateNameById(int stateId);
 
         #endregion
 
@@ -27,6 +28,7 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> EditCityAsync(City city);
         Task<City> GetCityByIdAsync(int cityId);
         IAsyncEnumerable<City> GetCitiesOfState(int stateId);
+        string GetCityNameById(int cityId);
 
         #endregion
 

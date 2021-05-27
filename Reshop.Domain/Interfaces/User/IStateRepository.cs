@@ -16,6 +16,7 @@ namespace Reshop.Domain.Interfaces.User
         void RemoveState(State state);
         void UpdateState(State state);
         Task<State> GetStateByIdAsync(int stateId);
+        string GetStateNameById(int stateId);
 
         #endregion
 
@@ -26,6 +27,7 @@ namespace Reshop.Domain.Interfaces.User
         void RemoveCity(City city);
         void UpdateCity(City city);
         Task<City> GetCityByIdAsync(int cityId);
+        string GetCityNameById(int cityId);
 
         #endregion
 

@@ -6,6 +6,7 @@ using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Application.Convertors;
 
 namespace Reshop.Application.Services.User
 {
@@ -48,7 +49,13 @@ namespace Reshop.Application.Services.User
         {
             try
             {
-                await _roleRepository.AddRoleAsync(role);
+                var finalRole = new Role()
+                {
+                    RoleTitle = Fixer.FixedText(role.RoleTitle)
+                };
+
+
+                await _roleRepository.AddRoleAsync(finalRole);
                 await _roleRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
@@ -116,7 +123,7 @@ namespace Reshop.Application.Services.User
 
         public async Task<ResultTypes> AddUserToRoleAsync(string userId, string roleName)
         {
-            var role = await _roleRepository.GetRoleByNameAsync(roleName);
+            var role = await _roleRepository.GetRoleByNameAsync(Fixer.FixedText(roleName));
 
             if (role is null) return ResultTypes.Failed;
 

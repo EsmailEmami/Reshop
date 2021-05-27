@@ -104,6 +104,10 @@ namespace Reshop.Application.Services.User
             =>
                 await _stateRepository.GetStateByIdAsync(stateId);
 
+        public string GetStateNameById(int stateId)
+            =>
+                _stateRepository.GetStateNameById(stateId);
+
         public IAsyncEnumerable<City> GetCities() => _stateRepository.GetCities();
 
         public async Task<ResultTypes> AddCityAsync(City city)
@@ -171,6 +175,10 @@ namespace Reshop.Application.Services.User
         public IAsyncEnumerable<City> GetCitiesOfState(int stateId)
             =>
                 _stateRepository.GetCitiesOfState(stateId);
+
+        public string GetCityNameById(int cityId)
+            =>
+                _stateRepository.GetCityNameById(cityId);
 
         public async Task RemoveCitiesOfStateAsync(int stateId)
         {
