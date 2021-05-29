@@ -5,6 +5,7 @@ using Reshop.Infrastructure.Context;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Permission;
 
 namespace Reshop.Infrastructure.Repository.User
 {
@@ -40,7 +41,7 @@ namespace Reshop.Infrastructure.Repository.User
             =>
                 _context.UserRoles.Where(c => c.RoleId == roleId)
                     .Select(c => c.UserId) as IAsyncEnumerable<string>;
-        
+
         public async Task AddRoleAsync(Role role) => await _context.Roles.AddAsync(role);
 
         public void UpdateRole(Role role) => _context.Roles.Update(role);
@@ -68,6 +69,29 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task AddUserRoleAsync(UserRole userRole) => await _context.UserRoles.AddAsync(userRole);
 
         public void RemoveUserRole(UserRole userRole) => _context.UserRoles.Remove(userRole);
+
+        public IAsyncEnumerable<Permission> GetPermissions() => _context.Permissions;
+
+        public async Task AddRolePermissionAsync(RolePermission rolePermission) =>
+            await _context.RolePermissions.AddAsync(rolePermission);
+
+        public IAsyncEnumerable<RolePermission> GetRolePermissionsOfRole(string roleId) =>
+            _context.RolePermissions.Where(c => c.RoleId == roleId) as IAsyncEnumerable<RolePermission>;
+
+        public void RemoveRolePermission(RolePermission rolePermission) =>
+            _context.RolePermissions.Remove(rolePermission);
+
+        public IAsyncEnumerable<int> GetPermissionsIdOfRole(string roleId) =>
+            _context.RolePermissions.Where(c => c.RoleId == roleId)
+                .Select(c => c.PermissionId) as IAsyncEnumerable<int>;
+
+        public int GetPermissionIdByName(string permissionName) =>
+            _context.Permissions.FirstOrDefault(c => c.PermissionTitle == permissionName).PermissionId;
+
+        public IAsyncEnumerable<string> GetRolesIdOfPermission(int permissionId) =>
+            _context.RolePermissions.Where(c => c.PermissionId == permissionId)
+                .Select(c => c.RoleId) as IAsyncEnumerable<string>;
+
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 

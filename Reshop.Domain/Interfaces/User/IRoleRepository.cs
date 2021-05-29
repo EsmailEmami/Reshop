@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.User;
 
 namespace Reshop.Domain.Interfaces.User
@@ -27,6 +28,18 @@ namespace Reshop.Domain.Interfaces.User
         IAsyncEnumerable<UserRole> GetUserRolesByRoleId(string roleId);
         Task AddUserRoleAsync(UserRole userRole);
         void RemoveUserRole(UserRole userRole);
+
+        #endregion
+
+        #region permission
+
+        IAsyncEnumerable<Permission> GetPermissions();
+        Task AddRolePermissionAsync(RolePermission rolePermission);
+        IAsyncEnumerable<RolePermission> GetRolePermissionsOfRole(string roleId);
+        void RemoveRolePermission(RolePermission rolePermission);
+        IAsyncEnumerable<int> GetPermissionsIdOfRole(string roleId);
+        int GetPermissionIdByName(string permissionName);
+        IAsyncEnumerable<string> GetRolesIdOfPermission(int permissionId);
 
         #endregion
 

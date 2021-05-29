@@ -23,11 +23,6 @@ namespace Reshop.Domain.DTOs.User
 
         [Display(Name = "شماره تلفن")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        [MinLength(11, ErrorMessage = "{0} نمی تواند کمتر از {1} کاراکتر باشد .")]
-        [DataType(DataType.PhoneNumber)]
-        [Remote("IsPhoneInUse", "Account", HttpMethod = "POST",
-            AdditionalFields = "__RequestVerificationToken")]
         public string PhoneNumber { get; set; }
 
         [Display(Name = "امتیاز")]
@@ -35,7 +30,6 @@ namespace Reshop.Domain.DTOs.User
 
         [Display(Name = "موجودی حساب")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [Range(10000, 10000000, ErrorMessage = "{0} نمی تواند کمتر از {1} تومان و بیشتر از {2} تومان باشد")]
         public decimal AccountBalance { get; set; }
 
         [Display(Name = "کد ملی")]

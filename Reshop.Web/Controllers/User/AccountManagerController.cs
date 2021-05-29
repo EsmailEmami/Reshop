@@ -17,19 +17,22 @@ namespace Reshop.Web.Controllers.User
         private readonly IUserService _userService;
         private readonly ICartService _cartService;
         private readonly IProductService _productService;
+        private readonly IRoleService _roleService;
 
-        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService)
+        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService, IRoleService roleService)
         {
             _userService = userService;
             _cartService = cartService;
             _productService = productService;
+            _roleService = roleService;
         }
+
 
 
         #endregion
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> UserDashboard()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -39,7 +42,22 @@ namespace Reshop.Web.Controllers.User
                 return NotFound();
 
 
-            return View(user);
+            return View("UserIndex",user);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "shopper,owner")]
+        public async Task<IActionResult> ShopperDashboard()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var user = await _userService.GetUserByIdAsync(userId);
+
+            if (user is null)
+                return NotFound();
+
+
+            return View("UserIndex", user);
         }
 
         [HttpGet]

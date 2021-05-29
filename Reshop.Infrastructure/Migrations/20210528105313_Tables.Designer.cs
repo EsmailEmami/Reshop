@@ -10,8 +10,8 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    [Migration("20210526123235_AddStateCityTBL")]
-    partial class AddStateCityTBL
+    [Migration("20210528105313_Tables")]
+    partial class Tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,6 +68,43 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("ChildCategoryId");
 
                     b.ToTable("ChildCategoryToCategories");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Permission.Permission", b =>
+                {
+                    b.Property<int>("PermissionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PermissionTitle")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("PermissionId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Permissions");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Permission.RolePermission", b =>
+                {
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoleId", "PermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("RolePermissions");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Brand", b =>
@@ -1442,6 +1479,32 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("ChildCategory");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Permission.Permission", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Permission.Permission", null)
+                        .WithMany("Permissions")
+                        .HasForeignKey("ParentId");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Permission.RolePermission", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Permission.Permission", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.Role", "Role")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Product.BrandProduct", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.Product.Brand", "Brand")
@@ -1832,6 +1895,13 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("ChildCategoryToCategories");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Permission.Permission", b =>
+                {
+                    b.Navigation("Permissions");
+
+                    b.Navigation("RolePermissions");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Brand", b =>
                 {
                     b.Navigation("BrandProducts");
@@ -1889,6 +1959,8 @@ namespace Reshop.Infrastructure.Migrations
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Role", b =>
                 {
+                    b.Navigation("RolePermissions");
+
                     b.Navigation("UserRoles");
                 });
 

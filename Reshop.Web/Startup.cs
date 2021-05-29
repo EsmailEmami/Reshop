@@ -1,5 +1,7 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,13 +56,16 @@ namespace Reshop.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseCookiePolicy();
             app.UseWebMarkupMin();
 
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
+          
+
+            //app.UseMiddleware(typeof(ProductHitCounterMiddleware));
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.User;
+using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reshop.Application.Convertors;
 
 namespace Reshop.Application.Services.User
 {
@@ -33,15 +33,15 @@ namespace Reshop.Application.Services.User
 
             if (role is null) return null;
 
-            var users = _userRepository.GetUsers();
-            var selectedUsers = _roleRepository.GetUsersIdOfRole(roleId);
+            var permissions = _roleRepository.GetPermissions();
+            var selectedPermissions = _roleRepository.GetPermissionsIdOfRole(role.RoleId);
 
             return new AddOrEditRoleViewModel()
             {
                 RoleId = role.RoleId,
                 RoleTitle = role.RoleTitle,
-                Users = users,
-                SelectedUsers = selectedUsers
+                Permissions = permissions as IEnumerable<Permission>,
+                SelectedPermissions = selectedPermissions as IEnumerable<int>
             };
         }
 
@@ -49,13 +49,7 @@ namespace Reshop.Application.Services.User
         {
             try
             {
-                var finalRole = new Role()
-                {
-                    RoleTitle = Fixer.FixedText(role.RoleTitle)
-                };
-
-
-                await _roleRepository.AddRoleAsync(finalRole);
+                await _roleRepository.AddRoleAsync(role);
                 await _roleRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
@@ -94,12 +88,18 @@ namespace Reshop.Application.Services.User
             try
             {
                 var userRoles = _roleRepository.GetUserRolesByRoleId(role.RoleId);
+                var rolePermissions = _roleRepository.GetRolePermissionsOfRole(role.RoleId);
 
                 if (userRoles is not null)
                 {
                     await foreach (var userRole in userRoles)
                     {
                         _roleRepository.RemoveUserRole(userRole);
+                    }
+
+                    await foreach (var rolePermission in rolePermissions)
+                    {
+                        _roleRepository.RemoveRolePermission(rolePermission);
                     }
 
                     await _roleRepository.SaveChangesAsync();
@@ -172,7 +172,7 @@ namespace Reshop.Application.Services.User
 
             var userRoles = _roleRepository.GetUserRolesByUserId(userId);
 
-            if (userRoles is not  null)
+            if (userRoles is not null)
             {
                 await foreach (var userRole in userRoles)
                 {
@@ -181,7 +181,7 @@ namespace Reshop.Application.Services.User
 
                 await _roleRepository.SaveChangesAsync();
             }
-            
+
             return ResultTypes.Successful;
         }
 
@@ -197,6 +197,67 @@ namespace Reshop.Application.Services.User
             {
                 return ResultTypes.Failed;
             }
+        }
+
+        public IAsyncEnumerable<string> GetUserRolesIdByUserId(string userId) =>
+            _roleRepository.GetRolesIdOfUser(userId);
+
+
+        public IAsyncEnumerable<Permission> GetPermissions()
+            =>
+                _roleRepository.GetPermissions();
+
+        public async Task<ResultTypes> AddPermissionsToRoleAsync(string roleId, List<int> permissionsId)
+        {
+            try
+            {
+                foreach (var permissionId in permissionsId)
+                {
+                    var rolePermission = new RolePermission()
+                    {
+                        RoleId = roleId,
+                        PermissionId = permissionId
+                    };
+                    await _roleRepository.AddRolePermissionAsync(rolePermission);
+                }
+
+                await _roleRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> RemoveRolePermissionsByRoleId(string roleId)
+        {
+            var rolePermissions = _roleRepository.GetRolePermissionsOfRole(roleId);
+            if (rolePermissions is null) return ResultTypes.Failed;
+
+            try
+            {
+                await foreach (var rolePermission in rolePermissions)
+                {
+                    _roleRepository.RemoveRolePermission(rolePermission);
+                }
+
+                await _roleRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public IAsyncEnumerable<string> GetPermissionRolesIdByPermission(string permissionName)
+        {
+            int permissionId = _roleRepository.GetPermissionIdByName(permissionName);
+
+            return _roleRepository.GetRolesIdOfPermission(permissionId);
         }
     }
 }

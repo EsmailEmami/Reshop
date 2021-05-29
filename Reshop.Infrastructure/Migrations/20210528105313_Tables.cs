@@ -62,6 +62,19 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cities",
+                columns: table => new
+                {
+                    CityId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CityName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cities", x => x.CityId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Discounts",
                 columns: table => new
                 {
@@ -189,6 +202,26 @@ namespace Reshop.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MobileDetails", x => x.MobileDetailId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Permissions",
+                columns: table => new
+                {
+                    PermissionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PermissionTitle = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    ParentId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permissions", x => x.PermissionId);
+                    table.ForeignKey(
+                        name: "FK_Permissions_Permissions_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Permissions",
+                        principalColumn: "PermissionId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -410,6 +443,30 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RolePermissions",
+                columns: table => new
+                {
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PermissionId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolePermissions", x => new { x.RoleId, x.PermissionId });
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "PermissionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "RoleId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -443,23 +500,27 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cities",
+                name: "StateCities",
                 columns: table => new
                 {
+                    StateId = table.Column<int>(type: "int", nullable: false),
                     CityId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CityName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    StateId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cities", x => x.CityId);
+                    table.PrimaryKey("PK_StateCities", x => new { x.StateId, x.CityId });
                     table.ForeignKey(
-                        name: "FK_Cities_States_StateId",
+                        name: "FK_StateCities_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StateCities_States_StateId",
                         column: x => x.StateId,
                         principalTable: "States",
                         principalColumn: "StateId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1002,11 +1063,6 @@ namespace Reshop.Infrastructure.Migrations
                 column: "ChildCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cities_StateId",
-                table: "Cities",
-                column: "StateId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CommentAnswers_CommentId",
                 table: "CommentAnswers",
                 column: "CommentId");
@@ -1055,6 +1111,11 @@ namespace Reshop.Infrastructure.Migrations
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Permissions_ParentId",
+                table: "Permissions",
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductGalleries_ProductId",
@@ -1147,6 +1208,11 @@ namespace Reshop.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_PermissionId",
+                table: "RolePermissions",
+                column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ShopperProducts_ProductId",
                 table: "ShopperProducts",
                 column: "ProductId");
@@ -1160,6 +1226,11 @@ namespace Reshop.Infrastructure.Migrations
                 name: "IX_ShopperStoreTitles_StoreTitleId",
                 table: "ShopperStoreTitles",
                 column: "StoreTitleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StateCities_CityId",
+                table: "StateCities",
+                column: "CityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserDiscountCodes_DiscountId",
@@ -1204,9 +1275,6 @@ namespace Reshop.Infrastructure.Migrations
                 name: "ChildCategoryToCategories");
 
             migrationBuilder.DropTable(
-                name: "Cities");
-
-            migrationBuilder.DropTable(
                 name: "CommentAnswers");
 
             migrationBuilder.DropTable(
@@ -1225,10 +1293,16 @@ namespace Reshop.Infrastructure.Migrations
                 name: "QuestionAnswers");
 
             migrationBuilder.DropTable(
+                name: "RolePermissions");
+
+            migrationBuilder.DropTable(
                 name: "ShopperProducts");
 
             migrationBuilder.DropTable(
                 name: "ShopperStoreTitles");
+
+            migrationBuilder.DropTable(
+                name: "StateCities");
 
             migrationBuilder.DropTable(
                 name: "UserDiscountCodes");
@@ -1249,9 +1323,6 @@ namespace Reshop.Infrastructure.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "States");
-
-            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
@@ -1264,7 +1335,16 @@ namespace Reshop.Infrastructure.Migrations
                 name: "Questions");
 
             migrationBuilder.DropTable(
+                name: "Permissions");
+
+            migrationBuilder.DropTable(
                 name: "StoreTitles");
+
+            migrationBuilder.DropTable(
+                name: "Cities");
+
+            migrationBuilder.DropTable(
+                name: "States");
 
             migrationBuilder.DropTable(
                 name: "Discounts");

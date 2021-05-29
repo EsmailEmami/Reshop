@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Reshop.Domain.Entities.Permission;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +9,7 @@ namespace Reshop.Domain.Entities.User
     {
         public Role()
         {
-            
+
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -24,6 +24,7 @@ namespace Reshop.Domain.Entities.User
         #region Relations
 
         public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<RolePermission> RolePermissions { get; set; }
 
         #endregion
     }

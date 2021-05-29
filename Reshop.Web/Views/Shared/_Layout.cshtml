@@ -36,9 +36,12 @@
 
                 <div class="header-icons">
 
+
+
+
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a asp-controller="AccountManager" asp-action="Index">
+                        <a asp-area="" asp-controller="AccountManager" asp-action="UserDashboard">
                             <i class="far fa-user"></i> @User.FindFirstValue(ClaimTypes.Name)
                         </a>
                     }
@@ -67,71 +70,71 @@
         </cache>
 
     </header>
-<main class="screen-width-1450 mt-3">
-    @RenderBody()
-</main>
+    <main class="screen-width-1450 mt-3">
+        @RenderBody()
+    </main>
 
-<footer>
+    <footer>
 
-    <div class="row p-3 screen-width-1450">
+        <div class="row p-3 screen-width-1450">
 
-        <div class="col-md-3 footer-part">
-            <div class="logo-in-footer">
-                <img src="images/UserImages/userAvatar.jpg" alt="">
+            <div class="col-md-3 footer-part">
+                <div class="logo-in-footer">
+                    <img src="images/UserImages/userAvatar.jpg" alt="">
+                </div>
+                <div class="Social-network-icons">
+                    <a href="#"> <i class="fab fa-telegram" style=" width: 40px ; height: 40px; color: orange; margin: 5px;"></i></a>
+                    <a href="#"> <i class="fab fa-instagram" style=" width: 40px ; height: 40px; color: orange; margin: 5px;"></i></a>
+                </div>
             </div>
-            <div class="Social-network-icons">
-                <a href="#"> <i class="fab fa-telegram" style=" width: 40px ; height: 40px; color: orange; margin: 5px;"></i></a>
-                <a href="#"> <i class="fab fa-instagram" style=" width: 40px ; height: 40px; color: orange; margin: 5px;"></i></a>
+            <div class="col-md-3 footer-part">
+                <h5>خدمات</h5>
+                <ul>
+                    <li><a href="#">راهنمای خرید</a></li>
+                    <li><a href="#">همکاری با ریشاپ</a></li>
+                    <li><a href="#">شرایط مرجوع کردن کالا</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 footer-part">
+                <h5>درباره ی ریشاپ</h5>
+                <ul>
+                    <li><a href="#">درباره ی ما</a></li>
+                    <li><a href="#">قوانین و مقررات</a></li>
+                    <li><a href="#">شعبه های ریشاپ</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 footer-part">
+                <h5>پشتیبانی</h5>
+                <ul>
+                    <li><a href="#">مورد 1</a></li>
+                    <li><a href="#">مورد 2</a></li>
+                    <li><a href="#">مورد 3</a></li>
+                    <li><a href="#">مورد 4</a></li>
+                </ul>
             </div>
         </div>
-        <div class="col-md-3 footer-part">
-            <h5>خدمات</h5>
-            <ul>
-                <li><a href="#">راهنمای خرید</a></li>
-                <li><a href="#">همکاری با ریشاپ</a></li>
-                <li><a href="#">شرایط مرجوع کردن کالا</a></li>
-            </ul>
+        <div class="footer-part screen-width-1450">
+            <h4 style="color: #FC5400;"> فروشگاه اینترنتی ریشاپ</h4>
+            <p class="text-justify">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Expedita debitis voluptas, possimus laudantium quisquam aliquam fuga? Expedita et doloremque non nulla hic nobis sed voluptate odio eligendi. Minima iste asperiores non autem quaerat
+                modi eius. Laudantium, tempore dolores totam quidem autem aut exercitationem quas harum similique quos? Facilis sit, molestias placeat repellendus sapiente adipisci eaque recusandae quasi cum illum, voluptates suscipit atque ea animi quia.
+                Temporibus consequatur, sint saepe distinctio nisi nobis officiis ducimus illum quae dicta sit veritatis odit cupiditate est, ab excepturi aspernatur ex tempora aliquam sed mollitia expedita? Molestias exercitationem sunt quasi. Aspernatur
+                delectus repudiandae minima hic molestias quidem ex voluptates numquam odio voluptate, nostrum modi suscipit dolores excepturi doloribus. Et nulla, ad eveniet minus labore quos sed ex? Reprehenderit, alias sint quae consequuntur dolor
+                aperiam id, hic facilis nam cum dolore quod aut tempora asperiores, inventore voluptatum provident totam dolores modi molestiae mollitia est possimus? Qui tempora natus sequi recusandae neque autem. Corporis atque maxime, nulla ipsa ad
+                velit recusandae, fugit magni vitae exercitationem impedit doloremque vero eveniet eaque at laudantium? Quia sunt voluptates totam fugit, perferendis hic. Dolore reiciendis quasi fugit commodi consectetur cum porro non consequuntur, aperiam
+                sapiente, incidunt dolorem asperiores pariatur omnis praesentium?
+            </p>
         </div>
-        <div class="col-md-3 footer-part">
-            <h5>درباره ی ریشاپ</h5>
-            <ul>
-                <li><a href="#">درباره ی ما</a></li>
-                <li><a href="#">قوانین و مقررات</a></li>
-                <li><a href="#">شعبه های ریشاپ</a></li>
-            </ul>
+        <div class="footer-part permissions-img">
+            <!-- place permissions-photo -->
         </div>
-        <div class="col-md-3 footer-part">
-            <h5>پشتیبانی</h5>
-            <ul>
-                <li><a href="#">مورد 1</a></li>
-                <li><a href="#">مورد 2</a></li>
-                <li><a href="#">مورد 3</a></li>
-                <li><a href="#">مورد 4</a></li>
-            </ul>
+        <div class="copyright">
+            <span>تمامی حقوق این سایت محفوظ میباشد :)</span>
         </div>
-    </div>
-    <div class="footer-part screen-width-1450">
-        <h4 style="color: #FC5400;"> فروشگاه اینترنتی ریشاپ</h4>
-        <p class="text-justify">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Expedita debitis voluptas, possimus laudantium quisquam aliquam fuga? Expedita et doloremque non nulla hic nobis sed voluptate odio eligendi. Minima iste asperiores non autem quaerat
-            modi eius. Laudantium, tempore dolores totam quidem autem aut exercitationem quas harum similique quos? Facilis sit, molestias placeat repellendus sapiente adipisci eaque recusandae quasi cum illum, voluptates suscipit atque ea animi quia.
-            Temporibus consequatur, sint saepe distinctio nisi nobis officiis ducimus illum quae dicta sit veritatis odit cupiditate est, ab excepturi aspernatur ex tempora aliquam sed mollitia expedita? Molestias exercitationem sunt quasi. Aspernatur
-            delectus repudiandae minima hic molestias quidem ex voluptates numquam odio voluptate, nostrum modi suscipit dolores excepturi doloribus. Et nulla, ad eveniet minus labore quos sed ex? Reprehenderit, alias sint quae consequuntur dolor
-            aperiam id, hic facilis nam cum dolore quod aut tempora asperiores, inventore voluptatum provident totam dolores modi molestiae mollitia est possimus? Qui tempora natus sequi recusandae neque autem. Corporis atque maxime, nulla ipsa ad
-            velit recusandae, fugit magni vitae exercitationem impedit doloremque vero eveniet eaque at laudantium? Quia sunt voluptates totam fugit, perferendis hic. Dolore reiciendis quasi fugit commodi consectetur cum porro non consequuntur, aperiam
-            sapiente, incidunt dolorem asperiores pariatur omnis praesentium?
-        </p>
-    </div>
-    <div class="footer-part permissions-img">
-        <!-- place permissions-photo -->
-    </div>
-    <div class="copyright">
-        <span>تمامی حقوق این سایت محفوظ میباشد :)</span>
-    </div>
 
-</footer>
+    </footer>
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="~/js/owl.carousel.min.js"></script>
