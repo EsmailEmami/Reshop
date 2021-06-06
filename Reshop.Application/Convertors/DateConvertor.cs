@@ -9,13 +9,21 @@ namespace Reshop.Application.Convertors
 {
     public static class DateConvertor
     {
-        public static string ToShamsi(this DateTime value)
+        public static string ToShamsiDateTime(this DateTime value)
         {
             PersianCalendar pc = new PersianCalendar();
 
             return pc.GetHour(value).ToString("00") + ":" + pc.GetMinute(value).ToString("00") + " - " +
                    pc.GetYear(value).ToString("00") + "/" + pc.GetMonth(value).ToString("00") + "/" +
                    pc.GetDayOfMonth(value).ToString("00");
+        }
+
+        public static string ToShamsiDate(this DateTime value)
+        {
+            PersianCalendar pc = new PersianCalendar();
+
+            return pc.GetYear(value).ToString("00") + "/" + pc.GetMonth(value).ToString("00") + "/" +
+            pc.GetDayOfMonth(value).ToString("00");
         }
 
         public static DateTime ToMiladi(DateTime dateTime)

@@ -64,19 +64,19 @@ namespace Reshop.Web.Controllers.User
         [Route("Register")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string inviteCode = null)
+        public async Task<IActionResult> Register(IFormCollection form, RegisterViewModel model, string inviteCode = null)
         {
-            //#region recaptcha
+            #region recaptcha
 
-            //bool googleRecaptcha = GoogleReCaptchaValidation.IsGoogleRecaptchaValid(form, _captchaKey.Value.RecapchaSecretKey);
+            bool googleRecaptcha = GoogleReCaptchaValidation.IsGoogleRecaptchaValid(form, _captchaKey.Value.RecapchaSecretKey);
 
-            //if (!googleRecaptcha)
-            //{
-            //    ViewBag.RecaptchaErrorMessage = "لطفا هویت خود را تایید کنید.";
-            //    return View();
-            //}
+            if (!googleRecaptcha)
+            {
+                ViewBag.RecaptchaErrorMessage = "لطفا هویت خود را تایید کنید.";
+                return View();
+            }
 
-            //#endregion
+            #endregion
 
 
 
@@ -146,22 +146,22 @@ namespace Reshop.Web.Controllers.User
         [Route("Login")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(/*IFormCollection form,*/ LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(IFormCollection form, LoginViewModel model, string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
                 return Redirect("/");
 
-            //#region recaptcha
+            #region recaptcha
 
-            //bool googleRecaptcha = GoogleReCaptchaValidation.IsGoogleRecaptchaValid(form, _captchaKey.Value.RecapchaSecretKey);
+            bool googleRecaptcha = GoogleReCaptchaValidation.IsGoogleRecaptchaValid(form, _captchaKey.Value.RecapchaSecretKey);
 
-            //if (!googleRecaptcha)
-            //{
-            //    ViewBag.RecaptchaErrorMessage = "لطفا هویت خود را تایید کنید.";
-            //    return View();
-            //}
+            if (!googleRecaptcha)
+            {
+                ViewBag.RecaptchaErrorMessage = "لطفا هویت خود را تایید کنید.";
+                return View();
+            }
 
-            //#endregion
+            #endregion
 
             ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid)
@@ -239,7 +239,8 @@ namespace Reshop.Web.Controllers.User
         {
             var model = new AddOrEditShopperViewModel()
             {
-                States = _stateService.GetStates() as IEnumerable<State>
+                States = _stateService.GetStates() as IEnumerable<State>,
+                StoreTitles = _shopperService.GetStoreTitles(),
             };
 
 
@@ -253,6 +254,7 @@ namespace Reshop.Web.Controllers.User
         {
             // this is states when page reload states is not null
             model.States = _stateService.GetStates() as IEnumerable<State>;
+            model.StoreTitles = _shopperService.GetStoreTitles();
 
             if (!ModelState.IsValid)
                 return View(model);
@@ -338,9 +340,8 @@ namespace Reshop.Web.Controllers.User
 
             var addShopper = await _shopperService.AddShopperAsync(shopper);
 
-            if (!string.IsNullOrEmpty(addShopper))
+            if (addShopper == ResultTypes.Successful)
             {
-
                 var user = new Domain.Entities.User.User
                 {
                     ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
@@ -357,8 +358,9 @@ namespace Reshop.Web.Controllers.User
                     IsPhoneNumberActive = false,
                     IsBlocked = false,
                     IsUserShopper = true,
-                    ShopperId = addShopper
+                    ShopperId = shopper.ShopperId
                 };
+
                 var addUser = await _userService.AddUserAsync(user);
 
                 if (addUser == ResultTypes.Successful)

@@ -88,3 +88,36 @@ $(window).scroll(function () {
 $('.carousel').carousel({
     interval: 10000
 });
+
+
+function ShowToast(type, text, returnUrl) {
+
+    let toast;
+
+    switch (type) {
+        case "success":
+            toast = document.getElementById("toast-success");
+            $("#toast-success").find("span").text(text);
+            break;
+        case "warning":
+            toast = document.getElementById("toast-warning");
+            $("#toast-warning").find("span").text(text);
+            break;
+
+        case "wrong":
+            toast = document.getElementById("toast-wrong");
+            $("#toast-wrong").find("span").text(text);
+            break;
+
+        default:
+            toast = document.getElementById("toast-success");
+            break;
+    }
+    toast.className = "show";
+    setTimeout(function () {
+        toast.className = toast.className.replace("show", "");
+        if (returnUrl != null) {
+            window.location.href = returnUrl;
+        }
+    }, 3000);
+}

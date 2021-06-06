@@ -1,0 +1,32 @@
+﻿@model IEnumerable<StoreTitle>
+@{
+    ViewData["Title"] = "ManageStoreTitles";
+}
+
+<a asp-action="AddOrEditStoreTitle" class="btn  btn-success text-white">افزودن عنوان</a>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">نام عنوان</th>
+            <th scope="col">دستورات</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.StoreTitleName</td>
+            <td>
+                <a asp-action="AddOrEditStoreTitle" asp-route-storeTitleId="@item.StoreTitleId" class="btn btn-warning text-white"><i class="fal fa-user-edit"></i> ویرایش</a>
+                <form asp-action="DeleteStoreTitle" asp-route-storeTitleId="@item.StoreTitleId" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger text-white"><i class="fal fa-user-minus"></i> حذف</button>
+                </form>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
+

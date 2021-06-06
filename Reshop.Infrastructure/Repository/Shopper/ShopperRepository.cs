@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.DTOs.Shopper;
@@ -54,6 +56,18 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 await _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId).SingleOrDefaultAsync();
 
         public void UpdateShopperProduct(ShopperProduct shopperProduct) => _context.ShopperProducts.Update(shopperProduct);
+
+        public async Task AddShopperProductAsync(ShopperProduct shopperProduct) =>
+            await _context.ShopperProducts.AddAsync(shopperProduct);
+
+        public IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId) => 
+            _context.ShopperProducts.Where(c => c.ProductId == productId)
+                .Select(c => new Tuple<string, string, string>(c.ShopperUserId, c.User.Shopper.StoreName, c.Warranty));
+
+        public IEnumerable<StoreTitle> GetStoreTitles() => _context.StoreTitles;
+
+        public async Task<StoreTitle> GetStoreTitleByIdAsync(int storeTitleId) =>
+            await _context.StoreTitles.FindAsync(storeTitleId);
 
         public async Task AddStoreTitleAsync(StoreTitle storeTitle)
             =>

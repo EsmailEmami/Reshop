@@ -1,0 +1,9 @@
+﻿@model Tuple<IEnumerable<ProductViewModel>, int, int>
+@{
+    ViewData["Title"] = "ProductsOfCategory";
+}
+
+<div class="row">
+    @await Html.PartialAsync("Product/_BoxProducts", Model.Item1)
+</div>
+

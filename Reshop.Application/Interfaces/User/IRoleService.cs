@@ -33,6 +33,8 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> RemoveRolePermissionsByRoleId(string roleId);
         IAsyncEnumerable<string> GetPermissionRolesIdByPermission(string permissionName);
 
+        bool PermissionChecker(string userId, string permissions);
+
         #endregion
     }
 }

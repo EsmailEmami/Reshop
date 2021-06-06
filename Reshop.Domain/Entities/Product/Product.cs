@@ -1,4 +1,5 @@
-﻿using Reshop.Domain.Entities.Product.ProductDetail;
+﻿using System;
+using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using System.Collections.Generic;
@@ -61,6 +62,9 @@ namespace Reshop.Domain.Entities.Product
 
         [Display(Name = "تعداد کل فروش ها")]
         public int AllSalesCount { get; set; }
+
+        [Required]
+        public DateTime CreateDate { get; set; }
 
         [ForeignKey("MobileDetail")]
         public int? MobileDetailId { get; set; }

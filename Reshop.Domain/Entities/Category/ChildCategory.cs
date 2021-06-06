@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Domain.Entities.Category
 {
@@ -21,6 +22,7 @@ namespace Reshop.Domain.Entities.Category
         #region Relations
 
         public virtual ICollection<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
+        public virtual ICollection<ProductToChildCategory> ProductToChildCategories { get; set; }
 
         #endregion
     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security.Attribute;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -27,12 +28,11 @@ namespace Reshop.Web.Controllers.User
             _roleService = roleService;
         }
 
-
-
         #endregion
 
+        [Route("Dashboard")]
         [HttpGet]
-        public async Task<IActionResult> UserDashboard()
+        public async Task<IActionResult> Dashboard()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -42,26 +42,12 @@ namespace Reshop.Web.Controllers.User
                 return NotFound();
 
 
-            return View("UserIndex",user);
+            return View(user);
         }
 
+        [Route("Address")]
         [HttpGet]
-        [Authorize(Roles = "shopper,owner")]
-        public async Task<IActionResult> ShopperDashboard()
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var user = await _userService.GetUserByIdAsync(userId);
-
-            if (user is null)
-                return NotFound();
-
-
-            return View("UserIndex", user);
-        }
-
-        [HttpGet]
-        public IActionResult UserAddresses()
+        public IActionResult Address()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -100,25 +86,24 @@ namespace Reshop.Web.Controllers.User
             return View();
         }
 
-
+        [Route("Questions")]
         [HttpGet]
-        public IActionResult UserQuestions()
+        public IActionResult Questions()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
 
 
-            return View();
+            return View(_userService.GetUserQuestionsForShow(userId));
         }
 
+        [Route("Comments")]
         [HttpGet]
-        public IActionResult UserComments()
+        public IActionResult Comments()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
-
-            return View();
+            return View(_userService.GetUserCommentsForShow(userId));
         }
 
         [HttpGet]
@@ -131,5 +116,13 @@ namespace Reshop.Web.Controllers.User
             return View(await _productService.GetUserFavoriteProductsWithPagination(userId, type, sortBy, pageId, 18));
         }
 
+        [Route("ManageProducts")]
+        [HttpGet]
+        [Permission("FullManager,Shopper")]
+        public async Task<IActionResult> ManageProducts(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(await _productService.GetShopperProductsWithPaginationAsync(userId, type, sortBy, pageId, 20));
+        }
     }
 }

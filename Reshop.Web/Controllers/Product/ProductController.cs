@@ -55,9 +55,16 @@ namespace Reshop.Web.Controllers.Product
                 return NotFound();
 
 
-            return RedirectToAction("ProductDetail","Product",
-                new { productId = product.ProductId, productName = product.ProductTitle});
+            return RedirectToAction("ProductDetail", "Product",
+                new { productId = product.ProductId, productName = product.ProductTitle });
         }
 
+        [HttpGet]
+        [Route("Category/{categoryId}")]
+        public async Task<IActionResult> ProductsOfCategory(int categoryId, int pageId = 1, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News)
+        {
+            var result = await _productService.GetCategoryProductsWithPaginationAsync(categoryId, type, sortBy, pageId, 24);
+            return View(result);
+        }
     }
 }

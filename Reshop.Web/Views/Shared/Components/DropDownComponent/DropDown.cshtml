@@ -1,4 +1,4 @@
-﻿@model IAsyncEnumerable<CategoriesDropdownViewModel>
+﻿@model IEnumerable<CategoriesDropdownViewModel>
 
 
 <nav class="main-nav d-none d-lg-block text-center mx-auto">
@@ -7,12 +7,15 @@
         <li><a asp-controller="Account" asp-action="AddShopper">افزودن فروشنده</a></li>
         <li><a asp-area="AdminManagerPanel" asp-controller="FullAdminPanel" asp-action="Index">مدیریت کل</a></li>
 
-        @await foreach (var item in Model)
+        @foreach (var item in Model)
         {
             if (item.ChildCategories.Any())
             {
                 <li class="drop-down">
-                    <a href="#">@item.CategoryTitle</a>
+                    <a asp-controller="Product"
+                       asp-action="ProductsOfCategory"
+                       asp-route-categoryId="@item.CategoryId"
+                       asp-route-sortBy="Cheap">@item.CategoryTitle</a>
 
                     <div class="mega-dropdown">
                         @foreach (var childCategory in item.ChildCategories)
@@ -24,7 +27,10 @@
                     </div>
                 </li>
             }
-            <li><a href="/">@item.CategoryTitle</a></li>
+            else
+            {
+                <li><a href="/">@item.CategoryTitle</a></li>
+            }
         }
 
     </ul>

@@ -27,6 +27,9 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> RemoveUserAsync(string userId);
 
 
+        IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId);
+        IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId);
+
         #region address
 
         Task<ResultTypes> AddUserAddressAsync(Address address);

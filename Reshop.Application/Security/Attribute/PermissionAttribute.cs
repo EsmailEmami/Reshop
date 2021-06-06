@@ -14,13 +14,13 @@ namespace Reshop.Application.Security.Attribute
     // we can give list of permissionName like RoleManager,UserManager,...
     public class PermissionAttribute : AuthorizeAttribute, IAuthorizationFilter
     {
-        private readonly string[] _permissionsName;
+        private readonly string _permissionsName;
 
         private IRoleService _roleService;
 
         public PermissionAttribute(string permissionsName)
         {
-            _permissionsName = permissionsName.Split(",");
+            _permissionsName = permissionsName;
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -31,36 +31,12 @@ namespace Reshop.Application.Security.Attribute
             {
                 string userId = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value.ToString();
 
-
-                var userRolesId = _roleService.GetUserRolesIdByUserId(userId) as IEnumerable<string>;
-
-                if (userRolesId is null)
-                    context.Result = new RedirectResult("/Login");
-
-                List<string> permissionsRolesId = new List<string>();
-
-
-                foreach (var t in _permissionsName)
+                if (!_roleService.PermissionChecker(userId, _permissionsName))
                 {
-                    var roles = (IEnumerable<string>)_roleService.GetPermissionRolesIdByPermission(t);
+                    var refererPath = context.HttpContext.Request.Headers["Referer"].ToString();
 
-                    foreach (var role in roles)
-                    {
-                        permissionsRolesId.Add(role);
-                    }
-                }
-
-                bool isValid = permissionsRolesId.Any(c => userRolesId.Contains(c));
-
-                var refererPath = context.HttpContext.Request.Headers["Referer"].ToString();
-
-
-                if (isValid == false)
-                {
                     context.Result = string.IsNullOrEmpty(refererPath) ? new RedirectResult("/") : new RedirectResult(refererPath);
                 }
-                    
-
             }
             else
             {

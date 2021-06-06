@@ -14,7 +14,6 @@ using Reshop.Domain.Entities.Product;
 namespace Reshop.Web.Controllers.User
 {
     [Authorize]
-    [AutoValidateAntiforgeryToken]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
@@ -30,13 +29,20 @@ namespace Reshop.Web.Controllers.User
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToCart(string userId, int productId, string shopperUserId)
+        public async Task<IActionResult> AddToCart(int productId, string shopperUserId)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var result = await _cartService.AddToCart(userId, productId, shopperUserId);
 
-
-            return Json(result == ResultTypes.Successful ? new { IsSuccessful = true } : new { IsSuccessful = false });
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
         }
 
         [HttpGet]
@@ -45,8 +51,8 @@ namespace Reshop.Web.Controllers.User
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrRemoveProduct(string orderDetailId, string action)
         {
             if (!await _cartService.IsOrderDetailExistAsync(orderDetailId))

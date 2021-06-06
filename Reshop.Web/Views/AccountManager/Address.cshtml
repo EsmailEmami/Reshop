@@ -1,4 +1,5 @@
 ﻿@model IAsyncEnumerable<Address>
+@inject IRoleService RoleService;
 @{
     ViewData["Title"] = "UserAddresses";
 
@@ -8,7 +9,7 @@
 
 <div class="row">
 
-    <div class="col-sm-12 col-md-4 col-lg-3" >
+    <div class="col-sm-12 col-md-4 col-lg-3">
 
         <div class="profile-menu box-shadow">
             <div class="user-img d-flex justify-content-center flex-column align-self-center">
@@ -18,14 +19,22 @@
 
                 <img src="/images/UserImages/@User.FindFirstValue(ClaimTypes.Actor)">
 
-                <p class="text-center">@User.FindFirstValue(ClaimTypes.GivenName)</p>
+                <p class="text-center">@User.FindFirstValue(ClaimTypes.Name)</p>
             </div>
 
             <div class="items">
-                <a href="/profile.html" class="active"><i class="far fa-user"></i> اطلاعات حساب</a>
-                <a href="/order.html"><i class="far fa-calendar-week"></i> سفارش های من</a>
-                <a href=""><i class="far fa-heart"></i> علاقه مندی ها</a>
-                <a href=""><i class="far fa-comments-alt"></i> نظرات</a>
+                <a asp-action="Dashboard" class="active"><i class="far fa-user"></i> اطلاعات حساب</a>
+                <a asp-action="PayedOrders"><i class="far fa-calendar-week"></i> سفارش های من</a>
+                <a asp-action="FavoriteProducts"><i class="far fa-heart"></i> علاقه مندی ها</a>
+                <a asp-action="Comments"><i class="far fa-comments-alt"></i> نظرات</a>
+                @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "Shopper,FullManager"))
+                {
+                    <a asp-action="ManageProducts"><i class="far fa-comments-alt"></i>مدیریت محصولات</a>
+                }
+                @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "FullManager"))
+                {
+                    <a asp-action="UserComments"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
+                }
             </div>
         </div>
 

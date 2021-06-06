@@ -11,7 +11,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
+using Reshop.Application.Interfaces.Shopper;
 using Reshop.Domain.Entities.Product.ProductDetail;
+using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -23,10 +25,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region constructor
 
         private readonly IProductService _productService;
+        private readonly IShopperService _shopperService;
 
-        public ProductManagerController(IProductService productService)
+        public ProductManagerController(IProductService productService, IShopperService shopperService)
         {
             _productService = productService;
+            _shopperService = shopperService;
         }
 
         #endregion
@@ -98,7 +102,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         public async Task<IActionResult> AddOrEditMobile(int productId = 0)
         {
             return productId == 0 ? View(new AddOrEditMobileProductViewModel() { ProductId = 0 }) : View(await _productService.GetTypeMobileProductDataAsync(productId));
-
         }
 
         [HttpPost]
@@ -107,7 +110,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var userFirstName = /*User.FindFirstValue(ClaimTypes.Actor);*/ "ali";
+            var userFirstName = User.FindFirstValue(ClaimTypes.Name);
 
             if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
             {
@@ -161,6 +164,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                                     "wwwroot",
                                     "images",
+                                    "ProductImages",
                                     imgName + Path.GetExtension(image.FileName));
 
 
@@ -178,7 +182,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
+                    var shopperProduct = new ShopperProduct()
+                    {
+                        ShopperUserId = User.FindFirstValue(ClaimTypes.NameIdentifier).ToString(),
+                        ProductId = product.ProductId
+                    };
 
+                    await _shopperService.AddShopperProductAsync(shopperProduct);
 
                     return RedirectToAction(nameof(Index));
                 }

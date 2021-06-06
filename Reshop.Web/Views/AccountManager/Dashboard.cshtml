@@ -1,4 +1,5 @@
 ﻿@model User
+@inject IRoleService RoleService;
 @{
     ViewData["Title"] = $"پنل مدیریت - {Model.FullName}";
 }
@@ -19,11 +20,18 @@
             </div>
 
             <div class="items">
-                <a asp-action="Index" class="active"><i class="far fa-user"></i> اطلاعات حساب</a>
+                <a asp-action="Dashboard" class="active"><i class="far fa-user"></i> اطلاعات حساب</a>
                 <a asp-action="PayedOrders"><i class="far fa-calendar-week"></i> سفارش های من</a>
                 <a asp-action="FavoriteProducts"><i class="far fa-heart"></i> علاقه مندی ها</a>
-                <a asp-action="UserComments"><i class="far fa-comments-alt"></i> نظرات</a>
-                <a asp-action="ChangePassword"><i class="far fa-comments-alt"></i>ویرایش رمز عبور</a>
+                <a asp-action="Questions"><i class="far fa-comments-alt"></i> سوالات و نظرات</a>
+                @if (RoleService.PermissionChecker(Model.UserId, "Shopper,FullManager"))
+                {
+                    <a asp-action="ManageProducts"><i class="far fa-comments-alt"></i>مدیریت محصولات</a>
+                }
+                @if (RoleService.PermissionChecker(Model.UserId, "FullManager"))
+                {
+                    <a asp-action="UserComments"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
+                }
             </div>
         </div>
 
@@ -35,13 +43,13 @@
             <div class="col-12">
                 <div class="profile-nav box-shadow">
                     <ul>
-                        <li class="active"><a asp-action="Index">اطلاعات شخصی</a> </li>
-                        <li><a asp-action="UserAddresses">آدرس</a> </li>
+                        <li class="active"><a asp-action="Dashboard">اطلاعات شخصی</a> </li>
+                        <li><a asp-action="Address">آدرس</a> </li>
+                        @if (RoleService.PermissionChecker(Model.UserId, "Shopper,FullManager"))
+                        {
+                            <li><a asp-action="Address">اطلاعات مغازه</a> </li>
+                        }
                     </ul>
-
-                    <div class="search-profile">
-                        <a href="#"><i class="far fa-search"></i></a>
-                    </div>
                 </div>
             </div>
             <div class="col-12 mt-3">
@@ -98,8 +106,8 @@
                                 <p>@Model.PostalCode</p>
                             </div>
                         </div>
-                       
-                        
+
+
                     </div>
                 </div>
 

@@ -1,16 +1,22 @@
-﻿function AddTypeForm(form) {
+﻿function AddProductToCart(productId, shopperUserId) {
+
+    if (shopperUserId == null) {
+        shopperUserId = $("#selected-shopper").val();
+    }
+
+
     $.ajax({
-        type: "POST",
-        url: form.action,
-        data: new FormData(form),
-        contentType: false,
-        processData: false,
+        type: 'POST',
+        url: '/Cart/AddToCart?productId=' + productId + '&shopperUserId=' + shopperUserId,
+        dataType: "json",
+        contentType: "application/json",
         success: function (res) {
-            if (res.Successful) {
-                swal("با موفقیت انجام شد", "You clicked the button!", "success");
+            if (res.success) {
+                ShowToast('success','محصول با موفقیت به سبد خرید اضافه شد.');
             } else {
-                swal("با موفقیت انجام شد", "You clicked the button!", "error");
+                ShowToast('warning', 'محصول با موفقیت به سبد خرید اضافه نشد.');
             }
         }
     });
+
 }

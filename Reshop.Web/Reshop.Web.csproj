@@ -5,6 +5,13 @@
     <UserSecretsId>1732d795-e4a0-4105-97dd-c9239464293f</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Views\Shared\Account\**" />
+    <Content Remove="Views\Shared\Account\**" />
+    <EmbeddedResource Remove="Views\Shared\Account\**" />
+    <None Remove="Views\Shared\Account\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.6" />
@@ -29,9 +36,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Shared\Account\" />
-    <Folder Include="wwwroot\images\shoppersCardImages\" />
     <Folder Include="wwwroot\images\ProductImages\" />
+    <Folder Include="wwwroot\images\shoppersCardImages\" />
   </ItemGroup>
 
 </Project>

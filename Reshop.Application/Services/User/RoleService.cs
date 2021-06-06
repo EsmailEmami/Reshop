@@ -6,6 +6,7 @@ using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Reshop.Application.Services.User
@@ -258,6 +259,37 @@ namespace Reshop.Application.Services.User
             int permissionId = _roleRepository.GetPermissionIdByName(permissionName);
 
             return _roleRepository.GetRolesIdOfPermission(permissionId);
+        }
+
+        public bool PermissionChecker(string userId, string permissions)
+        {
+            string[] permission = permissions.Split(",");
+
+
+            var userRoles = _roleRepository.GetRolesIdOfUser(userId) as IEnumerable<string>;
+            if (userRoles is null) return false;
+
+
+            List<string> permissionsRolesId = new List<string>();
+
+
+            foreach (var t in permission)
+            {
+                var permissionId = _roleRepository.GetPermissionIdByName(t);
+
+                if (permissionId != 0)
+                {
+                    var roles = (IEnumerable<string>)_roleRepository.GetRolesIdOfPermission(permissionId);
+
+                    foreach (var role in roles)
+                    {
+                        permissionsRolesId.Add(role);
+                    }
+                }
+            }
+
+            return permissionsRolesId.Any(c => userRoles.Contains(c));
+
         }
     }
 }

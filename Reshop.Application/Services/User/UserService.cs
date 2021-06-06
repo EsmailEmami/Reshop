@@ -204,6 +204,12 @@ namespace Reshop.Application.Services.User
             }
         }
 
+        public IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId) =>
+            _userRepository.GetUserQuestionsForShow(userId);
+
+        public IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId) => 
+            _userRepository.GetUserCommentsForShow(userId);
+
         public async Task<ResultTypes> AddUserAddressAsync(Address address)
         {
             try

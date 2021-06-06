@@ -12,7 +12,7 @@ namespace Reshop.Application.Convertors
 
         public static string ToToman(this decimal value)
         {
-            return value.ToString("#,0 تومان");
+            return value.ToString("#,0");
         }
 
         public static string FixedToString(object text)

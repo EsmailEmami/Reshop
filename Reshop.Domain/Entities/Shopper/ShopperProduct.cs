@@ -11,7 +11,7 @@ namespace Reshop.Domain.Entities.Shopper
         }
 
 
-         [ForeignKey("Product")]
+        [ForeignKey("Product")]
         public int ProductId { get; set; }
 
         [ForeignKey("User")]
@@ -22,6 +22,11 @@ namespace Reshop.Domain.Entities.Shopper
 
         [Display(Name = "تعداد فروش")]
         public int SaleCount { get; set; }
+
+        [Display(Name = "گارانتی")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string Warranty { get; set; }
 
         #region Relations
 

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.Shopper;
@@ -15,12 +17,16 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId);
         void UpdateShopperProduct(ShopperProduct shopperProduct);
+        Task AddShopperProductAsync(ShopperProduct shopperProduct);
+        IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId);
 
         #endregion
 
 
         #region store title
 
+        IEnumerable<StoreTitle> GetStoreTitles();
+        Task<StoreTitle> GetStoreTitleByIdAsync(int storeTitleId);
         Task AddStoreTitleAsync(StoreTitle storeTitle);
         void UpdateStoreTitle(StoreTitle storeTitle);
         void RemoveStoreTitle(StoreTitle storeTitle);

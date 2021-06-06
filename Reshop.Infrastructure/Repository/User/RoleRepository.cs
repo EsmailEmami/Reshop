@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
 using Reshop.Infrastructure.Context;
@@ -85,8 +86,17 @@ namespace Reshop.Infrastructure.Repository.User
             _context.RolePermissions.Where(c => c.RoleId == roleId)
                 .Select(c => c.PermissionId) as IAsyncEnumerable<int>;
 
-        public int GetPermissionIdByName(string permissionName) =>
-            _context.Permissions.FirstOrDefault(c => c.PermissionTitle == permissionName).PermissionId;
+        public int GetPermissionIdByName(string permissionName)
+        {
+            try
+            {
+               return _context.Permissions.First(c => c.PermissionTitle == permissionName).PermissionId;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
 
         public IAsyncEnumerable<string> GetRolesIdOfPermission(int permissionId) =>
             _context.RolePermissions.Where(c => c.PermissionId == permissionId)

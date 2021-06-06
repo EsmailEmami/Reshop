@@ -605,7 +605,9 @@ header .top-menu {
 }
 
 .product-info .product-title a {
-    font-size: 15px;
+    text-decoration: none;
+    color: #3b3d3d;
+    font-size: 16px;
 }
 
 .product-item:hover {
@@ -1938,17 +1940,17 @@ header .top-menu {
     margin: 0;
 }
 
-    .Category-shortcut a:hover {
-        background-color: #202020;
+.Category-shortcut a:hover {
+    background-color: #202020;
+}
+
+    .Category-shortcut a:hover p {
+        color: #FC5400;
     }
 
-        .Category-shortcut a:hover p {
-            color: #FC5400;
-        }
-
-        .Category-shortcut a:hover .Category-shortcut-style {
-            filter: invert(61%) sepia(70%) saturate(7340%) hue-rotate(5deg) brightness(101%) contrast(102%);
-        }
+    .Category-shortcut a:hover .Category-shortcut-style {
+        filter: invert(61%) sepia(70%) saturate(7340%) hue-rotate(5deg) brightness(101%) contrast(102%);
+    }
 
 .Category-shortcut h3 {
     color: #fff;
@@ -1973,46 +1975,46 @@ footer {
     padding: 0;
 }
 
-footer h4,
-h5 {
-    margin: 0 0 20px 0;
-    font-weight: bold;
-    font-size: 24px;
-    color: #ebebeb;
-}
+    footer > h4,
+    h5 {
+        margin: 0 0 20px 0;
+        font-weight: bold;
+        font-size: 24px;
+        color: #ebebeb;
+    }
 
-.footer-part ul {
+footer-part ul {
     padding-right: 20px;
 }
 
-.footer-part ul li {
-    margin: 10px 0;
-    color: #FC5400;
-}
+    footer-part ul li {
+        margin: 10px 0;
+        color: #FC5400;
+    }
 
-footer a,
+footer > a,
 p,
 span {
-    /*color: #ebebeb;*/
+    color: #ebebeb;
     transition: 0.3s;
 }
 
-footer a:hover {
-    color: #FC5400;
-    text-decoration: none;
-}
+    footer > a:hover {
+        color: #FC5400;
+        text-decoration: none;
+    }
 
 .logo-in-footer {
     width: 100%;
     text-align: center;
 }
 
-.logo-in-footer img {
-    border: 1px solid black;
-    width: 150px;
-    height: 150px;
-    margin-bottom: 20px;
-}
+    .logo-in-footer img {
+        border: 1px solid black;
+        width: 150px;
+        height: 150px;
+        margin-bottom: 20px;
+    }
 
 .Social-network-icons {
     text-align: center;
@@ -2023,6 +2025,106 @@ footer a:hover {
     text-align: center;
     background-color: #FC5400;
     padding: 10px 0;
+}
+
+/* -------------------------------------- toast -------------------------------------- */
+
+#toast-success, #toast-wrong, #toast-warning {
+    margin: 0;
+    border-radius: 8px;
+    padding: 9px;
+    position: fixed;
+    z-index: 999;
+    right: 2%;
+    top: 30px;
+    font-size: 17px;
+    min-height: 35px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    display: none;
+}
+
+#toast-success {
+    background: #10c15c;
+    border: 1px solid #00be52;
+}
+
+#toast-wrong {
+    background: #ed1c24;
+    border: 1px solid #ad161c;
+}
+
+#toast-warning {
+    background: #f7bd0f;
+    border: 1px solid #ca9d18;
+}
+
+    #toast-success svg, #toast-wrong svg, #toast-warning svg {
+        background: transparent;
+        width: 30px;
+        height: 30px;
+    }
+
+    #toast-success span, #toast-wrong span, #toast-warning span {
+        display: inline-block;
+        margin: 5px 0 5px 10px;
+        color: #fff;
+    }
+
+    #toast-success.show, #toast-wrong.show, #toast-warning.show {
+        display: flex;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+@-webkit-keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+
+    to {
+        top: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+
+    to {
+        top: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        top: 30px;
+        opacity: 1;
+    }
+
+    to {
+        top: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        top: 30px;
+        opacity: 1;
+    }
+
+    to {
+        top: 0;
+        opacity: 0;
+    }
 }
 
 /* -------------------------------------- media query -------------------------------------- */

@@ -6,10 +6,10 @@ using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Infrastructure.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Application.Enums.Product;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -37,7 +37,7 @@ namespace Reshop.Infrastructure.Repository.Product
             }) as IAsyncEnumerable<ProductViewModel>;
         }
 
-        public IAsyncEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip = 0, int take = 24)
+        public IAsyncEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take)
         {
             if (type == "all")
             {
@@ -45,69 +45,81 @@ namespace Reshop.Infrastructure.Repository.Product
                 {
                     "news" => _context.Products
                         .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.ProductId)
+                        .OrderByDescending(c => c.CreateDate)
+                        .Include(c=> c.ShopperProducts)
                         .Select(c => new ProductViewModel()
                         {
                             ProductId = c.ProductId,
                             ProductPrice = c.Price,
                             ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand
+                            BrandName = c.Brand,
+                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
                         }) as IAsyncEnumerable<ProductViewModel>,
 
                     "expensive" => _context.Products
                         .Skip(skip).Take(take)
                         .OrderByDescending(c => c.Price)
+                        .Include(c => c.ShopperProducts)
                         .Select(c => new ProductViewModel()
                         {
                             ProductId = c.ProductId,
                             ProductPrice = c.Price,
                             ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand
+                            BrandName = c.Brand,
+                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
                         }) as IAsyncEnumerable<ProductViewModel>,
 
                     "cheap" => _context.Products
                         .Skip(skip).Take(take)
                         .OrderBy(c => c.Price)
+                        .Include(c => c.ShopperProducts)
                         .Select(c => new ProductViewModel()
                         {
                             ProductId = c.ProductId,
                             ProductPrice = c.Price,
                             ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand
+                            BrandName = c.Brand,
+                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
                         }) as IAsyncEnumerable<ProductViewModel>,
 
                     "mostsale" => _context.Products
                         .Skip(skip).Take(take)
                         .OrderByDescending(c => c.AllSalesCount)
+                        .Include(c => c.ShopperProducts)
                         .Select(c => new ProductViewModel()
                         {
                             ProductId = c.ProductId,
                             ProductPrice = c.Price,
                             ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand
+                            BrandName = c.Brand,
+                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
                         }) as IAsyncEnumerable<ProductViewModel>,
 
                     "mostviews" => _context.Products
                         .Skip(skip).Take(take)
                         .OrderByDescending(c => c.AllViewsCount)
+                        .Include(c => c.ShopperProducts)
                         .Select(c => new ProductViewModel()
                         {
                             ProductId = c.ProductId,
                             ProductPrice = c.Price,
                             ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand
+                            BrandName = c.Brand,
+                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
                         }) as IAsyncEnumerable<ProductViewModel>,
 
                     _ => _context.Products
                         .Skip(skip).Take(take)
                         .OrderByDescending(c => c.ProductId)
+                        .Include(c => c.ShopperProducts)
                         .Select(c => new ProductViewModel()
                         {
                             ProductId = c.ProductId,
                             ProductPrice = c.Price,
                             ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>
+                            BrandName = c.Brand,
+                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
+                        }) as IAsyncEnumerable<ProductViewModel>,
                 };
             }
 
@@ -116,70 +128,269 @@ namespace Reshop.Infrastructure.Repository.Product
                 "news" => _context.Products.Where(c => c.ProductType == type)
                     .Skip(skip).Take(take)
                     .OrderByDescending(c => c.ProductId)
+                    .Include(c => c.ShopperProducts)
                     .Select(c => new ProductViewModel()
                     {
                         ProductId = c.ProductId,
                         ProductPrice = c.Price,
                         ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand
+                        BrandName = c.Brand,
+                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
                     }) as IAsyncEnumerable<ProductViewModel>,
 
                 "expensive" => _context.Products.Where(c => c.ProductType == type)
                     .Skip(skip).Take(take)
                     .OrderByDescending(c => c.Price)
+                    .Include(c => c.ShopperProducts)
                     .Select(c => new ProductViewModel()
                     {
                         ProductId = c.ProductId,
                         ProductPrice = c.Price,
                         ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand
+                        BrandName = c.Brand,
+                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
                     }) as IAsyncEnumerable<ProductViewModel>,
 
                 "cheap" => _context.Products.Where(c => c.ProductType == type)
                     .Skip(skip).Take(take)
                     .OrderBy(c => c.Price)
+                    .Include(c => c.ShopperProducts)
                     .Select(c => new ProductViewModel()
                     {
                         ProductId = c.ProductId,
                         ProductPrice = c.Price,
                         ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand
+                        BrandName = c.Brand,
+                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
                     }) as IAsyncEnumerable<ProductViewModel>,
 
                 "mostsale" => _context.Products.Where(c => c.ProductType == type)
                     .Skip(skip).Take(take)
                     .OrderByDescending(c => c.AllSalesCount)
+                    .Include(c => c.ShopperProducts)
                     .Select(c => new ProductViewModel()
                     {
                         ProductId = c.ProductId,
                         ProductPrice = c.Price,
                         ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand
+                        BrandName = c.Brand,
+                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
                     }) as IAsyncEnumerable<ProductViewModel>,
 
                 "mostviews" => _context.Products.Where(c => c.ProductType == type)
                     .Skip(skip).Take(take)
                     .OrderByDescending(c => c.AllViewsCount)
+                    .Include(c => c.ShopperProducts)
                     .Select(c => new ProductViewModel()
                     {
                         ProductId = c.ProductId,
                         ProductPrice = c.Price,
                         ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand
+                        BrandName = c.Brand,
+                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
                     }) as IAsyncEnumerable<ProductViewModel>,
 
                 _ => _context.Products.Where(c => c.ProductType == type)
                     .Skip(skip).Take(take)
                     .OrderByDescending(c => c.ProductId)
+                    .Include(c => c.ShopperProducts)
                     .Select(c => new ProductViewModel()
                     {
                         ProductId = c.ProductId,
                         ProductPrice = c.Price,
                         ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand
-                    }) as IAsyncEnumerable<ProductViewModel>
+                        BrandName = c.Brand,
+                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
+                    }) as IAsyncEnumerable<ProductViewModel>,
             };
         }
+
+        public IAsyncEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string type, string sortBy, int skip, int take)
+        {
+            if (type == "all")
+            {
+                return sortBy switch
+                {
+                    "news" => _context.ChildCategoryToCategories
+                        .Where(c => c.CategoryId == categoryId)
+                        .Select(c => c.ChildCategory)
+                        .SelectMany(c => c.ProductToChildCategories)
+                        .OrderByDescending(c => c.Product.CreateDate)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand,
+                        }).Skip(skip).Take(take)
+                        as IAsyncEnumerable<ProductViewModel>,
+
+                    "expensive" => _context.ChildCategoryToCategories
+                            .Where(c => c.CategoryId == categoryId)
+                            .Select(c => c.ChildCategory)
+                            .SelectMany(c => c.ProductToChildCategories)
+                            .OrderByDescending(c => c.Product.Price)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand,
+                            }).Skip(skip).Take(take)
+                        as IAsyncEnumerable<ProductViewModel>,
+
+                    "cheap" => _context.ChildCategoryToCategories
+                            .Where(c => c.CategoryId == categoryId)
+                            .Select(c => c.ChildCategory)
+                            .SelectMany(c => c.ProductToChildCategories)
+                            .OrderBy(c => c.Product.Price)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand,
+                            }).Skip(skip).Take(take)
+                        as IAsyncEnumerable<ProductViewModel>,
+
+                    "mostsale" => _context.ChildCategoryToCategories
+                            .Where(c => c.CategoryId == categoryId)
+                            .Select(c => c.ChildCategory)
+                            .SelectMany(c => c.ProductToChildCategories)
+                            .OrderByDescending(c => c.Product.AllSalesCount)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand,
+                            }).Skip(skip).Take(take)
+                        as IAsyncEnumerable<ProductViewModel>,
+
+                    "mostviews" => _context.ChildCategoryToCategories
+                            .Where(c => c.CategoryId == categoryId)
+                            .Select(c => c.ChildCategory)
+                            .SelectMany(c => c.ProductToChildCategories)
+                            .OrderByDescending(c => c.Product.AllViewsCount)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand,
+                            }).Skip(skip).Take(take)
+                        as IAsyncEnumerable<ProductViewModel>,
+
+                    _ => _context.ChildCategoryToCategories
+                            .Where(c => c.CategoryId == categoryId)
+                            .Select(c => c.ChildCategory)
+                            .SelectMany(c => c.ProductToChildCategories)
+                            .OrderByDescending(c => c.Product.CreateDate)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand,
+                            }).Skip(skip).Take(take)
+                        as IAsyncEnumerable<ProductViewModel>,
+                };
+            }
+
+            return sortBy switch
+            {
+                "news" => _context.ChildCategoryToCategories
+                        .Where(c => c.CategoryId == categoryId)
+                        .Select(c => c.ChildCategory)
+                        .SelectMany(c => c.ProductToChildCategories)
+                        .Where(c => c.Product.ProductType == type)
+                        .OrderByDescending(c => c.Product.CreateDate)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand,
+                        }).Skip(skip).Take(take)
+                    as IAsyncEnumerable<ProductViewModel>,
+
+                "expensive" => _context.ChildCategoryToCategories
+                        .Where(c => c.CategoryId == categoryId)
+                        .Select(c => c.ChildCategory)
+                        .SelectMany(c => c.ProductToChildCategories)
+                        .Where(c => c.Product.ProductType == type)
+                        .OrderByDescending(c => c.Product.Price)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand,
+                        }).Skip(skip).Take(take)
+                    as IAsyncEnumerable<ProductViewModel>,
+
+                "cheap" => _context.ChildCategoryToCategories
+                        .Where(c => c.CategoryId == categoryId)
+                        .Select(c => c.ChildCategory)
+                        .SelectMany(c => c.ProductToChildCategories)
+                        .Where(c => c.Product.ProductType == type)
+                        .OrderBy(c => c.Product.Price)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand,
+                        }).Skip(skip).Take(take)
+                    as IAsyncEnumerable<ProductViewModel>,
+
+                "mostsale" => _context.ChildCategoryToCategories
+                        .Where(c => c.CategoryId == categoryId)
+                        .Select(c => c.ChildCategory)
+                        .SelectMany(c => c.ProductToChildCategories)
+                        .Where(c => c.Product.ProductType == type)
+                        .OrderByDescending(c => c.Product.AllSalesCount)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand,
+                        }).Skip(skip).Take(take)
+                    as IAsyncEnumerable<ProductViewModel>,
+
+                "mostviews" => _context.ChildCategoryToCategories
+                        .Where(c => c.CategoryId == categoryId)
+                        .Select(c => c.ChildCategory)
+                        .SelectMany(c => c.ProductToChildCategories)
+                        .Where(c => c.Product.ProductType == type)
+                        .OrderByDescending(c => c.Product.AllViewsCount)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand,
+                        }).Skip(skip).Take(take)
+                    as IAsyncEnumerable<ProductViewModel>,
+
+                _ => _context.ChildCategoryToCategories
+                        .Where(c => c.CategoryId == categoryId)
+                        .Select(c => c.ChildCategory)
+                        .SelectMany(c => c.ProductToChildCategories)
+                        .Where(c => c.Product.ProductType == type)
+                        .OrderByDescending(c => c.Product.CreateDate)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand,
+                        }).Skip(skip).Take(take)
+                    as IAsyncEnumerable<ProductViewModel>,
+            };
+        }
+
 
         public async Task<string> GetProductFirstPictureName(int productId)
         {
@@ -189,7 +400,177 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key)
             =>
-                await _context.Products.SingleOrDefaultAsync(c=> c.ShortKey == key);
+                await _context.Products.SingleOrDefaultAsync(c => c.ShortKey == key);
+
+        public IAsyncEnumerable<ProductViewModel> GetShopperProductsWthPagination(string shopperUserId, string type, string sortBy, int skip, int take)
+        {
+            try
+            {
+                if (type == "all")
+                {
+                    return sortBy switch
+                    {
+                        "news" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                            .Skip(skip).Take(take)
+                            .OrderByDescending(c => c.Product.CreateDate)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand
+                            }) as IAsyncEnumerable<ProductViewModel>,
+
+                        "expensive" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                            .Skip(skip).Take(take)
+                            .OrderByDescending(c => c.Product.Price)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand
+                            }) as IAsyncEnumerable<ProductViewModel>,
+
+                        "cheap" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                            .Skip(skip).Take(take)
+                            .OrderBy(c => c.Product.CreateDate)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand
+                            }) as IAsyncEnumerable<ProductViewModel>,
+
+                        "mostsale" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                            .Skip(skip).Take(take)
+                            .OrderByDescending(c => c.Product.AllSalesCount)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand
+                            }) as IAsyncEnumerable<ProductViewModel>,
+
+                        "mostviews" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                            .Skip(skip).Take(take)
+                            .OrderByDescending(c => c.Product.AllViewsCount)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand
+                            }) as IAsyncEnumerable<ProductViewModel>,
+
+                        _ => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                            .Skip(skip).Take(take)
+                            .OrderByDescending(c => c.Product.CreateDate)
+                            .Select(c => new ProductViewModel()
+                            {
+                                ProductId = c.Product.ProductId,
+                                ProductTitle = c.Product.ProductTitle,
+                                ProductPrice = c.Product.Price,
+                                BrandName = c.Product.Brand
+                            }) as IAsyncEnumerable<ProductViewModel>,
+                    };
+                }
+
+                return sortBy switch
+                {
+                    "news" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                        .Skip(skip).Take(take)
+                        .OrderByDescending(c => c.Product.CreateDate)
+                        .Where(c => c.Product.ProductType == type)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand
+                        }) as IAsyncEnumerable<ProductViewModel>,
+
+                    "expensive" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                        .Skip(skip).Take(take)
+                        .OrderByDescending(c => c.Product.Price)
+                        .Where(c => c.Product.ProductType == type)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand
+                        }) as IAsyncEnumerable<ProductViewModel>,
+
+                    "cheap" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                        .Skip(skip).Take(take)
+                        .OrderBy(c => c.Product.Price)
+                        .Where(c => c.Product.ProductType == type)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand
+                        }) as IAsyncEnumerable<ProductViewModel>,
+
+                    "mostsale" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                        .Skip(skip).Take(take)
+                        .OrderByDescending(c => c.Product.AllSalesCount)
+                        .Where(c => c.Product.ProductType == type)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand
+                        }) as IAsyncEnumerable<ProductViewModel>,
+
+                    "mostviews" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                        .Skip(skip).Take(take)
+                        .OrderByDescending(c => c.Product.AllViewsCount)
+                        .Where(c => c.Product.ProductType == type)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand
+                        }) as IAsyncEnumerable<ProductViewModel>,
+
+                    _ => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                        .Skip(skip).Take(take)
+                        .OrderByDescending(c => c.Product.CreateDate)
+                        .Where(c => c.Product.ProductType == type)
+                        .Select(c => new ProductViewModel()
+                        {
+                            ProductId = c.Product.ProductId,
+                            ProductTitle = c.Product.ProductTitle,
+                            ProductPrice = c.Product.Price,
+                            BrandName = c.Product.Brand
+                        }) as IAsyncEnumerable<ProductViewModel>,
+                };
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
+        public async Task<int> GetShopperProductsCountWithTypeAsync(string shopperUserId, string type)
+        {
+            if (type == "all")
+            {
+                return await _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                    .Select(c => c.Product).CountAsync();
+            }
+
+            return await _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                .Select(c => c.Product).Where(c => c.ProductType == type).CountAsync();
+        }
+
 
         public async Task<int> GetProductsCountWithTypeAsync(string type)
         {
@@ -199,6 +580,7 @@ namespace Reshop.Infrastructure.Repository.Product
             }
 
             return await _context.Products.Where(c => c.ProductType == type).CountAsync();
+
         }
 
         public async Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId, string type)
@@ -209,8 +591,27 @@ namespace Reshop.Infrastructure.Repository.Product
             }
 
             return await _context.FavoriteProducts.Where(c => c.UserId == userId)
-                .Include(c=> c.Product)
-                .Where(c=> c.Product.ProductType == type).CountAsync();
+                .Include(c => c.Product)
+                .Where(c => c.Product.ProductType == type).CountAsync();
+        }
+
+        public async Task<int> GetCategoryProductsCountWithTypeAsync(int categoryId, string type)
+        {
+            if (type == "all")
+            {
+                return await _context.ChildCategoryToCategories
+                    .Where(c => c.CategoryId == categoryId)
+                    .Select(c => c.ChildCategory)
+                    .SelectMany(c => c.ProductToChildCategories)
+                    .Select(c => c.Product).CountAsync();
+            }
+
+            return await _context.ChildCategoryToCategories
+                .Where(c => c.CategoryId == categoryId)
+                .Select(c => c.ChildCategory)
+                .SelectMany(c => c.ProductToChildCategories)
+                .Select(c => c.Product)
+                .Where(c => c.ProductType == type).CountAsync();
         }
 
 
@@ -327,7 +728,7 @@ namespace Reshop.Infrastructure.Repository.Product
         public IEnumerable<Comment> GetProductComments(int productId)
         {
             return _context.Comments.Where(c => c.ProductId == productId)
-                .Include(c => c.CommentAnswers);
+                .Include(c => c.User);
         }
 
         public IEnumerable<Question> GetProductQuestions(int productId)

@@ -95,8 +95,13 @@
                     </div>
                     <div class="col-sm-12 col-lg-6">
                         <div class="form-field">
-                            <input type="text">
-                            <label><i class="far  fa-clipboard"></i> عنوان فروشگاه</label>
+                            <select asp-for="SelectedStoreTitles" multiple>
+                                <option value="0">عناوین فروشنده</option>
+                                @foreach (var item in Model.StoreTitles)
+                                {
+                                    <option value="@item.StoreTitleId">@item.StoreTitleName</option>
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-5">

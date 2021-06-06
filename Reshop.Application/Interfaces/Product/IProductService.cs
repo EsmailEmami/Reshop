@@ -6,16 +6,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Domain.Entities.Product.ProductDetail;
+using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Application.Interfaces.Product
 {
     public interface IProductService
     {
 
-        IAsyncEnumerable<ProductViewModel> GetProductsWithType(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int take = 18);
+        IEnumerable<ProductViewModel> GetProductsWithType(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int take = 18);
 
         // product , pageId , totalPages
         Task<Tuple<IAsyncEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
+        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetCategoryProductsWithPaginationAsync(int categoryId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
+        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperUserId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
 
         // get by id 
         Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId);
@@ -48,7 +51,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId);
         Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId);
 
-        // insert
+        // inserts
         Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
         Task<ResultTypes> AddLaptopAsync(Domain.Entities.Product.Product product, LaptopDetail laptopDetail);
         Task<ResultTypes> AddMobileCoverAsync(Domain.Entities.Product.Product product, MobileCoverDetail mobileCoverDetail);

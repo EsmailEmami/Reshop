@@ -191,6 +191,9 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
@@ -903,6 +906,11 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.Property<int>("ViewCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Warranty")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("ShopperUserId", "ProductId");
 
@@ -1620,7 +1628,7 @@ namespace Reshop.Infrastructure.Migrations
             modelBuilder.Entity("Reshop.Domain.Entities.Product.ProductToChildCategory", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.Category.ChildCategory", "ChildCategory")
-                        .WithMany()
+                        .WithMany("ProductToChildCategories")
                         .HasForeignKey("ChildCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1891,6 +1899,8 @@ namespace Reshop.Infrastructure.Migrations
             modelBuilder.Entity("Reshop.Domain.Entities.Category.ChildCategory", b =>
                 {
                     b.Navigation("ChildCategoryToCategories");
+
+                    b.Navigation("ProductToChildCategories");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.Permission", b =>

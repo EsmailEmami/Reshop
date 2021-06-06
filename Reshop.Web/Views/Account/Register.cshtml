@@ -1,10 +1,10 @@
 ﻿@model RegisterViewModel
-@*@inject IOptions<GoogleReCaptchaKey> ReCaptchaKey;*@
+@inject IOptions<GoogleReCaptchaKey> ReCaptchaKey;
 
 @{
     ViewData["Title"] = "Register";
 }
-@*<script src="https://www.google.com/recaptcha/api.js?hl=fa"></script>*@
+<script src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
 
 <div class="row">
     <div class="col-md-4">
@@ -21,10 +21,10 @@
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
 
-            @*<div class="form-group  form-check">
+            <div class="form-group  form-check">
                 <div class="g-recaptcha" data-sitekey="@ReCaptchaKey.Value.RecapchaSiteKey"></div>
                 <span class="text-danger">@ViewBag.RecaptchaErrorMessage</span>
-            </div>*@
+            </div>
 
             <div class="form-group">
                 <input type="submit" class="btn btn-success" value="ثبت نام" />

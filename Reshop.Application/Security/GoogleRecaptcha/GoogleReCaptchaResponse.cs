@@ -1,8 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using Microsoft.AspNetCore.Http;
 
 namespace Reshop.Application.Security.GoogleRecaptcha
 {

@@ -50,6 +50,13 @@ namespace Reshop.Domain.Interfaces.User
 
         #endregion
 
+        #region comment and question
+
+        IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId);
+        IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId);
+
+        #endregion
+
         Task SaveChangesAsync();
         void SaveChanges();
     }

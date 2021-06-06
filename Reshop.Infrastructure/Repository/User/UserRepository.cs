@@ -40,9 +40,7 @@ namespace Reshop.Infrastructure.Repository.User
 
         public IAsyncEnumerable<Address> GetUserAddresses(string userId)
             =>
-                _context.Users.Where(c => c.UserId == userId)
-                    .Include(c => c.Addresses)
-                    .Select(c => c.Addresses) as IAsyncEnumerable<Address>;
+                _context.Addresses.Where(c=> c.UserId == userId) as IAsyncEnumerable<Address>;
 
         public async Task AddUserAsync(Domain.Entities.User.User user) => await _context.Users.AddAsync(user);
 
@@ -106,6 +104,24 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task AddUserDiscountCodeAsync(UserDiscountCode userDiscountCode)
             =>
                 await _context.UserDiscountCodes.AddAsync(userDiscountCode);
+
+        public IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId) =>
+            _context.Questions.Where(c => c.UserId == userId)
+                .Select(c => new ShowQuestionOrCommentViewModel()
+                {
+                    QuestionOrCommentId = c.QuestionId,
+                    QuestionOrCommentTitle = c.QuestionTitle,
+                    SentDate = c.QuestionDate
+                });
+
+        public IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId) =>
+            _context.Comments.Where(c => c.UserId == userId)
+                .Select(c => new ShowQuestionOrCommentViewModel()
+                {
+                    QuestionOrCommentId = c.CommentId,
+                    QuestionOrCommentTitle = c.CommentTitle,
+                    SentDate = c.CommentDate
+                });
 
         #endregion
 

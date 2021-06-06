@@ -11,15 +11,15 @@ namespace Reshop.Domain.Interfaces.Product
 {
     public interface IProductRepository
     {
-        #region GetAll
+
 
         IAsyncEnumerable<ProductViewModel> GetProducts();
-        IAsyncEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip = 0, int take = 24);
-
+        IAsyncEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take);
+        IAsyncEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string type, string sortBy, int skip, int take);
         Task<string> GetProductFirstPictureName(int productId);
-        #endregion
 
-        #region Get With Type
+
+
 
         IEnumerable<Entities.Product.Product> GetTypeMobileProducts();
         IEnumerable<Entities.Product.Product> GetTypeLaptopProducts();
@@ -28,16 +28,21 @@ namespace Reshop.Domain.Interfaces.Product
 
         Task<Entities.Product.Product> GetProductByShortKeyAsync(string key);
 
+
+        #region shopper product
+
+        IAsyncEnumerable<ProductViewModel> GetShopperProductsWthPagination(string shopperUserId, string type, string sortBy, int skip, int take);
+        Task<int> GetShopperProductsCountWithTypeAsync(string shopperUserId, string type);
+
         #endregion
 
-        #region Count
 
         Task<int> GetProductsCountWithTypeAsync(string type);
         Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId, string type);
+        Task<int> GetCategoryProductsCountWithTypeAsync(int categoryId, string type);
 
-        #endregion
 
-        #region Get By Id
+
 
         Task<Entities.Product.Product> GetProductByIdAsync(int productId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
@@ -68,16 +73,16 @@ namespace Reshop.Domain.Interfaces.Product
         Task<ProductGallery> GetProductGalleryByIdAsync(string productGalleryId);
         Task<int> GetProductGalleriesCountByProductIdAsync(int productId);
 
-        #endregion
 
-        #region Validations
+
+
 
         Task<bool> IsProductExistAsync(int productId);
         Task<bool> IsProductExistByShortKeyAsync(string shortKey);
 
-        #endregion
 
-        #region Insert
+
+
 
         Task AddProductAsync(Entities.Product.Product product);
         Task AddMobileDetailAsync(MobileDetail mobileDetail);
@@ -93,9 +98,8 @@ namespace Reshop.Domain.Interfaces.Product
         Task AddMemoryCardDetailAsync(MemoryCardDetail memoryCardDetail);
 
 
-        #endregion
 
-        #region Update
+
 
         void UpdateProduct(Entities.Product.Product product);
         void UpdateMobileDetail(MobileDetail mobileDetail);
@@ -109,16 +113,16 @@ namespace Reshop.Domain.Interfaces.Product
         void UpdateSmartWatch(SmartWatchDetail smartWatchDetail);
         void UpdateMemoryCardDetail(MemoryCardDetail memoryCardDetail);
 
-        #endregion
 
 
 
-        #region Product
+
+
 
         void RemoveProduct(Entities.Product.Product product);
         void RemoveRangeProducts(List<Entities.Product.Product> products);
 
-        #endregion
+
 
         void RemoveMobileDetail(MobileDetail mobileDetail);
         void RemoveRangeMobileDetails(List<MobileDetail> mobileDetails);
@@ -129,15 +133,15 @@ namespace Reshop.Domain.Interfaces.Product
         void RemoveMobileCoverDetail(MobileCoverDetail mobileCoverDetail);
 
 
-        #region Other
+
 
         IEnumerable<ChildCategory> GetProductChildCategories(int productId);
         IEnumerable<Comment> GetProductComments(int productId);
         IEnumerable<Question> GetProductQuestions(int productId);
 
-        #endregion
 
-        #region Favorite Products
+
+
 
         IAsyncEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24);
         Task AddToFavoriteProductAsync(FavoriteProduct favoriteProduct);
@@ -145,14 +149,14 @@ namespace Reshop.Domain.Interfaces.Product
         Task<bool> IsFavoriteProductExistAsync(string favoriteProductId);
         Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId);
 
-        #endregion
 
-        #region Filter
+
+
 
         IAsyncEnumerable<string> GetProductsNameByFilter(string productName);
         IAsyncEnumerable<ProductViewModel> GetProductsByFilter(string productName);
 
-        #endregion
+
 
         Task SaveChangesAsync();
     }
