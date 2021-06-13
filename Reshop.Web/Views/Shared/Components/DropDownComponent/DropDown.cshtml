@@ -5,6 +5,7 @@
     <ul>
         <li><a href="/">خانه</a></li>
         <li><a asp-controller="Account" asp-action="AddShopper">افزودن فروشنده</a></li>
+    
         <li><a asp-area="AdminManagerPanel" asp-controller="FullAdminPanel" asp-action="Index">مدیریت کل</a></li>
 
         @foreach (var item in Model)
@@ -15,7 +16,7 @@
                     <a asp-controller="Product"
                        asp-action="ProductsOfCategory"
                        asp-route-categoryId="@item.CategoryId"
-                       asp-route-sortBy="Cheap">@item.CategoryTitle</a>
+                       asp-route-categoryName="@item.CategoryTitle.Replace(" ","-")">@item.CategoryTitle</a>
 
                     <div class="mega-dropdown">
                         @foreach (var childCategory in item.ChildCategories)

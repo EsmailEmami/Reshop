@@ -2,10 +2,12 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Reshop.Application.Middleware.HitCounter;
 using Reshop.Infrastructure;
 using WebMarkupMin.AspNetCore3;
 
@@ -25,7 +27,6 @@ namespace Reshop.Web
         {
             services.AddControllersWithViews();
             services.AddInfrastructure(Configuration);
-
             services.AddWebMarkupMin(options =>
                 {
                     options.AllowMinificationInDevelopmentEnvironment = true;
@@ -63,9 +64,10 @@ namespace Reshop.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
-          
 
-            //app.UseMiddleware(typeof(ProductHitCounterMiddleware));
+
+
+            app.UseMiddleware(typeof(ProductHitCounterMiddleware));
 
             app.UseEndpoints(endpoints =>
             {

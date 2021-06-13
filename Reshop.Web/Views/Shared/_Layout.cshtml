@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Reshop</title>
+    <title>@ViewData["Title"]</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -55,12 +55,10 @@
                             <i class="far fa-user"></i> ثبت نام
                         </a>
                     }
-                    <a href="#">
-                        <i class="fab fa-opencart"></i>
+                    <a asp-controller="Cart" asp-action="ShowCart">
+                        <i class="far fa-shopping-cart"></i>
                     </a>
-                    <a href="#">
-                        <i class="fab fa-opencart"></i>
-                    </a>
+                   
                 </div>
             </div>
 
@@ -127,7 +125,7 @@
 
         <div class="row p-3 screen-width-1450">
 
-            <div class="col-md-3 footer-part">
+            <div class="col-md-3">
                 <div class="logo-in-footer">
                     <img src="images/UserImages/userAvatar.jpg" alt="">
                 </div>

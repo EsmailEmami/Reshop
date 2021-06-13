@@ -137,6 +137,7 @@ namespace Reshop.Domain.Entities.Product
         public virtual MemoryCardDetail MemoryCardDetail { get; set; }
 
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
+        public virtual ICollection<UserProductView> UserProductsView { get; set; }
 
         #endregion
     }

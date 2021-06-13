@@ -35,6 +35,20 @@ namespace Reshop.Application.Services.User
 
         #endregion
 
+        public async Task<Order> GetUserOpenOrderAsync(string userId)
+        {
+            return await _cartRepository.GetOrderInCartByUserIdAsync(userId);
+        }
+
+        public async Task EditOrderAsync(Order order)
+        {
+            _cartRepository.UpdateOrder(order);
+            await _cartRepository.SaveChangesAsync();
+        }
+
+        public async Task<Order> GetOrderByIdAsync(string orderId) =>
+            await _cartRepository.GetOrderByIdAsync(orderId);
+
         public async Task<ResultTypes> AddToCart(string userId, int productId, string shopperUserId)
         {
             try
@@ -62,6 +76,10 @@ namespace Reshop.Application.Services.User
                         orderDetail.Sum = CartCalculator.CalculateOrderDetail(orderDetail.Count, orderDetail.Price);
 
                         _cartRepository.UpdateOrderDetail(orderDetail);
+                        await _cartRepository.SaveChangesAsync();
+
+                        order.Sum = _cartRepository.GetOrderDetailsSumOfOrder(orderDetail.OrderId);
+                        _cartRepository.UpdateOrder(order);
                         await _cartRepository.SaveChangesAsync();
                     }
                     else
@@ -167,6 +185,7 @@ namespace Reshop.Application.Services.User
                 orderDetail.Sum = CartCalculator.CalculateOrderDetail(orderDetail.Count, orderDetail.Price);
 
                 _cartRepository.UpdateOrderDetail(orderDetail);
+                await _cartRepository.SaveChangesAsync();
 
                 // update order sum
                 var order = await _cartRepository.GetOrderByIdAsync(orderDetail.OrderId);
@@ -180,12 +199,15 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task ReduceOrderDetailAsync(string orderDetailId, string userId)
+        public async Task ReduceOrderDetailAsync(string orderDetailId)
         {
             var orderDetail = await _cartRepository.GetOrderDetailByIdAsync(orderDetailId);
+            
 
             if (orderDetail != null)
             {
+                var order = await _cartRepository.GetOrderByIdAsync(orderDetail.OrderId);
+
                 if (orderDetail.Count > 1)
                 {
                     orderDetail.Count--;
@@ -201,8 +223,8 @@ namespace Reshop.Application.Services.User
 
                 await _cartRepository.SaveChangesAsync();
 
-                // update order
-                var order = await _cartRepository.GetOrderInCartByUserIdAsync(userId);
+              
+               
 
                 if (order.OrderDetails.Any())
                 {
@@ -263,10 +285,37 @@ namespace Reshop.Application.Services.User
             await _cartRepository.SaveChangesAsync();
         }
 
-        public async Task RemoveOrderDetailAsync(OrderDetail orderDetail)
+        public async Task<ResultTypes> RemoveOrderDetailAsync(string orderDetailId)
         {
-            _cartRepository.RemoveOrderDetail(orderDetail);
-            await _cartRepository.SaveChangesAsync();
+            var orderDetail = await _cartRepository.GetOrderDetailByIdAsync(orderDetailId);
+            if (orderDetail is null) return ResultTypes.Failed;
+
+            try
+            {
+                var order = await _cartRepository.GetOrderByIdAsync(orderDetail.OrderId);
+
+                _cartRepository.RemoveOrderDetail(orderDetail);
+                await _cartRepository.SaveChangesAsync();
+
+                if (order.OrderDetails.Any())
+                {
+                    order.Sum = _cartRepository.GetOrderDetailsSumOfOrder(order.OrderId);
+
+                    _cartRepository.UpdateOrder(order);
+                }
+                else
+                {
+                    _cartRepository.RemoveOrder(order);
+                }
+
+                await _cartRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
 
         public async Task<DiscountUseType> UseDiscountAsync(string orderId, string discountCode)

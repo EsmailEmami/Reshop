@@ -1,0 +1,176 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "سبد خرید";
+    int counter = 1;
+}
+
+@if (Model == null)
+{
+    <div class="container">
+        <div class="alert alert-warning">
+            سبد خرید شما خالی است. لطفا محصولی به سبد خرید خود اضافه کنید.
+        </div>
+    </div>
+    
+}
+else
+{
+    <div class="cart-box">
+        <div class="main-cart">
+
+            @foreach (var item in Model.OrderDetails)
+            {
+                <div class="item box-shadow">
+
+                    <span class="counter">
+                        @counter
+                    </span>
+
+                    <span class="img-container">
+                        <img src="/images/UserImages/userAvatar.jpg" alt="Alternate Text" />
+                    </span>
+
+                    <div class="product-detail">
+                        <div class="product-name">
+                            <h1>
+                                @item.Product.ProductTitle
+                            </h1>
+                        </div>
+
+                        <div class="color">
+                            <h5>
+                                رنگ :
+                            </h5>
+                            <span>
+                                آبی
+                            </span>
+                        </div>
+
+                        <div class="warranty">
+                            <h5>
+                                گارانتی :
+                            </h5>
+                            <span>
+                                a
+                            </span>
+                        </div>
+
+                        <div class="store">
+                            <h5>
+                                فروشنده :
+                            </h5>
+                            <span>
+                                آبی
+                            </span>
+                        </div>
+
+                        <div class="quantity-selector">
+                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-orderDetailId="@item.OrderDetailId"asp-route-actionType="Plus">
+                                <button type="submit"><i class="far fa-plus"></i></button>
+                            </form>
+                            <span>@item.Count</span>
+                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-orderDetailId="@item.OrderDetailId" asp-route-actionType="Minus">
+                                <button type="submit"><i class="far fa-minus"></i></button>
+                            </form>
+
+                            <form method="post" asp-action="RemoveOrderDetail" asp-route-orderDetailId="@item.OrderDetailId">
+                                <button type="submit"><i class="fal fa-trash-alt"></i></button>
+                            </form>
+                        </div>
+
+                        <div class="price">
+                            <h3>
+                                @item.Sum.ToToman()
+                                <span class="toman">تومان</span>
+                            </h3>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+
+        </div>
+
+        <div class="detail-cart box-shadow">
+            <div class="collapse" id="cart-datail">
+                <section style="border-bottom: 1px solid #e9e8e8;">
+                    <h5>مبلغ کل(@Model.OrderDetails.Count):</h5>
+                    <p>
+                        @Model.Sum.ToToman()
+                        <span class="toman">تومان</span>
+                    </p>
+                </section>
+
+                <section>
+                    <h5>هزینه ارسال:</h5>
+                    <p>
+                        رایگان
+                    </p>
+                </section>
+
+                <section>
+                    <h5>سود شما:</h5>
+                    <p>
+                        3,000
+                        <span class="toman">تومان</span>
+                    </p>
+                </section>
+
+                <section style="border-bottom: 1px solid #e9e8e8;">
+                    <h5>مبلغ قابل پرداخت</h5>
+                    <p>
+                        @Model.Sum.ToToman()
+                        <span class="toman">تومان</span>
+                    </p>
+                </section>
+
+
+            </div>
+            <section>
+                <a class="btn finall-cart-btn" asp-action="Payment">
+                    ادمه فرایند خرید
+                </a>
+
+                <a title="جزئیات" class="cart-datail-collapse" data-toggle="collapse" href="#cart-datail" role="button" aria-expanded="false" aria-controls="#cart-datail">
+                    <i class="far fa-arrows-v"></i>
+                </a>
+
+
+            </section>
+        </div>
+    </div>
+}
+
+
+
+
+
+@section Scripts
+{
+    <script>
+        $(function () {
+            if (window.innerWidth > 991) {
+                let collapse = document.getElementsByClassName('collapse');
+                for (let i = 0; i < collapse.length; i++) {
+                    collapse[i].classList.add("show");
+                }
+            }
+
+            window.addEventListener('resize', function () {
+                let collapse = document.getElementsByClassName('collapse');
+
+                if (window.innerWidth > 991) {
+
+                    for (let i = 0; i < collapse.length; i++) {
+                        collapse[i].classList.add("show");
+                    }
+                } else {
+                    for (let i = 0; i < collapse.length; i++) {
+                        collapse[i].classList.remove("show");
+                    }
+                }
+            });
+        });
+    </script>
+}

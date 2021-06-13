@@ -38,5 +38,10 @@ namespace Reshop.Application.Convertors
             return lettersDictionary.Aggregate(text, (current, item) =>
                 current.Replace(item.Key, item.Value));
         }
+
+        public static string TextAfter(this string value, string search)
+        {
+            return value.Substring(value.IndexOf(search) + search.Length);
+        }
     }
 }

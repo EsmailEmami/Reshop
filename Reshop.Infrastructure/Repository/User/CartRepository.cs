@@ -91,7 +91,7 @@ namespace Reshop.Infrastructure.Repository.User
                 .ThenInclude(c => c.ProductGalleries) as IAsyncEnumerable<Order>;
         }
 
-    
+
 
         public async Task<Order> GetOrderByIdAsync(string orderId)
         {
@@ -116,6 +116,12 @@ namespace Reshop.Infrastructure.Repository.User
         public void RemoveOrder(Order order)
         {
             _context.Orders.Remove(order);
+        }
+
+        public async Task<Order> GetOrderByOrderDetailAsync(string orderDetailId)
+        {
+            return await _context.OrderDetails.Where(c => c.OrderDetailId == orderDetailId)
+                .Select(c => c.Order).Include(c=> c.OrderDetails).SingleAsync();
         }
 
         public async Task SaveChangesAsync()

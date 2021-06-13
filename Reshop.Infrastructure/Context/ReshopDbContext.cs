@@ -62,6 +62,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<StateCity> StateCities { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
+        public virtual DbSet<UserProductView> UserProductsView { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

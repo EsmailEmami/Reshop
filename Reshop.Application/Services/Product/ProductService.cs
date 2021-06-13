@@ -7,6 +7,7 @@ using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Interfaces.Product;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
@@ -51,19 +52,27 @@ namespace Reshop.Application.Services.Product
             return new Tuple<IAsyncEnumerable<ProductViewModel>, int, int>(products, pageId, totalPages);
         }
 
-        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetCategoryProductsWithPaginationAsync(int categoryId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18)
+        public async Task<CategoryOrChildCategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
-            int productsCount = await _productRepository.GetCategoryProductsCountWithTypeAsync(categoryId, Fixer.FixedToString(type));
 
-            var products = _productRepository.GetProductsOfCategoryWithPagination(categoryId, Fixer.FixedToString(type), Fixer.FixedToString(sortBy), skip, take) as IEnumerable<ProductViewModel>;
+            int productsCount = await _productRepository.GetCategoryProductsCountWithTypeAsync(categoryId);
 
+            var products = _productRepository.GetProductsOfCategoryWithPagination(categoryId, Fixer.FixedText(sortBy), skip, take, filter, minPrice != null ? decimal.Parse(minPrice) : 0, maxPrice != null ? decimal.Parse(maxPrice) : 0, brands);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
+            IEnumerable<string> brandsShow = _productRepository.GetBrandsOfCategory(categoryId);
 
-            return new Tuple<IEnumerable<ProductViewModel>, int, int>(products, pageId, totalPages);
+
+            return new CategoryOrChildCategoryProductsForShow()
+            {
+                Products = products,
+                PageId = pageId,
+                TotalPages = totalPages,
+                Brands = brandsShow
+            };
         }
 
         public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperUserId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18)
@@ -268,6 +277,26 @@ namespace Reshop.Application.Services.Product
             _productRepository.RemoveProduct(product);
 
             await _productRepository.SaveChangesAsync();
+        }
+
+        public async Task<ResultTypes> EditProductAsync(Domain.Entities.Product.Product product)
+        {
+            try
+            {
+                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
+                {
+                    product.ShortKey = NameGenerator.GenerateShortKey();
+                }
+
+                _productRepository.UpdateProduct(product);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
 
         public async Task<ResultTypes> EditMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail)
@@ -771,6 +800,26 @@ namespace Reshop.Application.Services.Product
                 return false;
             }
         }
+
+        public async Task<ResultTypes> AddUserProductViewAsync(UserProductView userProductView)
+        {
+            try
+            {
+                await _productRepository.AddUserProductViewAsync(userProductView);
+                await _productRepository.SaveChangesAsync();
+
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<bool> IsUserProductViewExistAsync(int productId, string userIP) =>
+            await _productRepository.IsUserProductViewExistAsync(productId, userIP);
 
         public async Task<Tuple<IAsyncEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18)
         {

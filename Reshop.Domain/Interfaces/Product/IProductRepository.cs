@@ -15,11 +15,10 @@ namespace Reshop.Domain.Interfaces.Product
 
         IAsyncEnumerable<ProductViewModel> GetProducts();
         IAsyncEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take);
-        IAsyncEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string type, string sortBy, int skip, int take);
+        IEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
         Task<string> GetProductFirstPictureName(int productId);
 
-
-
+        IEnumerable<string> GetBrandsOfCategory(int categoryId);
 
         IEnumerable<Entities.Product.Product> GetTypeMobileProducts();
         IEnumerable<Entities.Product.Product> GetTypeLaptopProducts();
@@ -39,7 +38,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         Task<int> GetProductsCountWithTypeAsync(string type);
         Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId, string type);
-        Task<int> GetCategoryProductsCountWithTypeAsync(int categoryId, string type);
+        Task<int> GetCategoryProductsCountWithTypeAsync(int categoryId, string type = "");
 
 
 
@@ -157,6 +156,8 @@ namespace Reshop.Domain.Interfaces.Product
         IAsyncEnumerable<ProductViewModel> GetProductsByFilter(string productName);
 
 
+        Task AddUserProductViewAsync(UserProductView userProductView);
+        Task<bool> IsUserProductViewExistAsync(int productId, string userIP);
 
         Task SaveChangesAsync();
     }

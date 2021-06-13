@@ -21,10 +21,6 @@
         LaptopBatteryCharger,
         Cable,
         FlashMemory,
-
-
-
-
         Ram,
         Cooler,
         Label,
@@ -41,9 +37,6 @@
         Heater,
         SolderingSystem,
         Loupe,
-
-
-
-        NotFound,
+NotFound,
     }
 }

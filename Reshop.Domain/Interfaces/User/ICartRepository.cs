@@ -33,7 +33,7 @@ namespace Reshop.Domain.Interfaces.User
         void UpdateOrder(Order order);
         Task<bool> IsOrderTrackingCodeExistAsync(string trackingCode);
         void RemoveOrder(Order order);
-
+        Task<Order> GetOrderByOrderDetailAsync(string orderDetailId);
 
         #endregion
 

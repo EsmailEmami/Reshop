@@ -17,7 +17,7 @@ namespace Reshop.Application.Interfaces.Product
 
         // product , pageId , totalPages
         Task<Tuple<IAsyncEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
-        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetCategoryProductsWithPaginationAsync(int categoryId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
+        Task<CategoryOrChildCategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperUserId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
 
         // get by id 
@@ -69,6 +69,7 @@ namespace Reshop.Application.Interfaces.Product
         Task RemoveLaptopAsync(int productId);
 
         // update
+        Task<ResultTypes> EditProductAsync(Domain.Entities.Product.Product product);
         Task<ResultTypes> EditMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
         Task<ResultTypes> EditLaptopAsync(Domain.Entities.Product.Product product, LaptopDetail laptopDetail);
         Task<ResultTypes> EditMobileCoverAsync(Domain.Entities.Product.Product product, MobileCoverDetail mobileCoverDetail);
@@ -82,6 +83,9 @@ namespace Reshop.Application.Interfaces.Product
         // validations 
         Task<bool> IsProductExistAsync(int productId);
         Task<bool> IsProductGalleriesCountValidAsync(int productId);
+
+        Task<ResultTypes> AddUserProductViewAsync(UserProductView userProductView);
+        Task<bool> IsUserProductViewExistAsync(int productId, string userIP);
 
         #region Favorite Product
 

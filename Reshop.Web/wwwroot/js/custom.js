@@ -121,3 +121,76 @@ function ShowToast(type, text, returnUrl) {
         }
     }, 3000);
 }
+
+
+function BrandFilter(input) {
+
+    let txt, txtValue, checkbox;
+
+    txt = $(".main-filter .filter-by-brand .brands span");
+    checkbox = $(".main-filter .filter-by-brand .brands input[type=checkbox]");
+
+    for (i = 0; i < txt.length; i++) {
+
+        txtValue = txt[i].textContent || txt[i].innerText;
+        if (txtValue.indexOf(input.value) > -1) {
+            txt[i].style.display = "";
+            checkbox[i].style.display = "";
+        } else {
+            txt[i].style.display = "none";
+            checkbox[i].style.display = "none";
+        }
+    }
+
+    let btn = document.getElementById("brand-remove");
+
+    if ($.trim(input.value).length) {
+        btn.setAttribute("style", "visibility: visible;opacity: 1;");
+    } else {
+        btn.setAttribute("style", "");
+    }
+}
+
+function ResetBrandFilterValue(btn) {
+    let input = document.getElementById("brand-filter");
+    input.value = "";
+
+    btn.setAttribute("style", "");
+
+    let txt = $(".main-filter .filter-by-brand .brands span");
+    let checkbox = $(".main-filter .filter-by-brand .brands input[type=checkbox]");
+
+    for (i = 0; i < txt.length; i++) {
+        txt[i].style.display = "";
+        checkbox[i].style.display = "";
+    }
+
+}
+
+$(function () {
+    if (window.innerWidth > 767) {
+        let collapse = document.getElementsByClassName('collapse');
+        for (let i = 0; i < collapse.length; i++) {
+            collapse[i].classList.add("show");
+        }
+    }
+
+    window.addEventListener('resize', function () {
+        let collapse = document.getElementsByClassName('collapse');
+
+        if (window.innerWidth > 767) {
+
+            for (let i = 0; i < collapse.length; i++) {
+                collapse[i].classList.add("show");
+            }
+        } else {
+            for (let i = 0; i < collapse.length; i++) {
+                collapse[i].classList.remove("show");
+            }
+        }
+    });
+});
+
+function SubmitForm(formId) {
+    document.getElementById(formId).Submit();
+}
