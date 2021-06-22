@@ -1,6 +1,6 @@
 ﻿@model CategoryOrChildCategoryProductsForShow
 @{
-    ViewData["Title"] = ViewData["CategoryName"].ToString()?.Replace("-", " ");
+    ViewData["Title"] = ViewData["CategoryOrChildCategoryTitleName"].ToString()?.Replace("-", " ");
 }
 
 @section Css
@@ -15,10 +15,22 @@
     <div class="top-filter box-shadow">
         <section class="p-one">
             <div class="search-form">
-                <div class="form">
-                    <input type="text" name="search" placeholder="عنوان مورد نظر ...">
-                    <button><i class="far fa-search"></i></button>
-                </div>
+
+                @if (ViewBag.SearchText != null)
+                {
+                    <div class="form">
+                        <input type="text" name="search" value="@ViewBag.SearchText.ToString()" placeholder="عنوان مورد نظر ...">
+                        <button><i class="far fa-search"></i></button>
+                    </div>
+                }
+                else
+                {
+                    <div class="form">
+                        <input type="text" name="search" placeholder="عنوان مورد نظر ...">
+                        <button><i class="far fa-search"></i></button>
+                    </div>
+                }
+
             </div>
 
         </section>
@@ -151,10 +163,10 @@
                             }
                             @foreach (var item in Model.Brands)
                             {
-                            <div>
-                                <input type="checkbox" name="brands" value="@item" @(selectedBrands!.Any(c=> c == item)?"checked":"")>
-                                <span>@item</span>
-                            </div>
+                                <div>
+                                    <input type="checkbox" name="brands" value="@item" @(selectedBrands!.Any(c => c == item) ? "checked" : "")>
+                                    <span>@item</span>
+                                </div>
                             }
                         </div>
                     </div>
@@ -162,18 +174,18 @@
             </div>
         </div>
         <div class="col-md-8 col-lg-9">
-            <div class="row">
-                @if (!Model.Products.Any())
-                {
-                    <div class="alert alert-warning text-muted">
-                      متاسفانه محصولی یافت نشد.
-                    </div>
-                }
-                else
-                {
+            @if (!Model.Products.Any())
+            {
+                <div class="alert alert-warning text-muted">
+                    متاسفانه محصولی یافت نشد.
+                </div>
+            }
+            else
+            {
+                <div class="row">
                     @await Html.PartialAsync("Product/_BoxProducts", Model.Products)
-                }
-            </div>
+                </div>
+            }
 
             @if (Model.TotalPages > 1)
             {

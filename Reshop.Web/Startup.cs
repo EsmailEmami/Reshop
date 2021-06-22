@@ -67,7 +67,7 @@ namespace Reshop.Web
 
 
 
-            app.UseMiddleware(typeof(ProductHitCounterMiddleware));
+            //app.UseMiddleware(typeof(ProductHitCounterMiddleware));
 
             app.UseEndpoints(endpoints =>
             {

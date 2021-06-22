@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Reshop.Domain.Entities.Shopper
@@ -9,7 +10,6 @@ namespace Reshop.Domain.Entities.Shopper
         {
 
         }
-
 
         [ForeignKey("Product")]
         public int ProductId { get; set; }
@@ -27,6 +27,18 @@ namespace Reshop.Domain.Entities.Shopper
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Warranty { get; set; }
+
+        [Display(Name = "قیمت محصول")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public decimal Price { get; set; }
+
+        [Display(Name = "تعداد موجودی")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public int QuantityInStock { get; set; }
+
+        public bool IsFinally { get; set; }
+
+        public DateTime CreateDate { get; set; }
 
         #region Relations
 

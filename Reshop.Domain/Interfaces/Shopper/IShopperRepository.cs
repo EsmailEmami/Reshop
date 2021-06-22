@@ -15,10 +15,13 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         #region shopper product
 
-        Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId);
+        
         void UpdateShopperProduct(ShopperProduct shopperProduct);
+        void RemoveShopperProduct(ShopperProduct shopperProduct);
         Task AddShopperProductAsync(ShopperProduct shopperProduct);
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId);
+        IEnumerable<ShopperProduct> GetProductShoppersProduct(int productId);
+        Task<bool> IsShopperProductExistAsync(string shopperUserId, int productId);
 
         #endregion
 

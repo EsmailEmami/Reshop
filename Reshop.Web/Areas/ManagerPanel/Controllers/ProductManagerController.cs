@@ -126,8 +126,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.Mobile.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -217,8 +215,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -320,8 +316,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.Laptop.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -404,8 +398,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
+                
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -494,8 +487,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.Tablet.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -578,8 +569,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -658,8 +647,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.MobileCover.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -736,8 +723,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -831,8 +816,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.HeadPhone.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -910,8 +893,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -981,8 +962,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.Handsfree.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -1060,8 +1039,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -1137,8 +1114,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.Speaker.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -1218,8 +1193,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -1318,8 +1291,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.WristWatch.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -1394,8 +1365,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -1466,8 +1435,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.SmartWatch.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -1553,8 +1520,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -1634,8 +1599,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.FlashMemory.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -1710,8 +1673,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
@@ -1783,8 +1744,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    Price = model.Price,
-                    QuantityInStock = model.QuantityInStock,
                     ProductType = ProductTypes.FlashMemory.ToString(),
                     Brand = model.ProductBrand,
                     BrandProduct = model.BrandProduct,
@@ -1860,8 +1819,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Price = model.Price;
-                product.QuantityInStock = model.QuantityInStock;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 

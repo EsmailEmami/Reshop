@@ -90,7 +90,7 @@ namespace Reshop.Infrastructure.Context
             modelBuilder.Entity<RolePermission>()
                 .HasKey(c => new { c.RoleId, c.PermissionId });
 
-            modelBuilder.Entity<Product>(i =>
+            modelBuilder.Entity<ShopperProduct>(i =>
             {
                 i.Property(w => w.Price).HasColumnType("Money");
             });

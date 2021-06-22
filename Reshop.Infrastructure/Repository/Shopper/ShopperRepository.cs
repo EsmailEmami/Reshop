@@ -51,18 +51,25 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
                     }).SingleOrDefaultAsync();
 
-        public async Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId)
-            =>
-                await _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId).SingleOrDefaultAsync();
+
 
         public void UpdateShopperProduct(ShopperProduct shopperProduct) => _context.ShopperProducts.Update(shopperProduct);
+
+        public void RemoveShopperProduct(ShopperProduct shopperProduct) =>
+            _context.ShopperProducts.Remove(shopperProduct);
 
         public async Task AddShopperProductAsync(ShopperProduct shopperProduct) =>
             await _context.ShopperProducts.AddAsync(shopperProduct);
 
-        public IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId) => 
+        public IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId) =>
             _context.ShopperProducts.Where(c => c.ProductId == productId)
                 .Select(c => new Tuple<string, string, string>(c.ShopperUserId, c.User.Shopper.StoreName, c.Warranty));
+
+        public IEnumerable<ShopperProduct> GetProductShoppersProduct(int productId) =>
+            _context.ShopperProducts.Where(c => c.ProductId == productId);
+
+        public async Task<bool> IsShopperProductExistAsync(string shopperUserId, int productId) =>
+            await _context.ShopperProducts.AnyAsync(c => c.ShopperUserId == shopperUserId && c.ProductId == productId);
 
         public IEnumerable<StoreTitle> GetStoreTitles() => _context.StoreTitles;
 

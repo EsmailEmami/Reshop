@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
+using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -27,184 +28,55 @@ namespace Reshop.Infrastructure.Repository.Product
 
         #endregion
 
-        public IAsyncEnumerable<ProductViewModel> GetProducts()
-        {
-            return _context.Products.Select(c => new ProductViewModel()
-            {
-                ProductId = c.ProductId,
-                ProductPrice = c.Price,
-                ProductTitle = c.ProductTitle,
-                BrandName = c.Brand
-            }) as IAsyncEnumerable<ProductViewModel>;
-        }
 
-        public IAsyncEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take)
+        public IEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take)
         {
+            IQueryable<Domain.Entities.Product.Product> products = _context.Products
+                .Include(c => c.ShopperProducts)
+                .Skip(skip).Take(take);
+
+            #region filter product
+
+
             if (type == "all")
             {
-                return sortBy switch
+                products = sortBy switch
                 {
-                    "news" => _context.Products
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.CreateDate)
-                        .Include(c => c.ShopperProducts)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Price,
-                            ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand,
-                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "expensive" => _context.Products
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.Price)
-                        .Include(c => c.ShopperProducts)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Price,
-                            ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand,
-                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "cheap" => _context.Products
-                        .Skip(skip).Take(take)
-                        .OrderBy(c => c.Price)
-                        .Include(c => c.ShopperProducts)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Price,
-                            ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand,
-                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "mostsale" => _context.Products
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.AllSalesCount)
-                        .Include(c => c.ShopperProducts)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Price,
-                            ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand,
-                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "mostviews" => _context.Products
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.AllViewsCount)
-                        .Include(c => c.ShopperProducts)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Price,
-                            ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand,
-                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    _ => _context.Products
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.ProductId)
-                        .Include(c => c.ShopperProducts)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Price,
-                            ProductTitle = c.ProductTitle,
-                            BrandName = c.Brand,
-                            ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                        }) as IAsyncEnumerable<ProductViewModel>,
+                    "news" => products.OrderByDescending(c => c.CreateDate),
+                    "expensive" => products.OrderByDescending(c => c.ShopperProducts.First().Price),
+                    "cheap" => products.OrderBy(c => c.ShopperProducts.First().Price),
+                    "mostsale" => products.OrderByDescending(c => c.AllSalesCount),
+                    "mostviews" => products.OrderByDescending(c => c.AllViewsCount),
+                    _ => products
+                };
+            }
+            else
+            {
+                products = sortBy switch
+                {
+                    "news" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.CreateDate),
+                    "expensive" => products.Where(c => c.ProductType == type)
+                        .OrderByDescending(c => c.ShopperProducts.First().Price),
+                    "cheap" => products.Where(c => c.ProductType == type).OrderBy(c => c.ShopperProducts.First().Price),
+                    "mostsale" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllSalesCount),
+                    "mostviews" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllViewsCount),
+                    _ => products
                 };
             }
 
-            return sortBy switch
+            #endregion
+
+
+            return products.Select(c => new ProductViewModel()
             {
-                "news" => _context.Products.Where(c => c.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.ProductId)
-                    .Include(c => c.ShopperProducts)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Price,
-                        ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand,
-                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                "expensive" => _context.Products.Where(c => c.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.Price)
-                    .Include(c => c.ShopperProducts)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Price,
-                        ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand,
-                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                "cheap" => _context.Products.Where(c => c.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderBy(c => c.Price)
-                    .Include(c => c.ShopperProducts)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Price,
-                        ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand,
-                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                "mostsale" => _context.Products.Where(c => c.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.AllSalesCount)
-                    .Include(c => c.ShopperProducts)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Price,
-                        ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand,
-                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                "mostviews" => _context.Products.Where(c => c.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.AllViewsCount)
-                    .Include(c => c.ShopperProducts)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Price,
-                        ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand,
-                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                _ => _context.Products.Where(c => c.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.ProductId)
-                    .Include(c => c.ShopperProducts)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Price,
-                        ProductTitle = c.ProductTitle,
-                        BrandName = c.Brand,
-                        ShopperUserId = c.ShopperProducts.First().ShopperUserId
-                    }) as IAsyncEnumerable<ProductViewModel>,
-            };
+                ProductId = c.ProductId,
+                ProductTitle = c.ProductTitle,
+                BrandName = c.Brand,
+                ProductPrice = c.ShopperProducts.First().Price,
+                ShopperUserId = c.ShopperProducts.First().ShopperUserId
+            });
         }
+
 
         public IEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null)
         {
@@ -213,6 +85,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.ChildCategory)
                 .SelectMany(c => c.ProductToChildCategories)
                 .Select(c => c.Product)
+                .Include(c => c.ShopperProducts)
                 .Skip(skip).Take(take);
 
 
@@ -222,8 +95,8 @@ namespace Reshop.Infrastructure.Repository.Product
             products = sortBy switch
             {
                 "news" => products.OrderByDescending(c => c.CreateDate),
-                "expensive" => products.OrderByDescending(c => c.Price),
-                "cheap" => products.OrderBy(c => c.Price),
+                "expensive" => products.OrderByDescending(c => c.ShopperProducts.First().Price),
+                "cheap" => products.OrderBy(c => c.ShopperProducts.First().Price),
                 "mostsale" => products.OrderByDescending(c => c.AllSalesCount),
                 "mostviews" => products.OrderByDescending(c => c.AllViewsCount),
                 _ => products
@@ -233,12 +106,12 @@ namespace Reshop.Infrastructure.Repository.Product
 
             if (minPrice != 0)
             {
-                products = products.Where(c => c.Price >= minPrice);
+                products = products.Where(c => c.ShopperProducts.First().Price >= minPrice);
             }
 
             if (maxPrice != 0)
             {
-                products = products.Where(c => c.Price <= maxPrice);
+                products = products.Where(c => c.ShopperProducts.First().Price <= maxPrice);
             }
 
             if (filter != null)
@@ -262,7 +135,67 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand,
-                ProductPrice = c.Price,
+                ProductPrice = c.ShopperProducts.First().Price,
+                ShopperUserId = c.ShopperProducts.First().ShopperUserId
+            });
+        }
+
+        public IEnumerable<ProductViewModel> GetProductsOfChildCategoryWithPagination(int childCategoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null)
+        {
+            IQueryable<Domain.Entities.Product.Product> products = _context.ProductToChildCategories
+                .Where(c => c.ChildCategoryId == childCategoryId)
+                .Select(c => c.Product)
+                .Include(c => c.ShopperProducts)
+                .Skip(skip).Take(take);
+
+
+            #region filter product
+
+
+            products = sortBy switch
+            {
+                "news" => products.OrderByDescending(c => c.CreateDate),
+                "expensive" => products.OrderByDescending(c => c.ShopperProducts.First().Price),
+                "cheap" => products.OrderBy(c => c.ShopperProducts.First().Price),
+                "mostsale" => products.OrderByDescending(c => c.AllSalesCount),
+                "mostviews" => products.OrderByDescending(c => c.AllViewsCount),
+                _ => products
+            };
+
+
+
+            if (minPrice != 0)
+            {
+                products = products.Where(c => c.ShopperProducts.First().Price >= minPrice);
+            }
+
+            if (maxPrice != 0)
+            {
+                products = products.Where(c => c.ShopperProducts.First().Price <= maxPrice);
+            }
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+
+
+            }
+
+
+
+            #endregion
+
+
+            return products.Select(c => new ProductViewModel()
+            {
+                ProductId = c.ProductId,
+                ProductTitle = c.ProductTitle,
+                BrandName = c.Brand,
+                ProductPrice = c.ShopperProducts.First().Price,
                 ShopperUserId = c.ShopperProducts.First().ShopperUserId
             });
         }
@@ -281,167 +214,68 @@ namespace Reshop.Infrastructure.Repository.Product
                 .SelectMany(c => c.ProductToChildCategories)
                 .Select(c => c.Product.Brand).Distinct();
 
+        public IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId) =>
+            _context.ProductToChildCategories
+                .Where(c => c.ChildCategoryId == childCategoryId)
+                .Select(c => c.Product.Brand).Distinct();
 
 
         public async Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key)
             =>
                 await _context.Products.SingleOrDefaultAsync(c => c.ShortKey == key);
 
-        public IAsyncEnumerable<ProductViewModel> GetShopperProductsWthPagination(string shopperUserId, string type, string sortBy, int skip, int take)
+        public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) =>
+            await _context.Products.FindAsync(productId);
+
+        public IEnumerable<ProductViewModel> GetShopperProductsWthPagination(string shopperUserId, string type, string sortBy, int skip, int take)
         {
-            try
+            IQueryable<Domain.Entities.Product.Product> products = _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId)
+                .Select(c => c.Product)
+                .Include(c => c.ShopperProducts);
+
+
+            #region filter product
+
+
+            if (type == "all")
             {
-                if (type == "all")
+                products = sortBy switch
                 {
-                    return sortBy switch
-                    {
-                        "news" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                            .Skip(skip).Take(take)
-                            .OrderByDescending(c => c.Product.CreateDate)
-                            .Select(c => new ProductViewModel()
-                            {
-                                ProductId = c.Product.ProductId,
-                                ProductTitle = c.Product.ProductTitle,
-                                ProductPrice = c.Product.Price,
-                                BrandName = c.Product.Brand
-                            }) as IAsyncEnumerable<ProductViewModel>,
-
-                        "expensive" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                            .Skip(skip).Take(take)
-                            .OrderByDescending(c => c.Product.Price)
-                            .Select(c => new ProductViewModel()
-                            {
-                                ProductId = c.Product.ProductId,
-                                ProductTitle = c.Product.ProductTitle,
-                                ProductPrice = c.Product.Price,
-                                BrandName = c.Product.Brand
-                            }) as IAsyncEnumerable<ProductViewModel>,
-
-                        "cheap" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                            .Skip(skip).Take(take)
-                            .OrderBy(c => c.Product.CreateDate)
-                            .Select(c => new ProductViewModel()
-                            {
-                                ProductId = c.Product.ProductId,
-                                ProductTitle = c.Product.ProductTitle,
-                                ProductPrice = c.Product.Price,
-                                BrandName = c.Product.Brand
-                            }) as IAsyncEnumerable<ProductViewModel>,
-
-                        "mostsale" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                            .Skip(skip).Take(take)
-                            .OrderByDescending(c => c.Product.AllSalesCount)
-                            .Select(c => new ProductViewModel()
-                            {
-                                ProductId = c.Product.ProductId,
-                                ProductTitle = c.Product.ProductTitle,
-                                ProductPrice = c.Product.Price,
-                                BrandName = c.Product.Brand
-                            }) as IAsyncEnumerable<ProductViewModel>,
-
-                        "mostviews" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                            .Skip(skip).Take(take)
-                            .OrderByDescending(c => c.Product.AllViewsCount)
-                            .Select(c => new ProductViewModel()
-                            {
-                                ProductId = c.Product.ProductId,
-                                ProductTitle = c.Product.ProductTitle,
-                                ProductPrice = c.Product.Price,
-                                BrandName = c.Product.Brand
-                            }) as IAsyncEnumerable<ProductViewModel>,
-
-                        _ => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                            .Skip(skip).Take(take)
-                            .OrderByDescending(c => c.Product.CreateDate)
-                            .Select(c => new ProductViewModel()
-                            {
-                                ProductId = c.Product.ProductId,
-                                ProductTitle = c.Product.ProductTitle,
-                                ProductPrice = c.Product.Price,
-                                BrandName = c.Product.Brand
-                            }) as IAsyncEnumerable<ProductViewModel>,
-                    };
-                }
-
-                return sortBy switch
-                {
-                    "news" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.Product.CreateDate)
-                        .Where(c => c.Product.ProductType == type)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.Product.ProductId,
-                            ProductTitle = c.Product.ProductTitle,
-                            ProductPrice = c.Product.Price,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "expensive" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.Product.Price)
-                        .Where(c => c.Product.ProductType == type)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.Product.ProductId,
-                            ProductTitle = c.Product.ProductTitle,
-                            ProductPrice = c.Product.Price,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "cheap" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                        .Skip(skip).Take(take)
-                        .OrderBy(c => c.Product.Price)
-                        .Where(c => c.Product.ProductType == type)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.Product.ProductId,
-                            ProductTitle = c.Product.ProductTitle,
-                            ProductPrice = c.Product.Price,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "mostsale" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.Product.AllSalesCount)
-                        .Where(c => c.Product.ProductType == type)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.Product.ProductId,
-                            ProductTitle = c.Product.ProductTitle,
-                            ProductPrice = c.Product.Price,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "mostviews" => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.Product.AllViewsCount)
-                        .Where(c => c.Product.ProductType == type)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.Product.ProductId,
-                            ProductTitle = c.Product.ProductTitle,
-                            ProductPrice = c.Product.Price,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    _ => _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
-                        .Skip(skip).Take(take)
-                        .OrderByDescending(c => c.Product.CreateDate)
-                        .Where(c => c.Product.ProductType == type)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.Product.ProductId,
-                            ProductTitle = c.Product.ProductTitle,
-                            ProductPrice = c.Product.Price,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
+                    "news" => products.OrderByDescending(c => c.CreateDate),
+                    "expensive" => products.OrderByDescending(c => c.ShopperProducts.First().Price),
+                    "cheap" => products.OrderBy(c => c.ShopperProducts.First().Price),
+                    "mostsale" => products.OrderByDescending(c => c.AllSalesCount),
+                    "mostviews" => products.OrderByDescending(c => c.AllViewsCount),
+                    _ => products
                 };
             }
-            catch
+            else
             {
-                return null;
+                products = sortBy switch
+                {
+                    "news" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.CreateDate),
+                    "expensive" => products.Where(c => c.ProductType == type)
+                        .OrderByDescending(c => c.ShopperProducts.First().Price),
+                    "cheap" => products.Where(c => c.ProductType == type).OrderBy(c => c.ShopperProducts.First().Price),
+                    "mostsale" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllSalesCount),
+                    "mostviews" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllViewsCount),
+                    _ => products
+                };
             }
+
+            #endregion
+
+
+            return products.Select(c => new ProductViewModel()
+            {
+                ProductId = c.ProductId,
+                ProductTitle = c.ProductTitle,
+                BrandName = c.Brand,
+                ProductPrice = c.ShopperProducts.First().Price,
+                ShopperUserId = c.ShopperProducts.First().ShopperUserId
+            });
+
 
         }
         public async Task<int> GetShopperProductsCountWithTypeAsync(string shopperUserId, string type)
@@ -499,6 +333,20 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ProductType == type).CountAsync();
         }
 
+        public async Task<int> GetChildCategoryProductsCountWithTypeAsync(int childCategoryId, string type = "")
+        {
+            if (string.IsNullOrEmpty(type))
+            {
+                return await _context.ProductToChildCategories
+                    .Where(c => c.ChildCategoryId == childCategoryId)
+                    .Select(c => c.Product).CountAsync();
+            }
+            return await _context.ProductToChildCategories
+                .Where(c => c.ChildCategoryId == childCategoryId)
+                .Select(c => c.Product)
+                .Where(c => c.ProductType == type).CountAsync();
+        }
+
 
         public async Task<Domain.Entities.Product.Product> GetProductWithTypeAsync(int productId, string type)
         {
@@ -548,9 +396,10 @@ namespace Reshop.Infrastructure.Repository.Product
             };
         }
 
-        public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId)
-            =>
-                await _context.Products.SingleOrDefaultAsync(c => c.ProductId == productId);
+        public async Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId) =>
+            await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+                .Include(c => c.Product).SingleOrDefaultAsync();
 
         public async Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId)
         {
@@ -622,179 +471,59 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Include(c => c.QuestionAnswers);
         }
 
-        public IAsyncEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24)
+        public IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24)
         {
+            IQueryable<Domain.Entities.Product.Product> products = _context.FavoriteProducts
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Product)
+                .Skip(skip).Take(take);
+
+
+
+            Tuple<string, decimal> shopper = products.SelectMany(c => c.ShopperProducts).OrderByDescending(c => c.SaleCount)
+                .Select(c => new Tuple<string, decimal>(c.ShopperUserId, c.Price)).First();
+
+
+            #region filter product
+
+
             if (type == "all")
             {
-                return sortBy switch
+                products = sortBy switch
                 {
-                    "news" => _context.FavoriteProducts
-                        .Where(c => c.UserId == userId)
-                        .Skip(skip).Take(take)
-                        .Include(c => c.Product)
-                        .OrderByDescending(c => c.ProductId)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Product.Price,
-                            ProductTitle = c.Product.ProductTitle,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "expensive" => _context.FavoriteProducts
-                        .Where(c => c.UserId == userId)
-                        .Skip(skip).Take(take)
-                        .Include(c => c.Product)
-                        .OrderByDescending(c => c.Product.Price)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Product.Price,
-                            ProductTitle = c.Product.ProductTitle,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "cheap" => _context.FavoriteProducts
-                        .Where(c => c.UserId == userId)
-                        .Skip(skip).Take(take)
-                        .Include(c => c.Product)
-                        .OrderBy(c => c.Product.Price)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Product.Price,
-                            ProductTitle = c.Product.ProductTitle,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "mostsale" => _context.FavoriteProducts
-                        .Where(c => c.UserId == userId)
-                        .Skip(skip).Take(take)
-                        .Include(c => c.Product)
-                        .OrderByDescending(c => c.Product.AllSalesCount)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Product.Price,
-                            ProductTitle = c.Product.ProductTitle,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    "mostviews" => _context.FavoriteProducts
-                        .Where(c => c.UserId == userId)
-                        .Skip(skip).Take(take)
-                        .Include(c => c.Product)
-                        .OrderByDescending(c => c.Product.AllViewsCount)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Product.Price,
-                            ProductTitle = c.Product.ProductTitle,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
-
-                    _ => _context.FavoriteProducts
-                        .Where(c => c.UserId == userId)
-                        .Skip(skip).Take(take)
-                        .Include(c => c.Product)
-                        .OrderByDescending(c => c.ProductId)
-                        .Select(c => new ProductViewModel()
-                        {
-                            ProductId = c.ProductId,
-                            ProductPrice = c.Product.Price,
-                            ProductTitle = c.Product.ProductTitle,
-                            BrandName = c.Product.Brand
-                        }) as IAsyncEnumerable<ProductViewModel>,
+                    "news" => products.OrderByDescending(c => c.CreateDate),
+                    "expensive" => products.OrderByDescending(c => c.ShopperProducts.Max(c => c.Price)),
+                    "cheap" => products.OrderBy(c => c.ShopperProducts.Min(c => c.Price)),
+                    "mostsale" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.SaleCount).Sum()),
+                    "mostviews" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.ViewCount).Sum()),
+                    _ => products
+                };
+            }
+            else
+            {
+                products = sortBy switch
+                {
+                    "news" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.CreateDate),
+                    "expensive" => products.Where(c => c.ProductType == type)
+                        .OrderByDescending(c => c.ShopperProducts.First().Price),
+                    "cheap" => products.Where(c => c.ProductType == type).OrderBy(c => c.ShopperProducts.First().Price),
+                    "mostsale" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllSalesCount),
+                    "mostviews" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllViewsCount),
+                    _ => products
                 };
             }
 
+            #endregion
 
-            return sortBy switch
+
+            return products.Select(c => new ProductViewModel()
             {
-                "news" => _context.FavoriteProducts
-                    .Where(c => c.UserId == userId)
-                    .Include(c => c.Product)
-                    .Where(c => c.Product.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.ProductId)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Product.Price,
-                        ProductTitle = c.Product.ProductTitle,
-                        BrandName = c.Product.Brand
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                "expensive" => _context.FavoriteProducts
-                    .Where(c => c.UserId == userId)
-                    .Include(c => c.Product)
-                    .Where(c => c.Product.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.Product.Price)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Product.Price,
-                        ProductTitle = c.Product.ProductTitle,
-                        BrandName = c.Product.Brand
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                "cheap" => _context.FavoriteProducts
-                    .Where(c => c.UserId == userId)
-                    .Include(c => c.Product)
-                    .Where(c => c.Product.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderBy(c => c.Product.Price)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Product.Price,
-                        ProductTitle = c.Product.ProductTitle,
-                        BrandName = c.Product.Brand
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                "mostsale" => _context.FavoriteProducts
-                    .Where(c => c.UserId == userId)
-                    .Include(c => c.Product)
-                    .Where(c => c.Product.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.Product.AllSalesCount)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Product.Price,
-                        ProductTitle = c.Product.ProductTitle,
-                        BrandName = c.Product.Brand
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                "mostviews" => _context.FavoriteProducts
-                    .Where(c => c.UserId == userId)
-                    .Include(c => c.Product)
-                    .Where(c => c.Product.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.Product.AllViewsCount)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Product.Price,
-                        ProductTitle = c.Product.ProductTitle,
-                        BrandName = c.Product.Brand
-                    }) as IAsyncEnumerable<ProductViewModel>,
-
-                _ => _context.FavoriteProducts
-                    .Where(c => c.UserId == userId)
-                    .Include(c => c.Product)
-                    .Where(c => c.Product.ProductType == type)
-                    .Skip(skip).Take(take)
-                    .OrderByDescending(c => c.ProductId)
-                    .Select(c => new ProductViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductPrice = c.Product.Price,
-                        ProductTitle = c.Product.ProductTitle,
-                        BrandName = c.Product.Brand
-                    }) as IAsyncEnumerable<ProductViewModel>,
-            };
+                ProductId = c.ProductId,
+                ProductTitle = c.ProductTitle,
+                BrandName = c.Brand,
+                ProductPrice = shopper.Item2,
+                ShopperUserId = shopper.Item1
+            });
         }
 
         public async Task AddToFavoriteProductAsync(FavoriteProduct favoriteProduct)
@@ -826,10 +555,11 @@ namespace Reshop.Infrastructure.Repository.Product
         public IAsyncEnumerable<ProductViewModel> GetProductsByFilter(string productName)
         {
             return _context.Products.Where(c => c.ProductTitle.Contains(productName))
+                .Include(c => c.ShopperProducts)
                 .Select(c => new ProductViewModel()
                 {
                     ProductId = c.ProductId,
-                    ProductPrice = c.Price,
+                    ProductPrice = c.ShopperProducts.First().Price,
                     ProductTitle = c.ProductTitle,
                     BrandName = c.Brand
                 }) as IAsyncEnumerable<ProductViewModel>;
@@ -866,226 +596,225 @@ namespace Reshop.Infrastructure.Repository.Product
             return await _context.Products.AnyAsync(c => c.ProductId == productId);
         }
 
-        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId)
+        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId, string shopperUserId)
         {
-            return await _context.Products
-                .Include(c => c.MobileDetail)
+            return await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                 .Select(c => new AddOrEditMobileProductViewModel()
                 {
-                    ProductId = c.ProductId,
-                    ProductTitle = c.ProductTitle,
-                    Description = c.Description,
+                    ProductId = c.Product.ProductId,
+                    ProductTitle = c.Product.ProductTitle,
+                    Description = c.Product.Description,
                     Price = c.Price,
                     QuantityInStock = c.QuantityInStock,
-                    BrandProduct = c.BrandProduct,
-                    ProductBrand = c.Brand,
-                    InternalMemory = c.MobileDetail.InternalMemory,
-                    CommunicationNetworks = c.MobileDetail.CommunicationNetworks,
-                    BackCameras = c.MobileDetail.BackCameras,
-                    OperatingSystem = c.MobileDetail.OperatingSystem,
-                    SIMCardDescription = c.MobileDetail.SIMCardDescription,
-                    RAMValue = c.MobileDetail.RAMValue,
-                    PhotoResolution = c.MobileDetail.PhotoResolution,
-                    OperatingSystemVersion = c.MobileDetail.OperatingSystemVersion,
-                    DisplayTechnology = c.MobileDetail.DisplayTechnology,
-                    Features = c.MobileDetail.Features,
-                    Size = c.MobileDetail.Size,
-                    QuantitySIMCard = c.MobileDetail.QuantitySIMCard,
-                }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                    BrandProduct = c.Product.BrandProduct,
+                    ProductBrand = c.Product.Brand,
+                    InternalMemory = c.Product.MobileDetail.InternalMemory,
+                    CommunicationNetworks = c.Product.MobileDetail.CommunicationNetworks,
+                    BackCameras = c.Product.MobileDetail.BackCameras,
+                    OperatingSystem = c.Product.MobileDetail.OperatingSystem,
+                    SIMCardDescription = c.Product.MobileDetail.SIMCardDescription,
+                    RAMValue = c.Product.MobileDetail.RAMValue,
+                    PhotoResolution = c.Product.MobileDetail.PhotoResolution,
+                    OperatingSystemVersion = c.Product.MobileDetail.OperatingSystemVersion,
+                    DisplayTechnology = c.Product.MobileDetail.DisplayTechnology,
+                    Features = c.Product.MobileDetail.Features,
+                    Size = c.Product.MobileDetail.Size,
+                    QuantitySIMCard = c.Product.MobileDetail.QuantitySIMCard,
+                }).SingleOrDefaultAsync();
         }
 
-        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId)
-        {
-            return await _context.Products
-                .Include(c => c.LaptopDetail)
-                .Select(c => new AddOrEditLaptopProductViewModel()
-                {
-                    ProductId = c.ProductId,
-                    ProductTitle = c.ProductTitle,
-                    Description = c.Description,
-                    Price = c.Price,
-                    QuantityInStock = c.QuantityInStock,
-                    BrandProduct = c.BrandProduct,
-                    ProductBrand = c.Brand,
-                    RAMCapacity = c.LaptopDetail.RAMCapacity,
-                    InternalMemory = c.LaptopDetail.InternalMemory,
-                    GPUManufacturer = c.LaptopDetail.GPUManufacturer,
-                    Size = c.LaptopDetail.Size,
-                    Category = c.LaptopDetail.Category,
-                    ProcessorSeries = c.LaptopDetail.ProcessorSeries,
-                    RAMType = c.LaptopDetail.RAMType,
-                    ScreenAccuracy = c.LaptopDetail.ScreenAccuracy,
-                    IsMatteScreen = c.LaptopDetail.IsMatteScreen,
-                    IsTouchScreen = c.LaptopDetail.IsTouchScreen,
-                    OperatingSystem = c.LaptopDetail.OperatingSystem,
-                    IsHDMIPort = c.LaptopDetail.IsHDMIPort,
-                }).SingleOrDefaultAsync(c => c.ProductId == productId);
-        }
+        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId, string shopperUserId) =>
+             await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+                 .Select(c => new AddOrEditLaptopProductViewModel()
+                 {
+                     ProductId = c.Product.ProductId,
+                     ProductTitle = c.Product.ProductTitle,
+                     Description = c.Product.Description,
+                     Price = c.Price,
+                     QuantityInStock = c.QuantityInStock,
+                     BrandProduct = c.Product.BrandProduct,
+                     ProductBrand = c.Product.Brand,
+                     RAMCapacity = c.Product.LaptopDetail.RAMCapacity,
+                     InternalMemory = c.Product.LaptopDetail.InternalMemory,
+                     GPUManufacturer = c.Product.LaptopDetail.GPUManufacturer,
+                     Size = c.Product.LaptopDetail.Size,
+                     Category = c.Product.LaptopDetail.Category,
+                     ProcessorSeries = c.Product.LaptopDetail.ProcessorSeries,
+                     RAMType = c.Product.LaptopDetail.RAMType,
+                     ScreenAccuracy = c.Product.LaptopDetail.ScreenAccuracy,
+                     IsMatteScreen = c.Product.LaptopDetail.IsMatteScreen,
+                     IsTouchScreen = c.Product.LaptopDetail.IsTouchScreen,
+                     OperatingSystem = c.Product.LaptopDetail.OperatingSystem,
+                     IsHDMIPort = c.Product.LaptopDetail.IsHDMIPort,
+                 }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId)
-            =>
-                await _context.Products.Include(c => c.MobileCoverDetail)
-                    .Select(c => new AddOrEditMobileCoverViewModel()
-                    {
-                        ProductId = c.ProductId,
-                        ProductTitle = c.ProductTitle,
-                        Description = c.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.BrandProduct,
-                        ProductBrand = c.Brand,
-                        SuitablePhones = c.MobileCoverDetail.SuitablePhones,
-                        Gender = c.MobileCoverDetail.Gender,
-                        Structure = c.MobileCoverDetail.Structure,
-                        CoverLevel = c.MobileCoverDetail.CoverLevel,
-                        Features = c.MobileCoverDetail.Features
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
 
-        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId)
-            =>
-                await _context.Products.Include(c => c.FlashMemoryDetail)
+        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId, string shopperUserId) =>
+            await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+            .Select(c => new AddOrEditMobileCoverViewModel()
+            {
+                ProductId = c.Product.ProductId,
+                ProductTitle = c.Product.ProductTitle,
+                Description = c.Product.Description,
+                Price = c.Price,
+                QuantityInStock = c.QuantityInStock,
+                BrandProduct = c.Product.BrandProduct,
+                ProductBrand = c.Product.Brand,
+                SuitablePhones = c.Product.MobileCoverDetail.SuitablePhones,
+                Gender = c.Product.MobileCoverDetail.Gender,
+                Structure = c.Product.MobileCoverDetail.Structure,
+                CoverLevel = c.Product.MobileCoverDetail.CoverLevel,
+                Features = c.Product.MobileCoverDetail.Features
+            }).SingleOrDefaultAsync();
+
+        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId, string shopperUserId) =>
+            await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEditFlashMemoryViewModel()
                     {
                         ProductId = c.ProductId,
-                        ProductTitle = c.ProductTitle,
-                        Description = c.Description,
+                        ProductTitle = c.Product.ProductTitle,
+                        Description = c.Product.Description,
                         Price = c.Price,
                         QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.BrandProduct,
-                        ProductBrand = c.Brand,
-                        Connector = c.FlashMemoryDetail.Connector,
-                        Capacity = c.FlashMemoryDetail.Capacity,
-                        IsImpactResistance = c.FlashMemoryDetail.IsImpactResistance
+                        BrandProduct = c.Product.BrandProduct,
+                        ProductBrand = c.Product.Brand,
+                        Connector = c.Product.FlashMemoryDetail.Connector,
+                        Capacity = c.Product.FlashMemoryDetail.Capacity,
+                        IsImpactResistance = c.Product.FlashMemoryDetail.IsImpactResistance
                     }).SingleOrDefaultAsync(c => c.ProductId == productId);
 
-        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId)
-            =>
-                await _context.Products.Include(c => c.HandsfreeAndHeadPhoneDetail)
+        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperUserId) =>
+            await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEditHandsfreeAndHeadPhoneViewModel()
                     {
-                        ProductId = c.ProductId,
-                        ProductTitle = c.ProductTitle,
-                        Description = c.Description,
+                        ProductId = c.Product.ProductId,
+                        ProductTitle = c.Product.ProductTitle,
+                        Description = c.Product.Description,
                         Price = c.Price,
                         QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.BrandProduct,
-                        ProductBrand = c.Brand,
-                        ConnectionType = c.HandsfreeAndHeadPhoneDetail.ConnectionType,
-                        PhoneType = c.HandsfreeAndHeadPhoneDetail.PhoneType,
-                        WorkSuggestion = c.HandsfreeAndHeadPhoneDetail.WorkSuggestion,
-                        Connector = c.HandsfreeAndHeadPhoneDetail.Connector,
-                        IsSupportBattery = c.HandsfreeAndHeadPhoneDetail.IsSupportBattery,
-                        Features = c.HandsfreeAndHeadPhoneDetail.Features
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        BrandProduct = c.Product.BrandProduct,
+                        ProductBrand = c.Product.Brand,
+                        ConnectionType = c.Product.HandsfreeAndHeadPhoneDetail.ConnectionType,
+                        PhoneType = c.Product.HandsfreeAndHeadPhoneDetail.PhoneType,
+                        WorkSuggestion = c.Product.HandsfreeAndHeadPhoneDetail.WorkSuggestion,
+                        Connector = c.Product.HandsfreeAndHeadPhoneDetail.Connector,
+                        IsSupportBattery = c.Product.HandsfreeAndHeadPhoneDetail.IsSupportBattery,
+                        Features = c.Product.HandsfreeAndHeadPhoneDetail.Features
+                    }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId)
-            =>
-                await _context.Products.Include(c => c.TabletDetail)
+        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId, string shopperUserId) =>
+            await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEditTabletViewModel()
                     {
-                        ProductId = c.ProductId,
-                        ProductTitle = c.ProductTitle,
-                        Description = c.Description,
+                        ProductId = c.Product.ProductId,
+                        ProductTitle = c.Product.ProductTitle,
+                        Description = c.Product.Description,
                         Price = c.Price,
                         QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.BrandProduct,
-                        ProductBrand = c.Brand,
-                        InternalMemory = c.TabletDetail.InternalMemory,
-                        RAMValue = c.TabletDetail.RAMValue,
-                        IsTalkAbility = c.TabletDetail.IsTalkAbility,
-                        Size = c.TabletDetail.Size,
-                        CommunicationNetworks = c.TabletDetail.CommunicationNetworks,
-                        Features = c.TabletDetail.Features,
-                        IsSIMCardSupporter = c.TabletDetail.IsSIMCardSupporter,
-                        QuantitySIMCard = c.TabletDetail.QuantitySIMCard,
-                        OperatingSystemVersion = c.TabletDetail.OperatingSystemVersion,
-                        CommunicationTechnologies = c.TabletDetail.CommunicationTechnologies,
-                        CommunicationPorts = c.TabletDetail.CommunicationPorts
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        BrandProduct = c.Product.BrandProduct,
+                        ProductBrand = c.Product.Brand,
+                        InternalMemory = c.Product.TabletDetail.InternalMemory,
+                        RAMValue = c.Product.TabletDetail.RAMValue,
+                        IsTalkAbility = c.Product.TabletDetail.IsTalkAbility,
+                        Size = c.Product.TabletDetail.Size,
+                        CommunicationNetworks = c.Product.TabletDetail.CommunicationNetworks,
+                        Features = c.Product.TabletDetail.Features,
+                        IsSIMCardSupporter = c.Product.TabletDetail.IsSIMCardSupporter,
+                        QuantitySIMCard = c.Product.TabletDetail.QuantitySIMCard,
+                        OperatingSystemVersion = c.Product.TabletDetail.OperatingSystemVersion,
+                        CommunicationTechnologies = c.Product.TabletDetail.CommunicationTechnologies,
+                        CommunicationPorts = c.Product.TabletDetail.CommunicationPorts
+                    }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId)
-            =>
-                await _context.Products.Include(c => c.SpeakerDetail)
+        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId, string shopperUserId) =>
+            await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEditSpeakerViewModel()
                     {
-                        ProductId = c.ProductId,
-                        ProductTitle = c.ProductTitle,
-                        Description = c.Description,
+                        ProductId = c.Product.ProductId,
+                        ProductTitle = c.Product.ProductTitle,
+                        Description = c.Product.Description,
                         Price = c.Price,
                         QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.BrandProduct,
-                        ProductBrand = c.Brand,
-                        ConnectionType = c.SpeakerDetail.ConnectionType,
-                        Connector = c.SpeakerDetail.Connector,
-                        BluetoothVersion = c.SpeakerDetail.BluetoothVersion,
-                        IsMemoryCardInput = c.SpeakerDetail.IsMemoryCardInput,
-                        IsSupportBattery = c.SpeakerDetail.IsSupportBattery,
-                        IsSupportMicrophone = c.SpeakerDetail.IsSupportMicrophone,
-                        IsSupportUSBPort = c.SpeakerDetail.IsSupportUSBPort,
-                        IsSupportRadio = c.SpeakerDetail.IsSupportRadio
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        BrandProduct = c.Product.BrandProduct,
+                        ProductBrand = c.Product.Brand,
+                        ConnectionType = c.Product.SpeakerDetail.ConnectionType,
+                        Connector = c.Product.SpeakerDetail.Connector,
+                        BluetoothVersion = c.Product.SpeakerDetail.BluetoothVersion,
+                        IsMemoryCardInput = c.Product.SpeakerDetail.IsMemoryCardInput,
+                        IsSupportBattery = c.Product.SpeakerDetail.IsSupportBattery,
+                        IsSupportMicrophone = c.Product.SpeakerDetail.IsSupportMicrophone,
+                        IsSupportUSBPort = c.Product.SpeakerDetail.IsSupportUSBPort,
+                        IsSupportRadio = c.Product.SpeakerDetail.IsSupportRadio
+                    }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId)
-            =>
-                await _context.Products.Include(c => c.WristWatchDetail)
+        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId, string shopperUserId) =>
+            await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEdirWristWatchViewModel()
                     {
-                        ProductId = c.ProductId,
-                        ProductTitle = c.ProductTitle,
-                        Description = c.Description,
+                        ProductId = c.Product.ProductId,
+                        ProductTitle = c.Product.ProductTitle,
+                        Description = c.Product.Description,
                         Price = c.Price,
                         QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.BrandProduct,
-                        ProductBrand = c.Brand,
-                        IsSupportGPS = c.WristWatchDetail.IsSupportGPS,
-                        IsTouchScreen = c.WristWatchDetail.IsTouchScreen,
-                        WatchForm = c.WristWatchDetail.WatchForm
+                        BrandProduct = c.Product.BrandProduct,
+                        ProductBrand = c.Product.Brand,
+                        IsSupportGPS = c.Product.WristWatchDetail.IsSupportGPS,
+                        IsTouchScreen = c.Product.WristWatchDetail.IsTouchScreen,
+                        WatchForm = c.Product.WristWatchDetail.WatchForm
                     }).SingleOrDefaultAsync(c => c.ProductId == productId);
 
-        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId)
-            =>
-                await _context.Products.Include(c => c.SmartWatchDetail)
+        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId, string shopperUserId) =>
+            await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEditSmartWatchViewModel()
                     {
-                        ProductId = c.ProductId,
-                        ProductTitle = c.ProductTitle,
-                        Description = c.Description,
+                        ProductId = c.Product.ProductId,
+                        ProductTitle = c.Product.ProductTitle,
+                        Description = c.Product.Description,
                         Price = c.Price,
                         QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.BrandProduct,
-                        ProductBrand = c.Brand,
-                        IsSuitableForMen = c.SmartWatchDetail.IsSuitableForMen,
-                        IsSuitableForWomen = c.SmartWatchDetail.IsSuitableForWomen,
-                        IsScreenColorful = c.SmartWatchDetail.IsScreenColorful,
-                        IsSIMCardSupporter = c.SmartWatchDetail.IsSIMCardSupporter,
-                        IsTouchScreen = c.SmartWatchDetail.IsTouchScreen,
-                        IsSupportSIMCardRegister = c.SmartWatchDetail.IsSupportSIMCardRegister,
-                        WorkSuggestion = c.SmartWatchDetail.WorkSuggestion,
-                        IsSupportGPS = c.SmartWatchDetail.IsSupportGPS,
-                        WatchForm = c.SmartWatchDetail.WatchForm,
-                        BodyMaterial = c.SmartWatchDetail.BodyMaterial,
-                        Connections = c.SmartWatchDetail.Connections,
-                        Sensors = c.SmartWatchDetail.Sensors,
-                        IsDirectTalkable = c.SmartWatchDetail.IsDirectTalkable,
-                        IsTalkableWithBluetooth = c.SmartWatchDetail.IsTalkableWithBluetooth
+                        BrandProduct = c.Product.BrandProduct,
+                        ProductBrand = c.Product.Brand,
+                        IsSuitableForMen = c.Product.SmartWatchDetail.IsSuitableForMen,
+                        IsSuitableForWomen = c.Product.SmartWatchDetail.IsSuitableForWomen,
+                        IsScreenColorful = c.Product.SmartWatchDetail.IsScreenColorful,
+                        IsSIMCardSupporter = c.Product.SmartWatchDetail.IsSIMCardSupporter,
+                        IsTouchScreen = c.Product.SmartWatchDetail.IsTouchScreen,
+                        IsSupportSIMCardRegister = c.Product.SmartWatchDetail.IsSupportSIMCardRegister,
+                        WorkSuggestion = c.Product.SmartWatchDetail.WorkSuggestion,
+                        IsSupportGPS = c.Product.SmartWatchDetail.IsSupportGPS,
+                        WatchForm = c.Product.SmartWatchDetail.WatchForm,
+                        BodyMaterial = c.Product.SmartWatchDetail.BodyMaterial,
+                        Connections = c.Product.SmartWatchDetail.Connections,
+                        Sensors = c.Product.SmartWatchDetail.Sensors,
+                        IsDirectTalkable = c.Product.SmartWatchDetail.IsDirectTalkable,
+                        IsTalkableWithBluetooth = c.Product.SmartWatchDetail.IsTalkableWithBluetooth
                     }).SingleOrDefaultAsync(c => c.ProductId == productId);
 
-        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId)
-            =>
-                await _context.Products.Include(c => c.SmartWatchDetail)
+        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId, string shopperUserId) =>
+            await _context.ShopperProducts
+                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEditMemoryCardViewModel()
                     {
-                        ProductId = c.ProductId,
-                        ProductTitle = c.ProductTitle,
-                        Description = c.Description,
+                        ProductId = c.Product.ProductId,
+                        ProductTitle = c.Product.ProductTitle,
+                        Description = c.Product.Description,
                         Price = c.Price,
                         QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.BrandProduct,
-                        ProductBrand = c.Brand,
-                        Capacity = c.MemoryCardDetail.Capacity,
-                        Size = c.MemoryCardDetail.Size,
-                        SpeedStandard = c.MemoryCardDetail.SpeedStandard,
-                        ResistsAgainst = c.MemoryCardDetail.ResistsAgainst
+                        BrandProduct = c.Product.BrandProduct,
+                        ProductBrand = c.Product.Brand,
+                        Capacity = c.Product.MemoryCardDetail.Capacity,
+                        Size = c.Product.MemoryCardDetail.Size,
+                        SpeedStandard = c.Product.MemoryCardDetail.SpeedStandard,
+                        ResistsAgainst = c.Product.MemoryCardDetail.ResistsAgainst
                     }).SingleOrDefaultAsync(c => c.ProductId == productId);
 
         public async Task<string> GetProductTypeAsync(int productId)

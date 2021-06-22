@@ -56,11 +56,9 @@ namespace Reshop.Application.Services.User
                 if (!await _userRepository.IsUserExistAsync(userId))
                     return ResultTypes.Failed;
 
-                var product = await _productRepository.GetProductByIdAsync(productId);
-                if (product is null)
-                    return ResultTypes.Failed;
 
-                var shopperProduct = await _shopperRepository.GetShopperProductAsync(shopperUserId, product.ProductId);
+
+                var shopperProduct = await _productRepository.GetShopperProductAsync(shopperUserId, productId);
                 if (shopperProduct is null)
                     return ResultTypes.Failed;
 
@@ -68,7 +66,7 @@ namespace Reshop.Application.Services.User
                 var order = await _cartRepository.GetOrderInCartByUserIdAsync(userId);
                 if (order is not null)
                 {
-                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, product.ProductId);
+                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, shopperProduct.ProductId);
 
                     if (orderDetail is not null)
                     {
@@ -87,10 +85,10 @@ namespace Reshop.Application.Services.User
                         var orderDetail_new = new OrderDetail()
                         {
                             OrderId = order.OrderId,
-                            ProductId = product.ProductId,
-                            Price = product.Price,
+                            ProductId = shopperProduct.ProductId,
+                            Price = shopperProduct.Price,
                             Count = 1,
-                            Sum = product.Price,
+                            Sum = shopperProduct.Price,
                             CreateDate = DateTime.Now,
                             TrackingCode = "RSD" + NameGenerator.GenerateNumber(),
                             ShopperUserId = shopperUserId
@@ -133,10 +131,10 @@ namespace Reshop.Application.Services.User
                     var orderDetail_new = new OrderDetail()
                     {
                         OrderId = order_new.OrderId,
-                        ProductId = product.ProductId,
-                        Price = product.Price,
+                        ProductId = shopperProduct.ProductId,
+                        Price = shopperProduct.Price,
                         Count = 1,
-                        Sum = product.Price,
+                        Sum = shopperProduct.Price,
                         CreateDate = DateTime.Now,
                         TrackingCode = "RSD" + NameGenerator.GenerateNumber(),
                         ShopperUserId = shopperUserId
@@ -202,7 +200,7 @@ namespace Reshop.Application.Services.User
         public async Task ReduceOrderDetailAsync(string orderDetailId)
         {
             var orderDetail = await _cartRepository.GetOrderDetailByIdAsync(orderDetailId);
-            
+
 
             if (orderDetail != null)
             {
@@ -223,8 +221,8 @@ namespace Reshop.Application.Services.User
 
                 await _cartRepository.SaveChangesAsync();
 
-              
-               
+
+
 
                 if (order.OrderDetails.Any())
                 {

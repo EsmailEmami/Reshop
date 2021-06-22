@@ -182,7 +182,6 @@ header .top-menu {
         text-decoration: none;
         padding: 0;
         margin: 0;
-        border-bottom: 3px solid #e4e4e4;
     }
 
         .main-nav ul li {
@@ -1842,6 +1841,11 @@ header .top-menu {
     background: transparent;
 }
 
+
+.owl-stage-outer {
+    padding-top: 15px;
+}
+
 .owl-theme .owl-nav {
     margin-top: 10px;
     outline: none;
@@ -2424,23 +2428,15 @@ header .top-menu {
             width: 10px;
         }
 
-
-
         .main-filter .filter-by-brand .brands::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 5px;
         }
 
-
-
-
         .main-filter .filter-by-brand .brands::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 5px;
         }
-
-
-
 
             .main-filter .filter-by-brand .brands::-webkit-scrollbar-thumb:hover {
                 background: #555;
@@ -2744,6 +2740,43 @@ span {
     .top-filter .search-form {
         width: 60%
     }
+
+    .top-filter {
+        padding-bottom: 5px;
+    }
+
+        .top-filter .p-two .sortBy-choice {
+            overflow-x: scroll;
+            display: flex;
+            padding-right: 0;
+            padding-bottom: 15px;
+        }
+
+        .top-filter .p-two h3 {
+            display: none;
+        }
+
+        .top-filter .p-two .sortBy-choice .item {
+            flex-shrink: 0;
+        }
+
+        .top-filter .p-two .sortBy-choice::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .top-filter .p-two .sortBy-choice::-webkit-scrollbar-track {
+            background: #dddddd;
+            border-radius: 25px;
+        }
+
+        .top-filter .p-two .sortBy-choice::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 25px;
+        }
+
+            .top-filter .p-two .sortBy-choice::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
 }
 
 @media screen and (max-width: 767px) {
@@ -2842,17 +2875,6 @@ span {
 
     .shape-divider img.product-section-shape {
         height: 60px;
-    }
-}
-
-@media screen and (max-width: 524px) {
-    .top-filter .p-two .sortBy-choice {
-        display: flex;
-        padding-right: 0;
-        justify-content: space-between;
-        margin-top: 10px;
-        flex-wrap: wrap;
-        flex-grow: 4;
     }
 }
 

@@ -6,19 +6,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
+using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Domain.Interfaces.Product
 {
     public interface IProductRepository
     {
-
-
-        IAsyncEnumerable<ProductViewModel> GetProducts();
-        IAsyncEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take);
+        IEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take);
         IEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
+        IEnumerable<ProductViewModel> GetProductsOfChildCategoryWithPagination(int childCategoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
         Task<string> GetProductFirstPictureName(int productId);
 
         IEnumerable<string> GetBrandsOfCategory(int categoryId);
+        IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId);
 
         IEnumerable<Entities.Product.Product> GetTypeMobileProducts();
         IEnumerable<Entities.Product.Product> GetTypeLaptopProducts();
@@ -27,10 +27,12 @@ namespace Reshop.Domain.Interfaces.Product
 
         Task<Entities.Product.Product> GetProductByShortKeyAsync(string key);
 
+        Task<Entities.Product.Product> GetProductByIdAsync(int productId);
+
 
         #region shopper product
 
-        IAsyncEnumerable<ProductViewModel> GetShopperProductsWthPagination(string shopperUserId, string type, string sortBy, int skip, int take);
+        IEnumerable<ProductViewModel> GetShopperProductsWthPagination(string shopperUserId, string type, string sortBy, int skip, int take);
         Task<int> GetShopperProductsCountWithTypeAsync(string shopperUserId, string type);
 
         #endregion
@@ -39,11 +41,12 @@ namespace Reshop.Domain.Interfaces.Product
         Task<int> GetProductsCountWithTypeAsync(string type);
         Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId, string type);
         Task<int> GetCategoryProductsCountWithTypeAsync(int categoryId, string type = "");
+        Task<int> GetChildCategoryProductsCountWithTypeAsync(int childCategoryId, string type = "");
 
 
 
 
-        Task<Entities.Product.Product> GetProductByIdAsync(int productId);
+        Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<MobileCoverDetail> GetMobileCoverDetailByIdAsync(int mobileCoverId);
@@ -57,16 +60,16 @@ namespace Reshop.Domain.Interfaces.Product
         IAsyncEnumerable<ProductGallery> GetProductImages(int productId);
 
 
-        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId);
-        Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId);
-        Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId);
-        Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId);
-        Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId);
-        Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId);
-        Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId);
-        Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId);
-        Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId);
-        Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId);
+        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId, string shopperUserId);
 
         Task<string> GetProductTypeAsync(int productId);
         Task<ProductGallery> GetProductGalleryByIdAsync(string productGalleryId);
@@ -142,7 +145,7 @@ namespace Reshop.Domain.Interfaces.Product
 
 
 
-        IAsyncEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24);
+        IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24);
         Task AddToFavoriteProductAsync(FavoriteProduct favoriteProduct);
         void RemoveFavoriteProduct(FavoriteProduct favoriteProduct);
         Task<bool> IsFavoriteProductExistAsync(string favoriteProductId);

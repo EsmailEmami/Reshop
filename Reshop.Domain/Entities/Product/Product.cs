@@ -33,15 +33,6 @@ namespace Reshop.Domain.Entities.Product
         [MaxLength(5, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ShortKey { get; set; }
 
-        [Display(Name = "قیمت محصول")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [Range(1000, 1000000000, ErrorMessage = "{0} نمی تواند کمتر از {1} تومان و بیشتر از {2} تومان باشد")]
-        public decimal Price { get; set; }
-
-        [Display(Name = "تعداد موجودی")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public int QuantityInStock { get; set; }
-
         [Display(Name = "نوع محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]

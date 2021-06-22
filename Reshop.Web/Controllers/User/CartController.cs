@@ -1,15 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.CodeAnalysis.CodeFixes;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
-using Reshop.Domain.Entities.Product;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using ZarinpalSandbox;
 
 namespace Reshop.Web.Controllers.User
@@ -70,7 +65,7 @@ namespace Reshop.Web.Controllers.User
                     break;
 
                 case "Minus":
-                   
+
 
                     await _cartService.ReduceOrderDetailAsync(orderDetailId);
                     break;
@@ -86,7 +81,7 @@ namespace Reshop.Web.Controllers.User
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveOrderDetail(string orderDetailId)
         {
-            var result = await  _cartService.RemoveOrderDetailAsync(orderDetailId);
+            var result = await _cartService.RemoveOrderDetailAsync(orderDetailId);
 
             if (result == ResultTypes.Failed) return BadRequest();
 
@@ -94,38 +89,6 @@ namespace Reshop.Web.Controllers.User
             return RedirectToAction(nameof(ShowCart));
         }
 
-        public async Task<IActionResult> AddToFavoriteProduct(int productId, string userId)
-        {
-            if (await _productService.IsProductExistAsync(productId) && await _userService.IsUserExistAsync(userId))
-            {
-                var favoriteProduct = new FavoriteProduct()
-                {
-                    UserId = userId,
-                    ProductId = productId
-                };
-
-                await _productService.AddFavoriteProductAsync(favoriteProduct);
-                return Redirect("/");
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        public async Task<IActionResult> RemoveFavoriteProduct(string favoriteProductId)
-        {
-            var favoriteProduct = await _productService.GetFavoriteProductByIdAsync(favoriteProductId);
-            if (favoriteProduct != null)
-            {
-                await _productService.RemoveFavoriteProductAsync(favoriteProduct);
-                return Redirect("/");
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
 
         [HttpGet]
         [Route("Payment")]

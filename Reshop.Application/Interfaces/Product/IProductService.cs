@@ -16,8 +16,9 @@ namespace Reshop.Application.Interfaces.Product
         IEnumerable<ProductViewModel> GetProductsWithType(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int take = 18);
 
         // product , pageId , totalPages
-        Task<Tuple<IAsyncEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
+        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
         Task<CategoryOrChildCategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
+        Task<CategoryOrChildCategoryProductsForShow> GetChildCategoryProductsWithPaginationAsync(int childCategoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperUserId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
 
         // get by id 
@@ -65,7 +66,7 @@ namespace Reshop.Application.Interfaces.Product
         Task AddProductGalleryAsync(ProductGallery productGallery);
 
         // remove
-        Task RemoveMobileAsync(int productId);
+        Task<ResultTypes> RemoveMobileAsync(int productId);
         Task RemoveLaptopAsync(int productId);
 
         // update
@@ -90,9 +91,9 @@ namespace Reshop.Application.Interfaces.Product
         #region Favorite Product
 
         // product , pageId , totalPages
-        Task<Tuple<IAsyncEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
+        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
         Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId);
-        Task AddFavoriteProductAsync(FavoriteProduct favoriteProduct);
+        Task<ResultTypes> AddFavoriteProductAsync(string userId, int productId, string shopperUserId);
         Task RemoveFavoriteProductAsync(FavoriteProduct favoriteProduct);
 
         #endregion

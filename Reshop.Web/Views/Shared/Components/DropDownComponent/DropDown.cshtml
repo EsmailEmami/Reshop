@@ -5,7 +5,7 @@
     <ul>
         <li><a href="/">خانه</a></li>
         <li><a asp-controller="Account" asp-action="AddShopper">افزودن فروشنده</a></li>
-    
+
         <li><a asp-area="AdminManagerPanel" asp-controller="FullAdminPanel" asp-action="Index">مدیریت کل</a></li>
 
         @foreach (var item in Model)
@@ -22,7 +22,13 @@
                         @foreach (var childCategory in item.ChildCategories)
                         {
                             <ul>
-                                <li class="child-category-title"><a href="#">@childCategory.ChildCategoryTitle</a></li>
+                                <li class="child-category-title">
+                                    <a asp-controller="Product" asp-action="ProductsOfChildCategory"
+                                       asp-route-childCategoryId="@childCategory.ChildCategoryId"
+                                       asp-route-childCategoryName="@childCategory.ChildCategoryTitle">
+                                        @childCategory.ChildCategoryTitle
+                                    </a>
+                                </li>
                             </ul>
                         }
                     </div>
