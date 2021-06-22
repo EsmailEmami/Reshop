@@ -478,14 +478,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.Product)
                 .Skip(skip).Take(take);
 
-
-
-            Tuple<string, decimal> shopper = products.SelectMany(c => c.ShopperProducts).OrderByDescending(c => c.SaleCount)
-                .Select(c => new Tuple<string, decimal>(c.ShopperUserId, c.Price)).First();
-
-
             #region filter product
-
 
             if (type == "all")
             {
@@ -505,24 +498,23 @@ namespace Reshop.Infrastructure.Repository.Product
                 {
                     "news" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.CreateDate),
                     "expensive" => products.Where(c => c.ProductType == type)
-                        .OrderByDescending(c => c.ShopperProducts.First().Price),
-                    "cheap" => products.Where(c => c.ProductType == type).OrderBy(c => c.ShopperProducts.First().Price),
-                    "mostsale" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllSalesCount),
-                    "mostviews" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllViewsCount),
+                        .OrderByDescending(c => c.ShopperProducts.Max(c => c.Price)),
+                    "cheap" => products.Where(c => c.ProductType == type).OrderBy(c => c.ShopperProducts.Min(c => c.Price)),
+                    "mostsale" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.ShopperProducts.Select(c => c.SaleCount).Sum()),
+                    "mostviews" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.ShopperProducts.Select(c => c.ViewCount).Sum()),
                     _ => products
                 };
             }
 
             #endregion
 
-
             return products.Select(c => new ProductViewModel()
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand,
-                ProductPrice = shopper.Item2,
-                ShopperUserId = shopper.Item1
+                ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
+                ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
         }
 
