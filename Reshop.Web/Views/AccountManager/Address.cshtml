@@ -26,7 +26,7 @@
                 <a asp-action="Dashboard" class="active"><i class="far fa-user"></i> اطلاعات حساب</a>
                 <a asp-action="PayedOrders"><i class="far fa-calendar-week"></i> سفارش های من</a>
                 <a asp-action="FavoriteProducts"><i class="far fa-heart"></i> علاقه مندی ها</a>
-                <a asp-action="Comments"><i class="far fa-comments-alt"></i> نظرات</a>
+                <a asp-action="Questions"><i class="far fa-comments-alt"></i> سوالات و نظرات</a>
                 @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "Shopper,FullManager"))
                 {
                     <a asp-action="ManageProducts"><i class="far fa-comments-alt"></i>مدیریت محصولات</a>
@@ -46,13 +46,13 @@
             <div class="col-12">
                 <div class="profile-nav box-shadow">
                     <ul>
-                        <li><a asp-action="Index">اطلاعات شخصی</a> </li>
-                        <li class="active"><a asp-action="UserAddresses">آدرس</a> </li>
+                        <li><a asp-action="Dashboard">اطلاعات شخصی</a> </li>
+                        <li class="active"><a asp-action="Address">آدرس</a> </li>
+                        @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "Shopper,FullManager"))
+                        {
+                            <li><a asp-action="Address">اطلاعات مغازه</a> </li>
+                        }
                     </ul>
-
-                    <div class="search-profile">
-                        <a href="#"><i class="far fa-search"></i></a>
-                    </div>
                 </div>
             </div>
             <div class="col-12 mt-3">

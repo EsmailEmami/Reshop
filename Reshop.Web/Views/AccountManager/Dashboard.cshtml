@@ -14,9 +14,9 @@
                     <button type="submit">  <i class="far fa-power-off"></i></button>
                 </form>
 
-                <img src="/images/UserImages/@Model.UserAvatar">
+                <img src="/images/UserImages/@User.FindFirstValue(ClaimTypes.Actor)">
 
-                <p class="text-center">@Model.FullName</p>
+                <p class="text-center">@User.FindFirstValue(ClaimTypes.Name)</p>
             </div>
 
             <div class="items">

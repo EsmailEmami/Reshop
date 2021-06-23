@@ -34,7 +34,7 @@ namespace Reshop.Application.Services.Product
 
         public IEnumerable<ProductViewModel> GetProductsWithType(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int take = 18)
         {
-            return _productRepository.GetProductsWithPagination(Fixer.FixedToString(type), Fixer.FixedToString(sortBy), 0, take) as IEnumerable<ProductViewModel>;
+            return _productRepository.GetProductsWithPagination(Fixer.FixedToString(type), Fixer.FixedToString(sortBy), 0, take);
         }
 
         public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18)
@@ -221,45 +221,45 @@ namespace Reshop.Application.Services.Product
                 await _productRepository.GetProductByShortKeyAsync(key);
 
 
-        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId)
+        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeMobileProductDataForEditAsync(productId);
+                await _productRepository.GetTypeMobileProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId)
+        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeLaptopProductDataForEditAsync(productId);
+                await _productRepository.GetTypeLaptopProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId)
+        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeMobileCoverProductDataForEditAsync(productId);
+                await _productRepository.GetTypeMobileCoverProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId)
+        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeTabletProductDataForEditAsync(productId);
+                await _productRepository.GetTypeTabletProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId)
+        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(productId);
+                await _productRepository.GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId)
+        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeFlashMemoryProductDataForEditAsync(productId);
+                await _productRepository.GetTypeFlashMemoryProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId)
+        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeSpeakerProductDataForEditAsync(productId);
+                await _productRepository.GetTypeSpeakerProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId)
+        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeWristWatchProductDataForEditAsync(productId);
+                await _productRepository.GetTypeWristWatchProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId)
+        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeSmartWatchProductDataForEditAsync(productId);
+                await _productRepository.GetTypeSmartWatchProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId)
+        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId);
+                await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId, shopperUserId);
 
         public async Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail)
         {
@@ -875,13 +875,13 @@ namespace Reshop.Application.Services.Product
         public async Task<bool> IsUserProductViewExistAsync(int productId, string userIP) =>
             await _productRepository.IsUserProductViewExistAsync(productId, userIP);
 
-        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18)
+        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
-            int productsCount = await _productRepository.GetUserFavoriteProductsCountWithTypeAsync(userId, Fixer.FixedToString(type));
+            int productsCount = await _productRepository.GetUserFavoriteProductsCountWithTypeAsync(userId, type.FixedText());
 
-            var products = _productRepository.GetProductsWithPagination(type.ToString(), sortBy.ToString(), skip, take);
+            var products = _productRepository.GetUserFavoriteProductsWithPagination(userId, type.FixedText(), sortBy.FixedText(), skip, take);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
@@ -891,33 +891,53 @@ namespace Reshop.Application.Services.Product
 
         public async Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId)
         {
-            return await _productRepository.GetFavoriteProductByIdAsync(favoriteProductId);
+            return await _productRepository.GetFavoriteProductAsync(favoriteProductId);
         }
 
-        public async Task<ResultTypes> AddFavoriteProductAsync(string userId, int productId, string shopperUserId)
+        public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperUserId)
         {
-            if (!await _productRepository.IsProductExistAsync(productId))
-                return ResultTypes.Failed;
 
             if (!await _shopperRepository.IsShopperProductExistAsync(shopperUserId, productId))
-                return ResultTypes.Failed;
-
-            var favoriteProduct = new FavoriteProduct()
-            {
-                UserId = userId,
-                ProductId = productId
-            };
+                return FavoriteProductResultType.NotFound;
 
             try
             {
-                await _productRepository.AddToFavoriteProductAsync(favoriteProduct);
-                await _productRepository.SaveChangesAsync();
+                if (await _productRepository.IsFavoriteProductExistAsync(userId, productId))
+                {
+                    var favoriteProduct = await _productRepository.GetFavoriteProductAsync(userId, productId);
 
-                return ResultTypes.Successful;
+                    if (favoriteProduct.ShopperUserId == shopperUserId)
+                    {
+                        return FavoriteProductResultType.Available;
+                    }
+                    else
+                    {
+                        favoriteProduct.ShopperUserId = shopperUserId;
+
+                        _productRepository.UpdateFavoriteProduct(favoriteProduct);
+                        await _productRepository.SaveChangesAsync();
+
+                        return FavoriteProductResultType.ProductReplaced;
+                    }
+                }
+                else
+                {
+                    var favoriteProduct = new FavoriteProduct()
+                    {
+                        UserId = userId,
+                        ProductId = productId,
+                        ShopperUserId = shopperUserId,
+                    };
+
+
+                    await _productRepository.AddToFavoriteProductAsync(favoriteProduct);
+                    await _productRepository.SaveChangesAsync();
+                    return FavoriteProductResultType.Successful;
+                }
             }
             catch
             {
-                return ResultTypes.Failed;
+                return FavoriteProductResultType.NotFound;
             }
 
         }

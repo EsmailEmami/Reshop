@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums.Product;
@@ -101,14 +102,14 @@ namespace Reshop.Web.Controllers.Product
 
             var result = await _productService.AddFavoriteProductAsync(userId, productId, shopperUserId);
 
-            if (result == ResultTypes.Successful)
+            return result switch
             {
-                return Json(new { success = true });
-            }
-            else
-            {
-                return Json(new { success = false });
-            }
+                FavoriteProductResultType.Successful => Json(new {success = true, resultType = "Successful"}),
+                FavoriteProductResultType.ProductReplaced => Json(new {success = true, resultType = "ProductReplaced"}),
+                FavoriteProductResultType.NotFound => Json(new {success = false, resultType = "NotFound"}),
+                FavoriteProductResultType.Available => Json(new {success = false, resultType = "Available"}),
+                _ => Json(new {success = false, resultType = "NotFound"})
+            };
         }
 
         public async Task<IActionResult> RemoveFavoriteProduct(string favoriteProductId)

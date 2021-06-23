@@ -1,7 +1,156 @@
-﻿
+﻿@model Tuple<IEnumerable<ProductViewModel>, int, int>
+@inject IRoleService RoleService;
 @{
     ViewData["Title"] = "FavoriteProducts";
 }
+<div class="row">
 
-<h1>FavoriteProducts</h1>
+    <div class="col-sm-12 col-md-4 col-lg-3">
+        <div class="profile-menu box-shadow">
+            <div class="user-img d-flex justify-content-center flex-column align-self-center">
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit">  <i class="far fa-power-off"></i></button>
+                </form>
 
+                <img src="/images/UserImages/@User.FindFirstValue(ClaimTypes.Actor)">
+
+                <p class="text-center">@User.FindFirstValue(ClaimTypes.Name)</p>
+            </div>
+
+            <div class="items">
+                <a asp-action="Dashboard"><i class="far fa-user"></i> اطلاعات حساب</a>
+                <a asp-action="PayedOrders"><i class="far fa-calendar-week"></i> سفارش های من</a>
+                <a asp-action="FavoriteProducts" class="active"><i class="far fa-heart"></i> علاقه مندی ها</a>
+                <a asp-action="Questions"><i class="far fa-comments-alt"></i> سوالات و نظرات</a>
+                @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "Shopper,FullManager"))
+                {
+                    <a asp-action="ManageProducts"><i class="far fa-comments-alt"></i>مدیریت محصولات</a>
+                }
+                @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "FullManager"))
+                {
+                    <a asp-action="UserComments"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-8 col-lg-9">
+        <div class="row">
+            <div class="col-12">
+                <div class="profile-nav box-shadow">
+                    <form asp-controller="AccountManager" asp-action="FavoriteProducts" method="get" id="filterFavoriteProduct">
+                        <input type="hidden" name="pageId" id="pageId" />
+
+                        @{
+                            string sortBy = ViewBag.SortBy.ToString();
+                            string type = ViewBag.Type.ToString();
+                        }
+
+                        <section class="filter-box">
+                            <select class="select" name="sortBy" onchange="SubmitForm('filterFavoriteProduct')">
+                                <option>فیلتر بر اساس مرتب سازی</option>
+                                @switch (sortBy)
+                                {
+                                    case "news":
+                                        {
+                                            <option value="news" selected>علی</option>
+                                            <option value="expensive">اکبر</option>
+                                            <option value="cheap">اصغر</option>
+                                            break;
+                                        }
+                                    case "expensive":
+                                        {
+                                            <option value="news">علی</option>
+                                            <option value="expensive" selected>اکبر</option>
+                                            <option value="cheap">اصغر</option>
+                                            break;
+                                        }
+                                    case "cheap":
+                                        {
+                                            <option value="news">علی</option>
+                                            <option value="expensive">اکبر</option>
+                                            <option value="cheap" selected>اصغر</option>
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            <option value="news">علی</option>
+                                            <option value="expensive">اکبر</option>
+                                            <option value="cheap">اصغر</option>
+                                            break;
+                                        }
+                                }
+                            </select>
+
+                            <select class="select" name="type" onchange="SubmitForm('filterFavoriteProduct')">
+                                <option value="Mobile">موبایل</option>
+                            </select>
+
+                        </section>
+                    </form>
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <div class="user-data box-shadow">
+                    <div class="row">
+
+
+                        @if (!Model.Item1.Any())
+                        {
+                            <div class="col-sm-12">
+                                <div class="alert alert-warning text-muted">
+                                    محصولی یافت نشد.
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("Product/_BoxProducts", Model.Item1)
+
+
+                            @if (Model.Item3 > 1)
+                            {
+                                <ul class="pagination-custom">
+                                    <li class="@(Model.Item2<=1?"disabled":"")">
+                                        <a onclick="Pagination('@(Model.Item2 - 1)')" href="#">
+                                            <i class="far fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    @for (var i = 1; i <= Model.Item3; i++)
+                                    {
+                                        <li class="@(Model.Item2 == i? "active":"")">
+                                            <a onclick="Pagination('@i')" href="#">
+                                                @i
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")">
+                                        <a onclick="Pagination('@(Model.Item2 + 1)')" href="#">
+                                            <i class="far fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            }
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+                            {
+    <script>
+        function Pagination(pageId) {
+            $("#pageId").val(pageId);
+            document.getElementById('filterFavoriteProduct').submit();
+        }
+    </script>
+}

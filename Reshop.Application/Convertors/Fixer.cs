@@ -5,9 +5,9 @@ namespace Reshop.Application.Convertors
 {
     public static class Fixer
     {
-        public static string FixedText(string email)
+        public static string FixedText(this string text)
         {
-            return email.Trim().ToLower();
+            return text.Trim().ToLower();
         }
 
         public static string ToToman(this decimal value)

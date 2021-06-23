@@ -41,16 +41,16 @@ namespace Reshop.Application.Interfaces.Product
         Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key);
 
         // get product types
-        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId);
-        Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId);
-        Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId);
-        Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId);
-        Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId);
-        Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId);
-        Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId);
-        Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId);
-        Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId);
-        Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId);
+        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId, string shopperUserId);
 
         // inserts
         Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
@@ -91,9 +91,9 @@ namespace Reshop.Application.Interfaces.Product
         #region Favorite Product
 
         // product , pageId , totalPages
-        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
+        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18);
         Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId);
-        Task<ResultTypes> AddFavoriteProductAsync(string userId, int productId, string shopperUserId);
+        Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperUserId);
         Task RemoveFavoriteProductAsync(FavoriteProduct favoriteProduct);
 
         #endregion

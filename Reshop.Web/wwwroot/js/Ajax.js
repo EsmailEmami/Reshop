@@ -36,11 +36,18 @@ function AddProductToFavorites(productId, shopperUserId) {
         contentType: "application/json",
         success: function (res) {
             if (res.success) {
-                ShowToast('success', 'محصول با موفقیت به علاقه مندی ها اضافه شد');
+                if (res.resultType == "Successful") {
+                    ShowToast('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
+                } else if (res.resultType == "ProductReplaced") {
+                    ShowToast('success', 'فروشنده محصول با موفقیت تغییر کرد.');
+                }
             } else {
-                ShowToast('warning', 'محصول با موفقیت به علاقه مندی ها اضافه نشد.');
+                if (res.resultType == "NotFound") {
+                    ShowToast('wrong', 'متاسفانه خطایی غیر منتظره رخ داده است.');
+                } else if (res.resultType == "Available") {
+                    ShowToast('warning', 'محصول در علاقه مندی های شما موجود است.');
+                }
             }
         }
     });
-
 }

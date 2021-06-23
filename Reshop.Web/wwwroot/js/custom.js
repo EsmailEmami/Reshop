@@ -192,5 +192,5 @@ $(function () {
 });
 
 function SubmitForm(formId) {
-    document.getElementById(formId).Submit();
+    $('#' + formId).submit();
 }

@@ -1320,10 +1320,8 @@ header .top-menu {
 
 .profile-nav {
     margin: 0;
-    padding: 0 40px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    padding: 0 20px;
+    display: block;
     position: relative;
     width: 100%;
 }
@@ -1334,10 +1332,10 @@ header .top-menu {
     }
 
         .profile-nav ul > li {
+            display: inline-block;
             position: relative;
-            margin: 15px 30px;
+            margin: 15px 3px;
             list-style: none;
-            float: right;
         }
 
             .profile-nav ul > li:first-of-type {
@@ -1349,10 +1347,10 @@ header .top-menu {
         position: relative;
         color: #222222;
         font-weight: 500;
-        padding: 7px 17px;
+        padding: 4px 13px;
         font-size: 18px;
         text-decoration: none;
-        border-radius: 5px;
+        border-radius: 10px;
         transition: 0.3s;
     }
 
@@ -1360,6 +1358,25 @@ header .top-menu {
         .profile-nav li.active a {
             background-color: #FC5400;
             color: #fcfcfc;
+        }
+
+    .profile-nav .filter-box {
+        padding: 15px 0;
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .profile-nav .filter-box .select {
+            width: 30%;
+            height: 50px;
+            line-height: 50px;
+            padding: 0 15px;
+            font-size: 14px;
+            border: 2px solid #edebeb;
+            border-radius: 5px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            position: relative;
         }
 
 .search-profile {

@@ -35,18 +35,18 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Include(c => c.ShopperProducts)
                 .Skip(skip).Take(take);
 
-            #region filter product
 
+            #region filter product
 
             if (type == "all")
             {
                 products = sortBy switch
                 {
                     "news" => products.OrderByDescending(c => c.CreateDate),
-                    "expensive" => products.OrderByDescending(c => c.ShopperProducts.First().Price),
-                    "cheap" => products.OrderBy(c => c.ShopperProducts.First().Price),
-                    "mostsale" => products.OrderByDescending(c => c.AllSalesCount),
-                    "mostviews" => products.OrderByDescending(c => c.AllViewsCount),
+                    "expensive" => products.OrderByDescending(c => c.ShopperProducts.Max(c => c.Price)),
+                    "cheap" => products.OrderBy(c => c.ShopperProducts.Min(c => c.Price)),
+                    "mostsale" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.SaleCount).Sum()),
+                    "mostviews" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.ViewCount).Sum()),
                     _ => products
                 };
             }
@@ -56,10 +56,10 @@ namespace Reshop.Infrastructure.Repository.Product
                 {
                     "news" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.CreateDate),
                     "expensive" => products.Where(c => c.ProductType == type)
-                        .OrderByDescending(c => c.ShopperProducts.First().Price),
-                    "cheap" => products.Where(c => c.ProductType == type).OrderBy(c => c.ShopperProducts.First().Price),
-                    "mostsale" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllSalesCount),
-                    "mostviews" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.AllViewsCount),
+                        .OrderByDescending(c => c.ShopperProducts.Max(c => c.Price)),
+                    "cheap" => products.Where(c => c.ProductType == type).OrderBy(c => c.ShopperProducts.Min(c => c.Price)),
+                    "mostsale" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.ShopperProducts.Select(c => c.SaleCount).Sum()),
+                    "mostviews" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.ShopperProducts.Select(c => c.ViewCount).Sum()),
                     _ => products
                 };
             }
@@ -72,8 +72,8 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand,
-                ProductPrice = c.ShopperProducts.First().Price,
-                ShopperUserId = c.ShopperProducts.First().ShopperUserId
+                ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
+                ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
         }
 
@@ -85,7 +85,6 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.ChildCategory)
                 .SelectMany(c => c.ProductToChildCategories)
                 .Select(c => c.Product)
-                .Include(c => c.ShopperProducts)
                 .Skip(skip).Take(take);
 
 
@@ -95,10 +94,10 @@ namespace Reshop.Infrastructure.Repository.Product
             products = sortBy switch
             {
                 "news" => products.OrderByDescending(c => c.CreateDate),
-                "expensive" => products.OrderByDescending(c => c.ShopperProducts.First().Price),
-                "cheap" => products.OrderBy(c => c.ShopperProducts.First().Price),
-                "mostsale" => products.OrderByDescending(c => c.AllSalesCount),
-                "mostviews" => products.OrderByDescending(c => c.AllViewsCount),
+                "expensive" => products.OrderByDescending(c => c.ShopperProducts.Max(c => c.Price)),
+                "cheap" => products.OrderBy(c => c.ShopperProducts.Min(c => c.Price)),
+                "mostsale" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.SaleCount).Sum()),
+                "mostviews" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.ViewCount).Sum()),
                 _ => products
             };
 
@@ -135,8 +134,8 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand,
-                ProductPrice = c.ShopperProducts.First().Price,
-                ShopperUserId = c.ShopperProducts.First().ShopperUserId
+                ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
+                ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
         }
 
@@ -145,20 +144,18 @@ namespace Reshop.Infrastructure.Repository.Product
             IQueryable<Domain.Entities.Product.Product> products = _context.ProductToChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
                 .Select(c => c.Product)
-                .Include(c => c.ShopperProducts)
                 .Skip(skip).Take(take);
 
 
             #region filter product
 
-
             products = sortBy switch
             {
                 "news" => products.OrderByDescending(c => c.CreateDate),
-                "expensive" => products.OrderByDescending(c => c.ShopperProducts.First().Price),
-                "cheap" => products.OrderBy(c => c.ShopperProducts.First().Price),
-                "mostsale" => products.OrderByDescending(c => c.AllSalesCount),
-                "mostviews" => products.OrderByDescending(c => c.AllViewsCount),
+                "expensive" => products.OrderByDescending(c => c.ShopperProducts.Max(c => c.Price)),
+                "cheap" => products.OrderBy(c => c.ShopperProducts.Min(c => c.Price)),
+                "mostsale" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.SaleCount).Sum()),
+                "mostviews" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.ViewCount).Sum()),
                 _ => products
             };
 
@@ -185,8 +182,6 @@ namespace Reshop.Infrastructure.Repository.Product
 
             }
 
-
-
             #endregion
 
 
@@ -195,11 +190,10 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand,
-                ProductPrice = c.ShopperProducts.First().Price,
-                ShopperUserId = c.ShopperProducts.First().ShopperUserId
+                ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
+                ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
         }
-
 
         public async Task<string> GetProductFirstPictureName(int productId)
         {
@@ -218,7 +212,6 @@ namespace Reshop.Infrastructure.Repository.Product
             _context.ProductToChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
                 .Select(c => c.Product.Brand).Distinct();
-
 
         public async Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key)
             =>
@@ -278,6 +271,7 @@ namespace Reshop.Infrastructure.Repository.Product
 
 
         }
+
         public async Task<int> GetShopperProductsCountWithTypeAsync(string shopperUserId, string type)
         {
             if (type == "all")
@@ -289,8 +283,6 @@ namespace Reshop.Infrastructure.Repository.Product
             return await _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
                 .Select(c => c.Product).Where(c => c.ProductType == type).CountAsync();
         }
-
-
         public async Task<int> GetProductsCountWithTypeAsync(string type)
         {
             if (type == "all")
@@ -346,7 +338,6 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.Product)
                 .Where(c => c.ProductType == type).CountAsync();
         }
-
 
         public async Task<Domain.Entities.Product.Product> GetProductWithTypeAsync(int productId, string type)
         {
@@ -473,48 +464,53 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24)
         {
-            IQueryable<Domain.Entities.Product.Product> products = _context.FavoriteProducts
+            IQueryable<FavoriteProduct> favoriteProducts = _context.FavoriteProducts
                 .Where(c => c.UserId == userId)
-                .Select(c => c.Product)
-                .Skip(skip).Take(take);
+                .Skip(skip).Take(take)
+                .Include(c => c.Product);
+
+
+
+
+
 
             #region filter product
 
             if (type == "all")
             {
-                products = sortBy switch
+                favoriteProducts = sortBy switch
                 {
-                    "news" => products.OrderByDescending(c => c.CreateDate),
-                    "expensive" => products.OrderByDescending(c => c.ShopperProducts.Max(c => c.Price)),
-                    "cheap" => products.OrderBy(c => c.ShopperProducts.Min(c => c.Price)),
-                    "mostsale" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.SaleCount).Sum()),
-                    "mostviews" => products.OrderByDescending(c => c.ShopperProducts.Select(c => c.ViewCount).Sum()),
-                    _ => products
+                    "news" => favoriteProducts.OrderByDescending(c => c.Product.CreateDate),
+                    "expensive" => favoriteProducts.OrderByDescending(c => c.Product.ShopperProducts.Max(c => c.Price)),
+                    "cheap" => favoriteProducts.OrderBy(c => c.Product.ShopperProducts.Min(c => c.Price)),
+                    "mostsale" => favoriteProducts.OrderByDescending(c => c.Product.ShopperProducts.Select(c => c.SaleCount).Sum()),
+                    "mostviews" => favoriteProducts.OrderByDescending(c => c.Product.ShopperProducts.Select(c => c.ViewCount).Sum()),
+                    _ => favoriteProducts
                 };
             }
             else
             {
-                products = sortBy switch
+                favoriteProducts = sortBy switch
                 {
-                    "news" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.CreateDate),
-                    "expensive" => products.Where(c => c.ProductType == type)
-                        .OrderByDescending(c => c.ShopperProducts.Max(c => c.Price)),
-                    "cheap" => products.Where(c => c.ProductType == type).OrderBy(c => c.ShopperProducts.Min(c => c.Price)),
-                    "mostsale" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.ShopperProducts.Select(c => c.SaleCount).Sum()),
-                    "mostviews" => products.Where(c => c.ProductType == type).OrderByDescending(c => c.ShopperProducts.Select(c => c.ViewCount).Sum()),
-                    _ => products
+                    "news" => favoriteProducts.Where(c => c.Product.ProductType == type).OrderByDescending(c => c.Product.CreateDate),
+                    "expensive" => favoriteProducts.Where(c => c.Product.ProductType == type)
+                        .OrderByDescending(c => c.Product.ShopperProducts.Max(c => c.Price)),
+                    "cheap" => favoriteProducts.Where(c => c.Product.ProductType == type).OrderBy(c => c.Product.ShopperProducts.Min(c => c.Price)),
+                    "mostsale" => favoriteProducts.Where(c => c.Product.ProductType == type).OrderByDescending(c => c.Product.ShopperProducts.Select(c => c.SaleCount).Sum()),
+                    "mostviews" => favoriteProducts.Where(c => c.Product.ProductType == type).OrderByDescending(c => c.Product.ShopperProducts.Select(c => c.ViewCount).Sum()),
+                    _ => favoriteProducts
                 };
             }
 
             #endregion
 
-            return products.Select(c => new ProductViewModel()
+            return favoriteProducts.Select(c => new ProductViewModel()
             {
-                ProductId = c.ProductId,
-                ProductTitle = c.ProductTitle,
-                BrandName = c.Brand,
-                ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
-                ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
+                ProductId = c.Product.ProductId,
+                ProductTitle = c.Product.ProductTitle,
+                BrandName = c.Product.Brand,
+                ProductPrice = _context.ShopperProducts.SingleOrDefault(s => s.ShopperUserId == c.ShopperUserId && s.ProductId == c.ProductId).Price,
+                ShopperUserId = c.ShopperUserId
             });
         }
 
@@ -528,15 +524,24 @@ namespace Reshop.Infrastructure.Repository.Product
             _context.FavoriteProducts.Remove(favoriteProduct);
         }
 
+        public void UpdateFavoriteProduct(FavoriteProduct favoriteProduct) =>
+            _context.FavoriteProducts.Update(favoriteProduct);
+
         public async Task<bool> IsFavoriteProductExistAsync(string favoriteProductId)
         {
             return await _context.FavoriteProducts.AnyAsync(c => c.FavoriteProductId == favoriteProductId);
         }
 
-        public async Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId)
+        public async Task<bool> IsFavoriteProductExistAsync(string userId, int productId) =>
+            await _context.FavoriteProducts.AnyAsync(c => c.UserId == userId && c.ProductId == productId);
+
+        public async Task<FavoriteProduct> GetFavoriteProductAsync(string favoriteProductId)
         {
             return await _context.FavoriteProducts.FindAsync(favoriteProductId);
         }
+
+        public async Task<FavoriteProduct> GetFavoriteProductAsync(string userId, int productId) =>
+            await _context.FavoriteProducts.SingleOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId);
 
         public IAsyncEnumerable<string> GetProductsNameByFilter(string productName)
         {

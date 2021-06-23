@@ -101,7 +101,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpGet]
         public async Task<IActionResult> AddOrEditMobile(int productId = 0)
         {
-            return productId == 0 ? View(new AddOrEditMobileProductViewModel() { ProductId = 0 }) : View(await _productService.GetTypeMobileProductDataAsync(productId));
+            return productId == 0 ? View(new AddOrEditMobileProductViewModel() { ProductId = 0 }) : View(await _productService.GetTypeMobileProductDataAsync(productId,""));
         }
 
         [HttpPost]
@@ -284,7 +284,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId,"");
                 if (product == null)
                 {
                     return NotFound();
@@ -456,7 +456,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeTabletProductDataAsync(productId);
+                var product = await _productService.GetTypeTabletProductDataAsync(productId,"");
                 if (product == null)
                     return NotFound();
 
@@ -616,7 +616,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeMobileCoverProductDataAsync(productId);
+                var product = await _productService.GetTypeMobileCoverProductDataAsync(productId,"");
                 if (product is null)
                     return NotFound();
 
@@ -763,7 +763,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId,"");
                 if (product == null)
                 {
                     return NotFound();
@@ -786,7 +786,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeHandsfreeAndHeadPhoneProductDataAsync(productId);
+                var product = await _productService.GetTypeHandsfreeAndHeadPhoneProductDataAsync(productId,"");
                 if (product == null)
                     return NotFound();
 
@@ -932,7 +932,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeHandsfreeAndHeadPhoneProductDataAsync(productId);
+                var product = await _productService.GetTypeHandsfreeAndHeadPhoneProductDataAsync(productId,"");
                 if (product == null)
                     return NotFound();
 
@@ -1082,7 +1082,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeSpeakerProductDataAsync(productId);
+                var product = await _productService.GetTypeSpeakerProductDataAsync(productId,"");
                 if (product == null)
                 {
                     return NotFound();
@@ -1236,7 +1236,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId,"");
                 if (product == null)
                 {
                     return NotFound();
@@ -1259,7 +1259,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId,"");
                 if (product == null)
                 {
                     return NotFound();
@@ -1403,7 +1403,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId,"");
                 if (product == null)
                 {
                     return NotFound();
@@ -1567,7 +1567,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId,"");
                 if (product == null)
                 {
                     return NotFound();
@@ -1712,7 +1712,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId,"");
                 if (product == null)
                 {
                     return NotFound();

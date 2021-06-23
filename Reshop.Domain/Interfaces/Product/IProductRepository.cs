@@ -148,9 +148,11 @@ namespace Reshop.Domain.Interfaces.Product
         IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24);
         Task AddToFavoriteProductAsync(FavoriteProduct favoriteProduct);
         void RemoveFavoriteProduct(FavoriteProduct favoriteProduct);
+        void UpdateFavoriteProduct(FavoriteProduct favoriteProduct);
         Task<bool> IsFavoriteProductExistAsync(string favoriteProductId);
-        Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId);
-
+        Task<bool> IsFavoriteProductExistAsync(string userId, int productId);
+        Task<FavoriteProduct> GetFavoriteProductAsync(string favoriteProductId);
+        Task<FavoriteProduct> GetFavoriteProductAsync(string userId, int productId);
 
 
 

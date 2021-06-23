@@ -106,12 +106,14 @@ namespace Reshop.Web.Controllers.User
             return View(_userService.GetUserCommentsForShow(userId));
         }
 
+        [Route("FavoriteProducts")]
         [HttpGet]
-        public async Task<IActionResult> FavoriteProducts(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1)
+        public async Task<IActionResult> FavoriteProducts(string type = "all", string sortBy = "news", int pageId = 1)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
+            ViewBag.SortBy = sortBy.ToLower();
+            ViewBag.Type = type.ToLower();
 
             return View(await _productService.GetUserFavoriteProductsWithPagination(userId, type, sortBy, pageId, 18));
         }
