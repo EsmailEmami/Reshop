@@ -13,9 +13,13 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task AddShopperAsync(Entities.Shopper.Shopper shopper);
         Task<AddOrEditShopperViewModel> GetShopperDataForEditAsync(string userId);
 
+        // types = all,active,block
+        IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null);
+
+
         #region shopper product
 
-        
+
         void UpdateShopperProduct(ShopperProduct shopperProduct);
         void RemoveShopperProduct(ShopperProduct shopperProduct);
         Task AddShopperProductAsync(ShopperProduct shopperProduct);

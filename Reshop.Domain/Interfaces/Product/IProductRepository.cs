@@ -32,8 +32,9 @@ namespace Reshop.Domain.Interfaces.Product
 
         #region shopper product
 
-        IEnumerable<ProductViewModel> GetShopperProductsWthPagination(string shopperUserId, string type, string sortBy, int skip, int take);
+        IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperUserId, string type, string sortBy, int skip, int take);
         Task<int> GetShopperProductsCountWithTypeAsync(string shopperUserId, string type);
+        IEnumerable<ProductViewModel> GetUnFinallyShopperProductRequestsWithPagination(string type, string sortBy, int skip, int take);
 
         #endregion
 

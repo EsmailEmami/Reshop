@@ -12,7 +12,7 @@ namespace Reshop.Domain.DTOs.Order
 
         public string TrackingCode { get; set; }
 
-        public DateTime CreateDate { get; set; }
+        public DateTime PayDate { get; set; }
 
         public decimal Sum{ get; set; }
 

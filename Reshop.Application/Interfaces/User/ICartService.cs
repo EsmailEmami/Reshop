@@ -12,6 +12,7 @@ namespace Reshop.Application.Interfaces.User
 {
     public interface ICartService
     {
+        Task<OpenCartViewModel> GetUserOpenOrderForShowCartAsync(string userId);
         Task<Order> GetUserOpenOrderAsync(string userId);
         Task EditOrderAsync(Order order);
         Task<Order> GetOrderByIdAsync(string orderId);
@@ -20,7 +21,8 @@ namespace Reshop.Application.Interfaces.User
         Task IncreaseOrderDetailCountAsync(string orderDetailId);
         Task ReduceOrderDetailAsync(string orderDetailId);
         IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time);
-        IAsyncEnumerable<ReceivedOrdersViewModel> GetReceivedOrders(string userId);
+        IEnumerable<ReceivedOrdersViewModel> GetReceivedOrders(string userId);
+        IEnumerable<ReceivedOrdersViewModel> GetNotReceivedOrders(string userId);
         IAsyncEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId);
         Task RemoveOrderAsync(Order order);
         Task<ResultTypes> RemoveOrderDetailAsync(string orderDetailId);

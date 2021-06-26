@@ -21,7 +21,7 @@
 
             <div class="items">
                 <a asp-action="Dashboard" class="active"><i class="far fa-user"></i> اطلاعات حساب</a>
-                <a asp-action="PayedOrders"><i class="far fa-calendar-week"></i> سفارش های من</a>
+                <a asp-action="UnFinallyOrders"><i class="far fa-calendar-week"></i> سفارش های من</a>
                 <a asp-action="FavoriteProducts"><i class="far fa-heart"></i> علاقه مندی ها</a>
                 <a asp-action="Questions"><i class="far fa-comments-alt"></i> سوالات و نظرات</a>
                 @if (RoleService.PermissionChecker(Model.UserId, "Shopper,FullManager"))
@@ -30,7 +30,7 @@
                 }
                 @if (RoleService.PermissionChecker(Model.UserId, "FullManager"))
                 {
-                    <a asp-action="UserComments"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
+                    <a asp-area="AdminManagerPanel" asp-controller="FullAdminPanel" asp-action="Index"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
                 }
             </div>
         </div>

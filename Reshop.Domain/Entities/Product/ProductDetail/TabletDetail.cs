@@ -32,12 +32,12 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string CommunicationNetworks { get; set; }
 
-        [Display(Name = "ویژگی های موبایل")]
+        [Display(Name = "ویژگی ها")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(300, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Features { get; set; }
 
-        [Display(Name = "قابلیت پشتیبانی از مکالمه")]
+        [Display(Name = "قابلیت پشتیبانی از سیم کارت")]
         [Required]
         public bool IsSIMCardSupporter { get; set; }
 

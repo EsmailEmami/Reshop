@@ -23,7 +23,6 @@ namespace Reshop.Web.Controllers.User
             _userService = userService;
         }
 
-
         [HttpPost]
         public async Task<IActionResult> AddToCart(int productId, string shopperUserId)
         {
@@ -46,7 +45,7 @@ namespace Reshop.Web.Controllers.User
         public async Task<IActionResult> ShowCart()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(await _cartService.GetUserOpenOrderAsync(userId));
+            return View(await _cartService.GetUserOpenOrderForShowCartAsync(userId));
         }
 
         [HttpPost]

@@ -25,9 +25,11 @@ namespace Reshop.Domain.Interfaces.User
         #region order
 
         IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time);
+        Task<OpenCartViewModel> GetOrderInCartByUserIdForShowCartAsync(string userId);
         Task<Order> GetOrderInCartByUserIdAsync(string userId);
 
-        IAsyncEnumerable<Order> GetReceivedOrders(string userId);
+        IEnumerable<ReceivedOrdersViewModel> GetReceivedOrders(string userId);
+        IEnumerable<ReceivedOrdersViewModel> GetNotReceivedOrders(string userId);
         Task<Order> GetOrderByIdAsync(string orderId);
         Task AddOrderAsync(Order order);
         void UpdateOrder(Order order);

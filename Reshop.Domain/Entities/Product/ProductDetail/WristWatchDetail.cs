@@ -20,5 +20,8 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string WatchForm { get; set; }
+
+        // جنس بدنه
+        // نوع قفل بند
     }
 }

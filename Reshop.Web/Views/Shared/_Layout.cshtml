@@ -42,7 +42,7 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <a asp-area="" asp-controller="AccountManager" asp-action="Dashboard">
-                            <i class="far fa-user"></i> @User.FindFirstValue(ClaimTypes.Name)
+                            <i class="far fa-user"></i>
                         </a>
                     }
                     else

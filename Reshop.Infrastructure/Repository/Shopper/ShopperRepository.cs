@@ -51,6 +51,42 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
                     }).SingleOrDefaultAsync();
 
+        public IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null)
+        {
+            IQueryable<Domain.Entities.User.User> shoppers = _context.Users
+                .Where(c => c.ShopperId != null)
+                .Skip(skip).Take(take);
+
+
+            switch (type)
+            {
+                case "all":
+                    break;
+                case "active":
+                    shoppers = shoppers.Where(c => c.IsUserShopper);
+                    break;
+                case "block":
+                    shoppers = shoppers.Where(c => !c.IsBlocked);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                shoppers = shoppers
+                    .Where(c => c.FullName.Contains(filter) ||
+                                c.NationalCode.Contains(filter) ||
+                                c.PhoneNumber.Contains(filter) ||
+                                c.Email.Contains(filter));
+            }
+
+            return shoppers.Select(c => new ShoppersListForAdmin()
+            {
+                ShopperUserId = c.UserId,
+                ShopperName = c.FullName,
+                PhoneNumber = c.PhoneNumber,
+                StoreName = c.Shopper.StoreName
+            });
+        }
 
 
         public void UpdateShopperProduct(ShopperProduct shopperProduct) => _context.ShopperProducts.Update(shopperProduct);

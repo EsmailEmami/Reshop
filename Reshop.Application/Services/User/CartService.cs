@@ -35,6 +35,11 @@ namespace Reshop.Application.Services.User
 
         #endregion
 
+        public async Task<OpenCartViewModel> GetUserOpenOrderForShowCartAsync(string userId)
+        {
+            return await _cartRepository.GetOrderInCartByUserIdForShowCartAsync(userId);
+        }
+
         public async Task<Order> GetUserOpenOrderAsync(string userId)
         {
             return await _cartRepository.GetOrderInCartByUserIdAsync(userId);
@@ -244,32 +249,11 @@ namespace Reshop.Application.Services.User
             return _cartRepository.GetOrdersAfterDateTime(time);
         }
 
-        public async IAsyncEnumerable<ReceivedOrdersViewModel> GetReceivedOrders(string userId)
-        {
-            var orders = _cartRepository.GetReceivedOrders(userId);
+        public IEnumerable<ReceivedOrdersViewModel> GetReceivedOrders(string userId) =>
+            _cartRepository.GetReceivedOrders(userId);
 
-            await foreach (var order in orders)
-            {
-                var model = new ReceivedOrdersViewModel()
-                {
-                    OrderId = order.OrderId,
-                    Sum = order.Sum,
-                    TrackingCode = order.TrackingCode,
-                    CreateDate = order.CreateDate,
-                };
-
-                var listPics = new List<string>();
-
-                model.ProPics = listPics;
-
-                foreach (var orderDetail in order.OrderDetails)
-                {
-                    var proPics = await _productRepository.GetProductFirstPictureName(orderDetail.ProductId);
-                    listPics.Add(proPics);
-                }
-                yield return model;
-            }
-        }
+        public IEnumerable<ReceivedOrdersViewModel> GetNotReceivedOrders(string userId) =>
+            _cartRepository.GetNotReceivedOrders(userId);
 
 
         public IAsyncEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId)

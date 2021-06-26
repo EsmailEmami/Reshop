@@ -8,6 +8,9 @@ namespace Reshop.Domain.DTOs.Product
 {
     public class AddOrEditMobileProductViewModel
     {
+        [Required]
+        public string ShopperUserId { get; set; }
+
         public int ProductId { get; set; } = 0;
 
         [Display(Name = "نام کالا")]

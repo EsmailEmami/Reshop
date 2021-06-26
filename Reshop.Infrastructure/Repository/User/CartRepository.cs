@@ -73,25 +73,53 @@ namespace Reshop.Infrastructure.Repository.User
             =>
                 _context.Orders.Where(c => !c.IsPayed && !c.IsReceived && c.CreateDate > time) as IAsyncEnumerable<Order>;
 
-        public async Task<Order> GetOrderInCartByUserIdAsync(string userId)
+        public async Task<OpenCartViewModel> GetOrderInCartByUserIdForShowCartAsync(string userId)
         {
             return await _context.Orders
                 .Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived)
-                .Include(o => o.OrderDetails)
-                .ThenInclude(c => c.Product)
-                .ThenInclude(c => c.ProductGalleries)
-                .SingleOrDefaultAsync();
+                .Select(c => new OpenCartViewModel()
+                {
+                    Sum = c.Sum,
+                    OrderDetails = c.OrderDetails.Select(o=> new OrderDetailViewModel()
+                    {
+                        OrderDetailId = o.OrderDetailId,
+                        Sum = o.Sum,
+                        ProductsCount = o.Count,
+                        ProductTitle = o.Product.ProductTitle,
+                        ProductImg = o.Product.ProductGalleries.FirstOrDefault().ImageName,
+                        Warranty = _context.ShopperProducts.Single(s=> s.ShopperUserId == o.ShopperUserId).Warranty,
+                        ShopperStoreName = _context.Users.Single(u=> u.UserId == o.ShopperUserId).Shopper.StoreName,
+                    })
+                }).SingleOrDefaultAsync();
         }
 
-        public IAsyncEnumerable<Order> GetReceivedOrders(string userId)
+        public async Task<Order> GetOrderInCartByUserIdAsync(string userId)
         {
-            return _context.Orders.Where(c => c.UserId == userId && c.IsReceived && c.IsPayed)
-                .Include(c => c.OrderDetails)
-                .ThenInclude(c => c.Product)
-                .ThenInclude(c => c.ProductGalleries) as IAsyncEnumerable<Order>;
+            return await _context.Orders
+                .SingleOrDefaultAsync(o => o.UserId == userId && !o.IsPayed && !o.IsReceived);
         }
 
+        public IEnumerable<ReceivedOrdersViewModel> GetReceivedOrders(string userId) =>
+            _context.Orders.Where(c => c.UserId == userId && c.IsReceived && c.IsPayed)
+                .Select(c => new ReceivedOrdersViewModel()
+                {
+                    OrderId = c.OrderId,
+                    TrackingCode = c.TrackingCode,
+                    PayDate = c.PayDate,
+                    Sum = c.Sum,
+                    ProPics = c.OrderDetails.Select(p=> p.Product.ProductGalleries.FirstOrDefault().ImageName)
+                });
 
+        public IEnumerable<ReceivedOrdersViewModel> GetNotReceivedOrders(string userId) =>
+            _context.Orders.Where(c => c.UserId == userId && !c.IsReceived && c.IsPayed)
+                .Select(c => new ReceivedOrdersViewModel()
+                {
+                    OrderId = c.OrderId,
+                    TrackingCode = c.TrackingCode,
+                    PayDate = c.PayDate,
+                    Sum = c.Sum,
+                    ProPics = c.OrderDetails.Select(p => p.Product.ProductGalleries.FirstOrDefault().ImageName)
+                });
 
         public async Task<Order> GetOrderByIdAsync(string orderId)
         {

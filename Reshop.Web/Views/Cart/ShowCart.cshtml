@@ -1,4 +1,4 @@
-﻿@model Order
+﻿@model OpenCartViewModel
 @{
     ViewData["Title"] = "سبد خرید";
     int counter = 1;
@@ -6,11 +6,11 @@
 
 @if (Model == null)
 {
-    <div class="container">
-        <div class="alert alert-warning">
-            سبد خرید شما خالی است. لطفا محصولی به سبد خرید خود اضافه کنید.
-        </div>
+    <div class="basket-empty">
+        <img src="/icons/basket.svg" alt="basket"/>
+        <h1>سبد خرید شما خالیست!</h1>
     </div>
+  
     
 }
 else
@@ -27,13 +27,13 @@ else
                     </span>
 
                     <span class="img-container">
-                        <img src="/images/UserImages/userAvatar.jpg" alt="Alternate Text" />
+                        <img src="/images/ProductImages/@item.ProductImg" alt="@item.ProductTitle" />
                     </span>
 
                     <div class="product-detail">
                         <div class="product-name">
                             <h1>
-                                @item.Product.ProductTitle
+                                @item.ProductTitle
                             </h1>
                         </div>
 
@@ -51,7 +51,7 @@ else
                                 گارانتی :
                             </h5>
                             <span>
-                                a
+                                @item.Warranty
                             </span>
                         </div>
 
@@ -60,7 +60,7 @@ else
                                 فروشنده :
                             </h5>
                             <span>
-                                آبی
+                               @item.ShopperStoreName
                             </span>
                         </div>
 
@@ -68,7 +68,7 @@ else
                             <form method="post" asp-action="AddOrRemoveProduct" asp-route-orderDetailId="@item.OrderDetailId"asp-route-actionType="Plus">
                                 <button type="submit"><i class="far fa-plus"></i></button>
                             </form>
-                            <span>@item.Count</span>
+                            <span>@item.ProductsCount</span>
                             <form method="post" asp-action="AddOrRemoveProduct" asp-route-orderDetailId="@item.OrderDetailId" asp-route-actionType="Minus">
                                 <button type="submit"><i class="far fa-minus"></i></button>
                             </form>
@@ -95,7 +95,7 @@ else
         <div class="detail-cart box-shadow">
             <div class="collapse" id="cart-datail">
                 <section style="border-bottom: 1px solid #e9e8e8;">
-                    <h5>مبلغ کل(@Model.OrderDetails.Count):</h5>
+                    <h5>مبلغ کل(@Model.OrderDetails.Count()):</h5>
                     <p>
                         @Model.Sum.ToToman()
                         <span class="toman">تومان</span>

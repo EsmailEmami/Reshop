@@ -6,6 +6,7 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security.Attribute;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Shopper;
 
 namespace Reshop.Web.Controllers.User
 {
@@ -18,14 +19,12 @@ namespace Reshop.Web.Controllers.User
         private readonly IUserService _userService;
         private readonly ICartService _cartService;
         private readonly IProductService _productService;
-        private readonly IRoleService _roleService;
 
-        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService, IRoleService roleService)
+        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService)
         {
             _userService = userService;
             _cartService = cartService;
             _productService = productService;
-            _roleService = roleService;
         }
 
         #endregion
@@ -56,34 +55,22 @@ namespace Reshop.Web.Controllers.User
             return View(addresses);
         }
 
+        [Route("UnFinallyOrders")]
         [HttpGet]
         public IActionResult UnFinallyOrders()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
-
-            return View();
+            return View(_cartService.GetNotReceivedOrders(userId));
         }
 
+        [Route("FinallyOrders")]
         [HttpGet]
         public IActionResult FinallyOrders()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
-
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult PayedOrders()
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-
-
-            return View();
+            return View(_cartService.GetReceivedOrders(userId));
         }
 
         [Route("Questions")]
@@ -125,6 +112,15 @@ namespace Reshop.Web.Controllers.User
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return View(await _productService.GetShopperProductsWithPaginationAsync(userId, type, sortBy, pageId, 20));
+        }
+
+        [HttpGet]
+        [Route("ShopperProductDetail/{productId}")]
+        [Permission("FullManager,Shopper")]
+        public async Task<IActionResult> ShopperProductDetail(int productId)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(await _productService.GetShopperProductAsync(productId, userId));
         }
     }
 }

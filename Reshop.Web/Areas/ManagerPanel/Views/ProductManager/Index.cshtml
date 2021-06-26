@@ -1,4 +1,4 @@
-﻿@model Tuple<IAsyncEnumerable<ProductViewModel>, int, int>
+﻿@model Tuple<IEnumerable<ProductViewModel>, int, int>
 @{
     ViewData["Title"] = "Index";
 }
@@ -14,7 +14,7 @@
                             تعداد محصولات
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            1,000
+                            @Model.Item1.Count()
                         </div>
                     </div>
                     <div class="col-auto">
@@ -70,7 +70,7 @@
             </tr>
         </thead>
         <tbody>
-            @await foreach (var item in Model.Item1)
+            @foreach (var item in Model.Item1)
             {
                 <tr>
                     <td>@item.ProductTitle</td>

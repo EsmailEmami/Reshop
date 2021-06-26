@@ -1,9 +1,7 @@
-﻿@model IAsyncEnumerable<Address>
+﻿@model IEnumerable<ReceivedOrdersViewModel>
 @inject IRoleService RoleService;
 @{
     ViewData["Title"] = "UserAddresses";
-
-    int addressCounter = 1;
 }
 
 
@@ -23,8 +21,8 @@
             </div>
 
             <div class="items">
-                <a asp-action="Dashboard" class="active"><i class="far fa-user"></i> اطلاعات حساب</a>
-                <a asp-action="PayedOrders"><i class="far fa-calendar-week"></i> سفارش های من</a>
+                <a asp-action="Dashboard"><i class="far fa-user"></i> اطلاعات حساب</a>
+                <a asp-action="UnFinallyOrders" class="active"><i class="far fa-calendar-week"></i> سفارش های من</a>
                 <a asp-action="FavoriteProducts"><i class="far fa-heart"></i> علاقه مندی ها</a>
                 <a asp-action="Questions"><i class="far fa-comments-alt"></i> سوالات و نظرات</a>
                 @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "Shopper,FullManager"))
@@ -46,12 +44,8 @@
             <div class="col-12">
                 <div class="profile-nav box-shadow">
                     <ul>
-                        <li><a asp-action="Dashboard">اطلاعات شخصی</a> </li>
-                        <li class="active"><a asp-action="Address">آدرس</a> </li>
-                        @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "Shopper,FullManager"))
-                        {
-                            <li><a asp-action="Address">اطلاعات مغازه</a> </li>
-                        }
+                        <li class="active"><a asp-action="UnFinallyOrders">تحویل نشده</a> </li>
+                        <li><a asp-action="FinallyOrders">تحویل شده</a> </li>
                     </ul>
                 </div>
             </div>
@@ -60,38 +54,40 @@
 
 
 
-                    @if (Model == null)
+                    @if (!Model.Any())
                     {
                         <div class="basket-empty">
-                            <img src="/icons/Address.svg" alt="Address"/>
-                            <h1>ادرسی یافت نشد!</h1>
+                            <img src="/icons/basket.svg" alt="basket"/>
+                            <h1>فاکتوری یافت نشد!</h1>
                         </div>
                     }
                     else
-                    { <div class="row">
-                            @await foreach (var address in Model)
-                            {
-                                <div class="col-sm-12">
-                                    <div class="user-item-data">
-                                        <div>
-                                            <h5>ادرس شماره @addressCounter</h5>
-                                            <span>
-                                                <label style="margin-left: 10px;"> <i class="far fa-map-marker-check"></i></label>
-                                                <label><i class="far fa-edit"></i></label>
-                                            </span>
-                                        </div>
-
-                                        <p>@address.AddressText</p>
-                                    </div>
+                    {
+                        foreach (var item in Model)
+                        {
+                            <div class="order-item">
+                                <div class="order-detail">
+                                    <ul>
+                                        <li><a href=""><i class="fal fa-clock"></i> @item.PayDate.ToShamsiDateTime()</a></li>
+                                        <li><a href=""><i class="fal fa-barcode-read"></i> @item.TrackingCode</a></li>
+                                    </ul>
+                                    <p>@item.Sum.ToToman() <span class="toman">تومان</span></p>
                                 </div>
-                            }
-                        </div>
+                                <div class="show-order-pics">
+                                    @foreach (var pic in item.ProPics)
+                                    {
+                                        <img src="/images/ProductImages/@pic" alt="orderPicture">
+                                    }
+                                </div>
+                                <div class="more-detail-order">
+                                    <a href=""><i class="fal fa-file-invoice"></i> مشاهده بیشتر</a>
+                                    <a href=""><i class="fal fa-download"></i> مشاده فاکتور</a>
+                                </div>
+                            </div>
+                        }
                     }
-
                 </div>
             </div>
-
-
         </div>
     </div>
 </div>

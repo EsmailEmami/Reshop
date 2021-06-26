@@ -69,5 +69,10 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         [Display(Name = "تعداد سیم کارت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public byte QuantitySIMCard { get; set; }
+
+        // ساختار بدنه
+        // زمان معرفی
+        // شیار مجزا برای کارت حافظه دارد ندارد
+        // مدل
     }
 }

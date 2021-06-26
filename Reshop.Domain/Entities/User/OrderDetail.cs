@@ -39,7 +39,6 @@ namespace Reshop.Domain.Entities.User
 
         [Display(Name = "تعداد کالا")]
         [Required]
-        [MaxLength(3)]
         public int Count { get; set; }
 
         [Display(Name = "جمع کل")]

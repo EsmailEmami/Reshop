@@ -37,13 +37,13 @@ namespace Reshop.Application.Services.Product
             return _productRepository.GetProductsWithPagination(Fixer.FixedToString(type), Fixer.FixedToString(sortBy), 0, take);
         }
 
-        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18)
+        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(string type = "all", string sortBy = "news", int pageId = 1, int take = 18)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
-            int productsCount = await _productRepository.GetProductsCountWithTypeAsync(type.ToString());
+            int productsCount = await _productRepository.GetProductsCountWithTypeAsync(type.FixedText());
 
-            var products = _productRepository.GetProductsWithPagination(Fixer.FixedToString(type), Fixer.FixedToString(sortBy), skip, take);
+            var products = _productRepository.GetProductsWithPagination(type.FixedText(), sortBy.FixedText(), skip, take);
 
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -104,7 +104,7 @@ namespace Reshop.Application.Services.Product
 
             int productsCount = await _productRepository.GetShopperProductsCountWithTypeAsync(shopperUserId, type.ToString());
 
-            var products = (IEnumerable<ProductViewModel>)_productRepository.GetShopperProductsWthPagination(shopperUserId, Fixer.FixedText(type.ToString()), Fixer.FixedText(sortBy.ToString()), skip, take);
+            var products = (IEnumerable<ProductViewModel>)_productRepository.GetShopperProductsWithPagination(shopperUserId, type.ToString().FixedText(), sortBy.ToString().FixedText(), skip, take);
 
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -116,6 +116,9 @@ namespace Reshop.Application.Services.Product
         {
             return await _productRepository.GetProductByIdAsync(productId);
         }
+
+        public async Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperUserId) =>
+            await _productRepository.GetShopperProductAsync(shopperUserId, productId);
 
         public async Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId)
         {
