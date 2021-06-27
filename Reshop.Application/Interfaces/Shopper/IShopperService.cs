@@ -19,6 +19,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> AddStoreTitleAsync(StoreTitle storeTitle);
         Task<ResultTypes> EditStoreTitleAsync(StoreTitle storeTitle);
         Task<ResultTypes> DeleteStoreTitleAsync(int storeTitleId);
+        Task<ResultTypes> AddShopperStoreTitleAsync(string shopperId, List<int> storeTitlesId);
 
         #endregion
     }

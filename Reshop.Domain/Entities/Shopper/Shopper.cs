@@ -32,7 +32,6 @@ namespace Reshop.Domain.Entities.Shopper
         [Display(Name = "شماره تلفن ثابت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        [RegularExpression(@"^0(?=[0-9]){3,11}$", ErrorMessage = "لطغا {0}  خود را درست وارد کنید.")]
         public string LandlinePhoneNumber { get; set; }
 
         [Display(Name = "تصویر روی کارت ملی فروشنده")]

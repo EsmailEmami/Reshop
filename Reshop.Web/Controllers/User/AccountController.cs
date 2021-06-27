@@ -337,11 +337,21 @@ namespace Reshop.Web.Controllers.User
 
             #endregion
 
-
             var addShopper = await _shopperService.AddShopperAsync(shopper);
+
+           
+
+            
 
             if (addShopper == ResultTypes.Successful)
             {
+                #region shopper storeTitle
+
+                await _shopperService.AddShopperStoreTitleAsync(shopper.ShopperId, model.SelectedStoreTitles as List<int>);
+
+                #endregion
+
+
                 var user = new Domain.Entities.User.User
                 {
                     ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
@@ -355,7 +365,7 @@ namespace Reshop.Web.Controllers.User
                     NationalCode = model.NationalCode,
                     PostalCode = model.PostalCode,
                     Email = model.Email,
-                    IsPhoneNumberActive = false,
+                    IsPhoneNumberActive = true,
                     IsBlocked = false,
                     IsUserShopper = true,
                     ShopperId = shopper.ShopperId

@@ -122,25 +122,31 @@ namespace Reshop.Application.Services.User
                 await _roleRepository.IsRoleExistAsync(roleId);
 
 
-        public async Task<ResultTypes> AddUserToRoleAsync(string userId, string roleName)
+        public async Task<ResultTypes> AddUserToRoleAsync(string userId, string rolesName)
         {
-            var role = await _roleRepository.GetRoleByNameAsync(Fixer.FixedText(roleName));
+            string[] roleName = rolesName.Split(",");
 
-            if (role is null) return ResultTypes.Failed;
+            List<Role> roles = new List<Role>();
 
-            var userRole = new UserRole(userId, role.RoleId);
-
-            try
+            foreach (var item in roleName)
             {
+                var role = await _roleRepository.GetRoleByNameAsync(item.FixedText());
+                if (role is null)
+                {
+                    return ResultTypes.Failed;
+                }
+                roles.Add(role);
+            }
+
+            foreach (var item in roles)
+            {
+                var userRole = new UserRole(userId, item.RoleId);
                 await _roleRepository.AddUserRoleAsync(userRole);
-                await _userRepository.SaveChangesAsync();
+            }
 
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
+            await _userRepository.SaveChangesAsync();
+
+            return ResultTypes.Successful;
         }
 
         public async Task<ResultTypes> RemoveUserFromRoleAsync(string userId, string roleName)

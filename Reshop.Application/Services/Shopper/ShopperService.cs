@@ -111,5 +111,28 @@ namespace Reshop.Application.Services.Shopper
                 return ResultTypes.Failed;
             }
         }
+
+        public async Task<ResultTypes> AddShopperStoreTitleAsync(string shopperId, List<int> storeTitlesId)
+        {
+            try
+            {
+                foreach (var storeTitleId in storeTitlesId)
+                {
+                    await _shopperRepository.AddShopperStoreTitleAsync(new ShopperStoreTitle()
+                    {
+                        ShopperId = shopperId,
+                        StoreTitleId = storeTitleId
+                    });
+                }
+
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
     }
 }
