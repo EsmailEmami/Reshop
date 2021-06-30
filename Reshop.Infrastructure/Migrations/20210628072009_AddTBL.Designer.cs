@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reshop.Infrastructure.Context;
 
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    partial class ReshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210628072009_AddTBL")]
+    partial class AddTBL
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -964,9 +966,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte>("DiscountPercent")
-                        .HasColumnType("tinyint");
-
                     b.Property<bool>("IsFinally")
                         .HasColumnType("bit");
 
@@ -1183,9 +1182,6 @@ namespace Reshop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AddressId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
@@ -1194,9 +1190,6 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.Property<bool>("IsReceived")
                         .HasColumnType("bit");
-
-                    b.Property<decimal>("OrderDiscount")
-                        .HasColumnType("Money");
 
                     b.Property<DateTime>("PayDate")
                         .HasColumnType("datetime2");
@@ -1210,11 +1203,10 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("OrderId");
-
-                    b.HasIndex("AddressId");
 
                     b.HasIndex("UserId");
 
@@ -1237,9 +1229,6 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("Money");
-
-                    b.Property<decimal>("ProductDiscount")
                         .HasColumnType("Money");
 
                     b.Property<int>("ProductId")
@@ -1850,15 +1839,11 @@ namespace Reshop.Infrastructure.Migrations
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Order", b =>
                 {
-                    b.HasOne("Reshop.Domain.Entities.User.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
-
                     b.HasOne("Reshop.Domain.Entities.User.User", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Address");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

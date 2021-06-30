@@ -46,7 +46,7 @@ namespace Reshop.Application.Middleware.HitCounter
                             if (result == ResultTypes.Successful)
                             {
                                 var product = await _productService.GetProductByIdAsync(productId);
-                                product.AllViewsCount += 1;
+                                //product.AllViewsCount += 1;
 
                                 await _productService.EditProductAsync(product);
                             }

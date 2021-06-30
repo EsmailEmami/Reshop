@@ -48,12 +48,6 @@ namespace Reshop.Domain.Entities.Product
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string BrandProduct { get; set; }
 
-        [Display(Name = "تعداد کل ویو ها")]
-        public int AllViewsCount { get; set; }
-
-        [Display(Name = "تعداد کل فروش ها")]
-        public int AllSalesCount { get; set; }
-
         [Required]
         public DateTime CreateDate { get; set; }
 
@@ -128,6 +122,7 @@ namespace Reshop.Domain.Entities.Product
         public virtual MemoryCardDetail MemoryCardDetail { get; set; }
 
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
+        public ICollection<EditShopperProduct> EditShopperProducts { get; set; }
         public virtual ICollection<UserProductView> UserProductsView { get; set; }
 
         #endregion

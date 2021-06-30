@@ -28,6 +28,10 @@ namespace Reshop.Domain.Entities.User
         [Required]
         public decimal Price { get; set; }
 
+        [Display(Name = "مقدار تخفیف محصول")]
+        [Required]
+        public decimal ProductDiscount { get; set; }
+
         [Display(Name = "تاریخ ثبت محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public DateTime CreateDate { get; set; }

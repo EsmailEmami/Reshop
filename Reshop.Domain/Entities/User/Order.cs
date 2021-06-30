@@ -16,8 +16,11 @@ namespace Reshop.Domain.Entities.User
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string OrderId { get; set; }
 
-        [Required]
+        [ForeignKey("User")]
         public string UserId { get; set; }
+
+        [ForeignKey("Address")]
+        public string AddressId { get; set; }
 
         [Display(Name = "کد پیگیری")]
         [Required]
@@ -26,6 +29,10 @@ namespace Reshop.Domain.Entities.User
 
         [Display(Name = "تاریخ ثبت سفارش")]
         public DateTime CreateDate { get; set; }
+
+        [Display(Name = "مقدار تخفیف سفارش")]
+        [Required]
+        public decimal OrderDiscount { get; set; }
 
         [Display(Name = "جمع فاکتور")]
         [Required]
@@ -44,9 +51,12 @@ namespace Reshop.Domain.Entities.User
 
         #region Relations
 
-        [ForeignKey("UserId")]
-        public User User { get; set; }
-        public ICollection<OrderDetail> OrderDetails { get; set; }
+  
+        public virtual User User { get; set; }
+
+        public virtual Address Address { get; set; }
+
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 
         #endregion
     }

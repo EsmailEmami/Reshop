@@ -62,6 +62,7 @@ namespace Reshop.Domain.Entities.Shopper
         #region Relations
 
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
+        public ICollection<EditShopperProduct> EditShopperProducts { get; set; }
         public virtual ICollection<ShopperStoreTitle> ShopperTitles { get; set; }
 
         #endregion

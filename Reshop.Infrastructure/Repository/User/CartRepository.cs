@@ -41,7 +41,7 @@ namespace Reshop.Infrastructure.Repository.User
 
         public decimal GetOrderDetailsSumOfOrder(string orderId)
         {
-            return _context.OrderDetails.Where(o => o.OrderId == orderId).Select(d => d.Count * d.Price).Sum();
+            return _context.OrderDetails.Where(o => o.OrderId == orderId).Select(d => d.Sum).Sum();
         }
 
         public async Task AddOrderDetailAsync(OrderDetail orderDetail)
@@ -86,6 +86,8 @@ namespace Reshop.Infrastructure.Repository.User
                         Sum = o.Sum,
                         ProductsCount = o.Count,
                         ProductTitle = o.Product.ProductTitle,
+                        ProductPrice = 10000,
+                        ProductDiscount = 5000,
                         ProductImg = o.Product.ProductGalleries.FirstOrDefault().ImageName,
                         Warranty = _context.ShopperProducts.Single(s=> s.ShopperUserId == o.ShopperUserId).Warranty,
                         ShopperStoreName = _context.Users.Single(u=> u.UserId == o.ShopperUserId).Shopper.StoreName,

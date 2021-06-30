@@ -63,6 +63,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
         public virtual DbSet<UserProductView> UserProductsView { get; set; }
+        public virtual DbSet<EditShopperProduct> EditShopperProducts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -98,12 +99,19 @@ namespace Reshop.Infrastructure.Context
             modelBuilder.Entity<Order>(i =>
             {
                 i.Property(w => w.Sum).HasColumnType("Money");
+                i.Property(w => w.OrderDiscount).HasColumnType("Money");
             });
 
             modelBuilder.Entity<OrderDetail>(i =>
             {
                 i.Property(w => w.Price).HasColumnType("Money");
+                i.Property(w => w.ProductDiscount).HasColumnType("Money");
                 i.Property(w => w.Sum).HasColumnType("Money");
+            });
+
+            modelBuilder.Entity<EditShopperProduct>(i =>
+            {
+                i.Property(w => w.Price).HasColumnType("Money");
             });
 
             modelBuilder.Entity<Wallet>(i =>

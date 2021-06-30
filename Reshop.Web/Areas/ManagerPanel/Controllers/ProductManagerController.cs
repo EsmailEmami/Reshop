@@ -190,17 +190,11 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-                    var shopperProduct = new ShopperProduct()
-                    {
-                        ShopperUserId = model.ShopperUserId,
-                        ProductId = product.ProductId,
-                        Price = model.Price,
-                        QuantityInStock = model.QuantityInStock,
-                    };
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
-                    await _shopperService.AddShopperProductAsync(shopperProduct);
 
                     return RedirectToAction(nameof(Index));
+
                 }
                 else
                 {
@@ -1855,6 +1849,26 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     return View(model);
                 }
             }
+        }
+
+        #endregion
+
+
+        #region private methods
+
+        private async Task<ResultTypes> AddProductShopperAsync(string shopperUserId, int productId, decimal price, int quantityInStock)
+        {
+            var shopperProduct = new ShopperProduct()
+            {
+                ShopperUserId = shopperUserId,
+                ProductId = productId,
+                Price = price,
+                QuantityInStock = quantityInStock,
+            };
+
+            var result = await _shopperService.AddShopperProductAsync(shopperProduct);
+
+            return result;
         }
 
         #endregion

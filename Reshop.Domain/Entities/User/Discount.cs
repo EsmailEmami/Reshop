@@ -10,7 +10,7 @@ namespace Reshop.Domain.Entities.User
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string DiscountId { get; set; }
 
-        [Display(Name = "درصد تخفیف")]
+        [Display(Name = "کد تخفیف")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string DiscountCode { get; set; }

@@ -1,17 +1,20 @@
-﻿@model OpenCartViewModel
+﻿@using Reshop.Application.Calculate
+@model OpenCartViewModel
 @{
     ViewData["Title"] = "سبد خرید";
     int counter = 1;
+    decimal productsFullPrice = 0;
+    decimal productsDiscount = 0;
 }
 
 @if (Model == null)
 {
     <div class="basket-empty">
-        <img src="/icons/basket.svg" alt="basket"/>
+        <img src="/icons/basket.svg" alt="basket" />
         <h1>سبد خرید شما خالیست!</h1>
     </div>
-  
-    
+
+
 }
 else
 {
@@ -60,12 +63,12 @@ else
                                 فروشنده :
                             </h5>
                             <span>
-                               @item.ShopperStoreName
+                                @item.ShopperStoreName
                             </span>
                         </div>
 
                         <div class="quantity-selector">
-                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-orderDetailId="@item.OrderDetailId"asp-route-actionType="Plus">
+                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-orderDetailId="@item.OrderDetailId" asp-route-actionType="Plus">
                                 <button type="submit"><i class="far fa-plus"></i></button>
                             </form>
                             <span>@item.ProductsCount</span>
@@ -87,6 +90,10 @@ else
 
                     </div>
                 </div>
+
+                counter++;
+                productsFullPrice += item.ProductPrice;
+                productsDiscount += item.ProductDiscount;
             }
 
 
@@ -97,7 +104,7 @@ else
                 <section style="border-bottom: 1px solid #e9e8e8;">
                     <h5>مبلغ کل(@Model.OrderDetails.Count()):</h5>
                     <p>
-                        @Model.Sum.ToToman()
+                        @productsFullPrice.ToToman()
                         <span class="toman">تومان</span>
                     </p>
                 </section>
@@ -112,8 +119,9 @@ else
                 <section>
                     <h5>سود شما:</h5>
                     <p>
-                        3,000
+                        @productsDiscount.ToToman()
                         <span class="toman">تومان</span>
+                        @CartCalculator.CalculatePercentOfTwoPrice(productsFullPrice, productsDiscount) %
                     </p>
                 </section>
 
