@@ -8,9 +8,16 @@ namespace Reshop.Application.Interfaces.Shopper
     public interface IShopperService
     {
         Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper);
+        Task<ResultTypes> EditShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> AddShopperProductAsync(ShopperProduct shopperProduct);
 
+        #region address
 
+        Task<ResultTypes> AddStoreAddressAsync(StoreAddress storeAddress);
+        Task<ResultTypes> EditStoreAddressAsync(StoreAddress storeAddress);
+        Task<ResultTypes> RemoveStoreAddressAsync(string storeAddressId);
+
+        #endregion
 
         #region store title
 

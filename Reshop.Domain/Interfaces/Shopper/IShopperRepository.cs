@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Reshop.Domain.DTOs.Shopper;
+using Reshop.Domain.Entities.Shopper;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reshop.Domain.DTOs.Shopper;
-using Reshop.Domain.DTOs.User;
-using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Domain.Interfaces.Shopper
 {
@@ -11,7 +10,8 @@ namespace Reshop.Domain.Interfaces.Shopper
     {
         Task<Entities.User.User> GetShopperByIdAsync(string userId);
         Task AddShopperAsync(Entities.Shopper.Shopper shopper);
-        Task<AddOrEditShopperViewModel> GetShopperDataForEditAsync(string userId);
+        void EditShopper(Entities.Shopper.Shopper shopper);
+        Task<EditShopperViewModel> GetShopperDataForEditAsync(string userId);
 
         // types = all,active,block
         IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null);
@@ -44,6 +44,14 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         #endregion
 
+        #region address
+
+        Task AddStoreAddressAsync(StoreAddress storeAddress);
+        void EditStoreAddress(StoreAddress storeAddress);
+        void RemoveStoreAddress(StoreAddress storeAddress);
+        Task<StoreAddress> GetStoreAddressByIdAsync(string storeAddressId);
+
+        #endregion
 
         Task SaveChangesAsync();
     }

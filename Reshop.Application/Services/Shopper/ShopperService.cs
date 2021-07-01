@@ -43,11 +43,75 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
+        public async Task<ResultTypes> EditShopperAsync(Domain.Entities.Shopper.Shopper shopper)
+        {
+            try
+            {
+                _shopperRepository.EditShopper(shopper);
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<ResultTypes> AddShopperProductAsync(ShopperProduct shopperProduct)
         {
             try
             {
                 await _shopperRepository.AddShopperProductAsync(shopperProduct);
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> AddStoreAddressAsync(StoreAddress storeAddress)
+        {
+            try
+            {
+                await _shopperRepository.AddStoreAddressAsync(storeAddress);
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditStoreAddressAsync(StoreAddress storeAddress)
+        {
+            try
+            {
+                _shopperRepository.EditStoreAddress(storeAddress);
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> RemoveStoreAddressAsync(string storeAddressId)
+        {
+            var storeAddress = await _shopperRepository.GetStoreAddressByIdAsync(storeAddressId);
+
+            if (storeAddress is null) return ResultTypes.Failed;
+
+            try
+            {
+                _shopperRepository.RemoveStoreAddress(storeAddress);
                 await _shopperRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;

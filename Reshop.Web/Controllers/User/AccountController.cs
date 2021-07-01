@@ -237,7 +237,7 @@ namespace Reshop.Web.Controllers.User
         [HttpGet]
         public IActionResult AddShopper()
         {
-            var model = new AddOrEditShopperViewModel()
+            var model = new AddShopperViewModel()
             {
                 States = _stateService.GetStates() as IEnumerable<State>,
                 StoreTitles = _shopperService.GetStoreTitles(),
@@ -250,7 +250,7 @@ namespace Reshop.Web.Controllers.User
         [Route("NewShopper")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddShopper(AddOrEditShopperViewModel model)
+        public async Task<IActionResult> AddShopper(AddShopperViewModel model)
         {
             // this is states when page reload states is not null
             model.States = _stateService.GetStates() as IEnumerable<State>;
@@ -258,16 +258,14 @@ namespace Reshop.Web.Controllers.User
 
             if (!ModelState.IsValid)
                 return View(model);
-
+             
 
             var shopper = new Shopper()
             {
                 StoreName = model.StoreName,
                 BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate(),
                 RegisterShopper = DateTime.Now,
-                LandlinePhoneNumber = model.LandlinePhoneNumber,
-                Condition = false,
-                IsApproved = false,
+                IsFinally = false
             };
 
             #region shopper cards
@@ -339,23 +337,16 @@ namespace Reshop.Web.Controllers.User
 
             var addShopper = await _shopperService.AddShopperAsync(shopper);
 
-           
 
-            
 
             if (addShopper == ResultTypes.Successful)
             {
-                #region shopper storeTitle
-
-                await _shopperService.AddShopperStoreTitleAsync(shopper.ShopperId, model.SelectedStoreTitles as List<int>);
-
-                #endregion
-
+                #region user
 
                 var user = new Domain.Entities.User.User
                 {
-                    ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
                     FullName = model.FullName,
+                    ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
                     RegisteredDate = DateTime.Now,
                     UserAvatar = "userAvatar.jpg",
                     PhoneNumber = model.PhoneNumber,
@@ -371,35 +362,71 @@ namespace Reshop.Web.Controllers.User
                 };
 
                 var addUser = await _userService.AddUserAsync(user);
-
+                
                 if (addUser == ResultTypes.Successful)
                 {
-                    var cityName = _stateService.GetCityNameById(int.Parse(model.City));
-                    var stateName = _stateService.GetStateNameById(int.Parse(model.State));
-                    var address = new Address()
-                    {
-                        UserId = user.UserId,
-                        State = stateName,
-                        City = cityName,
-                        AddressText = model.AddressText,
-                        Plaque = model.Plaque,
-                        PostalCode = model.PostalCode,
-                    };
-
-                    var addAddress = await _userService.AddUserAddressAsync(address);
-                    if (addAddress == ResultTypes.Successful)
-                    {
-                        user.Addresses.Add(address);
-                        await _userService.EditUserAsync(user);
-                    }
-
-
-
                     var addUserToRoleResult = await _roleService.AddUserToRoleAsync(user.UserId, "Shopper");
 
-                    if (addUserToRoleResult == ResultTypes.Successful)
-                        return Redirect("/");
+                    if (addUserToRoleResult != ResultTypes.Successful)
+                    {
+                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت مقام شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                        return View(model);
+                    }
                 }
+                else
+                {
+                    ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
+                    return View(model);
+                }
+                
+
+                #endregion
+
+
+
+
+                #region shopper storeTitle
+
+                var addStoreTitle = await _shopperService.AddShopperStoreTitleAsync(shopper.ShopperId, model.SelectedStoreTitles as List<int>);
+
+                if (addStoreTitle != ResultTypes.Successful)
+                {
+                    ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت عناوین شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                    return View(model);
+                }
+
+                #endregion
+
+                #region store address
+
+                var storeAddress = new StoreAddress()
+                {
+                    ShopperId = shopper.ShopperId,
+                    StateId = model.StateId,
+                    CityId = model.CityId,
+                    Plaque = model.Plaque,
+                    PostalCode = model.PostalCode,
+                    AddressText = model.AddressText,
+                    LandlinePhoneNumber = model.LandlinePhoneNumber
+                };
+
+                var addStoreAddress = await _shopperService.AddStoreAddressAsync(storeAddress);
+
+                if (addStoreAddress == ResultTypes.Successful)
+                {
+                    shopper.StoresAddress.Add(storeAddress);
+
+                    await _shopperService.EditShopperAsync(shopper);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نشانی فروشگاه شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
+                    return View(model);
+                }
+
+                #endregion
+                 
+                return Redirect("/");
             }
 
 

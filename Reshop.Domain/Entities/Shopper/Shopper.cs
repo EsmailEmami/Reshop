@@ -29,11 +29,6 @@ namespace Reshop.Domain.Entities.Shopper
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public DateTime RegisterShopper { get; set; }
 
-        [Display(Name = "شماره تلفن ثابت")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string LandlinePhoneNumber { get; set; }
-
         [Display(Name = "تصویر روی کارت ملی فروشنده")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
@@ -49,21 +44,15 @@ namespace Reshop.Domain.Entities.Shopper
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string BusinessLicenseImageName { get; set; }
 
-        // درحال بررسی و بررسی شده
-        [Display(Name = " وضعیت فروشنده")]
-        [Required]
-        public bool Condition { get; set; }
-
-        // تایید شده و تایید نشده
-        [Display(Name = "وضعیت نهایی")]
-        [Required]
-        public bool IsApproved { get; set; }
+        [Display(Name = "وضعیت فروشنده")]
+        public bool IsFinally { get; set; }
 
         #region Relations
 
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
         public ICollection<EditShopperProduct> EditShopperProducts { get; set; }
         public virtual ICollection<ShopperStoreTitle> ShopperTitles { get; set; }
+        public virtual ICollection<StoreAddress> StoresAddress { get; set; }
 
         #endregion
     }

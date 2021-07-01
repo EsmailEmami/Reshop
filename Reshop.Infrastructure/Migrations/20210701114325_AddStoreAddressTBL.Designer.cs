@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reshop.Infrastructure.Context;
 
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    partial class ReshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210701114325_AddStoreAddressTBL")]
+    partial class AddStoreAddressTBL
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1017,8 +1019,10 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("LandlinePhoneNumber")
                         .IsRequired()
@@ -1038,16 +1042,14 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<string>("ShopperId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("StateId")
-                        .HasColumnType("int");
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("StoreAddressId");
 
-                    b.HasIndex("CityId");
-
                     b.HasIndex("ShopperId");
-
-                    b.HasIndex("StateId");
 
                     b.ToTable("StoresAddress");
                 });
@@ -1853,27 +1855,11 @@ namespace Reshop.Infrastructure.Migrations
 
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreAddress", b =>
                 {
-                    b.HasOne("Reshop.Domain.Entities.User.City", "City")
-                        .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Reshop.Domain.Entities.Shopper.Shopper", "Shopper")
                         .WithMany("StoresAddress")
                         .HasForeignKey("ShopperId");
 
-                    b.HasOne("Reshop.Domain.Entities.User.State", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("City");
-
                     b.Navigation("Shopper");
-
-                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Address", b =>

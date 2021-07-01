@@ -64,6 +64,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
         public virtual DbSet<UserProductView> UserProductsView { get; set; }
         public virtual DbSet<EditShopperProduct> EditShopperProducts { get; set; }
+        public virtual DbSet<StoreAddress> StoresAddress { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

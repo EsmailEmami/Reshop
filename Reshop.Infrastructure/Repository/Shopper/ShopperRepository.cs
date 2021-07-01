@@ -33,21 +33,24 @@ namespace Reshop.Infrastructure.Repository.Shopper
             =>
                 await _context.Shoppers.AddAsync(shopper);
 
-        public async Task<AddOrEditShopperViewModel> GetShopperDataForEditAsync(string userId)
+        public void EditShopper(Domain.Entities.Shopper.Shopper shopper) =>
+            _context.Shoppers.Update(shopper);
+
+        public async Task<EditShopperViewModel> GetShopperDataForEditAsync(string userId)
             =>
                 await _context.Users.Where(c => c.UserId == userId)
-                    .Include(c => c.Shopper)
-                    .Select(c => new AddOrEditShopperViewModel()
+                    .Select(c => new EditShopperViewModel()
                     {
                         UserId = c.UserId,
                         FullName = c.FullName,
                         Email = c.Email,
                         PhoneNumber = c.PhoneNumber,
-                        LandlinePhoneNumber = c.Shopper.LandlinePhoneNumber,
                         NationalCode = c.NationalCode,
                         BirthDay = c.Shopper.BirthDay.ToString(),
                         StoreName = c.Shopper.StoreName,
-
+                        BusinessLicenseImageName = c.Shopper.BusinessLicenseImageName,
+                        OnNationalCardImageName = c.Shopper.OnNationalCardImageName,
+                        BackNationalCardImageName = c.Shopper.BackNationalCardImageName
                     }).SingleOrDefaultAsync();
 
         public IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null)
@@ -130,6 +133,18 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public void RemoveShopperStoreTitle(ShopperStoreTitle shopperStoreTitle)
             =>
                  _context.ShopperStoreTitles.Remove(shopperStoreTitle);
+
+        public async Task AddStoreAddressAsync(StoreAddress storeAddress) =>
+            await _context.StoresAddress.AddAsync(storeAddress);
+
+        public void EditStoreAddress(StoreAddress storeAddress) =>
+            _context.StoresAddress.Update(storeAddress);
+
+        public void RemoveStoreAddress(StoreAddress storeAddress) =>
+            _context.StoresAddress.Remove(storeAddress);
+
+        public async Task<StoreAddress> GetStoreAddressByIdAsync(string storeAddressId) =>
+            await _context.StoresAddress.FindAsync(storeAddressId);
 
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
