@@ -7,7 +7,7 @@ namespace Reshop.Domain.Entities.User
     {
         public Address()
         {
-            
+
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -30,6 +30,17 @@ namespace Reshop.Domain.Entities.User
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(6, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Plaque { get; set; }
+
+        [Display(Name = "شماره تلفن")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [DataType(DataType.PhoneNumber)]
+        public string PhoneNumber { get; set; }
+
+        [Display(Name = "کد پستی")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(10, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string PostalCode { get; set; }
 
         [Display(Name = "متن ادرس")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]

@@ -45,7 +45,6 @@ namespace Reshop.Infrastructure.Repository.Shopper
                         PhoneNumber = c.PhoneNumber,
                         LandlinePhoneNumber = c.Shopper.LandlinePhoneNumber,
                         NationalCode = c.NationalCode,
-                        PostalCode = c.PostalCode,
                         BirthDay = c.Shopper.BirthDay.ToString(),
                         StoreName = c.Shopper.StoreName,
 

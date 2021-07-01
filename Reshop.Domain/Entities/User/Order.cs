@@ -34,6 +34,10 @@ namespace Reshop.Domain.Entities.User
         [Required]
         public decimal OrderDiscount { get; set; }
 
+        [Display(Name = "هزینه حمل و نقل")]
+        [Required]
+        public decimal ShippingCost { get; set; }
+
         [Display(Name = "جمع فاکتور")]
         [Required]
         public decimal Sum { get; set; }
@@ -51,7 +55,7 @@ namespace Reshop.Domain.Entities.User
 
         #region Relations
 
-  
+
         public virtual User User { get; set; }
 
         public virtual Address Address { get; set; }

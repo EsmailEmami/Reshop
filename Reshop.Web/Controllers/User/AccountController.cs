@@ -95,7 +95,6 @@ namespace Reshop.Web.Controllers.User
                 InviteCount = 0,
                 Score = 0,
                 NationalCode = "-",
-                PostalCode = "-",
                 IsPhoneNumberActive = false,
                 Email = "-",
                 IsBlocked = false,
@@ -137,6 +136,7 @@ namespace Reshop.Web.Controllers.User
         {
             if (User.Identity.IsAuthenticated)
                 return Redirect("/");
+
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -363,7 +363,6 @@ namespace Reshop.Web.Controllers.User
                     InviteCount = 0,
                     Score = 0,
                     NationalCode = model.NationalCode,
-                    PostalCode = model.PostalCode,
                     Email = model.Email,
                     IsPhoneNumberActive = true,
                     IsBlocked = false,
@@ -384,6 +383,7 @@ namespace Reshop.Web.Controllers.User
                         City = cityName,
                         AddressText = model.AddressText,
                         Plaque = model.Plaque,
+                        PostalCode = model.PostalCode,
                     };
 
                     var addAddress = await _userService.AddUserAddressAsync(address);

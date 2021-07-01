@@ -77,7 +77,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     InviteCount = 0,
                     Score = 0,
                     NationalCode = model.NationalCode,
-                    PostalCode = model.PostalCode,
                     IsPhoneNumberActive = model.IsPhoneNumberActive,
                     IsBlocked = model.IsBlocked,
                     AccountBalance = model.AccountBalance,
@@ -120,7 +119,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 user.InviteCount = 0;
                 user.Score = 0;
                 user.NationalCode = model.NationalCode;
-                user.PostalCode = model.PostalCode;
                 user.IsPhoneNumberActive = model.IsPhoneNumberActive;
                 user.IsBlocked = model.IsBlocked;
                 user.AccountBalance = model.AccountBalance;

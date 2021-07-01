@@ -61,8 +61,6 @@ namespace Reshop.Application.Services.User
                 if (!await _userRepository.IsUserExistAsync(userId))
                     return ResultTypes.Failed;
 
-
-
                 var shopperProduct = await _productRepository.GetShopperProductAsync(shopperUserId, productId);
                 if (shopperProduct is null)
                     return ResultTypes.Failed;
@@ -130,6 +128,8 @@ namespace Reshop.Application.Services.User
                         Sum = 0,
                         IsPayed = false,
                         IsReceived = false,
+                        ShippingCost = 0,
+                        OrderDiscount = 0
                     };
                     while (await _cartRepository.IsOrderTrackingCodeExistAsync(order_new.TrackingCode))
                     {

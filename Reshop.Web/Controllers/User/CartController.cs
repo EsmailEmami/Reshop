@@ -88,6 +88,22 @@ namespace Reshop.Web.Controllers.User
             return RedirectToAction(nameof(ShowCart));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Address()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return View(_userService.GetUserAddresses(userId));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Address(string addressId)
+        {
+            //TODO select order address
+
+
+            return RedirectToAction(nameof(Payment));
+        }
 
         [HttpGet]
         [Route("Payment")]

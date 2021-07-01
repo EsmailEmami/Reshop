@@ -34,7 +34,6 @@ namespace Reshop.Domain.Entities.User
         [Display(Name = "شماره تلفن")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        //[RegularExpression(@"^09(?=[0-9]){11}$", ErrorMessage = "لطفا شماره تلفن خود را درست وارد کنید.")]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
@@ -61,11 +60,6 @@ namespace Reshop.Domain.Entities.User
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [Range(10000, 10000000, ErrorMessage = "{0} نمی تواند کمتر از {1} تومان و بیشتر از {2} تومان باشد")]
         public decimal AccountBalance { get; set; }
-
-        [Display(Name = "کد پستی")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(10, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string PostalCode { get; set; }
 
         [Display(Name = "تاریخ ثبت نام")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]

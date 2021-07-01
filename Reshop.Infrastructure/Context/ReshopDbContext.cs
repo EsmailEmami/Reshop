@@ -100,6 +100,7 @@ namespace Reshop.Infrastructure.Context
             {
                 i.Property(w => w.Sum).HasColumnType("Money");
                 i.Property(w => w.OrderDiscount).HasColumnType("Money");
+                i.Property(w => w.ShippingCost).HasColumnType("Money");
             });
 
             modelBuilder.Entity<OrderDetail>(i =>

@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "سبد خرید";
     int counter = 1;
-    decimal productsFullPrice = 0;
-    decimal productsDiscount = 0;
 }
 
 @if (Model == null)
@@ -92,8 +90,6 @@ else
                 </div>
 
                 counter++;
-                productsFullPrice += item.ProductPrice;
-                productsDiscount += item.ProductDiscount;
             }
 
 
@@ -102,7 +98,14 @@ else
         <div class="detail-cart box-shadow">
             <div class="collapse" id="cart-datail">
                 <section style="border-bottom: 1px solid #e9e8e8;">
-                    <h5>مبلغ کل(@Model.OrderDetails.Count()):</h5>
+
+                    @{
+                        decimal productsFullPrice = Model.OrderDetails.Select(c => c.ProductPrice * c.ProductsCount).Sum();
+                        decimal productsDiscount = Model.OrderDetails.Select(c => c.ProductDiscount).Sum();
+                    }
+
+
+                    <h5>مبلغ کل(@Model.OrderDetails.Select(c => c.ProductsCount).Sum()):</h5>
                     <p>
                         @productsFullPrice.ToToman()
                         <span class="toman">تومان</span>
@@ -125,25 +128,25 @@ else
                     </p>
                 </section>
 
-                <section style="border-bottom: 1px solid #e9e8e8;">
-                    <h5>مبلغ قابل پرداخت</h5>
-                    <p>
-                        @Model.Sum.ToToman()
-                        <span class="toman">تومان</span>
-                    </p>
-                </section>
-
-
             </div>
+            <section class="payment-price">
+                <h5>مبلغ قابل پرداخت</h5>
+                <p>
+                    @Model.Sum.ToToman()
+                    <span class="toman">تومان</span>
+                </p>
+            </section>
+
+            
+
             <section>
-                <a class="btn finall-cart-btn" asp-action="Payment">
+                <a class="btn finall-cart-btn" asp-action="Address">
                     ادمه فرایند خرید
                 </a>
 
                 <a title="جزئیات" class="cart-datail-collapse" data-toggle="collapse" href="#cart-datail" role="button" aria-expanded="false" aria-controls="#cart-datail">
                     <i class="far fa-arrows-v"></i>
                 </a>
-
 
             </section>
         </div>
@@ -158,27 +161,32 @@ else
 {
     <script>
         $(function () {
+            let collapse = document.getElementsByClassName('collapse');
             if (window.innerWidth > 991) {
-                let collapse = document.getElementsByClassName('collapse');
                 for (let i = 0; i < collapse.length; i++) {
                     collapse[i].classList.add("show");
                 }
+            } else {
+                for (let i = 0; i < collapse.length; i++) {
+                    collapse[i].classList.remove("show");
+                }
             }
 
-            window.addEventListener('resize', function () {
-                let collapse = document.getElementsByClassName('collapse');
+            window.addEventListener('resize',
+                function () {
+                    let collapse = document.getElementsByClassName('collapse');
 
-                if (window.innerWidth > 991) {
+                    if (window.innerWidth > 991) {
 
-                    for (let i = 0; i < collapse.length; i++) {
-                        collapse[i].classList.add("show");
+                        for (let i = 0; i < collapse.length; i++) {
+                            collapse[i].classList.add("show");
+                        }
+                    } else {
+                        for (let i = 0; i < collapse.length; i++) {
+                            collapse[i].classList.remove("show");
+                        }
                     }
-                } else {
-                    for (let i = 0; i < collapse.length; i++) {
-                        collapse[i].classList.remove("show");
-                    }
-                }
-            });
+                });
         });
     </script>
 }

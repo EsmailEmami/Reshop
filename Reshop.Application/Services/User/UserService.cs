@@ -47,7 +47,6 @@ namespace Reshop.Application.Services.User
                 Score = user.Score,
                 AccountBalance = user.AccountBalance,
                 NationalCode = user.NationalCode,
-                PostalCode = user.PostalCode,
                 IsPhoneNumberActive = user.IsPhoneNumberActive,
                 IsBlocked = user.IsBlocked,
                 Roles = roles as IEnumerable<Role>,

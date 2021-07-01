@@ -58,7 +58,7 @@ namespace Reshop.Infrastructure
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<IShopperRepository, ShopperRepository>();
-            services.AddScoped<IRoleRepository,RoleRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IStateRepository, StateRepository>();
 
 
