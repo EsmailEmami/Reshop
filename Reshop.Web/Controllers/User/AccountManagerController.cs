@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
@@ -6,12 +7,14 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security.Attribute;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Shopper;
+using Reshop.Domain.Entities.User;
 
 namespace Reshop.Web.Controllers.User
 {
     [Authorize]
-    [AutoValidateAntiforgeryToken]
     public class AccountManagerController : Controller
     {
         #region Constructor
@@ -19,12 +22,14 @@ namespace Reshop.Web.Controllers.User
         private readonly IUserService _userService;
         private readonly ICartService _cartService;
         private readonly IProductService _productService;
+        private readonly IStateService _stateService;
 
-        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService)
+        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService, IStateService stateService)
         {
             _userService = userService;
             _cartService = cartService;
             _productService = productService;
+            _stateService = stateService;
         }
 
         #endregion
@@ -121,6 +126,69 @@ namespace Reshop.Web.Controllers.User
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return View(await _productService.GetShopperProductAsync(productId, userId));
+        }
+
+        [HttpGet]
+        public IActionResult NewAddress()
+        {
+            ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
+
+            return View(new Address());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NewAddress(Address model)
+        {
+            ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
+            ViewBag.Cities = _stateService.GetCitiesOfState(model.StateId) as IEnumerable<City>;
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "NewAddress",model) });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var address = new Address()
+            {
+                UserId = userId,
+                FullName = model.FullName,
+                PhoneNumber = model.PhoneNumber,
+                StateId = model.StateId,
+                CityId = model.CityId,
+                Plaque = model.Plaque,
+                PostalCode = model.PostalCode,
+                AddressText = model.AddressText
+            };
+
+            var result = await _userService.AddUserAddressAsync(address);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                ModelState.AddModelError("","هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "NewAddress", model) });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditAddress(string addressId)
+        {
+            if (string.IsNullOrEmpty(addressId))
+            {
+                return BadRequest();
+            }
+            var address = await _userService.GetAddressByIdAsync(addressId);
+
+            if (address is null)
+            {
+                return NotFound();
+            }
+            ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
+            ViewBag.Cities = _stateService.GetCitiesOfState(address.StateId) as IEnumerable<City>;
+
+            return View(address);
         }
     }
 }

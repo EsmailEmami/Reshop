@@ -35,12 +35,12 @@ namespace Reshop.Infrastructure.Repository.User
 
         public async Task<Domain.Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber)
         {
-            return await _context.Users.SingleOrDefaultAsync(c=> c.PhoneNumber == phoneNumber);
+            return await _context.Users.SingleOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
         }
 
         public IAsyncEnumerable<Address> GetUserAddresses(string userId)
             =>
-                _context.Addresses.Where(c=> c.UserId == userId) as IAsyncEnumerable<Address>;
+                _context.Addresses.Where(c => c.UserId == userId) as IAsyncEnumerable<Address>;
 
         public async Task AddUserAsync(Domain.Entities.User.User user) => await _context.Users.AddAsync(user);
 
@@ -82,6 +82,9 @@ namespace Reshop.Infrastructure.Repository.User
                 _context.Wallets
                     .Where(c => c.UserId == userId && c.WalletTypeId == 1 && c.IsPayed)
                     .Select(c => c.Amount);
+
+        public async Task<Address> GetAddressByIdAsync(string addressId) =>
+            await _context.Addresses.FindAsync(addressId);
 
         #endregion
 

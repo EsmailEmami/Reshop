@@ -98,6 +98,127 @@ table th, td {
     z-index: 0;
 }
 
+/* -------------------------------------- modal -------------------------------------- */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 99;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    position: relative;
+    background: #fff;
+    margin: auto;
+    padding: 0;
+    border: 2px solid #565656;
+    width: 98%;
+    max-width: 1000px;
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: .6s;
+    animation-name: animatetop;
+    animation-duration: .6s;
+    border-radius: 10px;
+}
+
+@-webkit-keyframes animatetop {
+    from {
+        top: -200px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+@keyframes animatetop {
+    from {
+        top: -200px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+.modal-header-custom {
+    padding: 10px 16px;
+    border-bottom: 2px solid #e4e4e4;
+    background: #dbdbdb;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    position: relative;
+}
+
+    .modal-header-custom .header-title {
+        font-weight: bold;
+        display: inline-block;
+        margin: 0;
+        font-size: 15px;
+        color: #2c2b2b;
+    }
+
+    .modal-header-custom .close {
+        position: absolute;
+        color: #2c2b2b;
+        left: 13px;
+        top: 11px;
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+        .modal-header-custom .close:hover,
+        .modal-header-custom .close:focus {
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+.modal-body {
+    padding: 20px 16px 11px 16px;
+    margin-bottom: 5px;
+    background: #fff;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    max-height: 500px;
+    overflow-y: scroll;
+}
+
+
+    .modal-body::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+        background: #dddddd;
+        border-radius: 25px;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 25px;
+    }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+/* -------------------------------------- modal -------------------------------------- */
+
+
+
+
 /* -------------------------------------- header -------------------------------------- */
 
 
@@ -1444,8 +1565,9 @@ header .top-menu {
         font-weight: bold;
     }
 
-    .user-item-data > div:first-child label {
+    .user-item-data > div:first-child a {
         font-size: 25px;
+        margin: 0;
     }
 
     .user-item-data > p:last-child {
@@ -1594,7 +1716,7 @@ header .top-menu {
 /* -------------------------------------- account manager -------------------------------------- */
 
 
-/* -------------------------------------- multiple select -------------------------------------- */
+/* -------------------------------------- select -------------------------------------- */
 
 .multiselect-dropdown {
     display: inline-block;
@@ -1608,6 +1730,7 @@ header .top-menu {
     background-position: left 2px center;
     background-size: 18px 11px;
     width: 100%;
+    height: 38px;
 }
 
     .multiselect-dropdown span.optext,
@@ -1617,6 +1740,8 @@ header .top-menu {
         padding: 1px 0;
         border-radius: 5px;
         display: inline-block;
+        overflow: hidden;
+        line-height: 29px;
     }
 
     .multiselect-dropdown span.optext {
@@ -1723,7 +1848,7 @@ header .top-menu {
     border-bottom: solid 2px #d6d6d6;
 }
 
-/* -------------------------------------- multiple select -------------------------------------- */
+/* -------------------------------------- select -------------------------------------- */
 
 
 /* -------------------------------------- register -------------------------------------- */
@@ -1843,12 +1968,12 @@ header .top-menu {
         display: none;
     }
 
-.register-shopper-area select {
-    width: 100%;
-    border: 2px solid #ced4da;
-    border-radius: 5px;
-    height: 38px;
-}
+.form-field select {
+        width: 100%;
+        border: 2px solid #ced4da;
+        border-radius: 5px;
+        height: 38px;
+    }
 
 .form-file {
     position: relative;

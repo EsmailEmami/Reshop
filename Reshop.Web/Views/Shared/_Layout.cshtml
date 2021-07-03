@@ -58,7 +58,7 @@
                     <a asp-controller="Cart" asp-action="ShowCart">
                         <i class="far fa-shopping-cart"></i>
                     </a>
-                   
+
                 </div>
             </div>
 
@@ -71,6 +71,8 @@
     <main class="screen-width-1450 mt-3">
         @RenderBody()
     </main>
+
+    @await RenderSectionAsync("AfterMainOptions", required: false)
 
     <div id="toast-success">
 

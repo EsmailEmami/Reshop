@@ -51,3 +51,68 @@ function AddProductToFavorites(productId, shopperUserId) {
         }
     });
 }
+
+
+function ShowModal(url, title) {
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function (res) {
+            // modal body 
+            $("#modal .modal-body").html(res);
+            // title of modal
+            $(".modal-header-custom .header-title").html(title);
+            document.getElementById('modal').style.display = 'block';
+        }
+    });
+}
+
+
+function GetCitiesOfState(stateId) {
+    if (stateId != 0) {
+        $.ajax({
+            type: "GET",
+            url: "/api/State?stateId=" + stateId,
+        }).done(function (res) {
+            $("#city").empty();
+            $("#city").append('  <option value="0">لطفا شهر را انتخاب کنید</option>');
+            $.each(res, function (index, value) {
+                $("#city").append('<option value="' + value.cityId + '">' + value.cityName + '</option>');
+            });
+        });
+    } else if (stateId == 0) {
+        $("#city").empty();
+        $("#city").append('  <option value="0">لطفا استان را انتخاب کنید</option>');
+    }
+}
+
+function SubmitFormData(form) {
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                if (res.isValid) {
+                    // modal body 
+                    $("#modal .modal-body").html('');
+                    // title of modal
+                    $(".modal-header-custom .header-title").html('');
+                    document.getElementById('modal').style.display = 'none';
+                    location.reload();
+                } else
+                    $("#modal .modal-body").html(res.html);
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex)
+    }
+}

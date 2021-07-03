@@ -62,8 +62,6 @@ namespace Reshop.Infrastructure
             services.AddScoped<IStateRepository, StateRepository>();
 
 
-
-            services.AddTransient<IViewRenderService, RenderViewToString>();
             services.AddSingleton<IMessageSender, MessageSender>();
 
             #endregion

@@ -63,12 +63,19 @@
                     @if (Model == null)
                     {
                         <div class="basket-empty">
-                            <img src="/icons/Address.svg" alt="Address"/>
+                            <img src="/icons/Address.svg" alt="Address" />
                             <h1>ادرسی یافت نشد!</h1>
                         </div>
                     }
+
                     else
-                    { <div class="row">
+                    {
+                        <a class="btn btn-success text-white"
+                           onclick="ShowModal('@Url.Action("NewAddress", "AccountManager", null, Context.Request.Scheme)','آدرس جدید')">
+                            افزودن ادرس  جدید
+                        </a>
+
+                        <div class="row">
                             @await foreach (var address in Model)
                             {
                                 <div class="col-sm-12">
@@ -76,8 +83,8 @@
                                         <div>
                                             <h5>ادرس شماره @addressCounter</h5>
                                             <span>
-                                                <label style="margin-left: 10px;"> <i class="far fa-map-marker-check"></i></label>
-                                                <label><i class="far fa-edit"></i></label>
+                                                <a style="margin-left: 10px;"> <i class="far fa-map-marker-check"></i></a>
+                                                <a onclick="ShowModal('@Url.Action("EditAddress", "AccountManager", new {addressId =address.AddressId}, Context.Request.Scheme)','ویرایش آدرس')"><i class="far fa-edit"></i></a>
                                             </span>
                                         </div>
 
@@ -95,3 +102,12 @@
         </div>
     </div>
 </div>
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

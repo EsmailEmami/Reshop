@@ -30,17 +30,16 @@ namespace Reshop.Web.Controllers.User
         #region constructor
 
         private readonly IUserService _userService;
-        private readonly IViewRenderService _viewRender;
+     
         private readonly IMessageSender _messageSender;
         private readonly IOptions<GoogleReCaptchaKey> _captchaKey;
         private readonly IShopperService _shopperService;
         private readonly IRoleService _roleService;
         private readonly IStateService _stateService;
 
-        public AccountController(IUserService userService, IViewRenderService viewRender, IMessageSender messageSender, IOptions<GoogleReCaptchaKey> captchaKey, IShopperService shopperService, IRoleService roleService, IStateService stateService)
+        public AccountController(IUserService userService, IMessageSender messageSender, IOptions<GoogleReCaptchaKey> captchaKey, IShopperService shopperService, IRoleService roleService, IStateService stateService)
         {
             _userService = userService;
-            _viewRender = viewRender;
             _messageSender = messageSender;
             _captchaKey = captchaKey;
             _shopperService = shopperService;

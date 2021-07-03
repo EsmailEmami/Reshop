@@ -33,6 +33,7 @@ namespace Reshop.Application.Interfaces.User
         #region address
 
         Task<ResultTypes> AddUserAddressAsync(Address address);
+        Task<Address> GetAddressByIdAsync(string addressId);
 
         #endregion
 

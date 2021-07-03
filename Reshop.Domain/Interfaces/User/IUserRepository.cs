@@ -40,6 +40,12 @@ namespace Reshop.Domain.Interfaces.User
 
         #endregion
 
+        #region address
+
+        Task<Address> GetAddressByIdAsync(string addressId);
+
+        #endregion
+
         #region Discount
 
         Discount GetDiscountByCode(string discountCode);

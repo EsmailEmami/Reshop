@@ -223,5 +223,8 @@ namespace Reshop.Application.Services.User
                 return ResultTypes.Failed;
             }
         }
+
+        public async Task<Address> GetAddressByIdAsync(string addressId) =>
+            await _userRepository.GetAddressByIdAsync(addressId);
     }
 }

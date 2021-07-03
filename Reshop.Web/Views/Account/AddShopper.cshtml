@@ -94,19 +94,19 @@
                         </div>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                 
-                            <select multiple multiselect-search="true" multiselect-select-all="true" multiselect-max-items="3" asp-for="SelectedStoreTitles">
-                                @foreach (var item in Model.StoreTitles)
-                                {
-                                    <option value="@item.StoreTitleId">@item.StoreTitleName</option>
-                                }
-                            </select>
-                    
+
+                        <select multiple multiselect-search="true" multiselect-select-all="true" multiselect-max-items="3" asp-for="SelectedStoreTitles">
+                            @foreach (var item in Model.StoreTitles)
+                            {
+                                <option value="@item.StoreTitleId">@item.StoreTitleName</option>
+                            }
+                        </select>
+
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-5">
                         <div class="form-field">
                             <select onchange="GetCitiesOfState(this.value)" asp-for="StateId">
-                                <option value="0">لطفا استان را انتخاب کنید</option>
+                                <option value="0">استان</option>
                                 @foreach (var state in Model.States)
                                 {
                                     <option value="@state.StateId">@state.StateName</option>
@@ -117,7 +117,7 @@
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-field">
                             <select id="city" asp-for="CityId">
-                                <option value="0">لطفا استان را انتخاب کنید</option>
+                                <option value="0">شهر</option>
                             </select>
                         </div>
                     </div>
@@ -182,30 +182,8 @@
 
 
 @section Scripts{
-    <script src="js/Input.js"></script>
-    <script src="~/js/multiselect-dropdown.js"></script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
         await Html.RenderPartialAsync("_CalenderDatePickerPartial");
     }
-
-    <script>
-        function GetCitiesOfState(stateId) {
-            if (stateId != 0) {
-                $.ajax({
-                    type: "GET",
-                    url: "/api/State?stateId=" + stateId,
-                }).done(function (res) {
-                    $("#city").empty();
-                    $("#city").append('  <option value="0">لطفا شهر را انتخاب کنید</option>');
-                    $.each(res, function (index, value) {
-                        $("#city").append('<option value="' + value.cityId + '">' + value.cityName + '</option>');
-                    });
-                });
-            } else if (stateId == 0) {
-                $("#city").empty();
-                $("#city").append('  <option value="0">لطفا استان را انتخاب کنید</option>');
-            }
-        }
-    </script>
 }

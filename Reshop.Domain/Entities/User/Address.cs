@@ -16,26 +16,27 @@ namespace Reshop.Domain.Entities.User
         [ForeignKey("User")]
         public string UserId { get; set; }
 
-        [Display(Name = "استان")]
+        [Display(Name = "نام و نام خانوادگی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string City { get; set; }
-
-        [Display(Name = "استان")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string State { get; set; }
-
-        [Display(Name = "پلاک")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(6, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string Plaque { get; set; }
+        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string FullName { get; set; }
 
         [Display(Name = "شماره تلفن")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
+
+        [ForeignKey("State")]
+        public int StateId { get; set; }
+
+        [ForeignKey("City")]
+        public int CityId { get; set; }
+
+        [Display(Name = "پلاک")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(6, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string Plaque { get; set; }
 
         [Display(Name = "کد پستی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -50,6 +51,8 @@ namespace Reshop.Domain.Entities.User
         #region Relations
 
         public virtual User User { get; set; }
+        public virtual State State { get; set; }
+        public virtual City City { get; set; }
 
         #endregion
     }
