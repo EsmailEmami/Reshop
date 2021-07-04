@@ -38,9 +38,11 @@ namespace Reshop.Infrastructure.Repository.User
             return await _context.Users.SingleOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
         }
 
-        public IAsyncEnumerable<Address> GetUserAddresses(string userId)
+        public IEnumerable<Address> GetUserAddresses(string userId)
             =>
-                _context.Addresses.Where(c => c.UserId == userId) as IAsyncEnumerable<Address>;
+                _context.Addresses.Where(c => c.UserId == userId)
+                    .Include(c => c.State)
+                    .Include(c => c.City);
 
         public async Task AddUserAsync(Domain.Entities.User.User user) => await _context.Users.AddAsync(user);
 
@@ -85,6 +87,9 @@ namespace Reshop.Infrastructure.Repository.User
 
         public async Task<Address> GetAddressByIdAsync(string addressId) =>
             await _context.Addresses.FindAsync(addressId);
+
+        public async Task<bool> IsUserAddressExistAsync(string addressId, string userId) =>
+            await _context.Addresses.AnyAsync(c => c.UserId == userId && c.AddressId == addressId);
 
         #endregion
 

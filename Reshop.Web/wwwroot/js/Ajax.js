@@ -43,7 +43,7 @@ function AddProductToFavorites(productId, shopperUserId) {
                 }
             } else {
                 if (res.resultType == "NotFound") {
-                    ShowToast('wrong', 'متاسفانه خطایی غیر منتظره رخ داده است.');
+                    ShowToast('danger', 'متاسفانه خطایی غیر منتظره رخ داده است.');
                 } else if (res.resultType == "Available") {
                     ShowToast('warning', 'محصول در علاقه مندی های شما موجود است.');
                 }
@@ -95,7 +95,7 @@ function SubmitFormData(form) {
             cache: false,
             processData: false,
             contentType: false,
-            success: function(res) {
+            success: function (res) {
                 if (res.isValid) {
                     // modal body 
                     $("#modal .modal-body").html('');
@@ -106,13 +106,43 @@ function SubmitFormData(form) {
                 } else
                     $("#modal .modal-body").html(res.html);
             },
-            error: function(err) {
+            error: function (err) {
                 console.log(err);
             }
         });
         //to prevent default form submit event
         return false;
     } catch (ex) {
-        console.log(ex)
+        console.log(ex);
+    }
+}
+
+
+function SetCartAddress(form, returnUrl) {
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.isValid) {
+                    ShowToast('success', 'ادرس شما با موفقیت انتخاب شد.', returnUrl);
+                } else if (!res.isValid && !res.isNull) {
+                    ShowToast('danger', 'متاسفانه هنگام ثبت نشانی مقصد شما به مشکلی غیر منتطره برخوردیم.');
+                } else if (!res.isValid && res.isNull) {
+                    ShowToast('warning', 'لطفا آدرس خود را انتخاب کنید.');
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
     }
 }

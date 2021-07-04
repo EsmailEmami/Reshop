@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
@@ -93,16 +94,51 @@ namespace Reshop.Web.Controllers.User
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            string addressId = _cartService.GetOpenOrderAddressId(userId);
+
+            if (!string.IsNullOrEmpty(addressId))
+            {
+                ViewData["SelectedAddress"] = addressId;
+            }
+            else
+            {
+                ViewData["SelectedAddress"] = "none";
+            }
+
+
+
             return View(_userService.GetUserAddresses(userId));
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Address(string addressId)
         {
-            //TODO select order address
+            if (addressId == null)
+            {
+                return Json(new { isValid = false, isNull = true });
+            }
 
 
-            return RedirectToAction(nameof(Payment));
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!await _userService.IsUserAddressExistAsync(addressId, userId))
+            {
+                return Json(new { isValid = false, isNull = false });
+            }
+
+
+            var order = await _cartService.GetUserOpenOrderAsync(userId);
+
+            if (order is null)
+            {
+                return Json(new { isValid = false, isNull = false });
+            }
+
+            order.AddressId = addressId;
+            await _cartService.EditOrderAsync(order);
+
+            return Json(new { isValid = true, isNull = false });
         }
 
         [HttpGet]

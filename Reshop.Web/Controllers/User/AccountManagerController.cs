@@ -7,6 +7,7 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security.Attribute;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Shopper;
@@ -129,6 +130,7 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpGet]
+        [NoDirectAccess]
         public IActionResult NewAddress()
         {
             ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
@@ -143,7 +145,7 @@ namespace Reshop.Web.Controllers.User
             ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
             ViewBag.Cities = _stateService.GetCitiesOfState(model.StateId) as IEnumerable<City>;
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "NewAddress",model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "NewAddress", model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -167,12 +169,13 @@ namespace Reshop.Web.Controllers.User
             }
             else
             {
-                ModelState.AddModelError("","هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "NewAddress", model) });
             }
         }
 
         [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> EditAddress(string addressId)
         {
             if (string.IsNullOrEmpty(addressId))
@@ -189,6 +192,41 @@ namespace Reshop.Web.Controllers.User
             ViewBag.Cities = _stateService.GetCitiesOfState(address.StateId) as IEnumerable<City>;
 
             return View(address);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAddress(Address model)
+        {
+            ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
+            ViewBag.Cities = _stateService.GetCitiesOfState(model.StateId) as IEnumerable<City>;
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "NewAddress", model) });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var address = await _userService.GetAddressByIdAsync(model.AddressId);
+
+            address.FullName = model.FullName;
+            address.StateId = model.StateId;
+            address.CityId = model.CityId;
+            address.Plaque = model.Plaque;
+            address.PhoneNumber = model.PhoneNumber;
+            address.PostalCode = model.PostalCode;
+            address.AddressText = model.AddressText;
+
+
+            var result = await _userService.EditUserAddressAsync(address);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "dEAddress", model) });
+            }
         }
     }
 }

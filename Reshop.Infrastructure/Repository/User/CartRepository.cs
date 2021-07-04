@@ -80,7 +80,7 @@ namespace Reshop.Infrastructure.Repository.User
                 .Select(c => new OpenCartViewModel()
                 {
                     Sum = c.Sum,
-                    OrderDetails = c.OrderDetails.Select(o=> new OrderDetailViewModel()
+                    OrderDetails = c.OrderDetails.Select(o => new OrderDetailViewModel()
                     {
                         OrderDetailId = o.OrderDetailId,
                         Sum = o.Sum,
@@ -89,8 +89,8 @@ namespace Reshop.Infrastructure.Repository.User
                         ProductPrice = o.Price,
                         ProductDiscount = o.ProductDiscount,
                         ProductImg = o.Product.ProductGalleries.FirstOrDefault().ImageName,
-                        Warranty = _context.ShopperProducts.Single(s=> s.ShopperUserId == o.ShopperUserId).Warranty,
-                        ShopperStoreName = _context.Users.Single(u=> u.UserId == o.ShopperUserId).Shopper.StoreName,
+                        Warranty = _context.ShopperProducts.Single(s => s.ShopperUserId == o.ShopperUserId).Warranty,
+                        ShopperStoreName = _context.Users.Single(u => u.UserId == o.ShopperUserId).Shopper.StoreName,
                     })
                 }).SingleOrDefaultAsync();
         }
@@ -109,7 +109,7 @@ namespace Reshop.Infrastructure.Repository.User
                     TrackingCode = c.TrackingCode,
                     PayDate = c.PayDate,
                     Sum = c.Sum,
-                    ProPics = c.OrderDetails.Select(p=> p.Product.ProductGalleries.FirstOrDefault().ImageName)
+                    ProPics = c.OrderDetails.Select(p => p.Product.ProductGalleries.FirstOrDefault().ImageName)
                 });
 
         public IEnumerable<ReceivedOrdersViewModel> GetNotReceivedOrders(string userId) =>
@@ -151,8 +151,11 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task<Order> GetOrderByOrderDetailAsync(string orderDetailId)
         {
             return await _context.OrderDetails.Where(c => c.OrderDetailId == orderDetailId)
-                .Select(c => c.Order).Include(c=> c.OrderDetails).SingleAsync();
+                .Select(c => c.Order).Include(c => c.OrderDetails).SingleAsync();
         }
+
+        public string GetOpenOrderAddressId(string userId) =>
+            _context.Orders.Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived).Select(c=> c.AddressId).SingleOrDefault();
 
         public async Task SaveChangesAsync()
         {

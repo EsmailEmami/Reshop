@@ -3,7 +3,7 @@
     Layout = null;
 }
 
-<form asp-action="EditAddress" method="post">
+<form asp-action="EditAddress" method="post" onsubmit="return SubmitFormData(this)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
 
@@ -71,6 +71,8 @@
         </div>
 
     </div>
+    
+    <button type="submit" class="btn btn-success">ثبت</button>
 </form>
 
 <script src="~/lib/jquery/dist/jquery.js"></script>

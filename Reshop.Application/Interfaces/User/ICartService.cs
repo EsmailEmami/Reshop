@@ -26,7 +26,7 @@ namespace Reshop.Application.Interfaces.User
         IAsyncEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId);
         Task RemoveOrderAsync(Order order);
         Task<ResultTypes> RemoveOrderDetailAsync(string orderDetailId);
-
+        string GetOpenOrderAddressId(string userId);
         #region Discount
 
         Task<DiscountUseType> UseDiscountAsync(string orderId, string discountCode);

@@ -104,7 +104,7 @@ function ShowToast(type, text, returnUrl) {
             $("#toast-warning").find("span").text(text);
             break;
 
-        case "wrong":
+        case "danger":
             toast = document.getElementById("toast-wrong");
             $("#toast-wrong").find("span").text(text);
             break;

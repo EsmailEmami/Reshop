@@ -1968,7 +1968,7 @@ header .top-menu {
         display: none;
     }
 
-.form-field select {
+    .form-field select {
         width: 100%;
         border: 2px solid #ced4da;
         border-radius: 5px;
@@ -2805,6 +2805,350 @@ header .top-menu {
             }
 
 
+/* -------------------------------------- cart address -------------------------------------- */
+
+.shopping-page .level {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: scroll;
+    max-width: 1000px;
+}
+
+    .shopping-page .level::-webkit-scrollbar {
+        height: 0;
+    }
+
+    .shopping-page .level > div {
+        position: relative;
+        width: 100%;
+        white-space: nowrap;
+        min-width: 190px;
+    }
+
+        .shopping-page .level > div img {
+            height: 25px;
+            width: 25px;
+        }
+
+        .shopping-page .level > div > a {
+            font-size: 16px;
+            text-decoration: none;
+            color: #8f8f8f;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+            background: #fff;
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 25px;
+        }
+
+        .shopping-page .level > div::before {
+            content: "";
+            position: absolute;
+            width: 150%;
+            height: 3px;
+            border-radius: 3.5px;
+            background-color: #d0d0d0;
+            top: 50%;
+            right: auto;
+            z-index: 0;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+
+        .shopping-page .level > div:nth-child(1) {
+            text-align: start;
+        }
+
+        .shopping-page .level > div:nth-child(2) {
+            text-align: center;
+        }
+
+        .shopping-page .level > div:nth-child(3) {
+            text-align: end;
+        }
+
+        .shopping-page .level > div:last-of-type::before {
+            display: none;
+        }
+
+        .shopping-page .level > div.active > a {
+            color: #3f3f3f;
+        }
+
+        .shopping-page .level > div.active::before {
+            background-color: #FC5400;
+        }
+
+.shopping-page .shopping-title {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    align-items: center;
+    position: relative;
+    padding-top: 10px;
+}
+
+    .shopping-page .shopping-title::before {
+        background: #cecece none repeat scroll 0 0;
+        top: 29px;
+        content: "";
+        height: 2px;
+        left: 0;
+        position: absolute;
+        transition: all 0.3s ease 0s;
+        width: 100%;
+        z-index: 0;
+    }
+
+    .shopping-page .shopping-title h3 {
+        margin: 0 40px 0 0;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #565555;
+        background: #fff;
+        z-index: 2;
+    }
+
+        .shopping-page .shopping-title h3::before {
+            content: "\f3c5";
+            font-family: FontAwesome;
+            padding-left: 5px;
+            color: #FC5400;
+            font-size: 23px;
+        }
+
+    .shopping-page .shopping-title a {
+        margin: 0 0 0 40px;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-weight: bold;
+        font-size: 17px;
+        color: #41a219;
+        background: #fff;
+        z-index: 2;
+        text-decoration: none;
+        line-height: 30px;
+    }
+
+        .shopping-page .shopping-title a:hover {
+            color: #41a219;
+            cursor: pointer;
+        }
+
+        .shopping-page .shopping-title a::before {
+            content: "\f055";
+            font-family: FontAwesome;
+            padding-left: 5px;
+            color: #41a219;
+            font-size: 23px;
+            font-weight: 400;
+        }
+
+.shopping-page .addresses {
+    margin-top: 40px;
+    padding-bottom: 40px;
+    border-bottom: 2px solid #cecece;
+}
+
+    .shopping-page .addresses .address {
+        width: 330px;
+        height: 370px;
+        border: 2px solid #cecece;
+        border-radius: 8px;
+        padding: 10px;
+        position: relative;
+    }
+
+        .shopping-page .addresses .address:hover {
+            transition: ease-in .3s;
+            border-color: #898686;
+        }
+
+        .shopping-page .addresses .address .header {
+            padding-bottom: 12px;
+            border-bottom: 1px solid #b6b6b6;
+            font-size: 12px;
+            font-size: .857rem;
+            line-height: 1.833;
+            color: #62666d;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .shopping-page .addresses .address .header label {
+                position: relative;
+                padding-right: 27px;
+                margin: 0;
+                cursor: pointer;
+                font-size: 13px;
+                color: #3f3f3f;
+                font-weight: bold;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+                .shopping-page .addresses .address .header label > input {
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                }
+
+                    .shopping-page .addresses .address .header label > input:checked ~ span {
+                        background: #FC5400;
+                    }
+
+                .shopping-page .addresses .address .header label > span {
+                    position: absolute;
+                    top: 3px;
+                    right: 0;
+                    height: 20px;
+                    width: 20px;
+                    background-color: #eee;
+                    border-radius: 50%;
+                }
+
+                    .shopping-page .addresses .address .header label > span::after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        bottom: 0;
+                        right: 0;
+                        margin: auto;
+                        width: 12px;
+                        height: 12px;
+                        border-radius: 50%;
+                        background: #fff;
+                    }
+
+            .shopping-page .addresses .address .header .items a {
+                font-size: 19px;
+                color: #3f3f3f;
+                line-height: 1;
+                margin-left: 5px;
+                transition: ease .3s;
+            }
+
+                .shopping-page .addresses .address .header .items a:first-of-type:hover {
+                    color: #41a219;
+                }
+
+                .shopping-page .addresses .address .header .items a:last-of-type:hover {
+                    color: crimson;
+                }
+
+                .shopping-page .addresses .address .header .items a:last-of-type {
+                    margin-left: 0;
+                }
+
+        .shopping-page .addresses .address .personal {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #b6b6b6;
+            padding-bottom: 12px;
+        }
+
+            .shopping-page .addresses .address .personal p {
+                margin: 0;
+                color: #3f3f3f;
+                font-size: 16px;
+                line-height: 1;
+            }
+
+                .shopping-page .addresses .address .personal p:first-of-type::before {
+                    content: "\f007";
+                    font-family: FontAwesome;
+                    padding-left: 5px;
+                    color: #cecece;
+                    font-size: 19px;
+                }
+
+                .shopping-page .addresses .address .personal p:last-of-type::after {
+                    content: "\f879";
+                    font-family: FontAwesome;
+                    padding-left: 5px;
+                    color: #cecece;
+                    font-size: 19px;
+                }
+
+        .shopping-page .addresses .address .address-text {
+            text-align: justify;
+            margin-top: 10px;
+            max-height: 204px;
+            overflow-y: scroll;
+            padding-left: 5px;
+        }
+
+            .shopping-page .addresses .address .address-text::-webkit-scrollbar {
+                width: 3px;
+            }
+
+            .shopping-page .addresses .address .address-text::-webkit-scrollbar-track {
+                background: #dddddd;
+                border-radius: 25px;
+            }
+
+            .shopping-page .addresses .address .address-text::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 25px;
+            }
+
+                .shopping-page .addresses .address .address-text::-webkit-scrollbar-thumb:hover {
+                    background: #555;
+                }
+
+        .shopping-page .addresses .address .postal-code {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border-top: 1px solid #b6b6b6;
+            width: 100%;
+            padding: 10px;
+            background: #e6e6e6;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+            .shopping-page .addresses .address .postal-code span {
+                color: #1a1a1a;
+                font-size: 15px;
+            }
+
+.shopping-page .btn-next {
+    display: block;
+    position: relative;
+    margin: 20px auto;
+    width: 200px;
+    background-color: #FC5400;
+    box-shadow: 1px 4px 4px #2020206b;
+    color: white;
+    transition: 0.3s;
+    border-radius: 25px;
+    padding: 10px 5px;
+}
+
+    .shopping-page .btn-next:hover {
+        transition: ease .3s;
+        width: 250px;
+    }
+
+/* -------------------------------------- cart address -------------------------------------- */
+
+
+
 /* -------------------------------------- pagination -------------------------------------- */
 
 
@@ -3141,6 +3485,10 @@ span {
             .top-filter .p-two .sortBy-choice::-webkit-scrollbar-thumb:hover {
                 background: #555;
             }
+
+    .shopping-page .level {
+        width: 85%;
+    }
 }
 
 @media screen and (max-width: 767px) {
@@ -3201,6 +3549,10 @@ span {
     .top-filter .search-form {
         width: 70%
     }
+
+    .shopping-page .level {
+        width: 98%;
+    }
 }
 
 @media screen and (max-width: 723px) {
@@ -3226,6 +3578,20 @@ span {
 
     .top-filter .search-form {
         width: 100%
+    }
+
+    .shopping-page .shopping-title h3 {
+        margin-right: 0;
+        padding-right: 0;
+    }
+
+    .shopping-page .shopping-title a {
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .shopping-page .shopping-title::before {
+        top: 0;
     }
 }
 

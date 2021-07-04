@@ -1,4 +1,4 @@
-﻿@model IAsyncEnumerable<Address>
+﻿@model IEnumerable<Address>
 @inject IRoleService RoleService;
 @{
     ViewData["Title"] = "UserAddresses";
@@ -76,7 +76,7 @@
                         </a>
 
                         <div class="row">
-                            @await foreach (var address in Model)
+                            @foreach (var address in Model)
                             {
                                 <div class="col-sm-12">
                                     <div class="user-item-data">

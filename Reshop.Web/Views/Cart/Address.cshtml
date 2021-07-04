@@ -1,7 +1,128 @@
-﻿@model IAsyncEnumerable<Address>
+﻿@model IEnumerable<Address>
 @{
-    ViewData["Title"] = "Address";
+    ViewData["Title"] = "نشانی سفارش";
+    string addressId = ViewData["SelectedAddress"].ToString();
 }
 
-<h1>Address</h1>
+<div class="shopping-page">
+    <div class="level">
+        <div class="active">
+            <a href="#">
+                <img src="https://www.banimode.com/themes/new/assets/images/shipping-lev-1.svg" alt="" srcset=""> سبد خرید
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="https://www.banimode.com/themes/new/assets/images/shipping-lev-1.svg" alt="" srcset=""> سبد خرید
+            </a>
+        </div>
+        <div>
+            <a href="#">
+                <img src="https://www.banimode.com/themes/new/assets/images/shipping-lev-1.svg" alt="" srcset=""> سبد خرید
+            </a>
+        </div>
+    </div>
 
+    <section class="shopping-title">
+        <h3>نشانی سفارش</h3>
+        <a onclick="ShowModal('@Url.Action("NewAddress", "AccountManager", null, Context.Request.Scheme)','آدرس جدید')">ثبت نشانی جدید</a>
+    </section>
+
+    <form asp-controller="Cart" asp-action="Address" method="post" onsubmit="return SetCartAddress(this, '@Url.Action("Payment","Cart",null,Context.Request.Scheme)');" autocomplete="off">
+
+        <section class="addresses">
+
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-warning">
+                    کاربر عزیز شما ادرسی ثبت نکرده اید.
+                </div>
+            }
+            else
+            {
+
+                <div class="owl-carousel owl-theme">
+                    @foreach (var item in Model)
+                    {
+                        <div class="address">
+                            <div class="header">
+                                <label>
+                                    به این آدرس ارسال شود
+                                    <input type="radio" value="@item.AddressId" name="addressId" @((!string.IsNullOrEmpty(addressId) && item.AddressId == addressId) ? "checked" : "")>
+                                    <span class="checkmark"></span>
+                                </label>
+
+                                <div class="items">
+                                    <a onclick="ShowModal('@Url.Action("EditAddress", "AccountManager", new {addressId =item.AddressId}, Context.Request.Scheme)','ویرایش آدرس')"><i class="far fa-edit"></i></a>
+                                    <a href="#"><i class="far fa-trash-alt"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="personal">
+                                <p>@item.FullName</p>
+                                <p>@item.PhoneNumber</p>
+                            </div>
+
+                            <p class="address-text">
+                                @item.State.StateName - @item.City.CityName @item.AddressText - پلاک: @item.Plaque
+                            </p>
+
+                            <div class="postal-code">
+
+                                <span><i class="fal fa-envelope"></i> کد پستی:</span>
+                                <span>@item.PostalCode</span>
+
+
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+
+
+        </section>
+
+
+        <button type="submit" class="btn btn-next">
+            پرداخت
+        </button>
+    </form>
+</div>
+
+
+
+@section Scripts{
+    <script type="text/javascript">
+        $('.owl-carousel').owlCarousel({
+            rtl: true,
+            loop: false,
+            dots: false,
+            nav: false,
+            margin: 10,
+            animateOut: 'slideOutDown',
+            animateIn: 'flipInX',
+            smartSpeed: 1000,
+            autoWidth: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                720: {
+                    items: 2
+                },
+
+                1100: {
+                    items: 3
+                }
+            }
+        });
+    </script>
+}
+
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}

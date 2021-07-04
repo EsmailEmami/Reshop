@@ -37,6 +37,8 @@ namespace Reshop.Domain.Interfaces.User
         void RemoveOrder(Order order);
         Task<Order> GetOrderByOrderDetailAsync(string orderDetailId);
 
+        string GetOpenOrderAddressId(string userId);
+
         #endregion
 
 

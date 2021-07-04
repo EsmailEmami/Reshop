@@ -29,7 +29,7 @@ namespace Reshop.Domain.Interfaces.User
         Task AddAddressAsync(Address address);
         void UpdateAddress(Address address);
         void RemoveAddress(Address address);
-        IAsyncEnumerable<Address> GetUserAddresses(string userId);
+        IEnumerable<Address> GetUserAddresses(string userId);
 
         #endregion
 
@@ -43,7 +43,7 @@ namespace Reshop.Domain.Interfaces.User
         #region address
 
         Task<Address> GetAddressByIdAsync(string addressId);
-
+        Task<bool> IsUserAddressExistAsync(string addressId, string userId);
         #endregion
 
         #region Discount

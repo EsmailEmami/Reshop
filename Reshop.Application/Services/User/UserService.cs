@@ -89,7 +89,7 @@ namespace Reshop.Application.Services.User
         //    return new Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>(shoppers, pageId, totalPages);
         //}
 
-        public IAsyncEnumerable<Address> GetUserAddresses(string userId)
+        public IEnumerable<Address> GetUserAddresses(string userId)
             =>
                 _userRepository.GetUserAddresses(userId);
 
@@ -206,7 +206,7 @@ namespace Reshop.Application.Services.User
         public IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId) =>
             _userRepository.GetUserQuestionsForShow(userId);
 
-        public IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId) => 
+        public IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId) =>
             _userRepository.GetUserCommentsForShow(userId);
 
         public async Task<ResultTypes> AddUserAddressAsync(Address address)
@@ -224,7 +224,26 @@ namespace Reshop.Application.Services.User
             }
         }
 
+        public async Task<ResultTypes> EditUserAddressAsync(Address address)
+        {
+            try
+            {
+                _userRepository.UpdateAddress(address);
+                await _userRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<Address> GetAddressByIdAsync(string addressId) =>
             await _userRepository.GetAddressByIdAsync(addressId);
+
+        public async Task<bool> IsUserAddressExistAsync(string addressId, string userId) =>
+            await _userRepository.IsUserAddressExistAsync(addressId, userId);
+
     }
 }

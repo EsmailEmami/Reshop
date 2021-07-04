@@ -317,6 +317,9 @@ namespace Reshop.Application.Services.User
             }
         }
 
+        public string GetOpenOrderAddressId(string userId) =>
+            _cartRepository.GetOpenOrderAddressId(userId);
+
         public async Task<DiscountUseType> UseDiscountAsync(string orderId, string discountCode)
         {
             var discount = await _userRepository.GetDiscountByCodeAsync(discountCode);
