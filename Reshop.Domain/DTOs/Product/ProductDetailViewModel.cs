@@ -18,6 +18,8 @@ namespace Reshop.Domain.DTOs.Product
 
         public IEnumerable<Tuple<string, string, string>> Shoppers { get; set; }
 
+        public string SelectedShopperId { get; set; }
+
         public string ProductType { get; set; }
     }
 }

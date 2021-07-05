@@ -35,7 +35,8 @@ namespace Reshop.Web.Controllers.Product
 
         [HttpGet]
         [Route("Product/{productId}/{productName}")]
-        public async Task<IActionResult> ProductDetail(int productId, string productName)
+        [Route("Product/{productId}/{productName}/{sellerId}")]
+        public async Task<IActionResult> ProductDetail(int productId, string productName, string sellerId = "")
         {
             var product = await _productService.GetProductDetailAsync(productId);
 
@@ -87,7 +88,7 @@ namespace Reshop.Web.Controllers.Product
             var result = await _productService.GetChildCategoryProductsWithPaginationAsync(childCategoryId, sortBy, pageId, 24, search, minPrice, maxPrice, brands);
             ViewData["CategoryOrChildCategoryTitleName"] = childCategoryName;
 
-            
+
             ViewBag.SortBy = sortBy;
             ViewBag.SelectedBrands = brands;
             ViewBag.SearchText = search;
@@ -104,11 +105,11 @@ namespace Reshop.Web.Controllers.Product
 
             return result switch
             {
-                FavoriteProductResultType.Successful => Json(new {success = true, resultType = "Successful"}),
-                FavoriteProductResultType.ProductReplaced => Json(new {success = true, resultType = "ProductReplaced"}),
-                FavoriteProductResultType.NotFound => Json(new {success = false, resultType = "NotFound"}),
-                FavoriteProductResultType.Available => Json(new {success = false, resultType = "Available"}),
-                _ => Json(new {success = false, resultType = "NotFound"})
+                FavoriteProductResultType.Successful => Json(new { success = true, resultType = "Successful" }),
+                FavoriteProductResultType.ProductReplaced => Json(new { success = true, resultType = "ProductReplaced" }),
+                FavoriteProductResultType.NotFound => Json(new { success = false, resultType = "NotFound" }),
+                FavoriteProductResultType.Available => Json(new { success = false, resultType = "Available" }),
+                _ => Json(new { success = false, resultType = "NotFound" })
             };
         }
 

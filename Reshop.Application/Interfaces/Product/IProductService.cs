@@ -23,7 +23,7 @@ namespace Reshop.Application.Interfaces.Product
 
         // get by id 
         Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId);
-        Task<ShopperProduct> GetShopperProductAsync(int productId,string shopperUserId);
+        Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperUserId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<MobileCoverDetail> GetMobileCoverByIdAsync(int mobileCoverId);
@@ -38,7 +38,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<ProductTypes> GetProductTypeByIdAsync(int productId);
 
         // detail of every product
-        Task<ProductDetailViewModel> GetProductDetailAsync(int productId);
+        Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperUserId);
         Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key);
 
         // get product types

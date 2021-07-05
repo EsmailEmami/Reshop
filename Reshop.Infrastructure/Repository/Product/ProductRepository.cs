@@ -383,52 +383,102 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ProductType == type).CountAsync();
         }
 
-        public async Task<Domain.Entities.Product.Product> GetProductWithTypeAsync(int productId, string type)
+        public async Task<ShopperProduct> GetProductWithTypeAsync(int productId, string type, string shopperUserId = "")
         {
-            return type switch
+            if (string.IsNullOrEmpty(shopperUserId))
             {
-                "Mobile" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.MobileDetail)
-                    .SingleOrDefaultAsync(),
+                return type switch
+                {
+                    "mobile" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.MobileDetail).FirstAsync(),
 
-                "MobileCover" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.MobileCoverDetail)
-                    .SingleOrDefaultAsync(),
+                    "mobilecover" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.MobileCoverDetail).FirstAsync(),
 
-                "Laptop" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.LaptopDetail)
-                    .SingleOrDefaultAsync(),
+                    "laptop" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.LaptopDetailId).FirstAsync(),
 
-                "Speaker" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.SpeakerDetail)
-                    .SingleOrDefaultAsync(),
+                    "speaker" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.SpeakerDetail).FirstAsync(),
 
-                "FlashMemory" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.FlashMemoryDetail)
-                    .SingleOrDefaultAsync(),
+                    "flashmemory" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.FlashMemoryDetail).FirstAsync(),
 
-                "Handsfree" or "HeadPhone" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.HandsfreeAndHeadPhoneDetail)
-                    .SingleOrDefaultAsync(),
+                    "handsfree" or "headphone" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.HandsfreeAndHeadPhoneDetail).FirstAsync(),
 
-                "Tablet" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.TabletDetail)
-                    .SingleOrDefaultAsync(),
+                    "tablet" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                    .Include(c => c.Product)
+                    .ThenInclude(c => c.TabletDetail).FirstAsync(),
 
-                "WristWatch" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.WristWatchDetail)
-                    .SingleOrDefaultAsync(),
+                    "wristwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.WristWatchDetail).FirstAsync(),
 
-                "SmartWatch" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.MobileDetail)
-                    .SingleOrDefaultAsync(),
+                    "smartwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.SmartWatchDetail).FirstAsync(),
 
-                "PowerBank" => await _context.Products.Where(c => c.ProductId == productId)
-                    .Include(c => c.PowerBankDetail)
-                    .SingleOrDefaultAsync(),
+                    "powerbank" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.SaleCount)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.PowerBankDetail).FirstAsync(),
 
-                _ => await _context.Products.FindAsync(productId)
-            };
+                    _ => null
+                };
+            }
+            else
+            {
+                return type switch
+                {
+                    "mobile" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.MobileDetail).FirstAsync(),
+
+                    "mobilecover" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.MobileCoverDetail).FirstAsync(),
+
+                    "laptop" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.LaptopDetailId).FirstAsync(),
+
+                    "speaker" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.SpeakerDetail).FirstAsync(),
+
+                    "flashmemory" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.FlashMemoryDetail).FirstAsync(),
+
+                    "handsfree" or "headphone" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.HandsfreeAndHeadPhoneDetail).FirstAsync(),
+
+                    "tablet" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    .Include(c => c.Product)
+                    .ThenInclude(c => c.TabletDetail).FirstAsync(),
+
+                    "wristwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.WristWatchDetail).FirstAsync(),
+
+                    "smartwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.SmartWatchDetail).FirstAsync(),
+
+                    "powerbank" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                        .Include(c => c.Product)
+                        .ThenInclude(c => c.PowerBankDetail).FirstAsync(),
+
+                    _ => null
+                };
+            }
         }
 
         public async Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId) =>

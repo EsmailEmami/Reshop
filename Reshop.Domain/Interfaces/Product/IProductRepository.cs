@@ -23,7 +23,7 @@ namespace Reshop.Domain.Interfaces.Product
         IEnumerable<Entities.Product.Product> GetTypeMobileProducts();
         IEnumerable<Entities.Product.Product> GetTypeLaptopProducts();
 
-        Task<Entities.Product.Product> GetProductWithTypeAsync(int productId, string type);
+
 
         Task<Entities.Product.Product> GetProductByShortKeyAsync(string key);
 
@@ -31,6 +31,9 @@ namespace Reshop.Domain.Interfaces.Product
 
 
         #region shopper product
+
+        // is shopperUser Id was NULL the query find best shopper automatically
+        Task<ShopperProduct> GetProductWithTypeAsync(int productId, string type, string shopperUserId = "");
 
         IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperUserId, string type, string sortBy, int skip, int take);
         Task<int> GetShopperProductsCountWithTypeAsync(string shopperUserId, string type);

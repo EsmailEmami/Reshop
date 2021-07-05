@@ -193,9 +193,9 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId)
+        public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperUserId)
         {
-            if (!await _productRepository.IsProductExistAsync(productId)) return null;
+            
 
             string productType = await _productRepository.GetProductTypeAsync(productId);
 
