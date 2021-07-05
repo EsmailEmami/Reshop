@@ -33,7 +33,7 @@
     <div class="col-xs-12 col-lg-8">
         <div class="detail-info box-shadow">
             <div class="product-name">
-                <h1>@Model.Product.ProductTitle</h1>
+                <h1>@Model.Product.Product.ProductTitle</h1>
             </div>
 
             <div class="pro-data">
@@ -69,7 +69,7 @@
                 </div>
                 <div>
                     <h2><i class="far fa-building"></i> برند:</h2>
-                    <a href="#">@Model.Product.Brand</a>
+                    <a href="#">@Model.Product.Product.Brand</a>
                 </div>
             </div>
 
@@ -101,7 +101,7 @@
                     <option selected>انتخاب فروشنده...</option>
                     @foreach (var item in Model.Shoppers)
                     {
-                        <option value="@item.Item1">فروشگاه @item.Item2 - @item.Item3</option>
+                        @:<option value="@item.Item1" @(item.Item1 == Model.Product.ShopperUserId ? "selected" : "")>فروشگاه @item.Item2 - @item.Item3</option>
                     }
                 </select>
 
@@ -118,11 +118,17 @@
 
 
                 <div class="price-amount">
-                    <h3>@Model.Product.ShopperProducts.First().Price.ToToman() <span>تومان</span></h3>
+                    <h3>@Model.Product.Price.ToToman() <span>تومان</span></h3>
 
 
 
-                    <button type="button" class="btn btn-warning" onclick="AddProductToCart(@Model.Product.ProductId)">افزودن به سبد خرید</button>
+                    <form asp-controller="Cart" asp-action="AddToCart" onsubmit="return  AddProductToCart(this)">
+                        <input type="hidden" value="@Model.Product.Product.ProductId" name="productId" />
+                        <input type="hidden" value="@Model.Product.ShopperUserId" name="shopperUserId" />
+                        <button type="submit" class="btn btn-warning">افزودن به سبد خرید</button>
+                    </form>
+
+
 
                 </div>
 

@@ -1,55 +1,64 @@
-﻿function AddProductToCart(productId, shopperUserId) {
-
-    if (shopperUserId == null) {
-        shopperUserId = $("#selected-shopper").val();
-    }
-
-
-    $.ajax({
-        type: 'POST',
-        url: '/Cart/AddToCart?productId=' + productId + '&shopperUserId=' + shopperUserId,
-        dataType: "json",
-        contentType: "application/json",
-        success: function (res) {
-            if (res.success) {
-                ShowToast('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
-            } else {
-                ShowToast('warning', 'محصول با موفقیت به سبد خرید اضافه نشد.');
+﻿function AddProductToCart(form) {
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.success) {
+                    ShowToast('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
+                } else {
+                    ShowToast('warning', 'محصول با موفقیت به سبد خرید اضافه نشد.');
+                }
+            },
+            error: function (err) {
+                console.log(err);
             }
-        }
-    });
-
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
 }
 
 
-function AddProductToFavorites(productId, shopperUserId) {
-
-    if (shopperUserId == null) {
-        shopperUserId = $("#selected-shopper").val();
-    }
-
-
-    $.ajax({
-        type: 'POST',
-        url: '/Product/AddToFavoriteProduct?productId=' + productId + '&shopperUserId=' + shopperUserId,
-        dataType: "json",
-        contentType: "application/json",
-        success: function (res) {
-            if (res.success) {
-                if (res.resultType == "Successful") {
-                    ShowToast('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
-                } else if (res.resultType == "ProductReplaced") {
-                    ShowToast('success', 'فروشنده محصول با موفقیت تغییر کرد.');
+function AddProductToFavorites(form) {
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.success) {
+                    if (res.resultType == "Successful") {
+                        ShowToast('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
+                    } else if (res.resultType == "ProductReplaced") {
+                        ShowToast('success', 'فروشنده محصول با موفقیت تغییر کرد.');
+                    }
+                } else {
+                    if (res.resultType == "NotFound") {
+                        ShowToast('danger', 'متاسفانه خطایی غیر منتظره رخ داده است.');
+                    } else if (res.resultType == "Available") {
+                        ShowToast('warning', 'محصول در علاقه مندی های شما موجود است.');
+                    }
                 }
-            } else {
-                if (res.resultType == "NotFound") {
-                    ShowToast('danger', 'متاسفانه خطایی غیر منتظره رخ داده است.');
-                } else if (res.resultType == "Available") {
-                    ShowToast('warning', 'محصول در علاقه مندی های شما موجود است.');
-                }
+            },
+            error: function (err) {
+                console.log(err);
             }
-        }
-    });
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
 }
 
 

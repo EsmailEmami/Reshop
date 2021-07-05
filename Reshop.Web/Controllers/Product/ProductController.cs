@@ -38,7 +38,7 @@ namespace Reshop.Web.Controllers.Product
         [Route("Product/{productId}/{productName}/{sellerId}")]
         public async Task<IActionResult> ProductDetail(int productId, string productName, string sellerId = "")
         {
-            var product = await _productService.GetProductDetailAsync(productId);
+            var product = await _productService.GetProductDetailAsync(productId,sellerId);
 
             if (product == null)
                 return NotFound();
@@ -97,6 +97,7 @@ namespace Reshop.Web.Controllers.Product
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToFavoriteProduct(int productId, string shopperUserId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

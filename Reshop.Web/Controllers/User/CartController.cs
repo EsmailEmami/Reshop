@@ -25,6 +25,7 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToCart(int productId, string shopperUserId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

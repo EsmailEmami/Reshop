@@ -12,13 +12,23 @@
 
                     <ul class="img-action-button">
                         <li>
-                            <a onclick="AddProductToFavorites(@item.ProductId,'@item.ShopperUserId')" title="افزودن به علاقه مندی ها"><i class="fal fa-heart"></i></a>
+                            <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToCart(this)">
+                                <input type="hidden" value="@item.ProductId" name="productId" />
+                                <input type="hidden" value="@item.ShopperUserId" name="shopperUserId" />
+                                <button type="submit"><i class="fal fa-heart"></i></button>
+                            </form>
+
+
                         </li>
                         <li>
                             <a href="#" title="مقایسه"><i class="fal fa-sync-alt"></i></a>
                         </li>
                         <li>
-                            <a onclick="AddProductToCart(@item.ProductId,'@item.ShopperUserId')" title="افزودن به سبد خرید"><i class="fal fa-cart-plus"></i></a>
+                            <form asp-controller="Cart" asp-action="AddToCart" onsubmit="return  AddProductToCart(this)">
+                                <input type="hidden" value="@item.ProductId" name="productId" />
+                                <input type="hidden" value="@item.ShopperUserId" name="shopperUserId" />
+                                <button type="submit"><i class="fal fa-cart-plus"></i></button>
+                            </form>
                         </li>
                     </ul>
 

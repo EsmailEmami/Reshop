@@ -193,13 +193,11 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperUserId)
+        public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperUserId = null)
         {
-            
-
             string productType = await _productRepository.GetProductTypeAsync(productId);
 
-            var product = await _productRepository.GetProductWithTypeAsync(productId, productType);
+            var product = await _productRepository.GetProductWithTypeAsync(productId, productType.FixedText(), shopperUserId);
 
             var childCategories = _productRepository.GetProductChildCategories(productId);
             var comments = _productRepository.GetProductComments(productId);
