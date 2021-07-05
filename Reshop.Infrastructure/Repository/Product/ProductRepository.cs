@@ -528,9 +528,9 @@ namespace Reshop.Infrastructure.Repository.Product
             =>
                 await _context.HandsfreeAndHeadPhoneDetails.FindAsync(handsfreeOrHeadPhoneDetailId);
 
-        public IAsyncEnumerable<ProductGallery> GetProductImages(int productId)
+        public IEnumerable<ProductGallery> GetProductImages(int productId)
         {
-            return _context.ProductGalleries.Where(c => c.ProductId == productId) as IAsyncEnumerable<ProductGallery>;
+            return _context.ProductGalleries.Where(c => c.ProductId == productId);
         }
 
         public void RemoveMobileCoverDetail(MobileCoverDetail mobileCoverDetail)

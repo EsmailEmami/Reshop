@@ -61,7 +61,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<WristWatchDetail> GetWristWatchDetailByIdAsync(int wristWatchDetailId);
         Task<MemoryCardDetail> GetMemoryCardDetailByIdAsync(int memoryCardDetailId);
         Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeOrHeadPhoneDetailId);
-        IAsyncEnumerable<ProductGallery> GetProductImages(int productId);
+        IEnumerable<ProductGallery> GetProductImages(int productId);
 
 
         Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId, string shopperUserId);

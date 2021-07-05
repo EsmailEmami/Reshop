@@ -24,10 +24,10 @@ namespace Reshop.Infrastructure.Repository.User
 
         #endregion
 
-        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, int productId)
+        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, int productId, string shopperUserId)
         {
             return await _context.OrderDetails
-                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ProductId == productId);
+                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ProductId == productId && c.ShopperUserId == shopperUserId);
         }
 
         public async Task<OrderDetail> GetOrderDetailByIdAsync(string orderDetailId)
@@ -155,7 +155,7 @@ namespace Reshop.Infrastructure.Repository.User
         }
 
         public string GetOpenOrderAddressId(string userId) =>
-            _context.Orders.Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived).Select(c=> c.AddressId).SingleOrDefault();
+            _context.Orders.Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived).Select(c => c.AddressId).SingleOrDefault();
 
         public async Task SaveChangesAsync()
         {

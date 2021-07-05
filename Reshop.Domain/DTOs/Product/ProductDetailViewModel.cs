@@ -11,7 +11,7 @@ namespace Reshop.Domain.DTOs.Product
     {
         public ShopperProduct Product { get; set; }
 
-        public IAsyncEnumerable<ProductGallery> ProductGalleries { get; set; }
+        public IEnumerable<ProductGallery> ProductGalleries { get; set; }
 
         public IEnumerable<Comment> Comments { get; set; }
         public IEnumerable<Question> Questions { get; set; }

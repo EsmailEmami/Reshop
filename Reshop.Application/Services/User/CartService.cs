@@ -69,7 +69,7 @@ namespace Reshop.Application.Services.User
                 var order = await _cartRepository.GetOrderInCartByUserIdAsync(userId);
                 if (order is not null)
                 {
-                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, shopperProduct.ProductId);
+                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, shopperProduct.ProductId,shopperUserId);
 
                     if (orderDetail is not null)
                     {

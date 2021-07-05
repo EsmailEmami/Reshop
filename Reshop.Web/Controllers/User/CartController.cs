@@ -92,7 +92,7 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpGet]
-        public async Task<IActionResult> Address()
+        public IActionResult Address()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
