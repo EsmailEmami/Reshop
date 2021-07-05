@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.User;
-using Reshop.Domain.Entities.Product;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.Product
 {
+    [AutoValidateAntiforgeryToken]
     public class ProductController : Controller
     {
         #region constructor
@@ -38,7 +35,7 @@ namespace Reshop.Web.Controllers.Product
         [Route("Product/{productId}/{productName}/{sellerId}")]
         public async Task<IActionResult> ProductDetail(int productId, string productName, string sellerId = "")
         {
-            var product = await _productService.GetProductDetailAsync(productId,sellerId);
+            var product = await _productService.GetProductDetailAsync(productId, sellerId);
 
             if (product == null)
                 return NotFound();
@@ -46,6 +43,20 @@ namespace Reshop.Web.Controllers.Product
             ViewData["ProductName"] = productName;
 
             return View(product);
+        }
+
+        [HttpGet]
+        [Route("UpdateProductDetail/{productId}/{productName}/{sellerId}")]
+        public async Task<IActionResult> UpdateProductDetail(int productId, string productName, string sellerId)
+        {
+            var product = await _productService.GetProductDetailAsync(productId, sellerId);
+
+            if (product == null)
+                return NotFound();
+
+            ViewData["ProductName"] = productName;
+
+            return PartialView("Product/_ProductDetail", product);
         }
 
         [HttpGet]

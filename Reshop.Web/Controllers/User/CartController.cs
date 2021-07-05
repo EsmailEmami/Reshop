@@ -11,6 +11,7 @@ using ZarinpalSandbox;
 namespace Reshop.Web.Controllers.User
 {
     [Authorize]
+    [AutoValidateAntiforgeryToken]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;

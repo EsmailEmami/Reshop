@@ -25,7 +25,6 @@
     }
 }
 
-
 function AddProductToFavorites(form) {
     try {
         $.ajax({
@@ -61,7 +60,6 @@ function AddProductToFavorites(form) {
     }
 }
 
-
 function ShowModal(url, title) {
     $.ajax({
         type: "GET",
@@ -75,7 +73,6 @@ function ShowModal(url, title) {
         }
     });
 }
-
 
 function GetCitiesOfState(stateId) {
     if (stateId != 0) {
@@ -126,7 +123,6 @@ function SubmitFormData(form) {
     }
 }
 
-
 function SetCartAddress(form, returnUrl) {
     try {
         $.ajax({
@@ -154,4 +150,11 @@ function SetCartAddress(form, returnUrl) {
     } catch (ex) {
         console.log(ex);
     }
+}
+
+function UpdateProductDetailPage(productId, productName, sellerId) {
+    $("#productDetail").load('/UpdateProductDetail/' + productId + '/' + productName + '/' + sellerId);
+    let url = window.location.origin + "/Product/" + productId + '/' + productName + '/' + sellerId;
+    console.log(url);
+    window.history.replaceState(null, productName, url);
 }
