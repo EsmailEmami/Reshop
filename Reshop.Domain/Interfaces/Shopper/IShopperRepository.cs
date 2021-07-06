@@ -12,6 +12,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task AddShopperAsync(Entities.Shopper.Shopper shopper);
         void EditShopper(Entities.Shopper.Shopper shopper);
         Task<EditShopperViewModel> GetShopperDataForEditAsync(string userId);
+        string GetShopperIdOfUserByUserId(string userId);
 
         // types = all,active,block
         IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null);
@@ -41,7 +42,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task AddShopperStoreTitleAsync(ShopperStoreTitle shopperStoreTitle);
         void RemoveShopperStoreTitle(ShopperStoreTitle shopperStoreTitle);
 
-
+        IEnumerable<string> GetShopperStoreTitlesName(string shopperId);
         #endregion
 
         #region address

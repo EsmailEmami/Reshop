@@ -28,6 +28,8 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> DeleteStoreTitleAsync(int storeTitleId);
         Task<ResultTypes> AddShopperStoreTitleAsync(string shopperId, List<int> storeTitlesId);
 
+        IEnumerable<string> GetShopperStoreTitlesName(string shopperUserId);
+
         #endregion
     }
 }

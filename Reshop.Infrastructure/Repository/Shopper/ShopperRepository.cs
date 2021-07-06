@@ -53,6 +53,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
                         BackNationalCardImageName = c.Shopper.BackNationalCardImageName
                     }).SingleOrDefaultAsync();
 
+        public string GetShopperIdOfUserByUserId(string userId) =>
+            _context.Users.Find(userId).ShopperId;
+
         public IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null)
         {
             IQueryable<Domain.Entities.User.User> shoppers = _context.Users
@@ -133,6 +136,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public void RemoveShopperStoreTitle(ShopperStoreTitle shopperStoreTitle)
             =>
                  _context.ShopperStoreTitles.Remove(shopperStoreTitle);
+
+        public IEnumerable<string> GetShopperStoreTitlesName(string shopperId) =>
+            _context.ShopperStoreTitles.Where(c => c.ShopperId == shopperId).Select(c=> c.StoreTitle.StoreTitleName);
 
         public async Task AddStoreAddressAsync(StoreAddress storeAddress) =>
             await _context.StoresAddress.AddAsync(storeAddress);

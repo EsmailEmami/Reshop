@@ -41,3 +41,21 @@
         }
     }
 });
+
+
+$("#mini-pic-slider").owlCarousel({
+    rtl: true,
+    loop: false,
+    nav: false,
+    dots: false,
+    items: 4,
+    stagePadding: 50,
+    responsive: {
+        0: {
+            items: 4
+        },
+        600: {
+            items: 3
+        }
+    },
+});

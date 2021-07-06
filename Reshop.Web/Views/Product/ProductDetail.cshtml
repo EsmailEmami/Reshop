@@ -5,5 +5,11 @@
 }
 
 <div id="productDetail">
-    <partial name="Product/_ProductDetail" model="@Model"/>
+    <partial name="Product/_ProductDetail" model="@Model" />
 </div>
+
+
+@section AfterMainOptions
+{
+    <partial name="_toast" />
+}

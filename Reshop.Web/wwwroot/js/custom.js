@@ -372,3 +372,5 @@ $(function () {
     });
 
 });
+
+function changeDetailImg(imgSrc) { document.getElementById("zoom").src = imgSrc; }

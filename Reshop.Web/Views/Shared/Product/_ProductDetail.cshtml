@@ -1,4 +1,5 @@
-﻿@model ProductDetailViewModel
+﻿@using Reshop.Application.Calculate
+@model ProductDetailViewModel
 
 
 <div class="row">
@@ -10,14 +11,14 @@
             </div>
 
             <!-- start slider product picture -->
-            <div id="owl-one" class="owl-carousel owl-theme">
-                
-               @foreach (var item in Model.ProductGalleries)
-               {
-                   <div class="item mini-pic-slider">
-                       <img src="/images/ProductImages/@item.ImageName" alt="@Model.Product.Product.ProductTitle" onclick="changeDetailImg(this.src)">
-                   </div>
-               }
+            <div id="mini-pic-slider" class="owl-carousel owl-theme">
+
+                @foreach (var item in Model.ProductGalleries)
+                {
+                    <div class="item mini-pic-slider">
+                        <img src="/images/ProductImages/@item.ImageName" alt="@Model.Product.Product.ProductTitle" onclick="changeDetailImg(this.src)">
+                    </div>
+                }
 
             </div>
         </div>
@@ -104,11 +105,13 @@
 
 
                 <h5><i class="far fa-dollar-sign"></i> قیمت:</h5>
+                
+                @if (Model.Product.DiscountPercent > 0)
+                {
+                    <span class="badge badge-pill badge-info ">@Model.Product.DiscountPercent ٪ تخفیف</span>
 
-                <span class="badge badge-pill badge-info ">۲۰٪ تخفیف</span>
-
-                <span class="badge badge-pill badge-success text-black">سود شما: 100,000 تومان</span>
-
+                    <span class="badge badge-pill badge-success text-black">سود شما: @CartCalculator.CalculateDiscountPrice(Model.Product.Price, Model.Product.DiscountPercent).ToToman() تومان</span>
+                }
 
                 <div class="price-amount">
                     <h3>@Model.Product.Price.ToToman() <span>تومان</span></h3>

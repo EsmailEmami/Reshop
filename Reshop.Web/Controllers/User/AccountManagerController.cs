@@ -24,13 +24,15 @@ namespace Reshop.Web.Controllers.User
         private readonly ICartService _cartService;
         private readonly IProductService _productService;
         private readonly IStateService _stateService;
+        private readonly IShopperService _shopperService;
 
-        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService, IStateService stateService)
+        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService, IStateService stateService, IShopperService shopperService)
         {
             _userService = userService;
             _cartService = cartService;
             _productService = productService;
             _stateService = stateService;
+            _shopperService = shopperService;
         }
 
         #endregion
@@ -111,23 +113,7 @@ namespace Reshop.Web.Controllers.User
             return View(await _productService.GetUserFavoriteProductsWithPagination(userId, type, sortBy, pageId, 18));
         }
 
-        [Route("ManageProducts")]
-        [HttpGet]
-        [Permission("FullManager,Shopper")]
-        public async Task<IActionResult> ManageProducts(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(await _productService.GetShopperProductsWithPaginationAsync(userId, type, sortBy, pageId, 20));
-        }
 
-        [HttpGet]
-        [Route("ShopperProductDetail/{productId}")]
-        [Permission("FullManager,Shopper")]
-        public async Task<IActionResult> ShopperProductDetail(int productId)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(await _productService.GetShopperProductAsync(productId, userId));
-        }
 
         [HttpGet]
         [NoDirectAccess]
@@ -227,6 +213,38 @@ namespace Reshop.Web.Controllers.User
                 ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "dEAddress", model) });
             }
+        }
+
+
+
+        //-------------------------------------- shopper --------------------------------------
+
+        [Route("ManageProducts")]
+        [HttpGet]
+        [Permission("FullManager,Shopper")]
+        public async Task<IActionResult> ManageProducts(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(await _productService.GetShopperProductsWithPaginationAsync(userId, type, sortBy, pageId, 20));
+        }
+
+        [Route("ProductsAccess")]
+        [HttpGet]
+        [Permission("FullManager,Shopper")]
+        public IActionResult ProductsAccess()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return View(_shopperService.GetShopperStoreTitlesName(userId));
+        }
+
+        [HttpGet]
+        [Route("ShopperProductDetail/{productId}")]
+        [Permission("FullManager,Shopper")]
+        public async Task<IActionResult> ShopperProductDetail(int productId)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(await _productService.GetShopperProductAsync(productId, userId));
         }
     }
 }

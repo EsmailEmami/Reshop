@@ -198,5 +198,11 @@ namespace Reshop.Application.Services.Shopper
                 return ResultTypes.Failed;
             }
         }
+
+        public IEnumerable<string> GetShopperStoreTitlesName(string shopperUserId)
+        {
+            string shopperId = _shopperRepository.GetShopperIdOfUserByUserId(shopperUserId);
+            return _shopperRepository.GetShopperStoreTitlesName(shopperId);
+        }
     }
 }

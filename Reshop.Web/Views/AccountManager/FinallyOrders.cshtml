@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<ReceivedOrdersViewModel>
-@inject IRoleService RoleService;
 @{
     ViewData["Title"] = "UserAddresses";
 }
@@ -9,32 +8,7 @@
 
     <div class="col-sm-12 col-md-4 col-lg-3">
 
-        <div class="profile-menu box-shadow">
-            <div class="user-img d-flex justify-content-center flex-column align-self-center">
-                <form asp-controller="Account" asp-action="Logout" method="post">
-                    <button type="submit">  <i class="far fa-power-off"></i></button>
-                </form>
-
-                <img src="/images/UserImages/@User.FindFirstValue(ClaimTypes.Actor)">
-
-                <p class="text-center">@User.FindFirstValue(ClaimTypes.Name)</p>
-            </div>
-
-            <div class="items">
-                <a asp-action="Dashboard"><i class="far fa-user"></i> اطلاعات حساب</a>
-                <a asp-action="UnFinallyOrders" class="active"><i class="far fa-calendar-week"></i> سفارش های من</a>
-                <a asp-action="FavoriteProducts"><i class="far fa-heart"></i> علاقه مندی ها</a>
-                <a asp-action="Questions"><i class="far fa-comments-alt"></i> سوالات و نظرات</a>
-                @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "Shopper,FullManager"))
-                {
-                    <a asp-action="ManageProducts"><i class="far fa-comments-alt"></i>مدیریت محصولات</a>
-                }
-                @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "FullManager"))
-                {
-                    <a asp-action="UserComments"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
-                }
-            </div>
-        </div>
+        <partial name="AccountManager/_MenuAccount" model="AccountMenuActivePage.Order"/>
 
     </div>
 

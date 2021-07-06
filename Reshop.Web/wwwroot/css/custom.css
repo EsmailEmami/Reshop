@@ -785,34 +785,42 @@ header .top-menu {
     height: 475px;
     border-bottom: 1px solid #eee;
     margin-bottom: 10px;
+    padding: 10px;
 }
 
     .show-img-product img {
         width: 100%;
-        max-width: 350px;
-        height: auto;
-        max-height: 475px;
+        max-width: 474px;
+        height: 100%;
+        max-height: 474px;
         background: #fff;
         background-size: contain;
-        border-radius: 8px 8px 0 0;
+        border-radius: 8px;
     }
-
-.img-detail .owl-carousel {
-    margin-top: 30px;
-}
 
 
 
 .mini-pic-slider {
     border: 1px solid rgb(209, 209, 209);
-    border-radius: 0px 15px 0px 15px;
+    border-radius: 0 15px 0 15px;
     margin: 10px;
     transition: 0.2s;
+    padding: 5px;
 }
 
-    .mini-pic-slider:hover {
-        border: 1px solid orange;
+    .mini-pic-slider img {
+        width: 103px;
+        height: 103px;
+        border-radius: 0 15px 0 15px;
     }
+
+#mini-pic-slider .owl-stage-outer {
+    padding-top: 0;
+}
+
+.mini-pic-slider:hover {
+    border: 1px solid #fc5400;
+}
 
 
 .detail-info {
@@ -3223,6 +3231,18 @@ footer {
         color: #ebebeb;
     }
 
+    footer a,
+    p,
+    span {
+        color: #ebebeb;
+        transition: 0.3s;
+    }
+
+        footer > a:hover {
+            color: #FC5400;
+            text-decoration: none;
+        }
+
 .footer-part ul {
     padding-right: 20px;
 }
@@ -3232,17 +3252,7 @@ footer {
         color: #FC5400;
     }
 
-footer > a,
-p,
-span {
-    color: #ebebeb;
-    transition: 0.3s;
-}
 
-    footer > a:hover {
-        color: #FC5400;
-        text-decoration: none;
-    }
 
 .logo-in-footer {
     width: 100%;
