@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
@@ -13,9 +14,13 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
+    // in this part we just do full edit or add or delete or information
+    // JUST FULL :)
+
     [Area("ManagerPanel")]
     [Authorize]
     [AutoValidateAntiforgeryToken]
@@ -101,6 +106,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         public async Task<IActionResult> AddOrEditMobile(int productId = 0)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             if (productId == 0)
             {
                 return View(new AddOrEditMobileProductViewModel()
@@ -120,14 +126,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var userFirstName = User.FindFirstValue(ClaimTypes.Name);
 
-            if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
-            {
-                ModelState.AddModelError("", $"{userFirstName} عزیز تعداد تصاویر انتخابی برای محصول بیش از حد مجاز است.");
-
-                return View(model);
-            }
 
             if (model.ProductId == 0)
             {
@@ -161,34 +160,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    if (model.SelectedImages is not null)
+                    
+                    await AddOrReplaceImg(new List<IFormFile>()
                     {
-                        foreach (var image in model.SelectedImages)
-                        {
-                            if (image.Length > 0)
-                            {
-                                var imgName = NameGenerator.GenerateUniqCodeWithDash();
-
-                                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    "images",
-                                    "ProductImages",
-                                    imgName + Path.GetExtension(image.FileName));
-
-
-                                await using var stream = new FileStream(filePath, FileMode.Create);
-                                await image.CopyToAsync(stream);
-
-                                var productGallery = new ProductGallery()
-                                {
-                                    ProductId = product.ProductId,
-                                    ImageName = imgName + Path.GetExtension(image.FileName)
-                                };
-
-                                await _productService.AddProductGalleryAsync(productGallery);
-                            }
-                        }
-                    }
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    },product.ProductId);
 
                     await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
@@ -198,7 +175,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
@@ -218,13 +195,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
 
-                //  update product
+                // update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.Brand = model.ProductBrand;
                 product.BrandProduct = model.BrandProduct;
 
-                // update mobile cover detail
+                // update mobile detail
                 mobileDetail.InternalMemory = model.InternalMemory;
                 mobileDetail.CommunicationNetworks = model.CommunicationNetworks;
                 mobileDetail.BackCameras = model.BackCameras;
@@ -375,7 +352,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -546,7 +523,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -700,7 +677,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -870,7 +847,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -1170,7 +1147,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -1342,7 +1319,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -1497,7 +1474,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -1650,7 +1627,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -1796,7 +1773,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-
+                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -1869,6 +1846,35 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             var result = await _shopperService.AddShopperProductAsync(shopperProduct);
 
             return result;
+        }
+
+        private async Task AddOrReplaceImg(List<IFormFile> images,int productId)
+        {
+            foreach (var image in images)
+            {
+                if (image.Length > 0)
+                {
+                    var imgName = NameGenerator.GenerateUniqCodeWithDash();
+
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "ProductImages",
+                        imgName + Path.GetExtension(image.FileName));
+
+
+                    await using var stream = new FileStream(filePath, FileMode.Create);
+                    await image.CopyToAsync(stream);
+
+                    var productGallery = new ProductGallery()
+                    {
+                        ProductId = productId,
+                        ImageName = imgName + Path.GetExtension(image.FileName)
+                    };
+
+                    await _productService.AddProductGalleryAsync(productGallery);
+                }
+            }
         }
 
         #endregion

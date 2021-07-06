@@ -6,7 +6,10 @@ namespace Reshop.Domain.DTOs.Product
 {
     public class AddOrEditTabletViewModel
     {
-        public int ProductId { get; set; } = 0;
+        [Required]
+        public string ShopperUserId { get; set; }
+
+        public int ProductId { get; set; } 
 
         [Display(Name = "نام کالا")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
