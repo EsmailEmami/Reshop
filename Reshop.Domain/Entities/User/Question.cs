@@ -33,6 +33,8 @@ namespace Reshop.Domain.Entities.User
         [Display(Name = "تاریخ ثبت نظر")]
         public DateTime QuestionDate { get; set; }
 
+        public bool IsRead { get; set; }
+
         #region Relations
 
         public virtual Product.Product Product { get; set; }
