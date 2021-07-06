@@ -38,15 +38,12 @@ namespace Reshop.Domain.Entities.Product
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ProductType { get; set; }
 
-        [Display(Name = "برند محصول")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string Brand { get; set; }
+       
+        [ForeignKey("Brand")]
+        public int BrandId { get; set; }
 
-        [Display(Name = "نام محصول برند")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string BrandProduct { get; set; }
+        [ForeignKey("BrandProduct")]
+        public int BrandProductId { get; set; }
 
         [Display(Name = "تعداد کل ویو ها")]
         public int AllViewsCount { get; set; }
@@ -129,6 +126,10 @@ namespace Reshop.Domain.Entities.Product
 
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
         public virtual ICollection<UserProductView> UserProductsView { get; set; }
+
+        public virtual Brand Brand { get; set; }
+
+        public virtual BrandProduct BrandProduct { get; set; }
 
         #endregion
     }

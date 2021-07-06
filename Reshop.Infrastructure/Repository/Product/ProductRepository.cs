@@ -71,7 +71,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand,
+                BrandName = c.Brand.,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
                 ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
