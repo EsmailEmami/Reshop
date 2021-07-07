@@ -954,7 +954,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeMobileCoverProductDataAsync(productId, "");
+                var product = await _productService.GetTypeMobileCoverProductDataAsync(productId);
                 if (product is null)
                     return NotFound();
 
@@ -969,17 +969,54 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var userFirstName = User.FindFirstValue(ClaimTypes.Actor);
+            // in this section we check that all images are ok
+            #region images security
 
-            if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
+            if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
             {
-                ModelState.AddModelError("", $"{userFirstName} عزیز تعداد تصاویر انتخابی برای محصول بیش از حد مجاز است.");
-
+                ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
                 return View(model);
             }
 
+            #endregion
+
             if (model.ProductId == 0)
             {
+                // images could not be null
+                if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
+                    model.SelectedImage3 == null || model.SelectedImage4 == null ||
+                    model.SelectedImage5 == null || model.SelectedImage6 == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
+                    return View(model);
+                }
+
+
                 var product = new Product()
                 {
                     ProductTitle = model.ProductTitle,
@@ -1003,41 +1040,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    if (model.SelectedImages is not null)
+                    // add product images
+                    await AddImg(new List<IFormFile>()
                     {
-                        foreach (var image in model.SelectedImages)
-                        {
-                            if (image.Length > 0)
-                            {
-                                var imgName = NameGenerator.GenerateUniqCodeWithDash();
-
-                                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    "images",
-                                    imgName + Path.GetExtension(image.FileName));
-
-
-                                await using var stream = new FileStream(filePath, FileMode.Create);
-                                await image.CopyToAsync(stream);
-
-                                var productGallery = new ProductGallery()
-                                {
-                                    ProductId = product.ProductId,
-                                    ImageName = imgName + Path.GetExtension(image.FileName)
-                                };
-
-                                await _productService.AddProductGalleryAsync(productGallery);
-                            }
-                        }
-                    }
-
-                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, product.ProductId);
 
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است. لطفا دوباره تلاش کنید!");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
@@ -1060,6 +1074,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
+                product.BrandId = model.Brand;
+                product.BrandProductId = model.BrandProduct;
 
 
                 // update mobile cover detail
@@ -1074,14 +1090,26 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
+                    // edit product images
+                    EditImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, new List<string>()
+                    {
+                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                        model.SelectedImage5IMG, model.SelectedImage6IMG
+                    });
+
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است. لطفا دوباره تلاش کنید!");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
+
 
             }
         }
@@ -1199,7 +1227,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
+                    
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -1565,7 +1593,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId, "");
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
                 if (product == null)
                 {
                     return NotFound();
@@ -2063,7 +2091,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId, "");
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
                 if (product == null)
                 {
                     return NotFound();
@@ -2126,13 +2154,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     return View(model);
                 }
 
+
                 var product = new Product()
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    ProductType = ProductTypes.FlashMemory.ToString(),
-
+                    ProductType = ProductTypes.Mobile.ToString(),
+                    BrandId = model.Brand,
+                    BrandProductId = model.BrandProduct
                 };
 
                 var flashMemoryDetail = new FlashMemoryDetail()
@@ -2261,7 +2291,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId, "");
+                var product = await _productService.GetTypeMemoryCardProductDataAsync(productId);
                 if (product == null)
                 {
                     return NotFound();
@@ -2277,32 +2307,73 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var userFirstName = User.FindFirstValue(ClaimTypes.Actor);
+            // in this section we check that all images are ok
+            #region images security
 
-            if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
+            if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
             {
-                ModelState.AddModelError("", $"{userFirstName} عزیز تعداد تصاویر انتخابی برای محصول بیش از حد مجاز است.");
-
+                ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
                 return View(model);
             }
 
+            #endregion
+
             if (model.ProductId == 0)
             {
+                // images could not be null
+                if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
+                    model.SelectedImage3 == null || model.SelectedImage4 == null ||
+                    model.SelectedImage5 == null || model.SelectedImage6 == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
+                    return View(model);
+                }
+
                 var product = new Product()
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    ProductType = ProductTypes.FlashMemory.ToString(),
-
+                    ProductType = ProductTypes.Mobile.ToString(),
+                    BrandId = model.Brand,
+                    BrandProductId = model.BrandProduct
                 };
 
                 var memoryCardDetail = new MemoryCardDetail()
                 {
+                    Length = model.Length,
+                    Width = model.Width,
+                    Height = model.Height,
                     Capacity = model.Capacity,
-                    Size = model.Size,
                     SpeedStandard = model.SpeedStandard,
-                    ResistsAgainst = model.ResistsAgainst
+                    ReadingSpeed = model.ReadingSpeed,
+                    ResistsAgainst = model.ResistsAgainst,
+                    MoreInformation = model.MoreInformation,
                 };
 
 
@@ -2310,41 +2381,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    if (model.SelectedImages is not null)
+                    // add product images
+                    await AddImg(new List<IFormFile>()
                     {
-                        foreach (var image in model.SelectedImages)
-                        {
-                            if (image.Length > 0)
-                            {
-                                var imgName = NameGenerator.GenerateUniqCodeWithDash();
-
-                                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    "images",
-                                    imgName + Path.GetExtension(image.FileName));
-
-
-                                await using var stream = new FileStream(filePath, FileMode.Create);
-                                await image.CopyToAsync(stream);
-
-                                var productGallery = new ProductGallery()
-                                {
-                                    ProductId = product.ProductId,
-                                    ImageName = imgName + Path.GetExtension(image.FileName)
-                                };
-
-                                await _productService.AddProductGalleryAsync(productGallery);
-                            }
-                        }
-                    }
-
-                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, product.ProductId);
 
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
@@ -2367,13 +2415,19 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
+                product.BrandId = model.Brand;
+                product.BrandProductId = model.BrandProduct;
 
 
                 // update mobile cover detail
+                memoryCardDetail. Length = model.Length;
+                memoryCardDetail.Width = model.Width;
+                memoryCardDetail.Height = model.Height;
                 memoryCardDetail.Capacity = model.Capacity;
-                memoryCardDetail.Size = model.Size;
                 memoryCardDetail.SpeedStandard = model.SpeedStandard;
+                memoryCardDetail.ReadingSpeed = model.ReadingSpeed;
                 memoryCardDetail.ResistsAgainst = model.ResistsAgainst;
+                memoryCardDetail.MoreInformation = model.MoreInformation;
 
 
 
@@ -2381,11 +2435,22 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
+                    // edit product images
+                    EditImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, new List<string>()
+                    {
+                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                        model.SelectedImage5IMG, model.SelectedImage6IMG
+                    });
+
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }

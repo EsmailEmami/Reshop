@@ -238,9 +238,9 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetTypePowerBankProductDataForEditAsync(productId);
 
-        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeMobileCoverProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeMobileCoverProductDataForEditAsync(productId);
 
         public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId)
             =>
@@ -250,9 +250,9 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeFlashMemoryProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeFlashMemoryProductDataForEditAsync(productId);
 
         public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId, string shopperUserId)
             =>
@@ -266,9 +266,9 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetTypeSmartWatchProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId);
 
         public async Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail)
         {

@@ -871,24 +871,31 @@ namespace Reshop.Infrastructure.Repository.Product
                      Features = c.PowerBankDetail.Features,
                  }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
-            .Select(c => new AddOrEditMobileCoverViewModel()
-            {
-                ProductId = c.Product.ProductId,
-                ProductTitle = c.Product.ProductTitle,
-                Description = c.Product.Description,
-                Price = c.Price,
-                QuantityInStock = c.QuantityInStock,
-                BrandProduct = c.Product.BrandProduct,
-                ProductBrand = c.Product.Brand,
-                SuitablePhones = c.Product.MobileCoverDetail.SuitablePhones,
-                Gender = c.Product.MobileCoverDetail.Gender,
-                Structure = c.Product.MobileCoverDetail.Structure,
-                CoverLevel = c.Product.MobileCoverDetail.CoverLevel,
-                Features = c.Product.MobileCoverDetail.Features
-            }).SingleOrDefaultAsync();
+        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
+                    .Select(c => new AddOrEditMobileCoverViewModel()
+                    {
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        SuitablePhones = c.MobileCoverDetail.SuitablePhones,
+                        Gender = c.MobileCoverDetail.Gender,
+                        Structure = c.MobileCoverDetail.Structure,
+                        CoverLevel = c.MobileCoverDetail.CoverLevel,
+                        Features = c.MobileCoverDetail.Features,
+                    }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId) =>
             await _context.Products
@@ -1078,25 +1085,36 @@ namespace Reshop.Infrastructure.Repository.Product
                         Sensors = c.Product.SmartWatchDetail.Sensors,
                         IsDirectTalkable = c.Product.SmartWatchDetail.IsDirectTalkable,
                         IsTalkableWithBluetooth = c.Product.SmartWatchDetail.IsTalkableWithBluetooth
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                    }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditMemoryCardViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        Capacity = c.Product.MemoryCardDetail.Capacity,
-                        Size = c.Product.MemoryCardDetail.Size,
-                        SpeedStandard = c.Product.MemoryCardDetail.SpeedStandard,
-                        ResistsAgainst = c.Product.MemoryCardDetail.ResistsAgainst
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Length = c.MemoryCardDetail.Length,
+                        Width = c.MemoryCardDetail.Width,
+                        Height = c.MemoryCardDetail.Height,
+                        Capacity = c.MemoryCardDetail.Capacity,
+                        SpeedStandard = c.MemoryCardDetail.SpeedStandard,
+                        ReadingSpeed = c.MemoryCardDetail.ReadingSpeed,
+                        ResistsAgainst = c.MemoryCardDetail.ResistsAgainst,
+                        MoreInformation = c.MemoryCardDetail.MoreInformation,
+                    }).SingleOrDefaultAsync();
 
         public async Task<string> GetProductTypeAsync(int productId)
         {
