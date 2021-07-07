@@ -46,7 +46,7 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string SimCardInpute { get; set; }
 
-        [Display(Name = "ورودی سیم کارت")]
+        [Display(Name = "ورودی جداگانه برای حافظه جانبی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool SeparateSlotMemoryCard { get; set; }
 
