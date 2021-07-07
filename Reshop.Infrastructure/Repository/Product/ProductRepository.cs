@@ -679,7 +679,7 @@ namespace Reshop.Infrastructure.Repository.Product
         public async Task<int> GetProductGalleriesCountByProductIdAsync(int productId)
             =>
                 await _context.ProductGalleries.Where(c => c.ProductId == productId).CountAsync();
-       
+
         public async Task<bool> IsProductExistAsync(int productId)
         {
             return await _context.Products.AnyAsync(c => c.ProductId == productId);
@@ -764,30 +764,70 @@ namespace Reshop.Infrastructure.Repository.Product
                 }).SingleOrDefaultAsync();
         }
 
-        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId, string shopperUserId) =>
-             await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId) =>
+             await _context.Products
+                .Where(c => c.ProductId == productId)
                  .Select(c => new AddOrEditLaptopProductViewModel()
                  {
-                     ProductId = c.Product.ProductId,
-                     ProductTitle = c.Product.ProductTitle,
-                     Description = c.Product.Description,
-                     Price = c.Price,
-                     QuantityInStock = c.QuantityInStock,
-                     BrandProduct = c.Product.BrandProduct,
-                     ProductBrand = c.Product.Brand,
-                     RAMCapacity = c.Product.LaptopDetail.RAMCapacity,
-                     InternalMemory = c.Product.LaptopDetail.InternalMemory,
-                     GPUManufacturer = c.Product.LaptopDetail.GPUManufacturer,
-                     Size = c.Product.LaptopDetail.Size,
-                     Category = c.Product.LaptopDetail.Category,
-                     ProcessorSeries = c.Product.LaptopDetail.ProcessorSeries,
-                     RAMType = c.Product.LaptopDetail.RAMType,
-                     ScreenAccuracy = c.Product.LaptopDetail.ScreenAccuracy,
-                     IsMatteScreen = c.Product.LaptopDetail.IsMatteScreen,
-                     IsTouchScreen = c.Product.LaptopDetail.IsTouchScreen,
-                     OperatingSystem = c.Product.LaptopDetail.OperatingSystem,
-                     IsHDMIPort = c.Product.LaptopDetail.IsHDMIPort,
+                     ProductId = c.ProductId,
+                     ProductTitle = c.ProductTitle,
+                     Description = c.Description,
+                     Brand = c.BrandId,
+                     BrandProduct = c.BrandProductId,
+
+                     //img
+                     SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                     SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                     SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                     SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                     SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                     SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                     // detail
+                     Length = c.LaptopDetail.Length,
+                     Width = c.LaptopDetail.Width,
+                     Height = c.LaptopDetail.Height,
+                     Weight = c.LaptopDetail.Weight,
+                     CpuCompany = c.LaptopDetail.CpuCompany,
+                     CpuSeries = c.LaptopDetail.CpuSeries,
+                     CpuModel = c.LaptopDetail.CpuModel,
+                     CpuFerequancy = c.LaptopDetail.CpuFerequancy,
+                     CpuCache = c.LaptopDetail.CpuCache,
+                     RamStorage = c.LaptopDetail.RamStorage,
+                     RamStorageTeachnology = c.LaptopDetail.RamStorageTeachnology,
+                     Storage = c.LaptopDetail.Storage,
+                     StorageTeachnology = c.LaptopDetail.StorageTeachnology,
+                     StorageInformation = c.LaptopDetail.StorageInformation,
+                     GpuCompany = c.LaptopDetail.GpuCompany,
+                     GpuModel = c.LaptopDetail.GpuModel,
+                     GpuRam = c.LaptopDetail.GpuRam,
+                     DisplaySize = c.LaptopDetail.DisplaySize,
+                     DisplayTeachnology = c.LaptopDetail.DisplayTeachnology,
+                     DisplayResolutation = c.LaptopDetail.DisplayResolutation,
+                     RefreshDisplay = c.LaptopDetail.RefreshDisplay,
+                     BlurDisplay = c.LaptopDetail.BlurDisplay,
+                     TouchDisplay = c.LaptopDetail.TouchDisplay,
+                     DiskDrive = c.LaptopDetail.DiskDrive,
+                     FingerTouch = c.LaptopDetail.FingerTouch,
+                     Webcam = c.LaptopDetail.Webcam,
+                     BacklightKey = c.LaptopDetail.BacklightKey,
+                     TouchPadInformation = c.LaptopDetail.TouchPadInformation,
+                     ModemInformation = c.LaptopDetail.ModemInformation,
+                     Wifi = c.LaptopDetail.Wifi,
+                     Bluetooth = c.LaptopDetail.Bluetooth,
+                     VgaPort = c.LaptopDetail.VgaPort,
+                     HtmiPort = c.LaptopDetail.HtmiPort,
+                     DisplayPort = c.LaptopDetail.DisplayPort,
+                     LanPort = c.LaptopDetail.LanPort,
+                     UsbCPort = c.LaptopDetail.UsbCPort,
+                     Usb3Port = c.LaptopDetail.Usb3Port,
+                     UsbCQuantity = c.LaptopDetail.UsbCQuantity,
+                     UsbQuantity = c.LaptopDetail.UsbQuantity,
+                     Usb3Quantity = c.LaptopDetail.Usb3Quantity,
+                     BatteryMaterial = c.LaptopDetail.BatteryMaterial,
+                     BatteryCharging = c.LaptopDetail.BatteryCharging,
+                     BatteryInformation = c.LaptopDetail.BatteryInformation,
+                     Os = c.LaptopDetail.Os,
+                     Classification = c.LaptopDetail.Classification,
                  }).SingleOrDefaultAsync();
 
 

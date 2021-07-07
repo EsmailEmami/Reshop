@@ -368,6 +368,5 @@ namespace Reshop.Domain.DTOs.Product
         public string SelectedImage5IMG { get; set; }
 
         public string SelectedImage6IMG { get; set; }
-
     }
 }

@@ -233,7 +233,5 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(70, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Classification { get; set; }
-
-
     }
 }

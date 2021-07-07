@@ -402,11 +402,11 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View();
+                return View(new AddOrEditLaptopProductViewModel());
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId, "");
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
                 if (product == null)
                 {
                     return NotFound();
@@ -422,81 +422,134 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var userFirstName = User.FindFirstValue(ClaimTypes.Actor);
+            // in this section we check that all images are ok
+            #region images security
 
-            if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
+            if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
             {
-                ModelState.AddModelError("", $"{userFirstName} عزیز تعداد تصاویر انتخابی برای محصول بیش از حد مجاز است.");
-
+                ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
                 return View(model);
             }
 
+            #endregion
+
+
+
+
             if (model.ProductId == 0)
             {
+                // images could not be null
+                if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
+                    model.SelectedImage3 == null || model.SelectedImage4 == null ||
+                    model.SelectedImage5 == null || model.SelectedImage6 == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
+                    return View(model);
+                }
+
+
+
                 var product = new Product()
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    ProductType = ProductTypes.Laptop.ToString(),
-
+                    ProductType = ProductTypes.Mobile.ToString(),
+                    BrandId = model.Brand,
+                    BrandProductId = model.BrandProduct
                 };
+
 
                 var laptopDetail = new LaptopDetail()
                 {
-                    RAMCapacity = model.RAMCapacity,
-                    InternalMemory = model.InternalMemory,
-                    GPUManufacturer = model.GPUManufacturer,
-                    Size = model.Size,
-                    Category = model.Category,
-                    ProcessorSeries = model.ProcessorSeries,
-                    RAMType = model.RAMType,
-                    ScreenAccuracy = model.ScreenAccuracy,
-                    IsMatteScreen = model.IsMatteScreen,
-                    IsTouchScreen = model.IsTouchScreen,
-                    OperatingSystem = model.OperatingSystem,
-                    IsHDMIPort = model.IsHDMIPort,
+                    Length = model.Length,
+                    Width = model.Width,
+                    Height = model.Height,
+                    Weight = model.Weight,
+                    CpuCompany = model.CpuCompany,
+                    CpuSeries = model.CpuSeries,
+                    CpuModel = model.CpuModel,
+                    CpuFerequancy = model.CpuFerequancy,
+                    CpuCache = model.CpuCache,
+                    RamStorage = model.RamStorage,
+                    RamStorageTeachnology = model.RamStorageTeachnology,
+                    Storage = model.Storage,
+                    StorageTeachnology = model.StorageTeachnology,
+                    StorageInformation = model.StorageInformation,
+                    GpuCompany = model.GpuCompany,
+                    GpuModel = model.GpuModel,
+                    GpuRam = model.GpuRam,
+                    DisplaySize = model.DisplaySize,
+                    DisplayTeachnology = model.DisplayTeachnology,
+                    DisplayResolutation = model.DisplayResolutation,
+                    RefreshDisplay = model.RefreshDisplay,
+                    BlurDisplay = model.BlurDisplay,
+                    TouchDisplay = model.TouchDisplay,
+                    DiskDrive = model.DiskDrive,
+                    FingerTouch = model.FingerTouch,
+                    Webcam = model.Webcam,
+                    BacklightKey = model.BacklightKey,
+                    TouchPadInformation = model.TouchPadInformation,
+                    ModemInformation = model.ModemInformation,
+                    Wifi = model.Wifi,
+                    Bluetooth = model.Bluetooth,
+                    VgaPort = model.VgaPort,
+                    HtmiPort = model.HtmiPort,
+                    DisplayPort = model.DisplayPort,
+                    LanPort = model.LanPort,
+                    UsbCPort = model.UsbCPort,
+                    Usb3Port = model.Usb3Port,
+                    UsbCQuantity = model.UsbCQuantity,
+                    UsbQuantity = model.UsbQuantity,
+                    Usb3Quantity = model.Usb3Quantity,
+                    BatteryMaterial = model.BatteryMaterial,
+                    BatteryCharging = model.BatteryCharging,
+                    BatteryInformation = model.BatteryInformation,
+                    Os = model.Os,
+                    Classification = model.Classification,
                 };
 
                 var result = await _productService.AddLaptopAsync(product, laptopDetail);
 
                 if (result == ResultTypes.Successful)
                 {
-                    if (model.SelectedImages is not null)
+                    // add product images
+                    await AddImg(new List<IFormFile>()
                     {
-                        foreach (var image in model.SelectedImages)
-                        {
-                            if (image.Length > 0)
-                            {
-                                var imgName = NameGenerator.GenerateUniqCodeWithDash();
-
-                                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    "images",
-                                    imgName + Path.GetExtension(image.FileName));
-
-
-                                await using var stream = new FileStream(filePath, FileMode.Create);
-                                await image.CopyToAsync(stream);
-
-                                var productGallery = new ProductGallery()
-                                {
-                                    ProductId = product.ProductId,
-                                    ImageName = imgName + Path.GetExtension(image.FileName)
-                                };
-
-                                await _productService.AddProductGalleryAsync(productGallery);
-                            }
-                        }
-                    }
-
-                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, product.ProductId);
 
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
@@ -519,32 +572,79 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
+                product.BrandId = model.Brand;
+                product.BrandProductId = model.BrandProduct;
 
 
 
-                // update mobile cover detail
-                laptopDetail.RAMCapacity = model.RAMCapacity;
-                laptopDetail.InternalMemory = model.InternalMemory;
-                laptopDetail.GPUManufacturer = model.GPUManufacturer;
-                laptopDetail.Size = model.Size;
-                laptopDetail.Category = model.Category;
-                laptopDetail.ProcessorSeries = model.ProcessorSeries;
-                laptopDetail.RAMType = model.RAMType;
-                laptopDetail.ScreenAccuracy = model.ScreenAccuracy;
-                laptopDetail.IsMatteScreen = model.IsMatteScreen;
-                laptopDetail.IsTouchScreen = model.IsTouchScreen;
-                laptopDetail.OperatingSystem = model.OperatingSystem;
-                laptopDetail.IsHDMIPort = model.IsHDMIPort;
+                // update laptop detail
+                laptopDetail.Length = model.Length;
+                laptopDetail.Width = model.Width;
+                laptopDetail.Height = model.Height;
+                laptopDetail.Weight = model.Weight;
+                laptopDetail.CpuCompany = model.CpuCompany;
+                laptopDetail.CpuSeries = model.CpuSeries;
+                laptopDetail.CpuModel = model.CpuModel;
+                laptopDetail.CpuFerequancy = model.CpuFerequancy;
+                laptopDetail.CpuCache = model.CpuCache;
+                laptopDetail.RamStorage = model.RamStorage;
+                laptopDetail.RamStorageTeachnology = model.RamStorageTeachnology;
+                laptopDetail.Storage = model.Storage;
+                laptopDetail.StorageTeachnology = model.StorageTeachnology;
+                laptopDetail.StorageInformation = model.StorageInformation;
+                laptopDetail.GpuCompany = model.GpuCompany;
+                laptopDetail.GpuModel = model.GpuModel;
+                laptopDetail.GpuRam = model.GpuRam;
+                    laptopDetail.DisplaySize = model.DisplaySize;
+                    laptopDetail.DisplayTeachnology = model.DisplayTeachnology;
+                    laptopDetail.DisplayResolutation = model.DisplayResolutation;
+                    laptopDetail.RefreshDisplay = model.RefreshDisplay;
+                    laptopDetail.BlurDisplay = model.BlurDisplay;
+                    laptopDetail.TouchDisplay = model.TouchDisplay;
+                    laptopDetail.DiskDrive = model.DiskDrive;
+                    laptopDetail.FingerTouch = model.FingerTouch;
+                    laptopDetail.Webcam = model.Webcam;
+                    laptopDetail.BacklightKey = model.BacklightKey;
+                    laptopDetail.TouchPadInformation = model.TouchPadInformation;
+                    laptopDetail.ModemInformation = model.ModemInformation;
+                    laptopDetail.Wifi = model.Wifi;
+                    laptopDetail.Bluetooth = model.Bluetooth;
+                    laptopDetail.VgaPort = model.VgaPort;
+                    laptopDetail.HtmiPort = model.HtmiPort;
+                    laptopDetail.DisplayPort = model.DisplayPort;
+                    laptopDetail.LanPort = model.LanPort;
+                    laptopDetail.UsbCPort = model.UsbCPort;
+                    laptopDetail.Usb3Port = model.Usb3Port;
+                    laptopDetail.UsbCQuantity = model.UsbCQuantity;
+                    laptopDetail.UsbQuantity = model.UsbQuantity;
+                    laptopDetail.Usb3Quantity = model.Usb3Quantity;
+                    laptopDetail.BatteryMaterial = model.BatteryMaterial;
+                    laptopDetail.BatteryCharging = model.BatteryCharging;
+                    laptopDetail.BatteryInformation = model.BatteryInformation;
+                    laptopDetail.Os = model.Os;
+                    laptopDetail.Classification = model.Classification;
+
 
                 var result = await _productService.EditLaptopAsync(product, laptopDetail);
 
                 if (result == ResultTypes.Successful)
                 {
+                    // edit product images
+                    EditImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, new List<string>()
+                    {
+                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                        model.SelectedImage5IMG, model.SelectedImage6IMG
+                    });
+
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
