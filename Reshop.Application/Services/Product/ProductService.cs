@@ -130,6 +130,11 @@ namespace Reshop.Application.Services.Product
             return await _productRepository.GetLaptopDetailByIdAsync(laptopDetailId);
         }
 
+        public async Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId)
+        {
+            return await _productRepository.GetPowerBankDetailByIdAsync(powerBankId);
+        }
+
         public async Task<MobileCoverDetail> GetMobileCoverByIdAsync(int mobileCoverId)
             =>
                 await _productRepository.GetMobileCoverDetailByIdAsync(mobileCoverId);
@@ -228,6 +233,10 @@ namespace Reshop.Application.Services.Product
         public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId)
             =>
                 await _productRepository.GetTypeLaptopProductDataForEditAsync(productId);
+
+        public async Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId)
+            =>
+                await _productRepository.GetTypePowerBankProductDataForEditAsync(productId);
 
         public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId, string shopperUserId)
             =>
@@ -357,6 +366,32 @@ namespace Reshop.Application.Services.Product
 
                 product.LaptopDetailId = laptopDetail.LaptopDetailId;
                 product.LaptopDetail = laptopDetail;
+
+                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
+                {
+                    product.ShortKey = NameGenerator.GenerateShortKey();
+                }
+
+                await _productRepository.AddProductAsync(product);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> AddPowerBankAsync(Domain.Entities.Product.Product product, PowerBankDetail powerBank)
+        {
+            try
+            {
+                await _productRepository.AddPowerBankDetailAsync(powerBank);
+                await _productRepository.SaveChangesAsync();
+
+                product.PowerBankDetailId = powerBank.PowerBankId;
+                product.PowerBankDetail = powerBank;
 
                 while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
                 {
@@ -645,6 +680,30 @@ namespace Reshop.Application.Services.Product
                 else
                 {
                     _productRepository.UpdateLaptopDetail(laptopDetail);
+                    _productRepository.UpdateProduct(product);
+
+                    await _productRepository.SaveChangesAsync();
+
+                    return ResultTypes.Successful;
+                }
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditPowerBankAsync(Domain.Entities.Product.Product product, PowerBankDetail powerBank)
+        {
+            try
+            {
+                if (!await _productRepository.IsProductExistAsync(product.ProductId))
+                {
+                    return ResultTypes.Failed;
+                }
+                else
+                {
+                    _productRepository.UpdatePowerBankDetail(powerBank);
                     _productRepository.UpdateProduct(product);
 
                     await _productRepository.SaveChangesAsync();

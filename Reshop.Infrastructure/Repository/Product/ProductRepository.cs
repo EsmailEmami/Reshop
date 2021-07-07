@@ -494,6 +494,11 @@ namespace Reshop.Infrastructure.Repository.Product
             return await _context.LaptopDetails.FindAsync(laptopDetailId);
         }
 
+        public async Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId)
+        {
+            return await _context.PowerBankDetails.FindAsync(powerBankId);
+        }
+
         public async Task<MobileCoverDetail> GetMobileCoverDetailByIdAsync(int mobileCoverId)
             =>
                 await _context.MobileCoverDetails.FindAsync(mobileCoverId);
@@ -830,6 +835,41 @@ namespace Reshop.Infrastructure.Repository.Product
                      Classification = c.LaptopDetail.Classification,
                  }).SingleOrDefaultAsync();
 
+        public async Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataForEditAsync(int productId) =>
+             await _context.Products
+                .Where(c => c.ProductId == productId)
+                 .Select(c => new AddOrEditPowerBankViewModel()
+                 {
+                     ProductId = c.ProductId,
+                     ProductTitle = c.ProductTitle,
+                     Description = c.Description,
+                     Brand = c.BrandId,
+                     BrandProduct = c.BrandProductId,
+
+                     //img
+                     SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                     SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                     SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                     SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                     SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                     SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                     // detail
+                     Length = c.PowerBankDetail.Length,
+                     Width = c.PowerBankDetail.Width,
+                     Height = c.PowerBankDetail.Height,
+                     Weight = c.PowerBankDetail.Weight,
+                     CapacityRange = c.PowerBankDetail.CapacityRange,
+                     InputVoltage = c.PowerBankDetail.InputVoltage,
+                     OutputVoltage = c.PowerBankDetail.OutputVoltage,
+                     InputCurrentIntensity = c.PowerBankDetail.InputCurrentIntensity,
+                     OutputCurrentIntensity = c.PowerBankDetail.OutputCurrentIntensity,
+                     OutputPortsCount = c.PowerBankDetail.OutputPortsCount,
+                     IsSupportOfQCTechnology = c.PowerBankDetail.IsSupportOfQCTechnology,
+                     IsSupportOfPDTechnology = c.PowerBankDetail.IsSupportOfPDTechnology,
+                     BodyMaterial = c.PowerBankDetail.BodyMaterial,
+                     DisplayCharge = c.PowerBankDetail.DisplayCharge,
+                     Features = c.PowerBankDetail.Features,
+                 }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId, string shopperUserId) =>
             await _context.ShopperProducts
@@ -1058,6 +1098,12 @@ namespace Reshop.Infrastructure.Repository.Product
             await _context.LaptopDetails.AddAsync(laptopDetail);
         }
 
+        public async Task AddPowerBankDetailAsync(PowerBankDetail powerBank)
+        {
+            await _context.PowerBankDetails.AddAsync(powerBank);
+        }
+
+
         public async Task AddProductGalley(ProductGallery productGallery)
             =>
                 await _context.ProductGalleries.AddAsync(productGallery);
@@ -1108,6 +1154,11 @@ namespace Reshop.Infrastructure.Repository.Product
         public void UpdateLaptopDetail(LaptopDetail laptopDetail)
         {
             _context.LaptopDetails.Update(laptopDetail);
+        }
+
+        public void UpdatePowerBankDetail(PowerBankDetail powerBank)
+        {
+            _context.PowerBankDetails.Update(powerBank);
         }
 
         public void UpdateMobileCoverDetail(MobileCoverDetail mobileCoverDetail)
@@ -1181,7 +1232,5 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             _context.LaptopDetails.RemoveRange(laptopDetails);
         }
-
-
     }
 }

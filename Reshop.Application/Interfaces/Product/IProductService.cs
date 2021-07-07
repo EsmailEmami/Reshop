@@ -26,6 +26,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperUserId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
+        Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);
         Task<MobileCoverDetail> GetMobileCoverByIdAsync(int mobileCoverId);
         Task<TabletDetail> GetTabletByIdAsync(int tabletDetailId);
         Task<FlashMemoryDetail> GetFlashMemoryByIdAsync(int flashMemoryId);
@@ -44,6 +45,7 @@ namespace Reshop.Application.Interfaces.Product
         // get product types
         Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId);
         Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId);
+        Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId);
         Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId, string shopperUserId);
         Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId);
         Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperUserId);
@@ -56,6 +58,7 @@ namespace Reshop.Application.Interfaces.Product
         // inserts
         Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
         Task<ResultTypes> AddLaptopAsync(Domain.Entities.Product.Product product, LaptopDetail laptopDetail);
+        Task<ResultTypes> AddPowerBankAsync(Domain.Entities.Product.Product product,PowerBankDetail powerBank);
         Task<ResultTypes> AddMobileCoverAsync(Domain.Entities.Product.Product product, MobileCoverDetail mobileCoverDetail);
         Task<ResultTypes> AddTabletAsync(Domain.Entities.Product.Product product, TabletDetail tabletDetail);
         Task<ResultTypes> AddHandsfreeAndHeadPhoneDetailAsync(Domain.Entities.Product.Product product, HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail);
@@ -74,6 +77,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<ResultTypes> EditProductAsync(Domain.Entities.Product.Product product);
         Task<ResultTypes> EditMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
         Task<ResultTypes> EditLaptopAsync(Domain.Entities.Product.Product product, LaptopDetail laptopDetail);
+        Task<ResultTypes> EditPowerBankAsync(Domain.Entities.Product.Product product, PowerBankDetail powerBank);
         Task<ResultTypes> EditMobileCoverAsync(Domain.Entities.Product.Product product, MobileCoverDetail mobileCoverDetail);
         Task<ResultTypes> EditTabletAsync(Domain.Entities.Product.Product product, TabletDetail tabletDetail);
         Task<ResultTypes> EditHandsfreeAndHeadPhoneDetailAsync(Domain.Entities.Product.Product product, HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail);

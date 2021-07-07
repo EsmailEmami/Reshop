@@ -729,6 +729,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             if (model.ProductId == 0)
             {
+                // images could not be null
+                if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
+                    model.SelectedImage3 == null || model.SelectedImage4 == null ||
+                    model.SelectedImage5 == null || model.SelectedImage6 == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
+                    return View(model);
+                }
+
                 var product = new Product()
                 {
                     ProductTitle = model.ProductTitle,
@@ -1563,6 +1572,179 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
 
                 return View(product);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEditPowerBank(AddOrEditPowerBankViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            // in this section we check that all images are ok
+            #region images security
+
+            if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+
+            #endregion
+
+
+
+
+            if (model.ProductId == 0)
+            {
+                // images could not be null
+                if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
+                    model.SelectedImage3 == null || model.SelectedImage4 == null ||
+                    model.SelectedImage5 == null || model.SelectedImage6 == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
+                    return View(model);
+                }
+
+
+
+                var product = new Product()
+                {
+                    ProductTitle = model.ProductTitle,
+                    Description = model.Description,
+                    ShortKey = NameGenerator.GenerateShortKey(),
+                    ProductType = ProductTypes.Mobile.ToString(),
+                    BrandId = model.Brand,
+                    BrandProductId = model.BrandProduct
+                };
+
+                var powerBank = new PowerBankDetail()
+                {
+                    Length = model.Length,
+                    Width = model.Width,
+                    Height = model.Height,
+                    Weight = model.Weight,
+                    CapacityRange = model.CapacityRange,
+                    InputVoltage = model.InputVoltage,
+                    OutputVoltage = model.OutputVoltage,
+                    InputCurrentIntensity = model.InputCurrentIntensity,
+                    OutputCurrentIntensity = model.OutputCurrentIntensity,
+                    OutputPortsCount = model.OutputPortsCount,
+                    IsSupportOfQCTechnology = model.IsSupportOfQCTechnology,
+                    IsSupportOfPDTechnology = model.IsSupportOfPDTechnology,
+                    BodyMaterial = model.BodyMaterial,
+                    DisplayCharge = model.DisplayCharge,
+                    Features = model.Features,
+                };
+
+                var result = await _productService.AddPowerBankAsync(product, powerBank);
+
+                if (result == ResultTypes.Successful)
+                {
+                    // add product images
+                    await AddImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, product.ProductId);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+
+                    return View(model);
+                }
+            }
+            else
+            {
+                var product = await _productService.GetProductByIdAsync(model.ProductId);
+
+                if (product?.PowerBankDetailId == null)
+                    return NotFound();
+
+
+                var powerBankDetail = await _productService.GetPowerBankDetailByIdAsync(product.PowerBankDetailId.Value);
+
+                if (powerBankDetail == null)
+                    return NotFound();
+
+
+
+
+                product.ProductTitle = model.ProductTitle;
+                product.Description = model.Description;
+                product.BrandId = model.Brand;
+                product.BrandProductId = model.BrandProduct;
+
+                // update mobile detail
+                powerBankDetail.Length = model.Length;
+                powerBankDetail.Width = model.Width;
+                powerBankDetail.Height = model.Height;
+                powerBankDetail.Weight = model.Weight;
+                powerBankDetail.CapacityRange = model.CapacityRange;
+                powerBankDetail.InputVoltage = model.InputVoltage;
+                powerBankDetail.OutputVoltage = model.OutputVoltage;
+                powerBankDetail.InputCurrentIntensity = model.InputCurrentIntensity;
+                powerBankDetail.OutputCurrentIntensity = model.OutputCurrentIntensity;
+                powerBankDetail.OutputPortsCount = model.OutputPortsCount;
+                powerBankDetail.IsSupportOfQCTechnology = model.IsSupportOfQCTechnology;
+                powerBankDetail.IsSupportOfPDTechnology = model.IsSupportOfPDTechnology;
+                powerBankDetail.BodyMaterial = model.BodyMaterial;
+                powerBankDetail.DisplayCharge = model.DisplayCharge;
+                powerBankDetail.Features = model.Features;
+
+
+
+                var result = await _productService.EditPowerBankAsync(product, powerBankDetail);
+
+                if (result == ResultTypes.Successful)
+                {
+                    // edit product images
+                    EditImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, new List<string>()
+                    {
+                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                        model.SelectedImage5IMG, model.SelectedImage6IMG
+                    });
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+
+                    return View(model);
+                }
             }
         }
 
