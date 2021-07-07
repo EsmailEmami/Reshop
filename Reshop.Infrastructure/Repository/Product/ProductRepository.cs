@@ -3,15 +3,13 @@ using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
+using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Infrastructure.Context;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp;
-using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -71,7 +69,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand.,
+                BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
                 ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
@@ -133,7 +131,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand,
+                BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
                 ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
@@ -189,7 +187,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand,
+                BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
                 ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
@@ -206,12 +204,12 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.CategoryId == categoryId)
                 .Select(c => c.ChildCategory)
                 .SelectMany(c => c.ProductToChildCategories)
-                .Select(c => c.Product.Brand).Distinct();
+                .Select(c => c.Product.Brand.BrandName).Distinct();
 
         public IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId) =>
             _context.ProductToChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.Product.Brand).Distinct();
+                .Select(c => c.Product.Brand.BrandName).Distinct();
 
         public async Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key)
             =>
@@ -262,7 +260,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.Product.ProductTitle,
-                BrandName = c.Product.Brand,
+                BrandName = c.Product.Brand.BrandName,
                 ProductPrice = c.Price,
                 ShopperUserId = c.ShopperUserId
             });
@@ -321,7 +319,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.Product.ProductTitle,
-                BrandName = c.Product.Brand,
+                BrandName = c.Product.Brand.BrandName,
                 ProductPrice = c.Price,
                 ShopperUserId = c.ShopperUserId
             });
@@ -602,7 +600,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.Product.ProductId,
                 ProductTitle = c.Product.ProductTitle,
-                BrandName = c.Product.Brand,
+                BrandName = c.Product.Brand.BrandName,
                 ProductPrice = _context.ShopperProducts.SingleOrDefault(s => s.ShopperUserId == c.ShopperUserId && s.ProductId == c.ProductId).Price,
                 ShopperUserId = c.ShopperUserId
             });
@@ -681,37 +679,88 @@ namespace Reshop.Infrastructure.Repository.Product
         public async Task<int> GetProductGalleriesCountByProductIdAsync(int productId)
             =>
                 await _context.ProductGalleries.Where(c => c.ProductId == productId).CountAsync();
-
+       
         public async Task<bool> IsProductExistAsync(int productId)
         {
             return await _context.Products.AnyAsync(c => c.ProductId == productId);
         }
 
-        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId)
         {
-            return await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+            return await _context.Products
+                .Where(c => c.ProductId == productId)
                 .Select(c => new AddOrEditMobileProductViewModel()
                 {
-                    ProductId = c.Product.ProductId,
-                    ProductTitle = c.Product.ProductTitle,
-                    Description = c.Product.Description,
-                    Price = c.Price,
-                    QuantityInStock = c.QuantityInStock,
-                    BrandProduct = c.Product.BrandProduct,
-                    ProductBrand = c.Product.Brand,
-                    InternalMemory = c.Product.MobileDetail.InternalMemory,
-                    CommunicationNetworks = c.Product.MobileDetail.CommunicationNetworks,
-                    BackCameras = c.Product.MobileDetail.BackCameras,
-                    OperatingSystem = c.Product.MobileDetail.OperatingSystem,
-                    SIMCardDescription = c.Product.MobileDetail.SIMCardDescription,
-                    RAMValue = c.Product.MobileDetail.RAMValue,
-                    PhotoResolution = c.Product.MobileDetail.PhotoResolution,
-                    OperatingSystemVersion = c.Product.MobileDetail.OperatingSystemVersion,
-                    DisplayTechnology = c.Product.MobileDetail.DisplayTechnology,
-                    Features = c.Product.MobileDetail.Features,
-                    Size = c.Product.MobileDetail.Size,
-                    QuantitySIMCard = c.Product.MobileDetail.QuantitySIMCard,
+                    ProductId = c.ProductId,
+                    ProductTitle = c.ProductTitle,
+                    Description = c.Description,
+                    Brand = c.BrandId,
+                    BrandProduct = c.BrandProductId,
+
+                    //img
+                    SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                    SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                    SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                    SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                    SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                    SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                    // detail
+                    Lenght = c.MobileDetail.Lenght,
+                    Width = c.MobileDetail.Width,
+                    Height = c.MobileDetail.Height,
+                    Weight = c.MobileDetail.Weight,
+                    SimCardQuantity = c.MobileDetail.SimCardQuantity,
+                    SimCardInpute = c.MobileDetail.SimCardInpute,
+                    SeparateSlotMemoryCard = c.MobileDetail.SeparateSlotMemoryCard,
+                    Announced = c.MobileDetail.Announced,
+                    ChipsetName = c.MobileDetail.ChipsetName,
+                    Cpu = c.MobileDetail.Cpu,
+                    CpuAndFrequency = c.MobileDetail.CpuAndFrequency,
+                    CpuArch = c.MobileDetail.CpuArch,
+                    Gpu = c.MobileDetail.Gpu,
+                    InternalStorage = c.MobileDetail.InternalStorage,
+                    Ram = c.MobileDetail.Ram,
+                    SdCard = c.MobileDetail.SdCard,
+                    SdCardStandard = c.MobileDetail.SdCardStandard,
+                    ColorDisplay = c.MobileDetail.ColorDisplay,
+                    TouchDisplay = c.MobileDetail.TouchDisplay,
+                    DisplayTechnology = c.MobileDetail.DisplayTechnology,
+                    DisplaySize = c.MobileDetail.DisplaySize,
+                    Resolution = c.MobileDetail.Resolution,
+                    PixelDensity = c.MobileDetail.PixelDensity,
+                    ScreenToBodyRatio = c.MobileDetail.ScreenToBodyRatio,
+                    ImageRatio = c.MobileDetail.ImageRatio,
+                    DisplayProtection = c.MobileDetail.DisplayProtection,
+                    MoreInformation = c.MobileDetail.MoreInformation,
+                    ConnectionsNetwork = c.MobileDetail.ConnectionsNetwork,
+                    GsmNetwork = c.MobileDetail.GsmNetwork,
+                    HspaNetwork = c.MobileDetail.HspaNetwork,
+                    LteNetwork = c.MobileDetail.LteNetwork,
+                    FiveGNetwork = c.MobileDetail.FiveGNetwork,
+                    CommunicationTechnology = c.MobileDetail.CommunicationTechnology,
+                    WiFi = c.MobileDetail.WiFi,
+                    Radio = c.MobileDetail.Radio,
+                    Bluetooth = c.MobileDetail.Bluetooth,
+                    GpsInformation = c.MobileDetail.GpsInformation,
+                    ConnectionPort = c.MobileDetail.ConnectionPort,
+                    CameraQuantity = c.MobileDetail.CameraQuantity,
+                    PhotoResolutation = c.MobileDetail.PhotoResolutation,
+                    SelfiCameraPhoto = c.MobileDetail.SelfiCameraPhoto,
+                    CameraCapabilities = c.MobileDetail.CameraCapabilities,
+                    SelfiCameraCapabilities = c.MobileDetail.SelfiCameraCapabilities,
+                    Filming = c.MobileDetail.Filming,
+                    Speakers = c.MobileDetail.Speakers,
+                    OutputAudio = c.MobileDetail.OutputAudio,
+                    AudioInformation = c.MobileDetail.AudioInformation,
+                    OS = c.MobileDetail.OS,
+                    OsVersion = c.MobileDetail.OsVersion,
+                    UiVersion = c.MobileDetail.UiVersion,
+                    MoreInformationSoftWare = c.MobileDetail.MoreInformationSoftWare,
+                    BatteryMaterial = c.MobileDetail.BatteryMaterial,
+                    BatteryCapacity = c.MobileDetail.BatteryCapacity,
+                    Removable‌Battery = c.MobileDetail.Removable‌Battery,
+                    Sensors = c.MobileDetail.Sensors,
+                    ItemsInBox = c.MobileDetail.ItemsInBox
                 }).SingleOrDefaultAsync();
         }
 

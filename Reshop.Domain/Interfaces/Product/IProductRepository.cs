@@ -64,7 +64,7 @@ namespace Reshop.Domain.Interfaces.Product
         IEnumerable<ProductGallery> GetProductImages(int productId);
 
 
-        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId);
         Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId, string shopperUserId);
         Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId, string shopperUserId);
         Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId, string shopperUserId);

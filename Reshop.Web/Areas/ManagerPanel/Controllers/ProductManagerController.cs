@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
@@ -10,11 +10,11 @@ using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -105,18 +105,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpGet]
         public async Task<IActionResult> AddOrEditMobile(int productId = 0)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (productId == 0)
             {
-                return View(new AddOrEditMobileProductViewModel()
-                {
-                    ShopperUserId = userId,
-                });
+                return View(new AddOrEditMobileProductViewModel());
             }
             else
             {
-                return View(await _productService.GetTypeMobileProductDataAsync(productId, userId));
+                return View(await _productService.GetTypeMobileProductDataAsync(productId));
             }
         }
 
@@ -136,42 +131,82 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
+                    BrandId = model.Brand,
+                    BrandProductId = model.BrandProduct
                 };
 
                 var mobileDetail = new MobileDetail()
                 {
-                    InternalMemory = model.InternalMemory,
-                    CommunicationNetworks = model.CommunicationNetworks,
-                    BackCameras = model.BackCameras,
-                    OperatingSystem = model.OperatingSystem,
-                    SIMCardDescription = model.SIMCardDescription,
-                    RAMValue = model.RAMValue,
-                    PhotoResolution = model.PhotoResolution,
-                    OperatingSystemVersion = model.OperatingSystemVersion,
+                    Lenght = model.Lenght,
+                    Width = model.Width,
+                    Height = model.Height,
+                    Weight = model.Weight,
+                    SimCardQuantity = model.SimCardQuantity,
+                    SimCardInpute = model.SimCardInpute,
+                    SeparateSlotMemoryCard = model.SeparateSlotMemoryCard,
+                    Announced = model.Announced,
+                    ChipsetName = model.ChipsetName,
+                    Cpu = model.Cpu,
+                    CpuAndFrequency = model.CpuAndFrequency,
+                    CpuArch = model.CpuArch,
+                    Gpu = model.Gpu,
+                    InternalStorage = model.InternalStorage,
+                    Ram = model.Ram,
+                    SdCard = model.SdCard,
+                    SdCardStandard = model.SdCardStandard,
+                    ColorDisplay = model.ColorDisplay,
+                    TouchDisplay = model.TouchDisplay,
                     DisplayTechnology = model.DisplayTechnology,
-                    Features = model.Features,
-                    Size = model.Size,
-                    QuantitySIMCard = model.QuantitySIMCard
+                    DisplaySize = model.DisplaySize,
+                    Resolution = model.Resolution,
+                    PixelDensity = model.PixelDensity,
+                    ScreenToBodyRatio = model.ScreenToBodyRatio,
+                    ImageRatio = model.ImageRatio,
+                    DisplayProtection = model.DisplayProtection,
+                    MoreInformation = model.MoreInformation,
+                    ConnectionsNetwork = model.ConnectionsNetwork,
+                    GsmNetwork = model.GsmNetwork,
+                    HspaNetwork = model.HspaNetwork,
+                    LteNetwork = model.LteNetwork,
+                    FiveGNetwork = model.FiveGNetwork,
+                    CommunicationTechnology = model.CommunicationTechnology,
+                    WiFi = model.WiFi,
+                    Radio = model.Radio,
+                    Bluetooth = model.Bluetooth,
+                    GpsInformation = model.GpsInformation,
+                    ConnectionPort = model.ConnectionPort,
+                    CameraQuantity = model.CameraQuantity,
+                    PhotoResolutation = model.PhotoResolutation,
+                    SelfiCameraPhoto = model.SelfiCameraPhoto,
+                    CameraCapabilities = model.CameraCapabilities,
+                    SelfiCameraCapabilities = model.SelfiCameraCapabilities,
+                    Filming = model.Filming,
+                    Speakers = model.Speakers,
+                    OutputAudio = model.OutputAudio,
+                    AudioInformation = model.AudioInformation,
+                    OS = model.OS,
+                    OsVersion = model.OsVersion,
+                    UiVersion = model.UiVersion,
+                    MoreInformationSoftWare = model.MoreInformationSoftWare,
+                    BatteryMaterial = model.BatteryMaterial,
+                    BatteryCapacity = model.BatteryCapacity,
+                    Removable‌Battery = model.Removable‌Battery,
+                    Sensors = model.Sensors,
+                    ItemsInBox = model.ItemsInBox
                 };
 
                 var result = await _productService.AddMobileAsync(product, mobileDetail);
 
                 if (result == ResultTypes.Successful)
                 {
-                    
-                    await AddOrReplaceImg(new List<IFormFile>()
+
+                    await AddImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
-                    },product.ProductId);
-
-                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
-
+                    }, product.ProductId);
 
                     return RedirectToAction(nameof(Index));
-
                 }
                 else
                 {
@@ -195,25 +230,69 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
 
-                // update product
+
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
+                product.BrandId = model.Brand;
+                product.BrandProductId = model.BrandProduct;
 
                 // update mobile detail
-                mobileDetail.InternalMemory = model.InternalMemory;
-                mobileDetail.CommunicationNetworks = model.CommunicationNetworks;
-                mobileDetail.BackCameras = model.BackCameras;
-                mobileDetail.OperatingSystem = model.OperatingSystem;
-                mobileDetail.SIMCardDescription = model.SIMCardDescription;
-                mobileDetail.RAMValue = model.RAMValue;
-                mobileDetail.PhotoResolution = model.PhotoResolution;
-                mobileDetail.OperatingSystemVersion = model.OperatingSystemVersion;
+                mobileDetail.Lenght = model.Lenght;
+                mobileDetail.Width = model.Width;
+                mobileDetail.Height = model.Height;
+                mobileDetail.Weight = model.Weight;
+                mobileDetail.SimCardQuantity = model.SimCardQuantity;
+                mobileDetail.SimCardInpute = model.SimCardInpute;
+                mobileDetail.SeparateSlotMemoryCard = model.SeparateSlotMemoryCard;
+                mobileDetail.Announced = model.Announced;
+                mobileDetail.ChipsetName = model.ChipsetName;
+                mobileDetail.Cpu = model.Cpu;
+                mobileDetail.CpuAndFrequency = model.CpuAndFrequency;
+                mobileDetail.CpuArch = model.CpuArch;
+                mobileDetail.Gpu = model.Gpu;
+                mobileDetail.InternalStorage = model.InternalStorage;
+                mobileDetail.Ram = model.Ram;
+                mobileDetail.SdCard = model.SdCard;
+                mobileDetail.SdCardStandard = model.SdCardStandard;
+                mobileDetail.ColorDisplay = model.ColorDisplay;
+                mobileDetail.TouchDisplay = model.TouchDisplay;
                 mobileDetail.DisplayTechnology = model.DisplayTechnology;
-                mobileDetail.Features = model.Features;
-                mobileDetail.Size = model.Size;
-                mobileDetail.QuantitySIMCard = model.QuantitySIMCard;
+                mobileDetail.DisplaySize = model.DisplaySize;
+                mobileDetail.Resolution = model.Resolution;
+                mobileDetail.PixelDensity = model.PixelDensity;
+                mobileDetail.ScreenToBodyRatio = model.ScreenToBodyRatio;
+                mobileDetail.ImageRatio = model.ImageRatio;
+                mobileDetail.DisplayProtection = model.DisplayProtection;
+                mobileDetail.MoreInformation = model.MoreInformation;
+                mobileDetail.ConnectionsNetwork = model.ConnectionsNetwork;
+                mobileDetail.GsmNetwork = model.GsmNetwork;
+                mobileDetail.HspaNetwork = model.HspaNetwork;
+                mobileDetail.LteNetwork = model.LteNetwork;
+                mobileDetail.FiveGNetwork = model.FiveGNetwork;
+                mobileDetail.CommunicationTechnology = model.CommunicationTechnology;
+                mobileDetail.WiFi = model.WiFi;
+                mobileDetail.Radio = model.Radio;
+                mobileDetail.Bluetooth = model.Bluetooth;
+                mobileDetail.GpsInformation = model.GpsInformation;
+                mobileDetail.ConnectionPort = model.ConnectionPort;
+                mobileDetail.CameraQuantity = model.CameraQuantity;
+                mobileDetail.PhotoResolutation = model.PhotoResolutation;
+                mobileDetail.SelfiCameraPhoto = model.SelfiCameraPhoto;
+                mobileDetail.CameraCapabilities = model.CameraCapabilities;
+                mobileDetail.SelfiCameraCapabilities = model.SelfiCameraCapabilities;
+                mobileDetail.Filming = model.Filming;
+                mobileDetail.Speakers = model.Speakers;
+                mobileDetail.OutputAudio = model.OutputAudio;
+                mobileDetail.AudioInformation = model.AudioInformation;
+                mobileDetail.OS = model.OS;
+                mobileDetail.OsVersion = model.OsVersion;
+                mobileDetail.UiVersion = model.UiVersion;
+                mobileDetail.MoreInformationSoftWare = model.MoreInformationSoftWare;
+                mobileDetail.BatteryMaterial = model.BatteryMaterial;
+                mobileDetail.BatteryCapacity = model.BatteryCapacity;
+                mobileDetail.Removable‌Battery = model.Removable‌Battery;
+                mobileDetail.Sensors = model.Sensors;
+                mobileDetail.ItemsInBox = model.ItemsInBox;
 
 
 
@@ -221,11 +300,21 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
+                    EditImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    },new List<string>()
+                    {
+                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                        model.SelectedImage5IMG, model.SelectedImage6IMG
+                    });
+
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
@@ -300,8 +389,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Laptop.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
+
                 };
 
                 var laptopDetail = new LaptopDetail()
@@ -382,8 +470,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
 
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
+
 
                 // update mobile cover detail
                 laptopDetail.RAMCapacity = model.RAMCapacity;
@@ -471,8 +558,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Tablet.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
                 };
 
                 var tabletDetail = new TabletDetail()
@@ -552,8 +637,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
+
 
                 // update mobile cover detail
                 tabletDetail.InternalMemory = model.InternalMemory;
@@ -631,8 +715,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.MobileCover.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
+
                 };
 
                 var mobileCover = new MobileCoverDetail()
@@ -706,8 +789,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
+
 
                 // update mobile cover detail
                 mobileCoverDetail.SuitablePhones = model.SuitablePhones;
@@ -800,8 +882,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.HeadPhone.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
+
                 };
 
                 var hansAndHeadPhoneDetail = new HandsfreeAndHeadPhoneDetail()
@@ -876,8 +957,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
+
 
                 // update mobile cover detail
                 handsfreeAndHeadPhoneDetail.ConnectionType = model.ConnectionType;
@@ -946,8 +1026,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Handsfree.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
+
                 };
 
                 var hansAndHeadPhoneDetail = new HandsfreeAndHeadPhoneDetail()
@@ -1022,8 +1101,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
 
                 // update mobile cover detail
                 handsfreeAndHeadPhoneDetail.ConnectionType = model.ConnectionType;
@@ -1098,8 +1175,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Speaker.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
+
                 };
 
                 var speakerDetail = new SpeakerDetail()
@@ -1176,8 +1252,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
+
 
                 // update mobile cover detail
                 speakerDetail.ConnectionType = model.ConnectionType;
@@ -1275,8 +1350,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.WristWatch.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
                 };
 
                 var wristWatchDetail = new WristWatchDetail()
@@ -1348,8 +1421,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
 
                 // update mobile cover detail
                 wristWatchDetail.IsSupportGPS = model.IsSupportGPS;
@@ -1419,8 +1490,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.SmartWatch.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
+
                 };
 
                 var smartWatchDetail = new SmartWatchDetail()
@@ -1503,8 +1573,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
+
 
                 // update mobile cover detail
                 smartWatchDetail.IsSuitableForMen = model.IsSuitableForMen;
@@ -1583,8 +1652,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.FlashMemory.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
+
                 };
 
                 var flashMemoryDetail = new FlashMemoryDetail()
@@ -1656,8 +1724,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
+
 
                 // update mobile cover detail
                 flashMemoryDetail.Connector = model.Connector;
@@ -1728,8 +1795,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.FlashMemory.ToString(),
-                    Brand = model.ProductBrand,
-                    BrandProduct = model.BrandProduct,
+
                 };
 
                 var memoryCardDetail = new MemoryCardDetail()
@@ -1802,8 +1868,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.Brand = model.ProductBrand;
-                product.BrandProduct = model.BrandProduct;
+
 
                 // update mobile cover detail
                 memoryCardDetail.Capacity = model.Capacity;
@@ -1848,7 +1913,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return result;
         }
 
-        private async Task AddOrReplaceImg(List<IFormFile> images,int productId)
+        private async Task AddImg(List<IFormFile> images, int productId)
         {
             foreach (var image in images)
             {
@@ -1873,6 +1938,22 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     };
 
                     await _productService.AddProductGalleryAsync(productGallery);
+                }
+            }
+        }
+
+        private void EditImg(List<IFormFile> images, List<string> imagesName)
+        {
+            for (int i = 0; i < images.Count; i++)
+            {
+                if (images[i].Length > 0)
+                {
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        Path.GetFileNameWithoutExtension(imagesName[i]) + Path.GetExtension(images[i].FileName));
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    images[i].CopyTo(stream);
                 }
             }
         }

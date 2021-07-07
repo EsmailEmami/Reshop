@@ -224,7 +224,7 @@ namespace Reshop.Application.Services.Product
 
         public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId, string shopperUserId)
             =>
-                await _productRepository.GetTypeMobileProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeMobileProductDataForEditAsync(productId);
 
         public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId, string shopperUserId)
             =>
