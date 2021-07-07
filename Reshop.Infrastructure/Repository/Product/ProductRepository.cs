@@ -650,7 +650,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     ProductId = c.ProductId,
                     ProductPrice = c.ShopperProducts.First().Price,
                     ProductTitle = c.ProductTitle,
-                    BrandName = c.Brand
+                    BrandName = c.Brand.BrandName
                 }) as IAsyncEnumerable<ProductViewModel>;
         }
 

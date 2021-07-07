@@ -11,10 +11,13 @@ using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Convertors;
+using Reshop.Application.Security;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -29,12 +32,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region constructor
 
         private readonly IProductService _productService;
-        private readonly IShopperService _shopperService;
 
-        public ProductManagerController(IProductService productService, IShopperService shopperService)
+        public ProductManagerController(IProductService productService)
         {
             _productService = productService;
-            _shopperService = shopperService;
         }
 
         #endregion
@@ -121,10 +122,58 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
+            // in this section we check that all images are ok
+            #region images security
+
+            if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+
+            #endregion
+
+
 
 
             if (model.ProductId == 0)
             {
+                // images could not be null
+                if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
+                    model.SelectedImage3 == null || model.SelectedImage4 == null ||
+                    model.SelectedImage5 == null || model.SelectedImage6 == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
+                    return View(model);
+                }
+
+
+
                 var product = new Product()
                 {
                     ProductTitle = model.ProductTitle,
@@ -199,7 +248,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-
+                    // add product images
                     await AddImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
@@ -300,11 +349,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
+                    // edit product images
                     EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
-                    },new List<string>()
+                    }, new List<string>()
                     {
                         model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
                         model.SelectedImage5IMG, model.SelectedImage6IMG
@@ -1898,21 +1948,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #region private methods
 
-        private async Task<ResultTypes> AddProductShopperAsync(string shopperUserId, int productId, decimal price, int quantityInStock)
-        {
-            var shopperProduct = new ShopperProduct()
-            {
-                ShopperUserId = shopperUserId,
-                ProductId = productId,
-                Price = price,
-                QuantityInStock = quantityInStock,
-            };
-
-            var result = await _shopperService.AddShopperProductAsync(shopperProduct);
-
-            return result;
-        }
-
         private async Task AddImg(List<IFormFile> images, int productId)
         {
             foreach (var image in images)
@@ -1925,6 +1960,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         "wwwroot",
                         "images",
                         "ProductImages",
+                        "Original",
                         imgName + Path.GetExtension(image.FileName));
 
 
@@ -1938,6 +1974,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     };
 
                     await _productService.AddProductGalleryAsync(productGallery);
+
+                    // resize img
+                    ImageConvertor imgResizer = new ImageConvertor();
+
+                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "ProductImages",
+                        "thumb",
+                        imgName + Path.GetExtension(image.FileName));
+
+                    imgResizer.Image_resize(filePath, resizePath, 750);
                 }
             }
         }
@@ -1954,6 +2002,19 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         Path.GetFileNameWithoutExtension(imagesName[i]) + Path.GetExtension(images[i].FileName));
                     using var stream = new FileStream(filePath, FileMode.Create);
                     images[i].CopyTo(stream);
+
+
+                    // resize img
+                    ImageConvertor imgResizer = new ImageConvertor();
+
+                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "ProductImages",
+                        "thumb",
+                        Path.GetFileNameWithoutExtension(imagesName[i]) + Path.GetExtension(images[i].FileName));
+
+                    imgResizer.Image_resize(filePath, resizePath, 750);
                 }
             }
         }
