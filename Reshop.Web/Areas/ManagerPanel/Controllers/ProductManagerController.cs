@@ -1,23 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.Product;
-using Reshop.Application.Interfaces.Shopper;
+using Reshop.Application.Security;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
-using Reshop.Domain.Entities.Shopper;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Convertors;
-using Reshop.Application.Security;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -595,34 +592,34 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 laptopDetail.GpuCompany = model.GpuCompany;
                 laptopDetail.GpuModel = model.GpuModel;
                 laptopDetail.GpuRam = model.GpuRam;
-                    laptopDetail.DisplaySize = model.DisplaySize;
-                    laptopDetail.DisplayTeachnology = model.DisplayTeachnology;
-                    laptopDetail.DisplayResolutation = model.DisplayResolutation;
-                    laptopDetail.RefreshDisplay = model.RefreshDisplay;
-                    laptopDetail.BlurDisplay = model.BlurDisplay;
-                    laptopDetail.TouchDisplay = model.TouchDisplay;
-                    laptopDetail.DiskDrive = model.DiskDrive;
-                    laptopDetail.FingerTouch = model.FingerTouch;
-                    laptopDetail.Webcam = model.Webcam;
-                    laptopDetail.BacklightKey = model.BacklightKey;
-                    laptopDetail.TouchPadInformation = model.TouchPadInformation;
-                    laptopDetail.ModemInformation = model.ModemInformation;
-                    laptopDetail.Wifi = model.Wifi;
-                    laptopDetail.Bluetooth = model.Bluetooth;
-                    laptopDetail.VgaPort = model.VgaPort;
-                    laptopDetail.HtmiPort = model.HtmiPort;
-                    laptopDetail.DisplayPort = model.DisplayPort;
-                    laptopDetail.LanPort = model.LanPort;
-                    laptopDetail.UsbCPort = model.UsbCPort;
-                    laptopDetail.Usb3Port = model.Usb3Port;
-                    laptopDetail.UsbCQuantity = model.UsbCQuantity;
-                    laptopDetail.UsbQuantity = model.UsbQuantity;
-                    laptopDetail.Usb3Quantity = model.Usb3Quantity;
-                    laptopDetail.BatteryMaterial = model.BatteryMaterial;
-                    laptopDetail.BatteryCharging = model.BatteryCharging;
-                    laptopDetail.BatteryInformation = model.BatteryInformation;
-                    laptopDetail.Os = model.Os;
-                    laptopDetail.Classification = model.Classification;
+                laptopDetail.DisplaySize = model.DisplaySize;
+                laptopDetail.DisplayTeachnology = model.DisplayTeachnology;
+                laptopDetail.DisplayResolutation = model.DisplayResolutation;
+                laptopDetail.RefreshDisplay = model.RefreshDisplay;
+                laptopDetail.BlurDisplay = model.BlurDisplay;
+                laptopDetail.TouchDisplay = model.TouchDisplay;
+                laptopDetail.DiskDrive = model.DiskDrive;
+                laptopDetail.FingerTouch = model.FingerTouch;
+                laptopDetail.Webcam = model.Webcam;
+                laptopDetail.BacklightKey = model.BacklightKey;
+                laptopDetail.TouchPadInformation = model.TouchPadInformation;
+                laptopDetail.ModemInformation = model.ModemInformation;
+                laptopDetail.Wifi = model.Wifi;
+                laptopDetail.Bluetooth = model.Bluetooth;
+                laptopDetail.VgaPort = model.VgaPort;
+                laptopDetail.HtmiPort = model.HtmiPort;
+                laptopDetail.DisplayPort = model.DisplayPort;
+                laptopDetail.LanPort = model.LanPort;
+                laptopDetail.UsbCPort = model.UsbCPort;
+                laptopDetail.Usb3Port = model.Usb3Port;
+                laptopDetail.UsbCQuantity = model.UsbCQuantity;
+                laptopDetail.UsbQuantity = model.UsbQuantity;
+                laptopDetail.Usb3Quantity = model.Usb3Quantity;
+                laptopDetail.BatteryMaterial = model.BatteryMaterial;
+                laptopDetail.BatteryCharging = model.BatteryCharging;
+                laptopDetail.BatteryInformation = model.BatteryInformation;
+                laptopDetail.Os = model.Os;
+                laptopDetail.Classification = model.Classification;
 
 
                 var result = await _productService.EditLaptopAsync(product, laptopDetail);
@@ -676,7 +673,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeTabletProductDataAsync(productId, "");
+                var product = await _productService.GetTypeTabletProductDataAsync(productId);
                 if (product == null)
                     return NotFound();
 
@@ -691,14 +688,44 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var userFirstName = User.FindFirstValue(ClaimTypes.Actor);
+            // in this section we check that all images are ok
+            #region images security
 
-            if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
+            if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
             {
-                ModelState.AddModelError("", $"{userFirstName} عزیز تعداد تصاویر انتخابی برای محصول بیش از حد مجاز است.");
-
+                ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
                 return View(model);
             }
+            else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+
+            #endregion
+
+
+
 
             if (model.ProductId == 0)
             {
@@ -707,22 +734,71 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    ProductType = ProductTypes.Tablet.ToString(),
+                    ProductType = ProductTypes.Mobile.ToString(),
+                    BrandId = model.Brand,
+                    BrandProductId = model.BrandProduct
                 };
 
                 var tabletDetail = new TabletDetail()
                 {
-                    InternalMemory = model.InternalMemory,
-                    RAMValue = model.RAMValue,
-                    IsTalkAbility = model.IsTalkAbility,
-                    Size = model.Size,
-                    CommunicationNetworks = model.CommunicationNetworks,
-                    Features = model.Features,
-                    IsSIMCardSupporter = model.IsSIMCardSupporter,
-                    QuantitySIMCard = model.QuantitySIMCard,
-                    OperatingSystemVersion = model.OperatingSystemVersion,
-                    CommunicationTechnologies = model.CommunicationTechnologies,
-                    CommunicationPorts = model.CommunicationPorts
+                    Lenght = model.Lenght,
+                    Width = model.Width,
+                    Height = model.Height,
+                    Weight = model.Weight,
+                    SimCardIsTrue = model.SimCardIsTrue,
+                    Call = model.Call,
+                    SimCardQuantity = model.SimCardQuantity,
+                    SimCardInpute = model.SimCardInpute,
+                    SeparateSlotMemoryCard = model.SeparateSlotMemoryCard,
+                    Announced = model.Announced,
+                    ChipsetName = model.ChipsetName,
+                    Cpu = model.Cpu,
+                    CpuAndFrequency = model.CpuAndFrequency,
+                    CpuArch = model.CpuArch,
+                    Gpu = model.Gpu,
+                    InternalStorage = model.InternalStorage,
+                    Ram = model.Ram,
+                    SdCard = model.SdCard,
+                    SdCardStandard = model.SdCardStandard,
+                    ColorDisplay = model.ColorDisplay,
+                    TouchDisplay = model.TouchDisplay,
+                    DisplayTechnology = model.DisplayTechnology,
+                    DisplaySize = model.DisplaySize,
+                    Resolution = model.Resolution,
+                    PixelDensity = model.PixelDensity,
+                    ScreenToBodyRatio = model.ScreenToBodyRatio,
+                    ImageRatio = model.ImageRatio,
+                    DisplayProtection = model.DisplayProtection,
+                    MoreInformation = model.MoreInformation,
+                    ConnectionsNetwork = model.ConnectionsNetwork,
+                    GsmNetwork = model.GsmNetwork,
+                    HspaNetwork = model.HspaNetwork,
+                    LteNetwork = model.LteNetwork,
+                    FiveGNetwork = model.FiveGNetwork,
+                    CommunicationTechnology = model.CommunicationTechnology,
+                    WiFi = model.WiFi,
+                    Radio = model.Radio,
+                    Bluetooth = model.Bluetooth,
+                    GpsInformation = model.GpsInformation,
+                    ConnectionPort = model.ConnectionPort,
+                    CameraQuantity = model.CameraQuantity,
+                    PhotoResolutation = model.PhotoResolutation,
+                    SelfiCameraPhoto = model.SelfiCameraPhoto,
+                    CameraCapabilities = model.CameraCapabilities,
+                    SelfiCameraCapabilities = model.SelfiCameraCapabilities,
+                    Filming = model.Filming,
+                    Speakers = model.Speakers,
+                    OutputAudio = model.OutputAudio,
+                    AudioInformation = model.AudioInformation,
+                    OS = model.OS,
+                    OsVersion = model.OsVersion,
+                    UiVersion = model.UiVersion,
+                    MoreInformationSoftWare = model.MoreInformationSoftWare,
+                    BatteryMaterial = model.BatteryMaterial,
+                    BatteryCapacity = model.BatteryCapacity,
+                    Removable‌Battery = model.Removable‌Battery,
+                    Sensors = model.Sensors,
+                    ItemsInBox = model.ItemsInBox,
                 };
 
 
@@ -730,41 +806,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    if (model.SelectedImages is not null)
+                    // add product images
+                    await AddImg(new List<IFormFile>()
                     {
-                        foreach (var image in model.SelectedImages)
-                        {
-                            if (image.Length > 0)
-                            {
-                                var imgName = NameGenerator.GenerateUniqCodeWithDash();
-
-                                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    "images",
-                                    imgName + Path.GetExtension(image.FileName));
-
-
-                                await using var stream = new FileStream(filePath, FileMode.Create);
-                                await image.CopyToAsync(stream);
-
-                                var productGallery = new ProductGallery()
-                                {
-                                    ProductId = product.ProductId,
-                                    ImageName = imgName + Path.GetExtension(image.FileName)
-                                };
-
-                                await _productService.AddProductGalleryAsync(productGallery);
-                            }
-                        }
-                    }
-
-                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, product.ProductId);
 
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است. لطفا دوباره تلاش کنید!");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
@@ -787,20 +840,69 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
+                product.BrandId = model.Brand;
+                product.BrandProductId = model.BrandProduct;
 
 
                 // update mobile cover detail
-                tabletDetail.InternalMemory = model.InternalMemory;
-                tabletDetail.RAMValue = model.RAMValue;
-                tabletDetail.IsTalkAbility = model.IsTalkAbility;
-                tabletDetail.Size = model.Size;
-                tabletDetail.CommunicationNetworks = model.CommunicationNetworks;
-                tabletDetail.Features = model.Features;
-                tabletDetail.IsSIMCardSupporter = model.IsSIMCardSupporter;
-                tabletDetail.QuantitySIMCard = model.QuantitySIMCard;
-                tabletDetail.OperatingSystemVersion = model.OperatingSystemVersion;
-                tabletDetail.CommunicationTechnologies = model.CommunicationTechnologies;
-                tabletDetail.CommunicationPorts = model.CommunicationPorts;
+                tabletDetail.Lenght = model.Lenght;
+                tabletDetail.Width = model.Width;
+                tabletDetail.Height = model.Height;
+                tabletDetail.Weight = model.Weight;
+                tabletDetail.SimCardIsTrue = model.SimCardIsTrue;
+                tabletDetail.Call = model.Call;
+                tabletDetail.SimCardQuantity = model.SimCardQuantity;
+                tabletDetail.SimCardInpute = model.SimCardInpute;
+                tabletDetail.SeparateSlotMemoryCard = model.SeparateSlotMemoryCard;
+                tabletDetail.Announced = model.Announced;
+                tabletDetail.ChipsetName = model.ChipsetName;
+                tabletDetail.Cpu = model.Cpu;
+                tabletDetail.CpuAndFrequency = model.CpuAndFrequency;
+                tabletDetail.CpuArch = model.CpuArch;
+                tabletDetail.Gpu = model.Gpu;
+                tabletDetail.InternalStorage = model.InternalStorage;
+                tabletDetail.Ram = model.Ram;
+                tabletDetail.SdCard = model.SdCard;
+                tabletDetail.SdCardStandard = model.SdCardStandard;
+                tabletDetail.ColorDisplay = model.ColorDisplay;
+                tabletDetail.TouchDisplay = model.TouchDisplay;
+                tabletDetail.DisplayTechnology = model.DisplayTechnology;
+                tabletDetail.DisplaySize = model.DisplaySize;
+                tabletDetail.Resolution = model.Resolution;
+                tabletDetail.PixelDensity = model.PixelDensity;
+                tabletDetail.ScreenToBodyRatio = model.ScreenToBodyRatio;
+                tabletDetail.ImageRatio = model.ImageRatio;
+                tabletDetail.DisplayProtection = model.DisplayProtection;
+                tabletDetail.MoreInformation = model.MoreInformation;
+                tabletDetail.ConnectionsNetwork = model.ConnectionsNetwork;
+                tabletDetail.GsmNetwork = model.GsmNetwork;
+                tabletDetail.HspaNetwork = model.HspaNetwork;
+                tabletDetail.LteNetwork = model.LteNetwork;
+                tabletDetail.FiveGNetwork = model.FiveGNetwork;
+                tabletDetail.CommunicationTechnology = model.CommunicationTechnology;
+                tabletDetail.WiFi = model.WiFi;
+                tabletDetail.Radio = model.Radio;
+                tabletDetail.Bluetooth = model.Bluetooth;
+                tabletDetail.GpsInformation = model.GpsInformation;
+                tabletDetail.ConnectionPort = model.ConnectionPort;
+                tabletDetail.CameraQuantity = model.CameraQuantity;
+                tabletDetail.PhotoResolutation = model.PhotoResolutation;
+                tabletDetail.SelfiCameraPhoto = model.SelfiCameraPhoto;
+                tabletDetail.CameraCapabilities = model.CameraCapabilities;
+                tabletDetail.SelfiCameraCapabilities = model.SelfiCameraCapabilities;
+                tabletDetail.Filming = model.Filming;
+                tabletDetail.Speakers = model.Speakers;
+                tabletDetail.OutputAudio = model.OutputAudio;
+                tabletDetail.AudioInformation = model.AudioInformation;
+                tabletDetail.OS = model.OS;
+                tabletDetail.OsVersion = model.OsVersion;
+                tabletDetail.UiVersion = model.UiVersion;
+                tabletDetail.MoreInformationSoftWare = model.MoreInformationSoftWare;
+                tabletDetail.BatteryMaterial = model.BatteryMaterial;
+                tabletDetail.BatteryCapacity = model.BatteryCapacity;
+                tabletDetail.Removable‌Battery = model.Removable‌Battery;
+                tabletDetail.Sensors = model.Sensors;
+                tabletDetail.ItemsInBox = model.ItemsInBox;
 
 
 
@@ -808,15 +910,25 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
+                    // edit product images
+                    EditImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, new List<string>()
+                    {
+                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                        model.SelectedImage5IMG, model.SelectedImage6IMG
+                    });
+
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است. لطفا دوباره تلاش کنید!");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
-
             }
         }
 

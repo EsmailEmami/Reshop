@@ -887,29 +887,83 @@ namespace Reshop.Infrastructure.Repository.Product
                         Features = c.Product.HandsfreeAndHeadPhoneDetail.Features
                     }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditTabletViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        InternalMemory = c.Product.TabletDetail.InternalMemory,
-                        RAMValue = c.Product.TabletDetail.RAMValue,
-                        IsTalkAbility = c.Product.TabletDetail.IsTalkAbility,
-                        Size = c.Product.TabletDetail.Size,
-                        CommunicationNetworks = c.Product.TabletDetail.CommunicationNetworks,
-                        Features = c.Product.TabletDetail.Features,
-                        IsSIMCardSupporter = c.Product.TabletDetail.IsSIMCardSupporter,
-                        QuantitySIMCard = c.Product.TabletDetail.QuantitySIMCard,
-                        OperatingSystemVersion = c.Product.TabletDetail.OperatingSystemVersion,
-                        CommunicationTechnologies = c.Product.TabletDetail.CommunicationTechnologies,
-                        CommunicationPorts = c.Product.TabletDetail.CommunicationPorts
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Lenght = c.TabletDetail.Lenght,
+                        Width = c.TabletDetail.Width,
+                        Height = c.TabletDetail.Height,
+                        Weight = c.TabletDetail.Weight,
+                        SimCardIsTrue = c.TabletDetail.SimCardIsTrue,
+                        Call = c.TabletDetail.Call,
+                        SimCardQuantity = c.TabletDetail.SimCardQuantity,
+                        SimCardInpute = c.TabletDetail.SimCardInpute,
+                        SeparateSlotMemoryCard = c.TabletDetail.SeparateSlotMemoryCard,
+                        Announced = c.TabletDetail.Announced,
+                        ChipsetName = c.TabletDetail.ChipsetName,
+                        Cpu = c.TabletDetail.Cpu,
+                        CpuAndFrequency = c.TabletDetail.CpuAndFrequency,
+                        CpuArch = c.TabletDetail.CpuArch,
+                        Gpu = c.TabletDetail.Gpu,
+                        InternalStorage = c.TabletDetail.InternalStorage,
+                        Ram = c.TabletDetail.Ram,
+                        SdCard = c.TabletDetail.SdCard,
+                        SdCardStandard = c.TabletDetail.SdCardStandard,
+                        ColorDisplay = c.TabletDetail.ColorDisplay,
+                        TouchDisplay = c.TabletDetail.TouchDisplay,
+                        DisplayTechnology = c.TabletDetail.DisplayTechnology,
+                        DisplaySize = c.TabletDetail.DisplaySize,
+                        Resolution = c.TabletDetail.Resolution,
+                        PixelDensity = c.TabletDetail.PixelDensity,
+                        ScreenToBodyRatio = c.TabletDetail.ScreenToBodyRatio,
+                        ImageRatio = c.TabletDetail.ImageRatio,
+                        DisplayProtection = c.TabletDetail.DisplayProtection,
+                        MoreInformation = c.TabletDetail.MoreInformation,
+                        ConnectionsNetwork = c.TabletDetail.ConnectionsNetwork,
+                        GsmNetwork = c.TabletDetail.GsmNetwork,
+                        HspaNetwork = c.TabletDetail.HspaNetwork,
+                        LteNetwork = c.TabletDetail.LteNetwork,
+                        FiveGNetwork = c.TabletDetail.FiveGNetwork,
+                        CommunicationTechnology = c.TabletDetail.CommunicationTechnology,
+                        WiFi = c.TabletDetail.WiFi,
+                        Radio = c.TabletDetail.Radio,
+                        Bluetooth = c.TabletDetail.Bluetooth,
+                        GpsInformation = c.TabletDetail.GpsInformation,
+                        ConnectionPort = c.TabletDetail.ConnectionPort,
+                        CameraQuantity = c.TabletDetail.CameraQuantity,
+                        PhotoResolutation = c.TabletDetail.PhotoResolutation,
+                        SelfiCameraPhoto = c.TabletDetail.SelfiCameraPhoto,
+                        CameraCapabilities = c.TabletDetail.CameraCapabilities,
+                        SelfiCameraCapabilities = c.TabletDetail.SelfiCameraCapabilities,
+                        Filming = c.TabletDetail.Filming,
+                        Speakers = c.TabletDetail.Speakers,
+                        OutputAudio = c.TabletDetail.OutputAudio,
+                        AudioInformation = c.TabletDetail.AudioInformation,
+                        OS = c.TabletDetail.OS,
+                        OsVersion = c.TabletDetail.OsVersion,
+                        UiVersion = c.TabletDetail.UiVersion,
+                        MoreInformationSoftWare = c.TabletDetail.MoreInformationSoftWare,
+                        BatteryMaterial = c.TabletDetail.BatteryMaterial,
+                        BatteryCapacity = c.TabletDetail.BatteryCapacity,
+                        Removable‌Battery = c.TabletDetail.Removable‌Battery,
+                        Sensors = c.TabletDetail.Sensors,
+                        ItemsInBox = c.TabletDetail.ItemsInBox,
                     }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId, string shopperUserId) =>
@@ -917,21 +971,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEditSpeakerViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        ConnectionType = c.Product.SpeakerDetail.ConnectionType,
-                        Connector = c.Product.SpeakerDetail.Connector,
-                        BluetoothVersion = c.Product.SpeakerDetail.BluetoothVersion,
-                        IsMemoryCardInput = c.Product.SpeakerDetail.IsMemoryCardInput,
-                        IsSupportBattery = c.Product.SpeakerDetail.IsSupportBattery,
-                        IsSupportMicrophone = c.Product.SpeakerDetail.IsSupportMicrophone,
-                        IsSupportUSBPort = c.Product.SpeakerDetail.IsSupportUSBPort,
-                        IsSupportRadio = c.Product.SpeakerDetail.IsSupportRadio
+
                     }).SingleOrDefaultAsync();
 
         public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId, string shopperUserId) =>
@@ -1141,5 +1181,7 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             _context.LaptopDetails.RemoveRange(laptopDetails);
         }
+
+
     }
 }
