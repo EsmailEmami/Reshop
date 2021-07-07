@@ -91,6 +91,5 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
 
 
-
     }
 }

@@ -36,6 +36,5 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Features { get; set; }
 
-        // سایر توضیحات
     }
 }
