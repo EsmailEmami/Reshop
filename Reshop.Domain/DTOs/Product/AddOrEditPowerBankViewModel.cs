@@ -35,7 +35,7 @@ namespace Reshop.Domain.DTOs.Product
 
         // --------------------------------------------------------------------------- ITEMS
 
-        Display(Name = "طول")]
+        [Display(Name = "طول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Length { get; set; }

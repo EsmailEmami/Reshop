@@ -890,22 +890,43 @@ namespace Reshop.Infrastructure.Repository.Product
                 Features = c.Product.MobileCoverDetail.Features
             }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditFlashMemoryViewModel()
                     {
                         ProductId = c.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        Connector = c.Product.FlashMemoryDetail.Connector,
-                        Capacity = c.Product.FlashMemoryDetail.Capacity,
-                        IsImpactResistance = c.Product.FlashMemoryDetail.IsImpactResistance
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Length = c.FlashMemoryDetail.Length,
+                        Width = c.FlashMemoryDetail.Width,
+                        Height = c.FlashMemoryDetail.Height,
+                        BodyMaterial = c.FlashMemoryDetail.BodyMaterial,
+                        Connector = c.FlashMemoryDetail.Connector,
+                        Capacity = c.FlashMemoryDetail.Capacity,
+                        Led = c.FlashMemoryDetail.Led,
+                        IsImpactResistance = c.FlashMemoryDetail.IsImpactResistance,
+                        WaterResistance = c.FlashMemoryDetail.WaterResistance,
+                        ShockResistance = c.FlashMemoryDetail.ShockResistance,
+                        DustResistance = c.FlashMemoryDetail.DustResistance,
+                        AntiScratch = c.FlashMemoryDetail.AntiScratch,
+                        AntiStain = c.FlashMemoryDetail.AntiStain,
+                        SpeedDataTransfer = c.FlashMemoryDetail.SpeedDataTransfer,
+                        SpeedDataReading = c.FlashMemoryDetail.SpeedDataReading,
+                        OsCompatibility = c.FlashMemoryDetail.OsCompatibility,
+                        MoreInformation = c.FlashMemoryDetail.MoreInformation,
+                    }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperUserId) =>
             await _context.ShopperProducts
