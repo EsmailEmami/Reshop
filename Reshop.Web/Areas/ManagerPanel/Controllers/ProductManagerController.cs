@@ -1457,15 +1457,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var userFirstName = User.FindFirstValue(ClaimTypes.Actor);
-
-            if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
-            {
-                ModelState.AddModelError("", $"{userFirstName} عزیز تعداد تصاویر انتخابی برای محصول بیش از حد مجاز است.");
-
-                return View(model);
-            }
-
+            
             if (model.ProductId == 0)
             {
                 var product = new Product()
@@ -1479,14 +1471,27 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 var speakerDetail = new SpeakerDetail()
                 {
+                    Lenght = model.Lenght,
+                    Width = model.Width,
+                    Height = model.Height,
                     ConnectionType = model.ConnectionType,
                     Connector = model.Connector,
-                    BluetoothVersion = model.BluetoothVersion,
                     IsMemoryCardInput = model.IsMemoryCardInput,
-                    IsSupportBattery = model.IsSupportBattery,
-                    IsSupportMicrophone = model.IsSupportMicrophone,
                     IsSupportUSBPort = model.IsSupportUSBPort,
+                    HeadphoneOutput = model.HeadphoneOutput,
+                    InputSound = model.InputSound,
+                    MicrophoneInpute = model.MicrophoneInpute,
+                    IsSupportMicrophone = model.IsSupportMicrophone,
+                    Display = model.Display,
+                    ControlRemote = model.ControlRemote,
                     IsSupportRadio = model.IsSupportRadio,
+                    Bluetooth = model.Bluetooth,
+                    ConnectTwoDevice = model.ConnectTwoDevice,
+                    SpeakerItemQuantity = model.SpeakerItemQuantity,
+                    IsBattery = model.IsBattery,
+                    PlayingTime = model.PlayingTime,
+                    ChargingTime = model.ChargingTime,
+                    OsSoppurt = model.OsSoppurt,
                 };
 
 
@@ -1554,14 +1559,27 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
                 // update mobile cover detail
+                speakerDetail. Lenght = model.Lenght;
+                speakerDetail.Width = model.Width;
+                speakerDetail.Height = model.Height;
                 speakerDetail.ConnectionType = model.ConnectionType;
                 speakerDetail.Connector = model.Connector;
-                speakerDetail.BluetoothVersion = model.BluetoothVersion;
                 speakerDetail.IsMemoryCardInput = model.IsMemoryCardInput;
-                speakerDetail.IsSupportBattery = model.IsSupportBattery;
-                speakerDetail.IsSupportMicrophone = model.IsSupportMicrophone;
                 speakerDetail.IsSupportUSBPort = model.IsSupportUSBPort;
-                speakerDetail.IsSupportRadio = model.IsSupportRadio;
+                speakerDetail.HeadphoneOutput = model.HeadphoneOutput;
+                InputSound = model.InputSound;
+                MicrophoneInpute = model.MicrophoneInpute;
+                IsSupportMicrophone = model.IsSupportMicrophone;
+                Display = model.Display;
+                ControlRemote = model.ControlRemote;
+                IsSupportRadio = model.IsSupportRadio;
+                Bluetooth = model.Bluetooth;
+                ConnectTwoDevice = model.ConnectTwoDevice;
+                SpeakerItemQuantity = model.SpeakerItemQuantity;
+                IsBattery = model.IsBattery;
+                PlayingTime = model.PlayingTime;
+                ChargingTime = model.ChargingTime;
+                OsSoppurt = model.OsSoppurt;
 
 
 

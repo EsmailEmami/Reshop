@@ -10,8 +10,7 @@ namespace Reshop.Domain.DTOs.Product
 {
     public class AddOrEditSpeakerViewModel
     {
-        [Required]
-        public string ShopperUserId { get; set; }
+        // product 
 
         public int ProductId { get; set; }
 
@@ -24,26 +23,33 @@ namespace Reshop.Domain.DTOs.Product
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public string Description { get; set; }
 
-        [Display(Name = "قیمت محصول")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [Range(1000, 1000000000, ErrorMessage = "{0} نمی تواند کمتر از {1} تومان و بیشتر از {2} تومان باشد")]
-        [RegularExpression("([0-9]+)", ErrorMessage = "لطفا عدد وارد کنید")]
-        public decimal Price { get; set; }
-
-        [Display(Name = "تعداد موجودی")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [RegularExpression("([0-9]+)", ErrorMessage = "لطفا عدد وارد کنید")]
-        public int QuantityInStock { get; set; }
-
         [Display(Name = "برند محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string ProductBrand { get; set; }
+        public int Brand { get; set; }
 
         [Display(Name = "نام محصول برند")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string BrandProduct { get; set; }
+        public int BrandProduct { get; set; }
+
+
+
+        // --------------------------------------------------------------------------- ITEMS
+
+        //General Information
+        [Display(Name = "طول")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string Lenght { get; set; }
+
+        [Display(Name = "عرض")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string Width { get; set; }
+
+        [Display(Name = "ارتفاع")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string Height { get; set; }
 
         [Display(Name = "نوع اتصال")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -55,29 +61,117 @@ namespace Reshop.Domain.DTOs.Product
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Connector { get; set; }
 
-        [Display(Name = "نسخه بلوتوٍث")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public double BluetoothVersion { get; set; }
-
         [Display(Name = "ورودی کارت حافظه")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsMemoryCardInput { get; set; }
-
-        [Display(Name = "باتری")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public bool IsSupportBattery { get; set; }
 
         [Display(Name = "پورت USB")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsSupportUSBPort { get; set; }
 
+        [Display(Name = "خروجی هدفون")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool HeadphoneOutput { get; set; }
+
+        [Display(Name = "ورودی صدا ")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool InputSound { get; set; }
+
+        [Display(Name = "ورودی میکروفن")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool MicrophoneInpute { get; set; }
+
         [Display(Name = "میکروفون")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsSupportMicrophone { get; set; }
 
+        [Display(Name = "صفحه نمایش")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool Display { get; set; }
+
+        [Display(Name = "ریموت کنترل")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool ControlRemote { get; set; }
+
         [Display(Name = "رادیو")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsSupportRadio { get; set; }
-        public IEnumerable<IFormFile> SelectedImages { get; set; }
+
+        [Display(Name = " بلوتوٍث")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool Bluetooth { get; set; }
+
+        [Display(Name = "قابلیت اتصال به دو دستگاه به صورت همزمان")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool ConnectTwoDevice { get; set; }
+
+        //Speaker Information
+        [Display(Name = "تعداد اجزای اسپیکر")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(2, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public int SpeakerItemQuantity { get; set; }
+
+        [Display(Name = "باتری")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool IsBattery { get; set; }
+
+        [Display(Name = "مدت زمان پخش")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string PlayingTime { get; set; }
+
+        [Display(Name = "مدت زمان شارژ")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string ChargingTime { get; set; }
+
+        //More Information
+
+        [Display(Name = " سیستم عامل های قابل پشتیبانی")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string OsSoppurt { get; set; }
+
+
+        // ---------------------------------------------------------------------------IMG
+
+        [Display(Name = "عکس شماره 1")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public IFormFile SelectedImage1 { get; set; }
+
+        [Display(Name = "عکس شماره 2")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public IFormFile SelectedImage2 { get; set; }
+
+        [Display(Name = "عکس شماره 3")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public IFormFile SelectedImage3 { get; set; }
+
+        [Display(Name = "عکس شماره 4")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public IFormFile SelectedImage4 { get; set; }
+
+        [Display(Name = "عکس شماره 5")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public IFormFile SelectedImage5 { get; set; }
+
+        [Display(Name = "عکس شماره 6")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public IFormFile SelectedImage6 { get; set; }
+
+
+        // for show on edit
+
+        public string SelectedImage1IMG { get; set; }
+
+        public string SelectedImage2IMG { get; set; }
+
+        public string SelectedImage3IMG { get; set; }
+
+        public string SelectedImage4IMG { get; set; }
+
+        public string SelectedImage5IMG { get; set; }
+
+        public string SelectedImage6IMG { get; set; }
     }
 }

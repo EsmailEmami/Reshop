@@ -1034,12 +1034,46 @@ namespace Reshop.Infrastructure.Repository.Product
                         ItemsInBox = c.TabletDetail.ItemsInBox,
                     }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditSpeakerViewModel()
                     {
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
 
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Lenght = c.SpeakerDetail.Lenght,
+                        Width = c.SpeakerDetail.Width,
+                        Height = c.SpeakerDetail.Height,
+                        ConnectionType = c.SpeakerDetail.ConnectionType,
+                        Connector = c.SpeakerDetail.Connector,
+                        IsMemoryCardInput = c.SpeakerDetail.IsMemoryCardInput,
+                        IsSupportUSBPort = c.SpeakerDetail.IsSupportUSBPort,
+                        HeadphoneOutput = c.SpeakerDetail.HeadphoneOutput,
+                        InputSound = c.SpeakerDetail.InputSound,
+                        MicrophoneInpute = c.SpeakerDetail.MicrophoneInpute,
+                        IsSupportMicrophone = c.SpeakerDetail.IsSupportMicrophone,
+                        Display = c.SpeakerDetail.Display,
+                        ControlRemote = c.SpeakerDetail.ControlRemote,
+                        IsSupportRadio = c.SpeakerDetail.IsSupportRadio,
+                        Bluetooth = c.SpeakerDetail.Bluetooth,
+                        ConnectTwoDevice = c.SpeakerDetail.ConnectTwoDevice,
+                        SpeakerItemQuantity = c.SpeakerDetail.SpeakerItemQuantity,
+                        IsBattery = c.SpeakerDetail.IsBattery,
+                        PlayingTime = c.SpeakerDetail.PlayingTime,
+                        ChargingTime = c.SpeakerDetail.ChargingTime,
+                        OsSoppurt = c.SpeakerDetail.OsSoppurt,
                     }).SingleOrDefaultAsync();
 
         public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId, string shopperUserId) =>
