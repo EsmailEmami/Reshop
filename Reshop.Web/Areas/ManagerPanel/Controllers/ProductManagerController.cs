@@ -1227,7 +1227,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         }
                     }
 
-                    
+
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -1584,7 +1584,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
                 // update mobile cover detail
-                speakerDetail. Lenght = model.Lenght;
+                speakerDetail.Lenght = model.Lenght;
                 speakerDetail.Width = model.Width;
                 speakerDetail.Height = model.Height;
                 speakerDetail.ConnectionType = model.ConnectionType;
@@ -1919,7 +1919,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 var wristWatchDetail = new WristWatchDetail()
                 {
-                    
+
                 };
 
 
@@ -1966,7 +1966,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
                 // update mobile cover detail
-                
+
 
 
 
@@ -2163,7 +2163,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
                 // update mobile cover detail
-                smartWatchDetail. Lenght = model.Lenght;
+                smartWatchDetail.Lenght = model.Lenght;
                 smartWatchDetail.Width = model.Width;
                 smartWatchDetail.Height = model.Height;
                 smartWatchDetail.Weight = model.Weight;
@@ -2567,7 +2567,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
                 // update mobile cover detail
-                memoryCardDetail. Length = model.Length;
+                memoryCardDetail.Length = model.Length;
                 memoryCardDetail.Width = model.Width;
                 memoryCardDetail.Height = model.Height;
                 memoryCardDetail.Capacity = model.Capacity;
@@ -2692,8 +2692,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 var auxDetail = new AUXDetail()
                 {
-                  CableMaterial = model.CableMaterial,
-                  CableLenght = model.CableLenght
+                    CableMaterial = model.CableMaterial,
+                    CableLenght = model.CableLenght
                 };
 
 
