@@ -527,6 +527,10 @@ namespace Reshop.Infrastructure.Repository.Product
             =>
                 await _context.MemoryCardDetails.FindAsync(memoryCardDetailId);
 
+        public async Task<AUXDetail> GetAUXByIdAsync(int auxId)
+            =>
+                await _context.AuxDetails.FindAsync(auxId);
+
         public async Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeOrHeadPhoneDetailId)
             =>
                 await _context.HandsfreeAndHeadPhoneDetails.FindAsync(handsfreeOrHeadPhoneDetailId);
@@ -1093,32 +1097,58 @@ namespace Reshop.Infrastructure.Repository.Product
                         WatchForm = c.Product.WristWatchDetail.WatchForm
                     }).SingleOrDefaultAsync(c => c.ProductId == productId);
 
-        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditSmartWatchViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        IsSuitableForMen = c.Product.SmartWatchDetail.IsSuitableForMen,
-                        IsSuitableForWomen = c.Product.SmartWatchDetail.IsSuitableForWomen,
-                        IsScreenColorful = c.Product.SmartWatchDetail.IsScreenColorful,
-                        IsSIMCardSupporter = c.Product.SmartWatchDetail.IsSIMCardSupporter,
-                        IsTouchScreen = c.Product.SmartWatchDetail.IsTouchScreen,
-                        IsSupportSIMCardRegister = c.Product.SmartWatchDetail.IsSupportSIMCardRegister,
-                        WorkSuggestion = c.Product.SmartWatchDetail.WorkSuggestion,
-                        IsSupportGPS = c.Product.SmartWatchDetail.IsSupportGPS,
-                        WatchForm = c.Product.SmartWatchDetail.WatchForm,
-                        BodyMaterial = c.Product.SmartWatchDetail.BodyMaterial,
-                        Connections = c.Product.SmartWatchDetail.Connections,
-                        Sensors = c.Product.SmartWatchDetail.Sensors,
-                        IsDirectTalkable = c.Product.SmartWatchDetail.IsDirectTalkable,
-                        IsTalkableWithBluetooth = c.Product.SmartWatchDetail.IsTalkableWithBluetooth
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Lenght = c.SmartWatchDetail.Lenght,
+                        Width = c.SmartWatchDetail.Width,
+                        Height = c.SmartWatchDetail.Height,
+                        Weight = c.SmartWatchDetail.Weight,
+                        SuitableFor = c.SmartWatchDetail.SuitableFor,
+                        Application = c.SmartWatchDetail.Application,
+                        DisplayForm = c.SmartWatchDetail.DisplayForm,
+                        GlassMaterial = c.SmartWatchDetail.GlassMaterial,
+                        CaseMaterial = c.SmartWatchDetail.CaseMaterial,
+                        MaterialStrap = c.SmartWatchDetail.MaterialStrap,
+                        TypeOfLock = c.SmartWatchDetail.TypeOfLock,
+                        ColorDisplay = c.SmartWatchDetail.ColorDisplay,
+                        TouchDisplay = c.SmartWatchDetail.TouchDisplay,
+                        DisplaySize = c.SmartWatchDetail.DisplaySize,
+                        Resolution = c.SmartWatchDetail.Resolution,
+                        PixelDensity = c.SmartWatchDetail.PixelDensity,
+                        DisplayType = c.SmartWatchDetail.DisplayType,
+                        MoreInformationDisplay = c.SmartWatchDetail.MoreInformationDisplay,
+                        SimcardIsSoppurt = c.SmartWatchDetail.SimcardIsSoppurt,
+                        RegisteredSimCardIsSoppurt = c.SmartWatchDetail.RegisteredSimCardIsSoppurt,
+                        GpsIsSoppurt = c.SmartWatchDetail.GpsIsSoppurt,
+                        Os = c.SmartWatchDetail.Os,
+                        Compatibility = c.SmartWatchDetail.Compatibility,
+                        Prossecor = c.SmartWatchDetail.Prossecor,
+                        InternalStorage = c.SmartWatchDetail.InternalStorage,
+                        ExternalStorageSoppurt = c.SmartWatchDetail.ExternalStorageSoppurt,
+                        Camera = c.SmartWatchDetail.Camera,
+                        MusicControl = c.SmartWatchDetail.MusicControl,
+                        Connections = c.SmartWatchDetail.Connections,
+                        Sensors = c.SmartWatchDetail.Sensors,
+                        BatteryMaterial = c.SmartWatchDetail.BatteryMaterial,
+                        CallIsSoppurt = c.SmartWatchDetail.CallIsSoppurt,
+                        MoreInformationHardware = c.SmartWatchDetail.MoreInformationHardware,
                     }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId) =>
@@ -1149,6 +1179,29 @@ namespace Reshop.Infrastructure.Repository.Product
                         ResistsAgainst = c.MemoryCardDetail.ResistsAgainst,
                         MoreInformation = c.MemoryCardDetail.MoreInformation,
                     }).SingleOrDefaultAsync();
+
+        public async Task<AddOrEditAUXViewModel> GetTypeAUXProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
+                .Select(c => new AddOrEditAUXViewModel()
+                {
+                    ProductId = c.ProductId,
+                    ProductTitle = c.ProductTitle,
+                    Description = c.Description,
+                    Brand = c.BrandId,
+                    BrandProduct = c.BrandProductId,
+
+                    //img
+                    SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                    SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                    SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                    SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                    SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                    SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                    // detail
+                    CableMaterial = c.AuxDetail.CableMaterial,
+                    CableLenght = c.AuxDetail.CableLenght
+                }).SingleOrDefaultAsync();
 
         public async Task<string> GetProductTypeAsync(int productId)
         {
@@ -1214,6 +1267,10 @@ namespace Reshop.Infrastructure.Repository.Product
             =>
                 await _context.MemoryCardDetails.AddAsync(memoryCardDetail);
 
+        public async Task AddAUXDetailAsync(AUXDetail auxDetail)
+            =>
+                await _context.AuxDetails.AddAsync(auxDetail);
+
         public void UpdateProduct(Domain.Entities.Product.Product product)
         {
             _context.Products.Update(product);
@@ -1265,6 +1322,10 @@ namespace Reshop.Infrastructure.Repository.Product
         public void UpdateMemoryCardDetail(MemoryCardDetail memoryCardDetail)
             =>
                 _context.MemoryCardDetails.Update(memoryCardDetail);
+
+        public void UpdateAUXDetail(AUXDetail auxDetail)
+            =>
+                _context.AuxDetails.Update(auxDetail);
 
         public async Task<bool> IsProductExistByShortKeyAsync(string shortKey)
         {

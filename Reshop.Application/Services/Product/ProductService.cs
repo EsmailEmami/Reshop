@@ -163,6 +163,9 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetMemoryCardDetailByIdAsync(memoryCardId);
 
+        public async Task<AUXDetail> GetAUXByIdAsync(int auxId) =>
+            await _productRepository.GetAUXByIdAsync(auxId);
+
         public async Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeAndHeadPhoneDetailId)
             =>
                 await _productRepository.GetHandsfreeAndHeadPhoneDetailByIdAsync(handsfreeAndHeadPhoneDetailId);
@@ -262,13 +265,17 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetTypeWristWatchProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeSmartWatchProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeSmartWatchProductDataForEditAsync(productId);
 
         public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId)
             =>
                 await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId);
+
+        public async Task<AddOrEditAUXViewModel> GetTypeAUXProductDataAsync(int productId)
+            =>
+                await _productRepository.GetTypeAUXProductDataForEditAsync(productId);
 
         public async Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail)
         {
@@ -617,6 +624,32 @@ namespace Reshop.Application.Services.Product
             }
         }
 
+        public async Task<ResultTypes> AddAUXAsync(Domain.Entities.Product.Product product, AUXDetail auxDetail)
+        {
+            try
+            {
+                await _productRepository.AddAUXDetailAsync(auxDetail);
+                await _productRepository.SaveChangesAsync();
+
+                product.AuxDetailId = auxDetail.AUXDetailId;
+                product.AuxDetail = auxDetail;
+
+                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
+                {
+                    product.ShortKey = NameGenerator.GenerateShortKey();
+                }
+
+                await _productRepository.AddProductAsync(product);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task AddProductGalleryAsync(ProductGallery productGallery)
         {
             await _productRepository.AddProductGalley(productGallery);
@@ -883,6 +916,27 @@ namespace Reshop.Application.Services.Product
 
 
                 _productRepository.UpdateMemoryCardDetail(memoryCardDetail);
+                _productRepository.UpdateProduct(product);
+
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditAUXAsync(Domain.Entities.Product.Product product, AUXDetail auxDetail)
+        {
+            try
+            {
+                if (!await _productRepository.IsProductExistAsync(product.ProductId))
+                    return ResultTypes.Failed;
+
+
+                _productRepository.UpdateAUXDetail(auxDetail);
                 _productRepository.UpdateProduct(product);
 
                 await _productRepository.SaveChangesAsync();

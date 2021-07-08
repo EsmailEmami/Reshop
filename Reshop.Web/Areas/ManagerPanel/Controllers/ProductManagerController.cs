@@ -1441,7 +1441,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeSpeakerProductDataAsync(productId, "");
+                var product = await _productService.GetTypeSpeakerProductDataAsync(productId);
                 if (product == null)
                 {
                     return NotFound();
@@ -1457,16 +1457,62 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            
+
+            // in this section we check that all images are ok
+            #region images security
+
+            if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+
+            #endregion
+
             if (model.ProductId == 0)
             {
+                // images could not be null
+                if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
+                    model.SelectedImage3 == null || model.SelectedImage4 == null ||
+                    model.SelectedImage5 == null || model.SelectedImage6 == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
+                    return View(model);
+                }
+
                 var product = new Product()
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    ProductType = ProductTypes.Speaker.ToString(),
-
+                    ProductType = ProductTypes.Mobile.ToString(),
+                    BrandId = model.Brand,
+                    BrandProductId = model.BrandProduct
                 };
 
                 var speakerDetail = new SpeakerDetail()
@@ -1499,41 +1545,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    if (model.SelectedImages is not null)
+                    // add product images
+                    await AddImg(new List<IFormFile>()
                     {
-                        foreach (var image in model.SelectedImages)
-                        {
-                            if (image.Length > 0)
-                            {
-                                var imgName = NameGenerator.GenerateUniqCodeWithDash();
-
-                                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    "images",
-                                    imgName + Path.GetExtension(image.FileName));
-
-
-                                await using var stream = new FileStream(filePath, FileMode.Create);
-                                await image.CopyToAsync(stream);
-
-                                var productGallery = new ProductGallery()
-                                {
-                                    ProductId = product.ProductId,
-                                    ImageName = imgName + Path.GetExtension(image.FileName)
-                                };
-
-                                await _productService.AddProductGalleryAsync(productGallery);
-                            }
-                        }
-                    }
-
-                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, product.ProductId);
 
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
@@ -1556,6 +1579,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
+                product.BrandId = model.Brand;
+                product.BrandProductId = model.BrandProduct;
 
 
                 // update mobile cover detail
@@ -1567,19 +1592,19 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 speakerDetail.IsMemoryCardInput = model.IsMemoryCardInput;
                 speakerDetail.IsSupportUSBPort = model.IsSupportUSBPort;
                 speakerDetail.HeadphoneOutput = model.HeadphoneOutput;
-                InputSound = model.InputSound;
-                MicrophoneInpute = model.MicrophoneInpute;
-                IsSupportMicrophone = model.IsSupportMicrophone;
-                Display = model.Display;
-                ControlRemote = model.ControlRemote;
-                IsSupportRadio = model.IsSupportRadio;
-                Bluetooth = model.Bluetooth;
-                ConnectTwoDevice = model.ConnectTwoDevice;
-                SpeakerItemQuantity = model.SpeakerItemQuantity;
-                IsBattery = model.IsBattery;
-                PlayingTime = model.PlayingTime;
-                ChargingTime = model.ChargingTime;
-                OsSoppurt = model.OsSoppurt;
+                speakerDetail.InputSound = model.InputSound;
+                speakerDetail.MicrophoneInpute = model.MicrophoneInpute;
+                speakerDetail.IsSupportMicrophone = model.IsSupportMicrophone;
+                speakerDetail.Display = model.Display;
+                speakerDetail.ControlRemote = model.ControlRemote;
+                speakerDetail.IsSupportRadio = model.IsSupportRadio;
+                speakerDetail.Bluetooth = model.Bluetooth;
+                speakerDetail.ConnectTwoDevice = model.ConnectTwoDevice;
+                speakerDetail.SpeakerItemQuantity = model.SpeakerItemQuantity;
+                speakerDetail.IsBattery = model.IsBattery;
+                speakerDetail.PlayingTime = model.PlayingTime;
+                speakerDetail.ChargingTime = model.ChargingTime;
+                speakerDetail.OsSoppurt = model.OsSoppurt;
 
 
 
@@ -1587,14 +1612,26 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
+                    // edit product images
+                    EditImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, new List<string>()
+                    {
+                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                        model.SelectedImage5IMG, model.SelectedImage6IMG
+                    });
+
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
+
             }
         }
 
@@ -1947,7 +1984,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId, "");
+                var product = await _productService.GetTypeSmartWatchProductDataAsync(productId);
                 if (product == null)
                 {
                     return NotFound();
@@ -1963,42 +2000,98 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var userFirstName = User.FindFirstValue(ClaimTypes.Actor);
+            // in this section we check that all images are ok
+            #region images security
 
-            if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
+            if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
             {
-                ModelState.AddModelError("", $"{userFirstName} عزیز تعداد تصاویر انتخابی برای محصول بیش از حد مجاز است.");
-
+                ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
                 return View(model);
             }
 
+            #endregion
+
             if (model.ProductId == 0)
             {
+                // images could not be null
+                if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
+                    model.SelectedImage3 == null || model.SelectedImage4 == null ||
+                    model.SelectedImage5 == null || model.SelectedImage6 == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
+                    return View(model);
+                }
+
                 var product = new Product()
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ShortKey = NameGenerator.GenerateShortKey(),
-                    ProductType = ProductTypes.SmartWatch.ToString(),
-
+                    ProductType = ProductTypes.Mobile.ToString(),
+                    BrandId = model.Brand,
+                    BrandProductId = model.BrandProduct
                 };
 
                 var smartWatchDetail = new SmartWatchDetail()
                 {
-                    IsSuitableForMen = model.IsSuitableForMen,
-                    IsSuitableForWomen = model.IsSuitableForWomen,
-                    IsScreenColorful = model.IsScreenColorful,
-                    IsSIMCardSupporter = model.IsSIMCardSupporter,
-                    IsTouchScreen = model.IsTouchScreen,
-                    IsSupportSIMCardRegister = model.IsSupportSIMCardRegister,
-                    WorkSuggestion = model.WorkSuggestion,
-                    IsSupportGPS = model.IsSupportGPS,
-                    WatchForm = model.WatchForm,
-                    BodyMaterial = model.BodyMaterial,
+                    Lenght = model.Lenght,
+                    Width = model.Width,
+                    Height = model.Height,
+                    Weight = model.Weight,
+                    SuitableFor = model.SuitableFor,
+                    Application = model.Application,
+                    DisplayForm = model.DisplayForm,
+                    GlassMaterial = model.GlassMaterial,
+                    CaseMaterial = model.CaseMaterial,
+                    MaterialStrap = model.MaterialStrap,
+                    TypeOfLock = model.TypeOfLock,
+                    ColorDisplay = model.ColorDisplay,
+                    TouchDisplay = model.TouchDisplay,
+                    DisplaySize = model.DisplaySize,
+                    Resolution = model.Resolution,
+                    PixelDensity = model.PixelDensity,
+                    DisplayType = model.DisplayType,
+                    MoreInformationDisplay = model.MoreInformationDisplay,
+                    SimcardIsSoppurt = model.SimcardIsSoppurt,
+                    RegisteredSimCardIsSoppurt = model.RegisteredSimCardIsSoppurt,
+                    GpsIsSoppurt = model.GpsIsSoppurt,
+                    Os = model.Os,
+                    Compatibility = model.Compatibility,
+                    Prossecor = model.Prossecor,
+                    InternalStorage = model.InternalStorage,
+                    ExternalStorageSoppurt = model.ExternalStorageSoppurt,
+                    Camera = model.Camera,
+                    MusicControl = model.MusicControl,
                     Connections = model.Connections,
                     Sensors = model.Sensors,
-                    IsDirectTalkable = model.IsDirectTalkable,
-                    IsTalkableWithBluetooth = model.IsTalkableWithBluetooth
+                    BatteryMaterial = model.BatteryMaterial,
+                    CallIsSoppurt = model.CallIsSoppurt,
+                    MoreInformationHardware = model.MoreInformationHardware,
                 };
 
 
@@ -2006,41 +2099,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    if (model.SelectedImages is not null)
+                    // add product images
+                    await AddImg(new List<IFormFile>()
                     {
-                        foreach (var image in model.SelectedImages)
-                        {
-                            if (image.Length > 0)
-                            {
-                                var imgName = NameGenerator.GenerateUniqCodeWithDash();
-
-                                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    "images",
-                                    imgName + Path.GetExtension(image.FileName));
-
-
-                                await using var stream = new FileStream(filePath, FileMode.Create);
-                                await image.CopyToAsync(stream);
-
-                                var productGallery = new ProductGallery()
-                                {
-                                    ProductId = product.ProductId,
-                                    ImageName = imgName + Path.GetExtension(image.FileName)
-                                };
-
-                                await _productService.AddProductGalleryAsync(productGallery);
-                            }
-                        }
-                    }
-
-                    await AddProductShopperAsync(model.ShopperUserId, product.ProductId, model.Price, model.QuantityInStock);
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, product.ProductId);
 
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
@@ -2063,33 +2133,67 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
+                product.BrandId = model.Brand;
+                product.BrandProductId = model.BrandProduct;
 
 
                 // update mobile cover detail
-                smartWatchDetail.IsSuitableForMen = model.IsSuitableForMen;
-                smartWatchDetail.IsSuitableForWomen = model.IsSuitableForWomen;
-                smartWatchDetail.IsScreenColorful = model.IsScreenColorful;
-                smartWatchDetail.IsSIMCardSupporter = model.IsSIMCardSupporter;
-                smartWatchDetail.IsTouchScreen = model.IsTouchScreen;
-                smartWatchDetail.IsSupportSIMCardRegister = model.IsSupportSIMCardRegister;
-                smartWatchDetail.WorkSuggestion = model.WorkSuggestion;
-                smartWatchDetail.IsSupportGPS = model.IsSupportGPS;
-                smartWatchDetail.WatchForm = model.WatchForm;
-                smartWatchDetail.BodyMaterial = model.BodyMaterial;
+                smartWatchDetail. Lenght = model.Lenght;
+                smartWatchDetail.Width = model.Width;
+                smartWatchDetail.Height = model.Height;
+                smartWatchDetail.Weight = model.Weight;
+                smartWatchDetail.SuitableFor = model.SuitableFor;
+                smartWatchDetail.Application = model.Application;
+                smartWatchDetail.DisplayForm = model.DisplayForm;
+                smartWatchDetail.GlassMaterial = model.GlassMaterial;
+                smartWatchDetail.CaseMaterial = model.CaseMaterial;
+                smartWatchDetail.MaterialStrap = model.MaterialStrap;
+                smartWatchDetail.TypeOfLock = model.TypeOfLock;
+                smartWatchDetail.ColorDisplay = model.ColorDisplay;
+                smartWatchDetail.TouchDisplay = model.TouchDisplay;
+                smartWatchDetail.DisplaySize = model.DisplaySize;
+                smartWatchDetail.Resolution = model.Resolution;
+                smartWatchDetail.PixelDensity = model.PixelDensity;
+                smartWatchDetail.DisplayType = model.DisplayType;
+                smartWatchDetail.MoreInformationDisplay = model.MoreInformationDisplay;
+                smartWatchDetail.SimcardIsSoppurt = model.SimcardIsSoppurt;
+                smartWatchDetail.RegisteredSimCardIsSoppurt = model.RegisteredSimCardIsSoppurt;
+                smartWatchDetail.GpsIsSoppurt = model.GpsIsSoppurt;
+                smartWatchDetail.Os = model.Os;
+                smartWatchDetail.Compatibility = model.Compatibility;
+                smartWatchDetail.Prossecor = model.Prossecor;
+                smartWatchDetail.InternalStorage = model.InternalStorage;
+                smartWatchDetail.ExternalStorageSoppurt = model.ExternalStorageSoppurt;
+                smartWatchDetail.Camera = model.Camera;
+                smartWatchDetail.MusicControl = model.MusicControl;
                 smartWatchDetail.Connections = model.Connections;
                 smartWatchDetail.Sensors = model.Sensors;
-                smartWatchDetail.IsDirectTalkable = model.IsDirectTalkable;
-                smartWatchDetail.IsTalkableWithBluetooth = model.IsTalkableWithBluetooth;
+                smartWatchDetail.BatteryMaterial = model.BatteryMaterial;
+                smartWatchDetail.CallIsSoppurt = model.CallIsSoppurt;
+                smartWatchDetail.MoreInformationHardware = model.MoreInformationHardware;
+
+
 
                 var result = await _productService.EditSmartWatchAsync(product, smartWatchDetail);
 
                 if (result == ResultTypes.Successful)
                 {
+                    // edit product images
+                    EditImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, new List<string>()
+                    {
+                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                        model.SelectedImage5IMG, model.SelectedImage6IMG
+                    });
+
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                     return View(model);
                 }
@@ -2477,6 +2581,172 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #endregion
 
+        #region AUX 
+
+        [HttpGet]
+        public async Task<IActionResult> AddOrEditAUX(int productId = 0)
+        {
+            if (productId == 0)
+            {
+                return View(new AddOrEditAUXViewModel());
+            }
+            else
+            {
+                var product = await _productService.GetTypeMemoryCardProductDataAsync(productId);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                return View(product);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrEditAUX(AddOrEditAUXViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            // in this section we check that all images are ok
+            #region images security
+
+            if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
+            {
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                return View(model);
+            }
+
+            #endregion
+
+            if (model.ProductId == 0)
+            {
+                // images could not be null
+                if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
+                    model.SelectedImage3 == null || model.SelectedImage4 == null ||
+                    model.SelectedImage5 == null || model.SelectedImage6 == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
+                    return View(model);
+                }
+
+                var product = new Product()
+                {
+                    ProductTitle = model.ProductTitle,
+                    Description = model.Description,
+                    ShortKey = NameGenerator.GenerateShortKey(),
+                    ProductType = ProductTypes.Mobile.ToString(),
+                    BrandId = model.Brand,
+                    BrandProductId = model.BrandProduct
+                };
+
+                var auxDetail = new AUXDetail()
+                {
+                  CableMaterial = model.CableMaterial,
+                  CableLenght = model.CableLenght
+                };
+
+
+                var result = await _productService.AddAUXAsync(product, auxDetail);
+
+                if (result == ResultTypes.Successful)
+                {
+                    // add product images
+                    await AddImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, product.ProductId);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+
+                    return View(model);
+                }
+            }
+            else
+            {
+                var product = await _productService.GetProductByIdAsync(model.ProductId);
+
+                if (product?.AuxDetailId == null)
+                    return NotFound();
+
+
+                var auxDetail = await _productService.GetAUXByIdAsync(product.AuxDetailId.Value);
+
+                if (auxDetail == null)
+                    return NotFound();
+
+
+
+                //  update product
+                product.ProductTitle = model.ProductTitle;
+                product.Description = model.Description;
+                product.BrandId = model.Brand;
+                product.BrandProductId = model.BrandProduct;
+
+
+                // update mobile cover detail
+                auxDetail.CableLenght = model.CableLenght;
+                auxDetail.CableMaterial = model.CableMaterial;
+
+
+
+                var result = await _productService.EditAUXAsync(product, auxDetail);
+
+                if (result == ResultTypes.Successful)
+                {
+                    // edit product images
+                    EditImg(new List<IFormFile>()
+                    {
+                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                        model.SelectedImage5, model.SelectedImage6
+                    }, new List<string>()
+                    {
+                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                        model.SelectedImage5IMG, model.SelectedImage6IMG
+                    });
+
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+
+                    return View(model);
+                }
+            }
+        }
+
+        #endregion
 
         #region private methods
 

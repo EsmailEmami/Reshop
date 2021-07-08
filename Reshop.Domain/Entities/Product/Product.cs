@@ -84,6 +84,9 @@ namespace Reshop.Domain.Entities.Product
         [ForeignKey("MemoryCardDetail")]
         public int? MemoryCardDetailId { get; set; }
 
+        [ForeignKey("AuxDetail")]
+        public int? AuxDetailId { get; set; }
+
         #region Relations
 
         public virtual ICollection<ProductToChildCategory> ProductToChildCategories { get; set; }
@@ -117,6 +120,8 @@ namespace Reshop.Domain.Entities.Product
         public virtual BatteryChargerDetail BatteryChargerDetail { get; set; }
 
         public virtual MemoryCardDetail MemoryCardDetail { get; set; }
+
+        public virtual AUXDetail AuxDetail { get; set; }
 
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
         public ICollection<EditShopperProduct> EditShopperProducts { get; set; }

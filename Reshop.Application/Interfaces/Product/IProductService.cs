@@ -34,6 +34,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<SmartWatchDetail> GetSmartWatchByIdAsync(int smartWatchId);
         Task<WristWatchDetail> GetWristWatchByIdAsync(int wristWatchId);
         Task<MemoryCardDetail> GetMemoryCardByIdAsync(int memoryCardId);
+        Task<AUXDetail> GetAUXByIdAsync(int auxId);
         Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeAndHeadPhoneDetailId);
         Task<ProductGallery> GetProductGalleryByIdAsync(string productGalleryId);
         Task<ProductTypes> GetProductTypeByIdAsync(int productId);
@@ -50,10 +51,11 @@ namespace Reshop.Application.Interfaces.Product
         Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId);
         Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperUserId);
         Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId);
-        Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId);
         Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId, string shopperUserId);
-        Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId);
         Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId);
+        Task<AddOrEditAUXViewModel> GetTypeAUXProductDataAsync(int productId);
 
         // inserts
         Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
@@ -67,6 +69,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<ResultTypes> AddSmartWatchAsync(Domain.Entities.Product.Product product, SmartWatchDetail smartWatchDetail);
         Task<ResultTypes> AddWristWatchAsync(Domain.Entities.Product.Product product, WristWatchDetail wristWatchDetail);
         Task<ResultTypes> AddMemoryCardAsync(Domain.Entities.Product.Product product, MemoryCardDetail memoryCardDetail);
+        Task<ResultTypes> AddAUXAsync(Domain.Entities.Product.Product product, AUXDetail auxDetail);
         Task AddProductGalleryAsync(ProductGallery productGallery);
 
         // remove
@@ -86,6 +89,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<ResultTypes> EditSmartWatchAsync(Domain.Entities.Product.Product product, SmartWatchDetail smartWatchDetail);
         Task<ResultTypes> EditWristWatchAsync(Domain.Entities.Product.Product product, WristWatchDetail wristWatchDetail);
         Task<ResultTypes> EditMemoryCardAsync(Domain.Entities.Product.Product product, MemoryCardDetail memoryCardDetail);
+        Task<ResultTypes> EditAUXAsync(Domain.Entities.Product.Product product, AUXDetail auxDetail);
         // validations 
         Task<bool> IsProductExistAsync(int productId);
         Task<bool> IsProductGalleriesCountValidAsync(int productId);
