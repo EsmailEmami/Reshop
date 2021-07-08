@@ -12,6 +12,7 @@ using Reshop.Domain.Entities.User;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.User;
 
 namespace Reshop.Web.Controllers.User
 {
@@ -259,6 +260,47 @@ namespace Reshop.Web.Controllers.User
             return View(user);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUserInformation(EditUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditUserInformation", model) });
+
+
+            try
+            {
+                model.UserId = _dataProtector.Unprotect(model.UserId);
+            }
+            catch
+            {
+                return RedirectToAction(nameof(Dashboard));
+            }
+
+            var user = await _userService.GetUserByIdAsync(model.UserId);
+
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            user.FullName = model.FullName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.NationalCode = model.NationalCode;
+            user.Email = model.Email;
+
+            var result = await _userService.EditUserAsync(user);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                ModelState.AddModelError("", "هنگام ویرایش اطلاعات به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditUserInformation", model) });
+            }
+        }
 
 
         //-------------------------------------- shopper --------------------------------------
