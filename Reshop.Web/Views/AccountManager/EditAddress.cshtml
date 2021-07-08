@@ -10,10 +10,10 @@
         <input type="hidden" asp-for="AddressId" />
         <input type="hidden" asp-for="UserId" />
 
-        <div class="col-sm-12 col-lg-6">
+        <div class="col-sm-12">
             <div class="form-field">
                 <input asp-for="FullName">
-                <label><i class="far  fa-user"></i>نام و نام خانوادگی</label>
+                <label><i class="far  fa-user"></i> نام و نام خانوادگی</label>
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
         </div>
@@ -23,6 +23,14 @@
                 <input asp-for="PhoneNumber">
                 <label><i class="far fa-phone"></i> شماره تلفن</label>
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="PostalCode">
+                <label><i class="far  fa-tag"></i> کد پستی</label>
+                <span asp-validation-for="PostalCode" class="text-danger"></span>
             </div>
         </div>
 
@@ -46,7 +54,7 @@
                     <option value="0">استان</option>
                     @foreach (var state in states)
                     {
-                        @:<option value="@state.StateId" @(state.StateId == Model.StateId ? "selected" : "")>@state.StateName</option>
+                        @:<option value="@state.StateId" @((Model.StateId != 0 && state.StateId == Model.StateId) ? "selected" : "" )>@state.StateName</option>
                     }
                 </select>
             </div>
@@ -55,9 +63,12 @@
             <div class="form-field">
                 <select id="city" asp-for="CityId">
                     <option value="0">شهر</option>
-                    @foreach (var city in cities)
+                    @if (cities != null)
                     {
-                        @:<option value="@city.CityId" @(city.CityId == Model.CityId ? "selected" : "")>@city.CityName</option>
+                        @foreach (var city in cities)
+                        {
+                            @:<option value="@city.CityId" @((Model.CityId != 0 && city.CityId == Model.CityId) ? "selected" : "" )>@city.CityName</option>
+                        }
                     }
                 </select>
             </div>
@@ -71,7 +82,7 @@
         </div>
 
     </div>
-    
+
     <button type="submit" class="btn btn-success">ثبت</button>
 </form>
 

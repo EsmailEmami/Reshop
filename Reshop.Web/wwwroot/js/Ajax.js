@@ -64,6 +64,7 @@ function ShowModal(url, title) {
     $.ajax({
         type: "GET",
         url: url,
+        cache: false,
         success: function (res) {
             // modal body 
             $("#modal .modal-body").html(res);

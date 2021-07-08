@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums.Product;
@@ -7,6 +8,7 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security.Attribute;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.DataProtection;
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
@@ -25,14 +27,17 @@ namespace Reshop.Web.Controllers.User
         private readonly IProductService _productService;
         private readonly IStateService _stateService;
         private readonly IShopperService _shopperService;
+        private readonly IDataProtector _dataProtector;
 
-        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService, IStateService stateService, IShopperService shopperService)
+        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService, IStateService stateService, IShopperService shopperService, IDataProtectionProvider dataProtectionProvider)
         {
             _userService = userService;
             _cartService = cartService;
             _productService = productService;
             _stateService = stateService;
             _shopperService = shopperService;
+            _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Controllers.User.AccountManagerController",
+                new string[] { "address" });
         }
 
         #endregion
@@ -116,7 +121,6 @@ namespace Reshop.Web.Controllers.User
 
 
         [HttpGet]
-        [NoDirectAccess]
         public IActionResult NewAddress()
         {
             ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
@@ -161,7 +165,6 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpGet]
-        [NoDirectAccess]
         public async Task<IActionResult> EditAddress(string addressId)
         {
             if (string.IsNullOrEmpty(addressId))
@@ -170,10 +173,17 @@ namespace Reshop.Web.Controllers.User
             }
             var address = await _userService.GetAddressByIdAsync(addressId);
 
+
             if (address is null)
             {
                 return NotFound();
             }
+
+
+
+
+            address.UserId = _dataProtector.Protect(address.UserId);
+
             ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
             ViewBag.Cities = _stateService.GetCitiesOfState(address.StateId) as IEnumerable<City>;
 
@@ -187,11 +197,30 @@ namespace Reshop.Web.Controllers.User
             ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
             ViewBag.Cities = _stateService.GetCitiesOfState(model.StateId) as IEnumerable<City>;
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "NewAddress", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditAddress", model) });
 
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            try
+            {
+                model.UserId = _dataProtector.Unprotect(model.UserId);
+            }
+            catch
+            {
+                return BadRequest();
+            }
 
             var address = await _userService.GetAddressByIdAsync(model.AddressId);
+
+            if (address is null)
+            {
+                return NotFound();
+            }
+
+            if (!await _userService.IsUserAddressExistAsync(address.AddressId, model.UserId))
+            {
+                return BadRequest();
+            }
+
 
             address.FullName = model.FullName;
             address.StateId = model.StateId;
@@ -211,7 +240,7 @@ namespace Reshop.Web.Controllers.User
             else
             {
                 ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "dEAddress", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditAddress", model) });
             }
         }
 
