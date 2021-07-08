@@ -38,6 +38,18 @@ namespace Reshop.Infrastructure.Repository.User
             return await _context.Users.SingleOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
         }
 
+        public async Task<EditUserViewModel> GetUserDataForEditAsync(string userId) =>
+            await _context.Users.Where(c => c.UserId == userId)
+                .Select(c => new EditUserViewModel()
+                {
+                    UserId = c.UserId,
+                    FullName = c.FullName,
+                    Email = c.Email,
+                    PhoneNumber = c.PhoneNumber,
+                    NationalCode = c.NationalCode,
+                }).SingleOrDefaultAsync();
+        
+
         public IEnumerable<Address> GetUserAddresses(string userId)
             =>
                 _context.Addresses.Where(c => c.UserId == userId)

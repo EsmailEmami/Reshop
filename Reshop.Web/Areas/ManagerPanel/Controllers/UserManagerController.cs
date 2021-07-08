@@ -43,7 +43,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (userId == "")
             {
-                var model = new AddOrEditUserViewModel()
+                var model = new AddOrEditUserForAdminViewModel()
                 {
                     Roles = _roleService.GetRoles() as IEnumerable<Role>
                 };
@@ -53,13 +53,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 if (!await _userService.IsUserExistAsync(userId)) return NotFound();
 
-                return View(await _userService.GetUserDataAsync(userId));
+                return View(await _userService.GetUserDataForAdminAsync(userId));
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEditUser(AddOrEditUserViewModel model)
+        public async Task<IActionResult> AddOrEditUser(AddOrEditUserForAdminViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
 

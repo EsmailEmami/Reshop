@@ -6,7 +6,7 @@ using Reshop.Domain.Entities.User;
 
 namespace Reshop.Domain.DTOs.User
 {
-    public class AddOrEditUserViewModel
+    public class AddOrEditUserForAdminViewModel
     {
         public string UserId { get; set; }
 

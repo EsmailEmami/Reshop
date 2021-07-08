@@ -8,14 +8,37 @@ namespace Reshop.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AuxDetails",
+                columns: table => new
+                {
+                    AUXDetailId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CableMaterial = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CableLenght = table.Column<double>(type: "float", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuxDetails", x => x.AUXDetailId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BatteryChargerDetails",
                 columns: table => new
                 {
                     BatteryChargerDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Lenght = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Weight = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    InputVoltage = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    OutputVoltage = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     OutputCurrentIntensity = table.Column<double>(type: "float", nullable: false),
                     OutputPortsCount = table.Column<byte>(type: "tinyint", nullable: false),
-                    MobileCable = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    OutputTypeCharger = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    MobileCable = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    MoreInformation = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,9 +119,23 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     FlashDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Length = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BodyMaterial = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     Connector = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Capacity = table.Column<double>(type: "float", nullable: false),
-                    IsImpactResistance = table.Column<bool>(type: "bit", nullable: false)
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    Led = table.Column<bool>(type: "bit", nullable: false),
+                    IsImpactResistance = table.Column<bool>(type: "bit", nullable: false),
+                    WaterResistance = table.Column<bool>(type: "bit", nullable: false),
+                    ShockResistance = table.Column<bool>(type: "bit", nullable: false),
+                    DustResistance = table.Column<bool>(type: "bit", nullable: false),
+                    AntiScratch = table.Column<bool>(type: "bit", nullable: false),
+                    AntiStain = table.Column<bool>(type: "bit", nullable: false),
+                    SpeedDataTransfer = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    SpeedDataReading = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    OsCompatibility = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    MoreInformation = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -129,18 +166,51 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     LaptopDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RAMCapacity = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    InternalMemory = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    GPUManufacturer = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Category = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    ProcessorSeries = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    RAMType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ScreenAccuracy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    IsMatteScreen = table.Column<bool>(type: "bit", nullable: false),
-                    IsTouchScreen = table.Column<bool>(type: "bit", nullable: false),
-                    OperatingSystem = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    IsHDMIPort = table.Column<bool>(type: "bit", nullable: false)
+                    Length = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Weight = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CpuCompany = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CpuSeries = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CpuModel = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CpuFerequancy = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CpuCache = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    RamStorage = table.Column<int>(type: "int", maxLength: 3, nullable: false),
+                    RamStorageTeachnology = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Storage = table.Column<int>(type: "int", maxLength: 5, nullable: false),
+                    StorageTeachnology = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    StorageInformation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    GpuCompany = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    GpuModel = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    GpuRam = table.Column<int>(type: "int", maxLength: 5, nullable: false),
+                    DisplaySize = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    DisplayTeachnology = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DisplayResolutation = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    RefreshDisplay = table.Column<int>(type: "int", maxLength: 5, nullable: false),
+                    BlurDisplay = table.Column<bool>(type: "bit", nullable: false),
+                    TouchDisplay = table.Column<bool>(type: "bit", nullable: false),
+                    DiskDrive = table.Column<bool>(type: "bit", nullable: false),
+                    FingerTouch = table.Column<bool>(type: "bit", nullable: false),
+                    Webcam = table.Column<bool>(type: "bit", nullable: false),
+                    BacklightKey = table.Column<bool>(type: "bit", nullable: false),
+                    TouchPadInformation = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ModemInformation = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Wifi = table.Column<bool>(type: "bit", nullable: false),
+                    Bluetooth = table.Column<bool>(type: "bit", nullable: false),
+                    VgaPort = table.Column<bool>(type: "bit", nullable: false),
+                    HtmiPort = table.Column<bool>(type: "bit", nullable: false),
+                    DisplayPort = table.Column<bool>(type: "bit", nullable: false),
+                    LanPort = table.Column<bool>(type: "bit", nullable: false),
+                    UsbCPort = table.Column<bool>(type: "bit", nullable: false),
+                    Usb3Port = table.Column<bool>(type: "bit", nullable: false),
+                    UsbCQuantity = table.Column<int>(type: "int", maxLength: 2, nullable: false),
+                    UsbQuantity = table.Column<int>(type: "int", maxLength: 2, nullable: false),
+                    Usb3Quantity = table.Column<int>(type: "int", maxLength: 2, nullable: false),
+                    BatteryMaterial = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BatteryCharging = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BatteryInformation = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Os = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Classification = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -153,10 +223,14 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     MemoryCardDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Length = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Capacity = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SpeedStandard = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ResistsAgainst = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    ReadingSpeed = table.Column<int>(type: "int", maxLength: 100, nullable: false),
+                    ResistsAgainst = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    MoreInformation = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -186,18 +260,62 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     MobileDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    InternalMemory = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CommunicationNetworks = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    BackCameras = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    OperatingSystem = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    SIMCardDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    RAMValue = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PhotoResolution = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    OperatingSystemVersion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    DisplayTechnology = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    Features = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    Size = table.Column<double>(type: "float", nullable: false),
-                    QuantitySIMCard = table.Column<byte>(type: "tinyint", nullable: false)
+                    Lenght = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Weight = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    SimCardQuantity = table.Column<int>(type: "int", maxLength: 2, nullable: false),
+                    SimCardInpute = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    SeparateSlotMemoryCard = table.Column<bool>(type: "bit", nullable: false),
+                    Announced = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    ChipsetName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Cpu = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    CpuAndFrequency = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    CpuArch = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Gpu = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    InternalStorage = table.Column<int>(type: "int", maxLength: 40, nullable: false),
+                    Ram = table.Column<int>(type: "int", maxLength: 40, nullable: false),
+                    SdCard = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    SdCardStandard = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    ColorDisplay = table.Column<bool>(type: "bit", nullable: false),
+                    TouchDisplay = table.Column<bool>(type: "bit", nullable: false),
+                    DisplayTechnology = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    DisplaySize = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
+                    Resolution = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    PixelDensity = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
+                    ScreenToBodyRatio = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    ImageRatio = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    DisplayProtection = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    MoreInformation = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ConnectionsNetwork = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    GsmNetwork = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    HspaNetwork = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    LteNetwork = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    FiveGNetwork = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    CommunicationTechnology = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    WiFi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Radio = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Bluetooth = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
+                    GpsInformation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ConnectionPort = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
+                    CameraQuantity = table.Column<int>(type: "int", maxLength: 2, nullable: false),
+                    PhotoResolutation = table.Column<int>(type: "int", maxLength: 4, nullable: false),
+                    SelfiCameraPhoto = table.Column<int>(type: "int", maxLength: 4, nullable: false),
+                    CameraCapabilities = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SelfiCameraCapabilities = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Filming = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Speakers = table.Column<bool>(type: "bit", nullable: false),
+                    OutputAudio = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    AudioInformation = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    OS = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    OsVersion = table.Column<int>(type: "int", maxLength: 3, nullable: false),
+                    UiVersion = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    MoreInformationSoftWare = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BatteryMaterial = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BatteryCapacity = table.Column<int>(type: "int", maxLength: 6, nullable: false),
+                    RemovableBattery = table.Column<bool>(type: "bit", maxLength: 6, nullable: false),
+                    Sensors = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ItemsInBox = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -230,14 +348,21 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     PowerBankId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Length = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Weight = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     CapacityRange = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    InputVoltage = table.Column<double>(type: "float", nullable: false),
+                    OutputVoltage = table.Column<double>(type: "float", nullable: false),
+                    InputCurrentIntensity = table.Column<double>(type: "float", nullable: false),
                     OutputCurrentIntensity = table.Column<double>(type: "float", nullable: false),
-                    OutputPortsCount = table.Column<byte>(type: "tinyint", nullable: false),
+                    OutputPortsCount = table.Column<int>(type: "int", nullable: false),
                     IsSupportOfQCTechnology = table.Column<bool>(type: "bit", maxLength: 200, nullable: false),
                     IsSupportOfPDTechnology = table.Column<bool>(type: "bit", maxLength: 200, nullable: false),
-                    Features = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    BodyMaterial = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                    BodyMaterial = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    DisplayCharge = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Features = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -264,12 +389,10 @@ namespace Reshop.Infrastructure.Migrations
                     StoreName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RegisterShopper = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LandlinePhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
                     OnNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     BackNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     BusinessLicenseImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Condition = table.Column<bool>(type: "bit", nullable: false),
-                    IsApproved = table.Column<bool>(type: "bit", nullable: false)
+                    IsFinally = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -282,20 +405,39 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     SmartWatchDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IsSuitableForMen = table.Column<bool>(type: "bit", nullable: false),
-                    IsSuitableForWomen = table.Column<bool>(type: "bit", nullable: false),
-                    IsScreenColorful = table.Column<bool>(type: "bit", nullable: false),
-                    IsSIMCardSupporter = table.Column<bool>(type: "bit", nullable: false),
-                    IsTouchScreen = table.Column<bool>(type: "bit", nullable: false),
-                    IsSupportSIMCardRegister = table.Column<bool>(type: "bit", nullable: false),
-                    WorkSuggestion = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
-                    IsSupportGPS = table.Column<bool>(type: "bit", nullable: false),
-                    WatchForm = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    BodyMaterial = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Lenght = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Weight = table.Column<int>(type: "int", maxLength: 20, nullable: false),
+                    SuitableFor = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Application = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    DisplayForm = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    GlassMaterial = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    CaseMaterial = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    MaterialStrap = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    TypeOfLock = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    ColorDisplay = table.Column<bool>(type: "bit", nullable: false),
+                    TouchDisplay = table.Column<bool>(type: "bit", nullable: false),
+                    DisplaySize = table.Column<double>(type: "float", maxLength: 8, nullable: false),
+                    Resolution = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    PixelDensity = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
+                    DisplayType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    MoreInformationDisplay = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    SimcardIsSoppurt = table.Column<bool>(type: "bit", nullable: false),
+                    RegisteredSimCardIsSoppurt = table.Column<bool>(type: "bit", nullable: false),
+                    GpsIsSoppurt = table.Column<bool>(type: "bit", nullable: false),
+                    Os = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Compatibility = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Prossecor = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    InternalStorage = table.Column<int>(type: "int", maxLength: 10, nullable: false),
+                    ExternalStorageSoppurt = table.Column<bool>(type: "bit", nullable: false),
+                    Camera = table.Column<bool>(type: "bit", nullable: false),
+                    MusicControl = table.Column<bool>(type: "bit", nullable: false),
                     Connections = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Sensors = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    IsDirectTalkable = table.Column<bool>(type: "bit", nullable: false),
-                    IsTalkableWithBluetooth = table.Column<bool>(type: "bit", nullable: false)
+                    Sensors = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    BatteryMaterial = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CallIsSoppurt = table.Column<bool>(type: "bit", maxLength: 50, nullable: false),
+                    MoreInformationHardware = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -308,14 +450,27 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     SpeakerDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Lenght = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     ConnectionType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Connector = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    BluetoothVersion = table.Column<double>(type: "float", nullable: false),
                     IsMemoryCardInput = table.Column<bool>(type: "bit", nullable: false),
-                    IsSupportBattery = table.Column<bool>(type: "bit", nullable: false),
                     IsSupportUSBPort = table.Column<bool>(type: "bit", nullable: false),
+                    HeadphoneOutput = table.Column<bool>(type: "bit", nullable: false),
+                    InputSound = table.Column<bool>(type: "bit", nullable: false),
+                    MicrophoneInpute = table.Column<bool>(type: "bit", nullable: false),
                     IsSupportMicrophone = table.Column<bool>(type: "bit", nullable: false),
-                    IsSupportRadio = table.Column<bool>(type: "bit", nullable: false)
+                    Display = table.Column<bool>(type: "bit", nullable: false),
+                    ControlRemote = table.Column<bool>(type: "bit", nullable: false),
+                    IsSupportRadio = table.Column<bool>(type: "bit", nullable: false),
+                    Bluetooth = table.Column<bool>(type: "bit", nullable: false),
+                    ConnectTwoDevice = table.Column<bool>(type: "bit", nullable: false),
+                    SpeakerItemQuantity = table.Column<int>(type: "int", maxLength: 2, nullable: false),
+                    IsBattery = table.Column<bool>(type: "bit", nullable: false),
+                    PlayingTime = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ChargingTime = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    OsSoppurt = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -354,17 +509,64 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     TabletDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    InternalMemory = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    RAMValue = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    IsTalkAbility = table.Column<bool>(type: "bit", nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    CommunicationNetworks = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Features = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    IsSIMCardSupporter = table.Column<bool>(type: "bit", nullable: false),
-                    QuantitySIMCard = table.Column<byte>(type: "tinyint", maxLength: 10, nullable: false),
-                    OperatingSystemVersion = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CommunicationTechnologies = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    CommunicationPorts = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Lenght = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Weight = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    SimCardIsTrue = table.Column<bool>(type: "bit", nullable: false),
+                    Call = table.Column<bool>(type: "bit", nullable: false),
+                    SimCardQuantity = table.Column<int>(type: "int", maxLength: 2, nullable: false),
+                    SimCardInpute = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    SeparateSlotMemoryCard = table.Column<bool>(type: "bit", nullable: false),
+                    Announced = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    ChipsetName = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Cpu = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    CpuAndFrequency = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    CpuArch = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Gpu = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    InternalStorage = table.Column<int>(type: "int", maxLength: 40, nullable: false),
+                    Ram = table.Column<int>(type: "int", maxLength: 40, nullable: false),
+                    SdCard = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    SdCardStandard = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    ColorDisplay = table.Column<bool>(type: "bit", nullable: false),
+                    TouchDisplay = table.Column<bool>(type: "bit", nullable: false),
+                    DisplayTechnology = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    DisplaySize = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
+                    Resolution = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    PixelDensity = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
+                    ScreenToBodyRatio = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    ImageRatio = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    DisplayProtection = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    MoreInformation = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ConnectionsNetwork = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    GsmNetwork = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    HspaNetwork = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    LteNetwork = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    FiveGNetwork = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    CommunicationTechnology = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    WiFi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Radio = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Bluetooth = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
+                    GpsInformation = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ConnectionPort = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: false),
+                    CameraQuantity = table.Column<int>(type: "int", maxLength: 2, nullable: false),
+                    PhotoResolutation = table.Column<int>(type: "int", maxLength: 4, nullable: false),
+                    SelfiCameraPhoto = table.Column<int>(type: "int", maxLength: 4, nullable: false),
+                    CameraCapabilities = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SelfiCameraCapabilities = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Filming = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Speakers = table.Column<bool>(type: "bit", nullable: false),
+                    OutputAudio = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    AudioInformation = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    OS = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    OsVersion = table.Column<int>(type: "int", maxLength: 3, nullable: false),
+                    UiVersion = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    MoreInformationSoftWare = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BatteryMaterial = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BatteryCapacity = table.Column<int>(type: "int", maxLength: 6, nullable: false),
+                    RemovableBattery = table.Column<bool>(type: "bit", maxLength: 6, nullable: false),
+                    Sensors = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ItemsInBox = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -396,26 +598,6 @@ namespace Reshop.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WristWatchDetails", x => x.WristWatchDetailId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BrandProducts",
-                columns: table => new
-                {
-                    BrandProductId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BrandProductName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BrandProducts", x => x.BrandProductId);
-                    table.ForeignKey(
-                        name: "FK_BrandProducts_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "BrandId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -481,7 +663,6 @@ namespace Reshop.Infrastructure.Migrations
                     ActiveCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     NationalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     AccountBalance = table.Column<decimal>(type: "Money", nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     RegisteredDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsPhoneNumberActive = table.Column<bool>(type: "bit", nullable: false),
                     IsBlocked = table.Column<bool>(type: "bit", nullable: false),
@@ -524,6 +705,42 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "StoresAddress",
+                columns: table => new
+                {
+                    StoreAddressId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    StateId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    Plaque = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    AddressText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    LandlinePhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoresAddress", x => x.StoreAddressId);
+                    table.ForeignKey(
+                        name: "FK_StoresAddress_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StoresAddress_Shoppers_ShopperId",
+                        column: x => x.ShopperId,
+                        principalTable: "Shoppers",
+                        principalColumn: "ShopperId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_StoresAddress_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "StateId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ShopperStoreTitles",
                 columns: table => new
                 {
@@ -556,13 +773,9 @@ namespace Reshop.Infrastructure.Migrations
                     ProductTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
                     ShortKey = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
-                    Price = table.Column<decimal>(type: "Money", nullable: false),
-                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
                     ProductType = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Brand = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    BrandProduct = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    AllViewsCount = table.Column<int>(type: "int", nullable: false),
-                    AllSalesCount = table.Column<int>(type: "int", nullable: false),
+                    BrandId = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MobileDetailId = table.Column<int>(type: "int", nullable: true),
                     LaptopDetailId = table.Column<int>(type: "int", nullable: true),
                     MobileCoverDetailId = table.Column<int>(type: "int", nullable: true),
@@ -574,17 +787,30 @@ namespace Reshop.Infrastructure.Migrations
                     HandsfreeAndHeadPhoneDetailId = table.Column<int>(type: "int", nullable: true),
                     FlashMemoryDetailId = table.Column<int>(type: "int", nullable: true),
                     BatteryChargerDetailId = table.Column<int>(type: "int", nullable: true),
-                    MemoryCardDetailId = table.Column<int>(type: "int", nullable: true)
+                    MemoryCardDetailId = table.Column<int>(type: "int", nullable: true),
+                    AuxDetailId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.ProductId);
+                    table.ForeignKey(
+                        name: "FK_Products_AuxDetails_AuxDetailId",
+                        column: x => x.AuxDetailId,
+                        principalTable: "AuxDetails",
+                        principalColumn: "AUXDetailId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Products_BatteryChargerDetails_BatteryChargerDetailId",
                         column: x => x.BatteryChargerDetailId,
                         principalTable: "BatteryChargerDetails",
                         principalColumn: "BatteryChargerDetailId",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "BrandId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Products_FlashMemoryDetails_FlashMemoryDetailId",
                         column: x => x.FlashMemoryDetailId,
@@ -659,44 +885,35 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     AddressId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    State = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
                     Plaque = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     AddressText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.AddressId);
                     table.ForeignKey(
+                        name: "FK_Addresses_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "StateId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Addresses_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TrackingCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Sum = table.Column<decimal>(type: "Money", nullable: false),
-                    IsPayed = table.Column<bool>(type: "bit", nullable: false),
-                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsReceived = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
-                    table.ForeignKey(
-                        name: "FK_Orders_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -805,7 +1022,8 @@ namespace Reshop.Infrastructure.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CommentTitle = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     CommentText = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -825,12 +1043,51 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EditShopperProducts",
+                columns: table => new
+                {
+                    EditShopperProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ShopperUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Warranty = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Price = table.Column<decimal>(type: "Money", nullable: false),
+                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSuccess = table.Column<bool>(type: "bit", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EditShopperProducts", x => x.EditShopperProductId);
+                    table.ForeignKey(
+                        name: "FK_EditShopperProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EditShopperProducts_Shoppers_ShopperId",
+                        column: x => x.ShopperId,
+                        principalTable: "Shoppers",
+                        principalColumn: "ShopperId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EditShopperProducts_Users_ShopperUserId",
+                        column: x => x.ShopperUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FavoriteProducts",
                 columns: table => new
                 {
                     FavoriteProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ShopperUserId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -902,7 +1159,8 @@ namespace Reshop.Infrastructure.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     QuestionTitle = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     QuestionText = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    QuestionDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    QuestionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -929,6 +1187,12 @@ namespace Reshop.Infrastructure.Migrations
                     ShopperUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ViewCount = table.Column<int>(type: "int", nullable: false),
                     SaleCount = table.Column<int>(type: "int", nullable: false),
+                    Warranty = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Price = table.Column<decimal>(type: "Money", nullable: false),
+                    DiscountPercent = table.Column<byte>(type: "tinyint", nullable: false),
+                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
+                    IsFinally = table.Column<bool>(type: "bit", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -955,37 +1219,53 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderDetails",
+                name: "UserProductsView",
                 columns: table => new
                 {
-                    OrderDetailId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ShopperUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Price = table.Column<decimal>(type: "Money", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TrackingCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Count = table.Column<int>(type: "int", maxLength: 3, nullable: false),
-                    Sum = table.Column<decimal>(type: "Money", nullable: false)
+                    UserProductViewId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserIPAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderDetails", x => x.OrderDetailId);
+                    table.PrimaryKey("PK_UserProductsView", x => x.UserProductViewId);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OrderDetails_Products_ProductId",
+                        name: "FK_UserProductsView_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    AddressId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TrackingCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OrderDiscount = table.Column<decimal>(type: "Money", nullable: false),
+                    ShippingCost = table.Column<decimal>(type: "Money", nullable: false),
+                    Sum = table.Column<decimal>(type: "Money", nullable: false),
+                    IsPayed = table.Column<bool>(type: "bit", nullable: false),
+                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsReceived = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Users_ShopperUserId",
-                        column: x => x.ShopperUserId,
+                        name: "FK_Orders_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "AddressId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
@@ -1047,15 +1327,58 @@ namespace Reshop.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "OrderDetails",
+                columns: table => new
+                {
+                    OrderDetailId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ShopperUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Price = table.Column<decimal>(type: "Money", nullable: false),
+                    ProductDiscount = table.Column<decimal>(type: "Money", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TrackingCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Count = table.Column<int>(type: "int", nullable: false),
+                    Sum = table.Column<decimal>(type: "Money", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderDetails", x => x.OrderDetailId);
+                    table.ForeignKey(
+                        name: "FK_OrderDetails_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderDetails_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderDetails_Users_ShopperUserId",
+                        column: x => x.ShopperUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_CityId",
+                table: "Addresses",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_StateId",
+                table: "Addresses",
+                column: "StateId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_UserId",
                 table: "Addresses",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BrandProducts_BrandId",
-                table: "BrandProducts",
-                column: "BrandId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChildCategoryToCategories_ChildCategoryId",
@@ -1083,6 +1406,21 @@ namespace Reshop.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EditShopperProducts_ProductId",
+                table: "EditShopperProducts",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EditShopperProducts_ShopperId",
+                table: "EditShopperProducts",
+                column: "ShopperId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EditShopperProducts_ShopperUserId",
+                table: "EditShopperProducts",
+                column: "ShopperUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FavoriteProducts_ProductId",
                 table: "FavoriteProducts",
                 column: "ProductId");
@@ -1108,6 +1446,11 @@ namespace Reshop.Infrastructure.Migrations
                 column: "ShopperUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_AddressId",
+                table: "Orders",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
                 column: "UserId");
@@ -1123,9 +1466,19 @@ namespace Reshop.Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Products_AuxDetailId",
+                table: "Products",
+                column: "AuxDetailId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_BatteryChargerDetailId",
                 table: "Products",
                 column: "BatteryChargerDetailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_BrandId",
+                table: "Products",
+                column: "BrandId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_FlashMemoryDetailId",
@@ -1233,6 +1586,21 @@ namespace Reshop.Infrastructure.Migrations
                 column: "CityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_StoresAddress_CityId",
+                table: "StoresAddress",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StoresAddress_ShopperId",
+                table: "StoresAddress",
+                column: "ShopperId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StoresAddress_StateId",
+                table: "StoresAddress",
+                column: "StateId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserDiscountCodes_DiscountId",
                 table: "UserDiscountCodes",
                 column: "DiscountId");
@@ -1241,6 +1609,11 @@ namespace Reshop.Infrastructure.Migrations
                 name: "IX_UserInvites_InviterUserId",
                 table: "UserInvites",
                 column: "InviterUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProductsView_ProductId",
+                table: "UserProductsView",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
@@ -1266,16 +1639,13 @@ namespace Reshop.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Addresses");
-
-            migrationBuilder.DropTable(
-                name: "BrandProducts");
-
-            migrationBuilder.DropTable(
                 name: "ChildCategoryToCategories");
 
             migrationBuilder.DropTable(
                 name: "CommentAnswers");
+
+            migrationBuilder.DropTable(
+                name: "EditShopperProducts");
 
             migrationBuilder.DropTable(
                 name: "FavoriteProducts");
@@ -1305,19 +1675,22 @@ namespace Reshop.Infrastructure.Migrations
                 name: "StateCities");
 
             migrationBuilder.DropTable(
+                name: "StoresAddress");
+
+            migrationBuilder.DropTable(
                 name: "UserDiscountCodes");
 
             migrationBuilder.DropTable(
                 name: "UserInvites");
 
             migrationBuilder.DropTable(
+                name: "UserProductsView");
+
+            migrationBuilder.DropTable(
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
                 name: "Wallets");
-
-            migrationBuilder.DropTable(
-                name: "Brands");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -1341,12 +1714,6 @@ namespace Reshop.Infrastructure.Migrations
                 name: "StoreTitles");
 
             migrationBuilder.DropTable(
-                name: "Cities");
-
-            migrationBuilder.DropTable(
-                name: "States");
-
-            migrationBuilder.DropTable(
                 name: "Discounts");
 
             migrationBuilder.DropTable(
@@ -1356,13 +1723,28 @@ namespace Reshop.Infrastructure.Migrations
                 name: "WalletTypes");
 
             migrationBuilder.DropTable(
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Cities");
+
+            migrationBuilder.DropTable(
+                name: "States");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
+                name: "AuxDetails");
+
+            migrationBuilder.DropTable(
                 name: "BatteryChargerDetails");
+
+            migrationBuilder.DropTable(
+                name: "Brands");
 
             migrationBuilder.DropTable(
                 name: "FlashMemoryDetails");

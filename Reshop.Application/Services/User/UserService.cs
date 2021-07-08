@@ -1,17 +1,13 @@
-﻿using Reshop.Application.Interfaces.User;
-using Reshop.Application.Security;
+﻿using Reshop.Application.Enums;
+using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.User;
-using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
+using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Application.Convertors;
-using Reshop.Application.Enums;
-using Reshop.Domain.DTOs.Product;
-using Reshop.Domain.Interfaces.Shopper;
 
 namespace Reshop.Application.Services.User
 {
@@ -32,13 +28,13 @@ namespace Reshop.Application.Services.User
 
         #endregion
 
-        public async Task<AddOrEditUserViewModel> GetUserDataAsync(string userId)
+        public async Task<AddOrEditUserForAdminViewModel> GetUserDataForAdminAsync(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             var roles = _roleRepository.GetRoles();
             var userRoles = _roleRepository.GetRolesIdOfUser(userId);
 
-            return new AddOrEditUserViewModel()
+            return new AddOrEditUserForAdminViewModel()
             {
                 UserId = user.UserId,
                 FullName = user.FullName,
@@ -53,6 +49,9 @@ namespace Reshop.Application.Services.User
                 SelectedRoles = userRoles as IEnumerable<string>
             };
         }
+
+        public async Task<EditUserViewModel> GetUserDataForEditAsync(string userId) =>
+            await _userRepository.GetUserDataForEditAsync(userId);
 
         public int GetUserWalletBalance(string userId)
         {

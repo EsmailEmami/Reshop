@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\ManagerPanel\Views\Shared\" />
     <Folder Include="wwwroot\images\ProductImages\thumb\" />
     <Folder Include="wwwroot\images\shoppersCardImages\" />
   </ItemGroup>

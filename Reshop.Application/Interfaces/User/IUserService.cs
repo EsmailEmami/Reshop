@@ -11,7 +11,10 @@ namespace Reshop.Application.Interfaces.User
     {
 
 
-        Task<AddOrEditUserViewModel> GetUserDataAsync(string userId);
+        Task<AddOrEditUserForAdminViewModel> GetUserDataForAdminAsync(string userId);
+
+        Task<EditUserViewModel> GetUserDataForEditAsync(string userId);
+
         int GetUserWalletBalance(string userId);
         IAsyncEnumerable<Domain.Entities.User.User> GetUsers();
         IAsyncEnumerable<UserInformationViewModel> GetUsersInformation();

@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Reshop.Application.Enums.Product;
-using Reshop.Application.Interfaces.Product;
-using Reshop.Application.Interfaces.User;
-using Reshop.Application.Security.Attribute;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
-using Reshop.Application.Attribute;
+using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
+using Reshop.Application.Enums.Product;
+using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
+using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.Entities.User;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.User
 {
@@ -242,6 +240,23 @@ namespace Reshop.Web.Controllers.User
                 ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditAddress", model) });
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUserInformation()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var user = await _userService.GetUserDataForEditAsync(userId);
+
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            user.UserId = _dataProtector.Protect(user.UserId);
+
+            return View(user);
         }
 
 

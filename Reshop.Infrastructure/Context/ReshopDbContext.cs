@@ -45,7 +45,6 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<ShopperProduct> ShopperProducts { get; set; }
         public virtual DbSet<UserInvite> UserInvites { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
-        public virtual DbSet<BrandProduct> BrandProducts { get; set; }
         public virtual DbSet<TabletDetail> TabletDetails { get; set; }
         public virtual DbSet<SpeakerDetail> SpeakerDetails { get; set; }
         public virtual DbSet<AUXDetail> AuxDetails { get; set; }

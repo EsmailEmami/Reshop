@@ -10,8 +10,8 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    [Migration("20210628114128_editOrderDetail")]
-    partial class editOrderDetail
+    [Migration("20210708184554_Tables")]
+    partial class Tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -124,28 +124,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("Brands");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Entities.Product.BrandProduct", b =>
-                {
-                    b.Property<int>("BrandProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BrandProductName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("BrandProductId");
-
-                    b.HasIndex("BrandId");
-
-                    b.ToTable("BrandProducts");
-                });
-
             modelBuilder.Entity("Reshop.Domain.Entities.Product.FavoriteProduct", b =>
                 {
                     b.Property<string>("FavoriteProductId")
@@ -179,18 +157,14 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AuxDetailId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("BatteryChargerDetailId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Brand")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("BrandProduct")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                    b.Property<int>("BrandId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
@@ -250,7 +224,11 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.HasKey("ProductId");
 
+                    b.HasIndex("AuxDetailId");
+
                     b.HasIndex("BatteryChargerDetailId");
+
+                    b.HasIndex("BrandId");
 
                     b.HasIndex("FlashMemoryDetailId");
 
@@ -277,6 +255,27 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Product.ProductDetail.AUXDetail", b =>
+                {
+                    b.Property<int>("AUXDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("CableLenght")
+                        .HasMaxLength(20)
+                        .HasColumnType("float");
+
+                    b.Property<string>("CableMaterial")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("AUXDetailId");
+
+                    b.ToTable("AuxDetails");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Product.ProductDetail.BatteryChargerDetail", b =>
                 {
                     b.Property<int>("BatteryChargerDetailId")
@@ -284,16 +283,60 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("InputVoltage")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Lenght")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("MobileCable")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("MoreInformation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("OutputCurrentIntensity")
                         .HasColumnType("float");
 
                     b.Property<byte>("OutputPortsCount")
                         .HasColumnType("tinyint");
+
+                    b.Property<string>("OutputTypeCharger")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("OutputVoltage")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Weight")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("BatteryChargerDetailId");
 
@@ -307,16 +350,74 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("Capacity")
-                        .HasColumnType("float");
+                    b.Property<bool>("AntiScratch")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AntiStain")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("BodyMaterial")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
 
                     b.Property<string>("Connector")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<bool>("DustResistance")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<bool>("IsImpactResistance")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("Led")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Length")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("MoreInformation")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<string>("OsCompatibility")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
+
+                    b.Property<bool>("ShockResistance")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SpeedDataReading")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("SpeedDataTransfer")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("WaterResistance")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("FlashDetailId");
 
@@ -370,59 +471,195 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                    b.Property<bool>("BacklightKey")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("GPUManufacturer")
+                    b.Property<string>("BatteryCharging")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("InternalMemory")
+                    b.Property<string>("BatteryInformation")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("BatteryMaterial")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("Bluetooth")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("BlurDisplay")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Classification")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
+
+                    b.Property<string>("CpuCache")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CpuCompany")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CpuFerequancy")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CpuModel")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CpuSeries")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("DiskDrive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("DisplayPort")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("DisplayResolutation")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsHDMIPort")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsMatteScreen")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsTouchScreen")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("OperatingSystem")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ProcessorSeries")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("RAMCapacity")
+                    b.Property<string>("DisplaySize")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<string>("RAMType")
+                    b.Property<string>("DisplayTeachnology")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ScreenAccuracy")
+                    b.Property<bool>("FingerTouch")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("GpuCompany")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("GpuModel")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("GpuRam")
+                        .HasMaxLength(5)
+                        .HasColumnType("int");
+
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("HtmiPort")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LanPort")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Length")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ModemInformation")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Size")
+                    b.Property<string>("Os")
                         .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("RamStorage")
+                        .HasMaxLength(3)
+                        .HasColumnType("int");
+
+                    b.Property<string>("RamStorageTeachnology")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("RefreshDisplay")
+                        .HasMaxLength(5)
+                        .HasColumnType("int");
+
+                    b.Property<int>("Storage")
+                        .HasMaxLength(5)
+                        .HasColumnType("int");
+
+                    b.Property<string>("StorageInformation")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("StorageTeachnology")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("TouchDisplay")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TouchPadInformation")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("Usb3Port")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Usb3Quantity")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
+
+                    b.Property<bool>("UsbCPort")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("UsbCQuantity")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsbQuantity")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
+
+                    b.Property<bool>("VgaPort")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Webcam")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Weight")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("Wifi")
+                        .HasColumnType("bit");
 
                     b.HasKey("LaptopDetailId");
 
@@ -441,20 +678,39 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Length")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("MoreInformation")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("ReadingSpeed")
+                        .HasMaxLength(100)
+                        .HasColumnType("int");
+
                     b.Property<string>("ResistsAgainst")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Size")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("SpeedStandard")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("MemoryCardDetailId");
 
@@ -505,61 +761,262 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BackCameras")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CommunicationNetworks")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("DisplayTechnology")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Features")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("InternalMemory")
+                    b.Property<string>("Announced")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("OperatingSystem")
+                    b.Property<string>("AudioInformation")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
-                    b.Property<string>("OperatingSystemVersion")
+                    b.Property<int>("BatteryCapacity")
+                        .HasMaxLength(6)
+                        .HasColumnType("int");
+
+                    b.Property<string>("BatteryMaterial")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("PhotoResolution")
+                    b.Property<string>("Bluetooth")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
 
-                    b.Property<byte>("QuantitySIMCard")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("RAMValue")
+                    b.Property<string>("CameraCapabilities")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SIMCardDescription")
+                    b.Property<int>("CameraQuantity")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
+
+                    b.Property<string>("ChipsetName")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<bool>("ColorDisplay")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CommunicationTechnology")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<double>("Size")
-                        .HasColumnType("float");
+                    b.Property<string>("ConnectionPort")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
+
+                    b.Property<string>("ConnectionsNetwork")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("Cpu")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("CpuAndFrequency")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("CpuArch")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("DisplayProtection")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("DisplaySize")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("DisplayTechnology")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("Filming")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FiveGNetwork")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("GpsInformation")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Gpu")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("GsmNetwork")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("HspaNetwork")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ImageRatio")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<int>("InternalStorage")
+                        .HasMaxLength(40)
+                        .HasColumnType("int");
+
+                    b.Property<string>("ItemsInBox")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Lenght")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("LteNetwork")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("MoreInformation")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("MoreInformationSoftWare")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OS")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("OsVersion")
+                        .HasMaxLength(3)
+                        .HasColumnType("int");
+
+                    b.Property<string>("OutputAudio")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("PhotoResolutation")
+                        .HasMaxLength(4)
+                        .HasColumnType("int");
+
+                    b.Property<string>("PixelDensity")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("Radio")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Ram")
+                        .HasMaxLength(40)
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RemovableBattery")
+                        .HasMaxLength(6)
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Resolution")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ScreenToBodyRatio")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("SdCard")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("SdCardStandard")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("SelfiCameraCapabilities")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SelfiCameraPhoto")
+                        .HasMaxLength(4)
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sensors")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("SeparateSlotMemoryCard")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SimCardInpute")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("SimCardQuantity")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Speakers")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TouchDisplay")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UiVersion")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Weight")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("WiFi")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("MobileDetailId");
 
@@ -583,10 +1040,26 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("DisplayCharge")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("Features")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<double>("InputCurrentIntensity")
+                        .HasColumnType("float");
+
+                    b.Property<double>("InputVoltage")
+                        .HasColumnType("float");
 
                     b.Property<bool>("IsSupportOfPDTechnology")
                         .HasMaxLength(200)
@@ -596,16 +1069,29 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("bit");
 
+                    b.Property<string>("Length")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<double>("OutputCurrentIntensity")
                         .HasColumnType("float");
 
-                    b.Property<byte>("OutputPortsCount")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("OutputPortsCount")
+                        .HasColumnType("int");
+
+                    b.Property<double>("OutputVoltage")
+                        .HasColumnType("float");
 
                     b.Property<string>("Weight")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("PowerBankId");
 
@@ -619,7 +1105,32 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BodyMaterial")
+                    b.Property<string>("Application")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("BatteryMaterial")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("CallIsSoppurt")
+                        .HasMaxLength(50)
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Camera")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CaseMaterial")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("ColorDisplay")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Compatibility")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
@@ -629,47 +1140,114 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<bool>("IsDirectTalkable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSIMCardSupporter")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsScreenColorful")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSuitableForMen")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSuitableForWomen")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSupportGPS")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSupportSIMCardRegister")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsTalkableWithBluetooth")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsTouchScreen")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Sensors")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("WatchForm")
+                    b.Property<string>("DisplayForm")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<string>("WorkSuggestion")
+                    b.Property<double>("DisplaySize")
+                        .HasMaxLength(8)
+                        .HasColumnType("float");
+
+                    b.Property<string>("DisplayType")
                         .IsRequired()
-                        .HasMaxLength(70)
-                        .HasColumnType("nvarchar(70)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("ExternalStorageSoppurt")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("GlassMaterial")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("GpsIsSoppurt")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("InternalStorage")
+                        .HasMaxLength(10)
+                        .HasColumnType("int");
+
+                    b.Property<string>("Lenght")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("MaterialStrap")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("MoreInformationDisplay")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("MoreInformationHardware")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("MusicControl")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Os")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("PixelDensity")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("Prossecor")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("RegisteredSimCardIsSoppurt")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Resolution")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Sensors")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<bool>("SimcardIsSoppurt")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SuitableFor")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<bool>("TouchDisplay")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TypeOfLock")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("Weight")
+                        .HasMaxLength(20)
+                        .HasColumnType("int");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("SmartWatchDetailId");
 
@@ -683,8 +1261,16 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("BluetoothVersion")
-                        .HasColumnType("float");
+                    b.Property<bool>("Bluetooth")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ChargingTime")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("ConnectTwoDevice")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ConnectionType")
                         .IsRequired()
@@ -696,10 +1282,27 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<bool>("IsMemoryCardInput")
+                    b.Property<bool>("ControlRemote")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSupportBattery")
+                    b.Property<bool>("Display")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HeadphoneOutput")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Height")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("InputSound")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsBattery")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMemoryCardInput")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsSupportMicrophone")
@@ -710,6 +1313,33 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.Property<bool>("IsSupportUSBPort")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Lenght")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("MicrophoneInpute")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("OsSoppurt")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("PlayingTime")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("SpeakerItemQuantity")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("SpeakerDetailId");
 
@@ -723,55 +1353,268 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CommunicationNetworks")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CommunicationPorts")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("CommunicationTechnologies")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Features")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("InternalMemory")
+                    b.Property<string>("Announced")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<bool>("IsSIMCardSupporter")
+                    b.Property<string>("AudioInformation")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("BatteryCapacity")
+                        .HasMaxLength(6)
+                        .HasColumnType("int");
+
+                    b.Property<string>("BatteryMaterial")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Bluetooth")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
+
+                    b.Property<bool>("Call")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsTalkAbility")
+                    b.Property<string>("CameraCapabilities")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CameraQuantity")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
+
+                    b.Property<string>("ChipsetName")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<bool>("ColorDisplay")
                         .HasColumnType("bit");
 
-                    b.Property<string>("OperatingSystemVersion")
+                    b.Property<string>("CommunicationTechnology")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ConnectionPort")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("nvarchar(70)");
+
+                    b.Property<string>("ConnectionsNetwork")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("Cpu")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("CpuAndFrequency")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("CpuArch")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("DisplayProtection")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("DisplaySize")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("DisplayTechnology")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("Filming")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FiveGNetwork")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("GpsInformation")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Gpu")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("GsmNetwork")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<byte>("QuantitySIMCard")
-                        .HasMaxLength(10)
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("RAMValue")
+                    b.Property<string>("Height")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("Size")
+                    b.Property<string>("HspaNetwork")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ImageRatio")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<int>("InternalStorage")
+                        .HasMaxLength(40)
+                        .HasColumnType("int");
+
+                    b.Property<string>("ItemsInBox")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Lenght")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("LteNetwork")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("MoreInformation")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("MoreInformationSoftWare")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OS")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("OsVersion")
+                        .HasMaxLength(3)
+                        .HasColumnType("int");
+
+                    b.Property<string>("OutputAudio")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("PhotoResolutation")
+                        .HasMaxLength(4)
+                        .HasColumnType("int");
+
+                    b.Property<string>("PixelDensity")
+                        .IsRequired()
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("Radio")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Ram")
+                        .HasMaxLength(40)
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RemovableBattery")
+                        .HasMaxLength(6)
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Resolution")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ScreenToBodyRatio")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("SdCard")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("SdCardStandard")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("SelfiCameraCapabilities")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SelfiCameraPhoto")
+                        .HasMaxLength(4)
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sensors")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("SeparateSlotMemoryCard")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SimCardInpute")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("SimCardIsTrue")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SimCardQuantity")
+                        .HasMaxLength(2)
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Speakers")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TouchDisplay")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UiVersion")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Weight")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("WiFi")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Width")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("TabletDetailId");
 
@@ -926,16 +1769,8 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("Condition")
+                    b.Property<bool>("IsFinally")
                         .HasColumnType("bit");
-
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LandlinePhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("OnNationalCardImageName")
                         .IsRequired()
@@ -1016,6 +1851,52 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("ShopperStoreTitles");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreAddress", b =>
+                {
+                    b.Property<string>("StoreAddressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AddressText")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LandlinePhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("Plaque")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("ShopperId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StoreAddressId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("ShopperId");
+
+                    b.HasIndex("StateId");
+
+                    b.ToTable("StoresAddress");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreTitle", b =>
                 {
                     b.Property<int>("StoreTitleId")
@@ -1044,25 +1925,40 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<string>("City")
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("Plaque")
                         .IsRequired()
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
-                    b.Property<string>("State")
+                    b.Property<string>("PostalCode")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("StateId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("AddressId");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("StateId");
 
                     b.HasIndex("UserId");
 
@@ -1105,6 +2001,9 @@ namespace Reshop.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -1203,6 +2102,9 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<DateTime>("PayDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("ShippingCost")
+                        .HasColumnType("Money");
+
                     b.Property<decimal>("Sum")
                         .HasColumnType("Money");
 
@@ -1275,6 +2177,9 @@ namespace Reshop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -1429,11 +2334,6 @@ namespace Reshop.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
 
                     b.Property<DateTime>("RegisteredDate")
                         .HasColumnType("datetime2");
@@ -1600,17 +2500,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Entities.Product.BrandProduct", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.Product.Brand", "Brand")
-                        .WithMany("BrandProducts")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Brand");
-                });
-
             modelBuilder.Entity("Reshop.Domain.Entities.Product.FavoriteProduct", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.Product.Product", "Product")
@@ -1630,9 +2519,19 @@ namespace Reshop.Infrastructure.Migrations
 
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Product", b =>
                 {
+                    b.HasOne("Reshop.Domain.Entities.Product.ProductDetail.AUXDetail", "AuxDetail")
+                        .WithMany()
+                        .HasForeignKey("AuxDetailId");
+
                     b.HasOne("Reshop.Domain.Entities.Product.ProductDetail.BatteryChargerDetail", "BatteryChargerDetail")
                         .WithMany()
                         .HasForeignKey("BatteryChargerDetailId");
+
+                    b.HasOne("Reshop.Domain.Entities.Product.Brand", "Brand")
+                        .WithMany()
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Reshop.Domain.Entities.Product.ProductDetail.FlashMemoryDetail", "FlashMemoryDetail")
                         .WithMany()
@@ -1678,7 +2577,11 @@ namespace Reshop.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("WristWatchDetailId");
 
+                    b.Navigation("AuxDetail");
+
                     b.Navigation("BatteryChargerDetail");
+
+                    b.Navigation("Brand");
 
                     b.Navigation("FlashMemoryDetail");
 
@@ -1807,11 +2710,52 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("StoreTitle");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreAddress", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.User.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.Shopper.Shopper", "Shopper")
+                        .WithMany("StoresAddress")
+                        .HasForeignKey("ShopperId");
+
+                    b.HasOne("Reshop.Domain.Entities.User.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("Shopper");
+
+                    b.Navigation("State");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.Address", b =>
                 {
+                    b.HasOne("Reshop.Domain.Entities.User.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.State", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Reshop.Domain.Entities.User.User", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("City");
+
+                    b.Navigation("State");
 
                     b.Navigation("User");
                 });
@@ -2035,11 +2979,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("RolePermissions");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Entities.Product.Brand", b =>
-                {
-                    b.Navigation("BrandProducts");
-                });
-
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Product", b =>
                 {
                     b.Navigation("Comments");
@@ -2064,6 +3003,8 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("ShopperProducts");
 
                     b.Navigation("ShopperTitles");
+
+                    b.Navigation("StoresAddress");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreTitle", b =>

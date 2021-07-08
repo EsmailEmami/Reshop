@@ -17,6 +17,7 @@ namespace Reshop.Domain.Interfaces.User
         Task<Entities.User.User> GetUserByInviteCodeAsync(string inviteCode);
         Task<Entities.User.User> GetUserByIdAsync(string userId);
         Task<Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber);
+        Task<EditUserViewModel> GetUserDataForEditAsync(string userId);
 
         Task AddUserAsync(Entities.User.User user);
         Task AddUserInviteAsync(UserInvite userInvite);

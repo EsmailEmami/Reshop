@@ -9,9 +9,6 @@ namespace Reshop.Domain.Entities.Product
 {
     public class Brand
     {
-        public Brand()
-        {
-        }
         [Key]
         public int BrandId { get; set; }
 
@@ -19,11 +16,5 @@ namespace Reshop.Domain.Entities.Product
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string BrandName { get; set; }
-
-        #region Relations
-
-        public virtual ICollection<BrandProduct> BrandProducts { get; set; }
-
-        #endregion
     }
 }
