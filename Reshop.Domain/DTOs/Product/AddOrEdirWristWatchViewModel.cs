@@ -6,8 +6,7 @@ namespace Reshop.Domain.DTOs.Product
 {
     public class AddOrEdirWristWatchViewModel
     {
-        [Required]
-        public string ShopperUserId { get; set; }
+        // product 
 
         public int ProductId { get; set; }
 
@@ -20,40 +19,59 @@ namespace Reshop.Domain.DTOs.Product
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public string Description { get; set; }
 
-        [Display(Name = "قیمت محصول")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [Range(1000, 1000000000, ErrorMessage = "{0} نمی تواند کمتر از {1} تومان و بیشتر از {2} تومان باشد")]
-        [RegularExpression("([0-9]+)", ErrorMessage = "لطفا عدد وارد کنید")]
-        public decimal Price { get; set; }
-
-        [Display(Name = "تعداد موجودی")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [RegularExpression("([0-9]+)", ErrorMessage = "لطفا عدد وارد کنید")]
-        public int QuantityInStock { get; set; }
-
         [Display(Name = "برند محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string ProductBrand { get; set; }
+        public int Brand { get; set; }
 
         [Display(Name = "نام محصول برند")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string BrandProduct { get; set; }
+        public int BrandProduct { get; set; }
 
-        [Display(Name = "GPS")]
+
+
+        // --------------------------------------------------------------------------- ITEMS
+
+
+
+        // ---------------------------------------------------------------------------IMG
+
+        [Display(Name = "عکس شماره 1")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public bool IsSupportGPS { get; set; }
+        public IFormFile SelectedImage1 { get; set; }
 
-        [Display(Name = "صفحه نمایش لمسی")]
+        [Display(Name = "عکس شماره 2")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public bool IsTouchScreen { get; set; }
+        public IFormFile SelectedImage2 { get; set; }
 
-        [Display(Name = "فرم صفحه")]
+        [Display(Name = "عکس شماره 3")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string WatchForm { get; set; }
+        public IFormFile SelectedImage3 { get; set; }
 
-        public IEnumerable<IFormFile> SelectedImages { get; set; }
+        [Display(Name = "عکس شماره 4")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public IFormFile SelectedImage4 { get; set; }
+
+        [Display(Name = "عکس شماره 5")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public IFormFile SelectedImage5 { get; set; }
+
+        [Display(Name = "عکس شماره 6")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public IFormFile SelectedImage6 { get; set; }
+
+
+        // for show on edit
+
+        public string SelectedImage1IMG { get; set; }
+
+        public string SelectedImage2IMG { get; set; }
+
+        public string SelectedImage3IMG { get; set; }
+
+        public string SelectedImage4IMG { get; set; }
+
+        public string SelectedImage5IMG { get; set; }
+
+        public string SelectedImage6IMG { get; set; }
     }
 }

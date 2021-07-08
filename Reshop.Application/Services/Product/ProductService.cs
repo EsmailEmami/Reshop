@@ -261,9 +261,9 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetTypeSpeakerProductDataForEditAsync(productId);
 
-        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeWristWatchProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeWristWatchProductDataForEditAsync(productId);
 
         public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId)
             =>

@@ -52,7 +52,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperUserId);
         Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId);
         Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId);
-        Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId);
         Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId);
         Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId);
         Task<AddOrEditAUXViewModel> GetTypeAUXProductDataAsync(int productId);

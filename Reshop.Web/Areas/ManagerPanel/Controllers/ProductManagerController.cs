@@ -1127,7 +1127,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId, "");
+                var product = await _productService.GetTypeLaptopProductDataAsync(productId);
                 if (product == null)
                 {
                     return NotFound();
@@ -1844,7 +1844,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeLaptopProductDataAsync(productId, "");
+                var product = await _productService.GetTypeWristWatchProductDataAsync(productId);
                 if (product == null)
                 {
                     return NotFound();

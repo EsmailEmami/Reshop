@@ -944,19 +944,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEditHandsfreeAndHeadPhoneViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        ConnectionType = c.Product.HandsfreeAndHeadPhoneDetail.ConnectionType,
-                        PhoneType = c.Product.HandsfreeAndHeadPhoneDetail.PhoneType,
-                        WorkSuggestion = c.Product.HandsfreeAndHeadPhoneDetail.WorkSuggestion,
-                        Connector = c.Product.HandsfreeAndHeadPhoneDetail.Connector,
-                        IsSupportBattery = c.Product.HandsfreeAndHeadPhoneDetail.IsSupportBattery,
-                        Features = c.Product.HandsfreeAndHeadPhoneDetail.Features
+                       
                     }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId) =>
@@ -1080,22 +1068,26 @@ namespace Reshop.Infrastructure.Repository.Product
                         OsSoppurt = c.SpeakerDetail.OsSoppurt,
                     }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEdirWristWatchViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        IsSupportGPS = c.Product.WristWatchDetail.IsSupportGPS,
-                        IsTouchScreen = c.Product.WristWatchDetail.IsTouchScreen,
-                        WatchForm = c.Product.WristWatchDetail.WatchForm
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                    }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId) =>
             await _context.Products
