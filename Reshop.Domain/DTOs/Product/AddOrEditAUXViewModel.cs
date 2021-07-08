@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Reshop.Domain.DTOs.Product
 {
-    public class AddOrEdirWristWatchViewModel
+    public class AddOrEditAUXViewModel
     {
         // product 
 
@@ -31,7 +35,15 @@ namespace Reshop.Domain.DTOs.Product
 
         // --------------------------------------------------------------------------- ITEMS
 
+        [Display(Name = "نوع کابل")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string CableMaterial { get; set; }
 
+        [Display(Name = "طول کابل")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public double CableLenght { get; set; }
 
         // ---------------------------------------------------------------------------IMG
 

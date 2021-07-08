@@ -53,6 +53,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
+        Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);
         Task<MobileCoverDetail> GetMobileCoverDetailByIdAsync(int mobileCoverId);
         Task<TabletDetail> GetTabletDetailByIdAsync(int tabletDetailId);
         Task<FlashMemoryDetail> GetFlashMemoryDetailByIdAsync(int flashMemoryId);
@@ -60,21 +61,23 @@ namespace Reshop.Domain.Interfaces.Product
         Task<SmartWatchDetail> GetSmartWatchDetailByIdAsync(int smartWatchDetailId);
         Task<WristWatchDetail> GetWristWatchDetailByIdAsync(int wristWatchDetailId);
         Task<MemoryCardDetail> GetMemoryCardDetailByIdAsync(int memoryCardDetailId);
+        Task<AUXDetail> GetAUXByIdAsync(int auxId);
         Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeOrHeadPhoneDetailId);
         IEnumerable<ProductGallery> GetProductImages(int productId);
 
 
-        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId, string shopperUserId);
-        Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId, string shopperUserId);
-        Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId, string shopperUserId);
-        Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId);
+        Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId);
+        Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataForEditAsync(int productId);
+        Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId);
+        Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId);
         Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperUserId);
-        Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId, string shopperUserId);
-        Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId, string shopperUserId);
-        Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId, string shopperUserId);
-        Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId, string shopperUserId);
-        Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId, string shopperUserId);
-
+        Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId);
+        Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId);
+        Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId);
+        Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId);
+        Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId);
+        Task<AddOrEditAUXViewModel> GetTypeAUXProductDataForEditAsync(int productId);
         Task<string> GetProductTypeAsync(int productId);
         Task<ProductGallery> GetProductGalleryByIdAsync(string productGalleryId);
         Task<int> GetProductGalleriesCountByProductIdAsync(int productId);
@@ -93,6 +96,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task AddProductAsync(Entities.Product.Product product);
         Task AddMobileDetailAsync(MobileDetail mobileDetail);
         Task AddLaptopDetailAsync(LaptopDetail laptopDetail);
+        Task AddPowerBankDetailAsync(PowerBankDetail powerBank);
         Task AddProductGalley(ProductGallery productGallery);
         Task AddMobileCoverDetailAsync(MobileCoverDetail mobileCoverDetail);
         Task AddTabletDetailAsync(TabletDetail tabletDetail);
@@ -102,7 +106,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task AddWristWatchDetailAsync(WristWatchDetail wristWatchDetail);
         Task AddSmartWatchAsync(SmartWatchDetail smartWatchDetail);
         Task AddMemoryCardDetailAsync(MemoryCardDetail memoryCardDetail);
-
+        Task AddAUXDetailAsync(AUXDetail auxDetail);
 
 
 
@@ -110,6 +114,7 @@ namespace Reshop.Domain.Interfaces.Product
         void UpdateProduct(Entities.Product.Product product);
         void UpdateMobileDetail(MobileDetail mobileDetail);
         void UpdateLaptopDetail(LaptopDetail laptopDetail);
+        void UpdatePowerBankDetail(PowerBankDetail powerBank);
         void UpdateMobileCoverDetail(MobileCoverDetail mobileCoverDetail);
         void UpdateTabletDetail(TabletDetail tabletDetail);
         void UpdateHandsfreeAndHeadPhoneDetail(HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail);
@@ -118,6 +123,7 @@ namespace Reshop.Domain.Interfaces.Product
         void UpdateWristWatchDetail(WristWatchDetail wristWatchDetail);
         void UpdateSmartWatch(SmartWatchDetail smartWatchDetail);
         void UpdateMemoryCardDetail(MemoryCardDetail memoryCardDetail);
+        void UpdateAUXDetail(AUXDetail auxDetail);
 
 
 

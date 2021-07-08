@@ -130,6 +130,11 @@ namespace Reshop.Application.Services.Product
             return await _productRepository.GetLaptopDetailByIdAsync(laptopDetailId);
         }
 
+        public async Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId)
+        {
+            return await _productRepository.GetPowerBankDetailByIdAsync(powerBankId);
+        }
+
         public async Task<MobileCoverDetail> GetMobileCoverByIdAsync(int mobileCoverId)
             =>
                 await _productRepository.GetMobileCoverDetailByIdAsync(mobileCoverId);
@@ -157,6 +162,9 @@ namespace Reshop.Application.Services.Product
         public async Task<MemoryCardDetail> GetMemoryCardByIdAsync(int memoryCardId)
             =>
                 await _productRepository.GetMemoryCardDetailByIdAsync(memoryCardId);
+
+        public async Task<AUXDetail> GetAUXByIdAsync(int auxId) =>
+            await _productRepository.GetAUXByIdAsync(auxId);
 
         public async Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeAndHeadPhoneDetailId)
             =>
@@ -221,46 +229,53 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetProductByShortKeyAsync(key);
 
-
-        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeMobileProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeMobileProductDataForEditAsync(productId);
 
-        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeLaptopProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeLaptopProductDataForEditAsync(productId);
 
-        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeMobileCoverProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypePowerBankProductDataForEditAsync(productId);
 
-        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeTabletProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeMobileCoverProductDataForEditAsync(productId);
+
+        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId)
+            =>
+                await _productRepository.GetTypeTabletProductDataForEditAsync(productId);
 
         public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperUserId)
             =>
                 await _productRepository.GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(productId, shopperUserId);
 
-        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeFlashMemoryProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeFlashMemoryProductDataForEditAsync(productId);
 
-        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeSpeakerProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeSpeakerProductDataForEditAsync(productId);
 
-        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeWristWatchProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeWristWatchProductDataForEditAsync(productId);
 
-        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeSmartWatchProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeSmartWatchProductDataForEditAsync(productId);
 
-        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId)
             =>
-                await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId);
+
+        public async Task<AddOrEditAUXViewModel> GetTypeAUXProductDataAsync(int productId)
+            =>
+                await _productRepository.GetTypeAUXProductDataForEditAsync(productId);
 
         public async Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail)
         {
@@ -358,6 +373,32 @@ namespace Reshop.Application.Services.Product
 
                 product.LaptopDetailId = laptopDetail.LaptopDetailId;
                 product.LaptopDetail = laptopDetail;
+
+                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
+                {
+                    product.ShortKey = NameGenerator.GenerateShortKey();
+                }
+
+                await _productRepository.AddProductAsync(product);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> AddPowerBankAsync(Domain.Entities.Product.Product product, PowerBankDetail powerBank)
+        {
+            try
+            {
+                await _productRepository.AddPowerBankDetailAsync(powerBank);
+                await _productRepository.SaveChangesAsync();
+
+                product.PowerBankDetailId = powerBank.PowerBankId;
+                product.PowerBankDetail = powerBank;
 
                 while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
                 {
@@ -583,6 +624,32 @@ namespace Reshop.Application.Services.Product
             }
         }
 
+        public async Task<ResultTypes> AddAUXAsync(Domain.Entities.Product.Product product, AUXDetail auxDetail)
+        {
+            try
+            {
+                await _productRepository.AddAUXDetailAsync(auxDetail);
+                await _productRepository.SaveChangesAsync();
+
+                product.AuxDetailId = auxDetail.AUXDetailId;
+                product.AuxDetail = auxDetail;
+
+                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
+                {
+                    product.ShortKey = NameGenerator.GenerateShortKey();
+                }
+
+                await _productRepository.AddProductAsync(product);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task AddProductGalleryAsync(ProductGallery productGallery)
         {
             await _productRepository.AddProductGalley(productGallery);
@@ -646,6 +713,30 @@ namespace Reshop.Application.Services.Product
                 else
                 {
                     _productRepository.UpdateLaptopDetail(laptopDetail);
+                    _productRepository.UpdateProduct(product);
+
+                    await _productRepository.SaveChangesAsync();
+
+                    return ResultTypes.Successful;
+                }
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditPowerBankAsync(Domain.Entities.Product.Product product, PowerBankDetail powerBank)
+        {
+            try
+            {
+                if (!await _productRepository.IsProductExistAsync(product.ProductId))
+                {
+                    return ResultTypes.Failed;
+                }
+                else
+                {
+                    _productRepository.UpdatePowerBankDetail(powerBank);
                     _productRepository.UpdateProduct(product);
 
                     await _productRepository.SaveChangesAsync();
@@ -825,6 +916,27 @@ namespace Reshop.Application.Services.Product
 
 
                 _productRepository.UpdateMemoryCardDetail(memoryCardDetail);
+                _productRepository.UpdateProduct(product);
+
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditAUXAsync(Domain.Entities.Product.Product product, AUXDetail auxDetail)
+        {
+            try
+            {
+                if (!await _productRepository.IsProductExistAsync(product.ProductId))
+                    return ResultTypes.Failed;
+
+
+                _productRepository.UpdateAUXDetail(auxDetail);
                 _productRepository.UpdateProduct(product);
 
                 await _productRepository.SaveChangesAsync();

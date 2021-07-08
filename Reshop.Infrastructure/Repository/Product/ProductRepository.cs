@@ -3,15 +3,13 @@ using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
+using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Infrastructure.Context;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp;
-using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -71,7 +69,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand,
+                BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
                 ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
@@ -133,7 +131,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand,
+                BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
                 ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
@@ -189,7 +187,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand,
+                BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
                 ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
             });
@@ -206,12 +204,12 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.CategoryId == categoryId)
                 .Select(c => c.ChildCategory)
                 .SelectMany(c => c.ProductToChildCategories)
-                .Select(c => c.Product.Brand).Distinct();
+                .Select(c => c.Product.Brand.BrandName).Distinct();
 
         public IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId) =>
             _context.ProductToChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.Product.Brand).Distinct();
+                .Select(c => c.Product.Brand.BrandName).Distinct();
 
         public async Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key)
             =>
@@ -262,7 +260,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.Product.ProductTitle,
-                BrandName = c.Product.Brand,
+                BrandName = c.Product.Brand.BrandName,
                 ProductPrice = c.Price,
                 ShopperUserId = c.ShopperUserId
             });
@@ -321,7 +319,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.Product.ProductTitle,
-                BrandName = c.Product.Brand,
+                BrandName = c.Product.Brand.BrandName,
                 ProductPrice = c.Price,
                 ShopperUserId = c.ShopperUserId
             });
@@ -496,6 +494,11 @@ namespace Reshop.Infrastructure.Repository.Product
             return await _context.LaptopDetails.FindAsync(laptopDetailId);
         }
 
+        public async Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId)
+        {
+            return await _context.PowerBankDetails.FindAsync(powerBankId);
+        }
+
         public async Task<MobileCoverDetail> GetMobileCoverDetailByIdAsync(int mobileCoverId)
             =>
                 await _context.MobileCoverDetails.FindAsync(mobileCoverId);
@@ -523,6 +526,10 @@ namespace Reshop.Infrastructure.Repository.Product
         public async Task<MemoryCardDetail> GetMemoryCardDetailByIdAsync(int memoryCardDetailId)
             =>
                 await _context.MemoryCardDetails.FindAsync(memoryCardDetailId);
+
+        public async Task<AUXDetail> GetAUXByIdAsync(int auxId)
+            =>
+                await _context.AuxDetails.FindAsync(auxId);
 
         public async Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeOrHeadPhoneDetailId)
             =>
@@ -602,7 +609,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.Product.ProductId,
                 ProductTitle = c.Product.ProductTitle,
-                BrandName = c.Product.Brand,
+                BrandName = c.Product.Brand.BrandName,
                 ProductPrice = _context.ShopperProducts.SingleOrDefault(s => s.ShopperUserId == c.ShopperUserId && s.ProductId == c.ProductId).Price,
                 ShopperUserId = c.ShopperUserId
             });
@@ -652,7 +659,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     ProductId = c.ProductId,
                     ProductPrice = c.ShopperProducts.First().Price,
                     ProductTitle = c.ProductTitle,
-                    BrandName = c.Brand
+                    BrandName = c.Brand.BrandName
                 }) as IAsyncEnumerable<ProductViewModel>;
         }
 
@@ -687,226 +694,506 @@ namespace Reshop.Infrastructure.Repository.Product
             return await _context.Products.AnyAsync(c => c.ProductId == productId);
         }
 
-        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId)
         {
-            return await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+            return await _context.Products
+                .Where(c => c.ProductId == productId)
                 .Select(c => new AddOrEditMobileProductViewModel()
                 {
-                    ProductId = c.Product.ProductId,
-                    ProductTitle = c.Product.ProductTitle,
-                    Description = c.Product.Description,
-                    Price = c.Price,
-                    QuantityInStock = c.QuantityInStock,
-                    BrandProduct = c.Product.BrandProduct,
-                    ProductBrand = c.Product.Brand,
-                    InternalMemory = c.Product.MobileDetail.InternalMemory,
-                    CommunicationNetworks = c.Product.MobileDetail.CommunicationNetworks,
-                    BackCameras = c.Product.MobileDetail.BackCameras,
-                    OperatingSystem = c.Product.MobileDetail.OperatingSystem,
-                    SIMCardDescription = c.Product.MobileDetail.SIMCardDescription,
-                    RAMValue = c.Product.MobileDetail.RAMValue,
-                    PhotoResolution = c.Product.MobileDetail.PhotoResolution,
-                    OperatingSystemVersion = c.Product.MobileDetail.OperatingSystemVersion,
-                    DisplayTechnology = c.Product.MobileDetail.DisplayTechnology,
-                    Features = c.Product.MobileDetail.Features,
-                    Size = c.Product.MobileDetail.Size,
-                    QuantitySIMCard = c.Product.MobileDetail.QuantitySIMCard,
+                    ProductId = c.ProductId,
+                    ProductTitle = c.ProductTitle,
+                    Description = c.Description,
+                    Brand = c.BrandId,
+                    BrandProduct = c.BrandProductId,
+
+                    //img
+                    SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                    SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                    SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                    SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                    SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                    SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                    // detail
+                    Lenght = c.MobileDetail.Lenght,
+                    Width = c.MobileDetail.Width,
+                    Height = c.MobileDetail.Height,
+                    Weight = c.MobileDetail.Weight,
+                    SimCardQuantity = c.MobileDetail.SimCardQuantity,
+                    SimCardInpute = c.MobileDetail.SimCardInpute,
+                    SeparateSlotMemoryCard = c.MobileDetail.SeparateSlotMemoryCard,
+                    Announced = c.MobileDetail.Announced,
+                    ChipsetName = c.MobileDetail.ChipsetName,
+                    Cpu = c.MobileDetail.Cpu,
+                    CpuAndFrequency = c.MobileDetail.CpuAndFrequency,
+                    CpuArch = c.MobileDetail.CpuArch,
+                    Gpu = c.MobileDetail.Gpu,
+                    InternalStorage = c.MobileDetail.InternalStorage,
+                    Ram = c.MobileDetail.Ram,
+                    SdCard = c.MobileDetail.SdCard,
+                    SdCardStandard = c.MobileDetail.SdCardStandard,
+                    ColorDisplay = c.MobileDetail.ColorDisplay,
+                    TouchDisplay = c.MobileDetail.TouchDisplay,
+                    DisplayTechnology = c.MobileDetail.DisplayTechnology,
+                    DisplaySize = c.MobileDetail.DisplaySize,
+                    Resolution = c.MobileDetail.Resolution,
+                    PixelDensity = c.MobileDetail.PixelDensity,
+                    ScreenToBodyRatio = c.MobileDetail.ScreenToBodyRatio,
+                    ImageRatio = c.MobileDetail.ImageRatio,
+                    DisplayProtection = c.MobileDetail.DisplayProtection,
+                    MoreInformation = c.MobileDetail.MoreInformation,
+                    ConnectionsNetwork = c.MobileDetail.ConnectionsNetwork,
+                    GsmNetwork = c.MobileDetail.GsmNetwork,
+                    HspaNetwork = c.MobileDetail.HspaNetwork,
+                    LteNetwork = c.MobileDetail.LteNetwork,
+                    FiveGNetwork = c.MobileDetail.FiveGNetwork,
+                    CommunicationTechnology = c.MobileDetail.CommunicationTechnology,
+                    WiFi = c.MobileDetail.WiFi,
+                    Radio = c.MobileDetail.Radio,
+                    Bluetooth = c.MobileDetail.Bluetooth,
+                    GpsInformation = c.MobileDetail.GpsInformation,
+                    ConnectionPort = c.MobileDetail.ConnectionPort,
+                    CameraQuantity = c.MobileDetail.CameraQuantity,
+                    PhotoResolutation = c.MobileDetail.PhotoResolutation,
+                    SelfiCameraPhoto = c.MobileDetail.SelfiCameraPhoto,
+                    CameraCapabilities = c.MobileDetail.CameraCapabilities,
+                    SelfiCameraCapabilities = c.MobileDetail.SelfiCameraCapabilities,
+                    Filming = c.MobileDetail.Filming,
+                    Speakers = c.MobileDetail.Speakers,
+                    OutputAudio = c.MobileDetail.OutputAudio,
+                    AudioInformation = c.MobileDetail.AudioInformation,
+                    OS = c.MobileDetail.OS,
+                    OsVersion = c.MobileDetail.OsVersion,
+                    UiVersion = c.MobileDetail.UiVersion,
+                    MoreInformationSoftWare = c.MobileDetail.MoreInformationSoftWare,
+                    BatteryMaterial = c.MobileDetail.BatteryMaterial,
+                    BatteryCapacity = c.MobileDetail.BatteryCapacity,
+                    Removable‌Battery = c.MobileDetail.Removable‌Battery,
+                    Sensors = c.MobileDetail.Sensors,
+                    ItemsInBox = c.MobileDetail.ItemsInBox
                 }).SingleOrDefaultAsync();
         }
 
-        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId, string shopperUserId) =>
-             await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId) =>
+             await _context.Products
+                .Where(c => c.ProductId == productId)
                  .Select(c => new AddOrEditLaptopProductViewModel()
                  {
-                     ProductId = c.Product.ProductId,
-                     ProductTitle = c.Product.ProductTitle,
-                     Description = c.Product.Description,
-                     Price = c.Price,
-                     QuantityInStock = c.QuantityInStock,
-                     BrandProduct = c.Product.BrandProduct,
-                     ProductBrand = c.Product.Brand,
-                     RAMCapacity = c.Product.LaptopDetail.RAMCapacity,
-                     InternalMemory = c.Product.LaptopDetail.InternalMemory,
-                     GPUManufacturer = c.Product.LaptopDetail.GPUManufacturer,
-                     Size = c.Product.LaptopDetail.Size,
-                     Category = c.Product.LaptopDetail.Category,
-                     ProcessorSeries = c.Product.LaptopDetail.ProcessorSeries,
-                     RAMType = c.Product.LaptopDetail.RAMType,
-                     ScreenAccuracy = c.Product.LaptopDetail.ScreenAccuracy,
-                     IsMatteScreen = c.Product.LaptopDetail.IsMatteScreen,
-                     IsTouchScreen = c.Product.LaptopDetail.IsTouchScreen,
-                     OperatingSystem = c.Product.LaptopDetail.OperatingSystem,
-                     IsHDMIPort = c.Product.LaptopDetail.IsHDMIPort,
+                     ProductId = c.ProductId,
+                     ProductTitle = c.ProductTitle,
+                     Description = c.Description,
+                     Brand = c.BrandId,
+                     BrandProduct = c.BrandProductId,
+
+                     //img
+                     SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                     SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                     SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                     SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                     SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                     SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                     // detail
+                     Length = c.LaptopDetail.Length,
+                     Width = c.LaptopDetail.Width,
+                     Height = c.LaptopDetail.Height,
+                     Weight = c.LaptopDetail.Weight,
+                     CpuCompany = c.LaptopDetail.CpuCompany,
+                     CpuSeries = c.LaptopDetail.CpuSeries,
+                     CpuModel = c.LaptopDetail.CpuModel,
+                     CpuFerequancy = c.LaptopDetail.CpuFerequancy,
+                     CpuCache = c.LaptopDetail.CpuCache,
+                     RamStorage = c.LaptopDetail.RamStorage,
+                     RamStorageTeachnology = c.LaptopDetail.RamStorageTeachnology,
+                     Storage = c.LaptopDetail.Storage,
+                     StorageTeachnology = c.LaptopDetail.StorageTeachnology,
+                     StorageInformation = c.LaptopDetail.StorageInformation,
+                     GpuCompany = c.LaptopDetail.GpuCompany,
+                     GpuModel = c.LaptopDetail.GpuModel,
+                     GpuRam = c.LaptopDetail.GpuRam,
+                     DisplaySize = c.LaptopDetail.DisplaySize,
+                     DisplayTeachnology = c.LaptopDetail.DisplayTeachnology,
+                     DisplayResolutation = c.LaptopDetail.DisplayResolutation,
+                     RefreshDisplay = c.LaptopDetail.RefreshDisplay,
+                     BlurDisplay = c.LaptopDetail.BlurDisplay,
+                     TouchDisplay = c.LaptopDetail.TouchDisplay,
+                     DiskDrive = c.LaptopDetail.DiskDrive,
+                     FingerTouch = c.LaptopDetail.FingerTouch,
+                     Webcam = c.LaptopDetail.Webcam,
+                     BacklightKey = c.LaptopDetail.BacklightKey,
+                     TouchPadInformation = c.LaptopDetail.TouchPadInformation,
+                     ModemInformation = c.LaptopDetail.ModemInformation,
+                     Wifi = c.LaptopDetail.Wifi,
+                     Bluetooth = c.LaptopDetail.Bluetooth,
+                     VgaPort = c.LaptopDetail.VgaPort,
+                     HtmiPort = c.LaptopDetail.HtmiPort,
+                     DisplayPort = c.LaptopDetail.DisplayPort,
+                     LanPort = c.LaptopDetail.LanPort,
+                     UsbCPort = c.LaptopDetail.UsbCPort,
+                     Usb3Port = c.LaptopDetail.Usb3Port,
+                     UsbCQuantity = c.LaptopDetail.UsbCQuantity,
+                     UsbQuantity = c.LaptopDetail.UsbQuantity,
+                     Usb3Quantity = c.LaptopDetail.Usb3Quantity,
+                     BatteryMaterial = c.LaptopDetail.BatteryMaterial,
+                     BatteryCharging = c.LaptopDetail.BatteryCharging,
+                     BatteryInformation = c.LaptopDetail.BatteryInformation,
+                     Os = c.LaptopDetail.Os,
+                     Classification = c.LaptopDetail.Classification,
                  }).SingleOrDefaultAsync();
 
+        public async Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataForEditAsync(int productId) =>
+             await _context.Products
+                .Where(c => c.ProductId == productId)
+                 .Select(c => new AddOrEditPowerBankViewModel()
+                 {
+                     ProductId = c.ProductId,
+                     ProductTitle = c.ProductTitle,
+                     Description = c.Description,
+                     Brand = c.BrandId,
+                     BrandProduct = c.BrandProductId,
 
-        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
-            .Select(c => new AddOrEditMobileCoverViewModel()
-            {
-                ProductId = c.Product.ProductId,
-                ProductTitle = c.Product.ProductTitle,
-                Description = c.Product.Description,
-                Price = c.Price,
-                QuantityInStock = c.QuantityInStock,
-                BrandProduct = c.Product.BrandProduct,
-                ProductBrand = c.Product.Brand,
-                SuitablePhones = c.Product.MobileCoverDetail.SuitablePhones,
-                Gender = c.Product.MobileCoverDetail.Gender,
-                Structure = c.Product.MobileCoverDetail.Structure,
-                CoverLevel = c.Product.MobileCoverDetail.CoverLevel,
-                Features = c.Product.MobileCoverDetail.Features
-            }).SingleOrDefaultAsync();
+                     //img
+                     SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                     SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                     SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                     SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                     SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                     SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                     // detail
+                     Length = c.PowerBankDetail.Length,
+                     Width = c.PowerBankDetail.Width,
+                     Height = c.PowerBankDetail.Height,
+                     Weight = c.PowerBankDetail.Weight,
+                     CapacityRange = c.PowerBankDetail.CapacityRange,
+                     InputVoltage = c.PowerBankDetail.InputVoltage,
+                     OutputVoltage = c.PowerBankDetail.OutputVoltage,
+                     InputCurrentIntensity = c.PowerBankDetail.InputCurrentIntensity,
+                     OutputCurrentIntensity = c.PowerBankDetail.OutputCurrentIntensity,
+                     OutputPortsCount = c.PowerBankDetail.OutputPortsCount,
+                     IsSupportOfQCTechnology = c.PowerBankDetail.IsSupportOfQCTechnology,
+                     IsSupportOfPDTechnology = c.PowerBankDetail.IsSupportOfPDTechnology,
+                     BodyMaterial = c.PowerBankDetail.BodyMaterial,
+                     DisplayCharge = c.PowerBankDetail.DisplayCharge,
+                     Features = c.PowerBankDetail.Features,
+                 }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
+                    .Select(c => new AddOrEditMobileCoverViewModel()
+                    {
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        SuitablePhones = c.MobileCoverDetail.SuitablePhones,
+                        Gender = c.MobileCoverDetail.Gender,
+                        Structure = c.MobileCoverDetail.Structure,
+                        CoverLevel = c.MobileCoverDetail.CoverLevel,
+                        Features = c.MobileCoverDetail.Features,
+                    }).SingleOrDefaultAsync();
+
+        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditFlashMemoryViewModel()
                     {
                         ProductId = c.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        Connector = c.Product.FlashMemoryDetail.Connector,
-                        Capacity = c.Product.FlashMemoryDetail.Capacity,
-                        IsImpactResistance = c.Product.FlashMemoryDetail.IsImpactResistance
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Length = c.FlashMemoryDetail.Length,
+                        Width = c.FlashMemoryDetail.Width,
+                        Height = c.FlashMemoryDetail.Height,
+                        BodyMaterial = c.FlashMemoryDetail.BodyMaterial,
+                        Connector = c.FlashMemoryDetail.Connector,
+                        Capacity = c.FlashMemoryDetail.Capacity,
+                        Led = c.FlashMemoryDetail.Led,
+                        IsImpactResistance = c.FlashMemoryDetail.IsImpactResistance,
+                        WaterResistance = c.FlashMemoryDetail.WaterResistance,
+                        ShockResistance = c.FlashMemoryDetail.ShockResistance,
+                        DustResistance = c.FlashMemoryDetail.DustResistance,
+                        AntiScratch = c.FlashMemoryDetail.AntiScratch,
+                        AntiStain = c.FlashMemoryDetail.AntiStain,
+                        SpeedDataTransfer = c.FlashMemoryDetail.SpeedDataTransfer,
+                        SpeedDataReading = c.FlashMemoryDetail.SpeedDataReading,
+                        OsCompatibility = c.FlashMemoryDetail.OsCompatibility,
+                        MoreInformation = c.FlashMemoryDetail.MoreInformation,
+                    }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperUserId) =>
             await _context.ShopperProducts
                 .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
                     .Select(c => new AddOrEditHandsfreeAndHeadPhoneViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        ConnectionType = c.Product.HandsfreeAndHeadPhoneDetail.ConnectionType,
-                        PhoneType = c.Product.HandsfreeAndHeadPhoneDetail.PhoneType,
-                        WorkSuggestion = c.Product.HandsfreeAndHeadPhoneDetail.WorkSuggestion,
-                        Connector = c.Product.HandsfreeAndHeadPhoneDetail.Connector,
-                        IsSupportBattery = c.Product.HandsfreeAndHeadPhoneDetail.IsSupportBattery,
-                        Features = c.Product.HandsfreeAndHeadPhoneDetail.Features
+                       
                     }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditTabletViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        InternalMemory = c.Product.TabletDetail.InternalMemory,
-                        RAMValue = c.Product.TabletDetail.RAMValue,
-                        IsTalkAbility = c.Product.TabletDetail.IsTalkAbility,
-                        Size = c.Product.TabletDetail.Size,
-                        CommunicationNetworks = c.Product.TabletDetail.CommunicationNetworks,
-                        Features = c.Product.TabletDetail.Features,
-                        IsSIMCardSupporter = c.Product.TabletDetail.IsSIMCardSupporter,
-                        QuantitySIMCard = c.Product.TabletDetail.QuantitySIMCard,
-                        OperatingSystemVersion = c.Product.TabletDetail.OperatingSystemVersion,
-                        CommunicationTechnologies = c.Product.TabletDetail.CommunicationTechnologies,
-                        CommunicationPorts = c.Product.TabletDetail.CommunicationPorts
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Lenght = c.TabletDetail.Lenght,
+                        Width = c.TabletDetail.Width,
+                        Height = c.TabletDetail.Height,
+                        Weight = c.TabletDetail.Weight,
+                        SimCardIsTrue = c.TabletDetail.SimCardIsTrue,
+                        Call = c.TabletDetail.Call,
+                        SimCardQuantity = c.TabletDetail.SimCardQuantity,
+                        SimCardInpute = c.TabletDetail.SimCardInpute,
+                        SeparateSlotMemoryCard = c.TabletDetail.SeparateSlotMemoryCard,
+                        Announced = c.TabletDetail.Announced,
+                        ChipsetName = c.TabletDetail.ChipsetName,
+                        Cpu = c.TabletDetail.Cpu,
+                        CpuAndFrequency = c.TabletDetail.CpuAndFrequency,
+                        CpuArch = c.TabletDetail.CpuArch,
+                        Gpu = c.TabletDetail.Gpu,
+                        InternalStorage = c.TabletDetail.InternalStorage,
+                        Ram = c.TabletDetail.Ram,
+                        SdCard = c.TabletDetail.SdCard,
+                        SdCardStandard = c.TabletDetail.SdCardStandard,
+                        ColorDisplay = c.TabletDetail.ColorDisplay,
+                        TouchDisplay = c.TabletDetail.TouchDisplay,
+                        DisplayTechnology = c.TabletDetail.DisplayTechnology,
+                        DisplaySize = c.TabletDetail.DisplaySize,
+                        Resolution = c.TabletDetail.Resolution,
+                        PixelDensity = c.TabletDetail.PixelDensity,
+                        ScreenToBodyRatio = c.TabletDetail.ScreenToBodyRatio,
+                        ImageRatio = c.TabletDetail.ImageRatio,
+                        DisplayProtection = c.TabletDetail.DisplayProtection,
+                        MoreInformation = c.TabletDetail.MoreInformation,
+                        ConnectionsNetwork = c.TabletDetail.ConnectionsNetwork,
+                        GsmNetwork = c.TabletDetail.GsmNetwork,
+                        HspaNetwork = c.TabletDetail.HspaNetwork,
+                        LteNetwork = c.TabletDetail.LteNetwork,
+                        FiveGNetwork = c.TabletDetail.FiveGNetwork,
+                        CommunicationTechnology = c.TabletDetail.CommunicationTechnology,
+                        WiFi = c.TabletDetail.WiFi,
+                        Radio = c.TabletDetail.Radio,
+                        Bluetooth = c.TabletDetail.Bluetooth,
+                        GpsInformation = c.TabletDetail.GpsInformation,
+                        ConnectionPort = c.TabletDetail.ConnectionPort,
+                        CameraQuantity = c.TabletDetail.CameraQuantity,
+                        PhotoResolutation = c.TabletDetail.PhotoResolutation,
+                        SelfiCameraPhoto = c.TabletDetail.SelfiCameraPhoto,
+                        CameraCapabilities = c.TabletDetail.CameraCapabilities,
+                        SelfiCameraCapabilities = c.TabletDetail.SelfiCameraCapabilities,
+                        Filming = c.TabletDetail.Filming,
+                        Speakers = c.TabletDetail.Speakers,
+                        OutputAudio = c.TabletDetail.OutputAudio,
+                        AudioInformation = c.TabletDetail.AudioInformation,
+                        OS = c.TabletDetail.OS,
+                        OsVersion = c.TabletDetail.OsVersion,
+                        UiVersion = c.TabletDetail.UiVersion,
+                        MoreInformationSoftWare = c.TabletDetail.MoreInformationSoftWare,
+                        BatteryMaterial = c.TabletDetail.BatteryMaterial,
+                        BatteryCapacity = c.TabletDetail.BatteryCapacity,
+                        Removable‌Battery = c.TabletDetail.Removable‌Battery,
+                        Sensors = c.TabletDetail.Sensors,
+                        ItemsInBox = c.TabletDetail.ItemsInBox,
                     }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditSpeakerViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        ConnectionType = c.Product.SpeakerDetail.ConnectionType,
-                        Connector = c.Product.SpeakerDetail.Connector,
-                        BluetoothVersion = c.Product.SpeakerDetail.BluetoothVersion,
-                        IsMemoryCardInput = c.Product.SpeakerDetail.IsMemoryCardInput,
-                        IsSupportBattery = c.Product.SpeakerDetail.IsSupportBattery,
-                        IsSupportMicrophone = c.Product.SpeakerDetail.IsSupportMicrophone,
-                        IsSupportUSBPort = c.Product.SpeakerDetail.IsSupportUSBPort,
-                        IsSupportRadio = c.Product.SpeakerDetail.IsSupportRadio
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Lenght = c.SpeakerDetail.Lenght,
+                        Width = c.SpeakerDetail.Width,
+                        Height = c.SpeakerDetail.Height,
+                        ConnectionType = c.SpeakerDetail.ConnectionType,
+                        Connector = c.SpeakerDetail.Connector,
+                        IsMemoryCardInput = c.SpeakerDetail.IsMemoryCardInput,
+                        IsSupportUSBPort = c.SpeakerDetail.IsSupportUSBPort,
+                        HeadphoneOutput = c.SpeakerDetail.HeadphoneOutput,
+                        InputSound = c.SpeakerDetail.InputSound,
+                        MicrophoneInpute = c.SpeakerDetail.MicrophoneInpute,
+                        IsSupportMicrophone = c.SpeakerDetail.IsSupportMicrophone,
+                        Display = c.SpeakerDetail.Display,
+                        ControlRemote = c.SpeakerDetail.ControlRemote,
+                        IsSupportRadio = c.SpeakerDetail.IsSupportRadio,
+                        Bluetooth = c.SpeakerDetail.Bluetooth,
+                        ConnectTwoDevice = c.SpeakerDetail.ConnectTwoDevice,
+                        SpeakerItemQuantity = c.SpeakerDetail.SpeakerItemQuantity,
+                        IsBattery = c.SpeakerDetail.IsBattery,
+                        PlayingTime = c.SpeakerDetail.PlayingTime,
+                        ChargingTime = c.SpeakerDetail.ChargingTime,
+                        OsSoppurt = c.SpeakerDetail.OsSoppurt,
                     }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+        public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEdirWristWatchViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        IsSupportGPS = c.Product.WristWatchDetail.IsSupportGPS,
-                        IsTouchScreen = c.Product.WristWatchDetail.IsTouchScreen,
-                        WatchForm = c.Product.WristWatchDetail.WatchForm
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
 
-        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                    }).SingleOrDefaultAsync();
+
+        public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditSmartWatchViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        IsSuitableForMen = c.Product.SmartWatchDetail.IsSuitableForMen,
-                        IsSuitableForWomen = c.Product.SmartWatchDetail.IsSuitableForWomen,
-                        IsScreenColorful = c.Product.SmartWatchDetail.IsScreenColorful,
-                        IsSIMCardSupporter = c.Product.SmartWatchDetail.IsSIMCardSupporter,
-                        IsTouchScreen = c.Product.SmartWatchDetail.IsTouchScreen,
-                        IsSupportSIMCardRegister = c.Product.SmartWatchDetail.IsSupportSIMCardRegister,
-                        WorkSuggestion = c.Product.SmartWatchDetail.WorkSuggestion,
-                        IsSupportGPS = c.Product.SmartWatchDetail.IsSupportGPS,
-                        WatchForm = c.Product.SmartWatchDetail.WatchForm,
-                        BodyMaterial = c.Product.SmartWatchDetail.BodyMaterial,
-                        Connections = c.Product.SmartWatchDetail.Connections,
-                        Sensors = c.Product.SmartWatchDetail.Sensors,
-                        IsDirectTalkable = c.Product.SmartWatchDetail.IsDirectTalkable,
-                        IsTalkableWithBluetooth = c.Product.SmartWatchDetail.IsTalkableWithBluetooth
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
 
-        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId, string shopperUserId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Lenght = c.SmartWatchDetail.Lenght,
+                        Width = c.SmartWatchDetail.Width,
+                        Height = c.SmartWatchDetail.Height,
+                        Weight = c.SmartWatchDetail.Weight,
+                        SuitableFor = c.SmartWatchDetail.SuitableFor,
+                        Application = c.SmartWatchDetail.Application,
+                        DisplayForm = c.SmartWatchDetail.DisplayForm,
+                        GlassMaterial = c.SmartWatchDetail.GlassMaterial,
+                        CaseMaterial = c.SmartWatchDetail.CaseMaterial,
+                        MaterialStrap = c.SmartWatchDetail.MaterialStrap,
+                        TypeOfLock = c.SmartWatchDetail.TypeOfLock,
+                        ColorDisplay = c.SmartWatchDetail.ColorDisplay,
+                        TouchDisplay = c.SmartWatchDetail.TouchDisplay,
+                        DisplaySize = c.SmartWatchDetail.DisplaySize,
+                        Resolution = c.SmartWatchDetail.Resolution,
+                        PixelDensity = c.SmartWatchDetail.PixelDensity,
+                        DisplayType = c.SmartWatchDetail.DisplayType,
+                        MoreInformationDisplay = c.SmartWatchDetail.MoreInformationDisplay,
+                        SimcardIsSoppurt = c.SmartWatchDetail.SimcardIsSoppurt,
+                        RegisteredSimCardIsSoppurt = c.SmartWatchDetail.RegisteredSimCardIsSoppurt,
+                        GpsIsSoppurt = c.SmartWatchDetail.GpsIsSoppurt,
+                        Os = c.SmartWatchDetail.Os,
+                        Compatibility = c.SmartWatchDetail.Compatibility,
+                        Prossecor = c.SmartWatchDetail.Prossecor,
+                        InternalStorage = c.SmartWatchDetail.InternalStorage,
+                        ExternalStorageSoppurt = c.SmartWatchDetail.ExternalStorageSoppurt,
+                        Camera = c.SmartWatchDetail.Camera,
+                        MusicControl = c.SmartWatchDetail.MusicControl,
+                        Connections = c.SmartWatchDetail.Connections,
+                        Sensors = c.SmartWatchDetail.Sensors,
+                        BatteryMaterial = c.SmartWatchDetail.BatteryMaterial,
+                        CallIsSoppurt = c.SmartWatchDetail.CallIsSoppurt,
+                        MoreInformationHardware = c.SmartWatchDetail.MoreInformationHardware,
+                    }).SingleOrDefaultAsync();
+
+        public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
                     .Select(c => new AddOrEditMemoryCardViewModel()
                     {
-                        ProductId = c.Product.ProductId,
-                        ProductTitle = c.Product.ProductTitle,
-                        Description = c.Product.Description,
-                        Price = c.Price,
-                        QuantityInStock = c.QuantityInStock,
-                        BrandProduct = c.Product.BrandProduct,
-                        ProductBrand = c.Product.Brand,
-                        Capacity = c.Product.MemoryCardDetail.Capacity,
-                        Size = c.Product.MemoryCardDetail.Size,
-                        SpeedStandard = c.Product.MemoryCardDetail.SpeedStandard,
-                        ResistsAgainst = c.Product.MemoryCardDetail.ResistsAgainst
-                    }).SingleOrDefaultAsync(c => c.ProductId == productId);
+                        ProductId = c.ProductId,
+                        ProductTitle = c.ProductTitle,
+                        Description = c.Description,
+                        Brand = c.BrandId,
+                        BrandProduct = c.BrandProductId,
+
+                        //img
+                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        // detail
+                        Length = c.MemoryCardDetail.Length,
+                        Width = c.MemoryCardDetail.Width,
+                        Height = c.MemoryCardDetail.Height,
+                        Capacity = c.MemoryCardDetail.Capacity,
+                        SpeedStandard = c.MemoryCardDetail.SpeedStandard,
+                        ReadingSpeed = c.MemoryCardDetail.ReadingSpeed,
+                        ResistsAgainst = c.MemoryCardDetail.ResistsAgainst,
+                        MoreInformation = c.MemoryCardDetail.MoreInformation,
+                    }).SingleOrDefaultAsync();
+
+        public async Task<AddOrEditAUXViewModel> GetTypeAUXProductDataForEditAsync(int productId) =>
+            await _context.Products
+                .Where(c => c.ProductId == productId)
+                .Select(c => new AddOrEditAUXViewModel()
+                {
+                    ProductId = c.ProductId,
+                    ProductTitle = c.ProductTitle,
+                    Description = c.Description,
+                    Brand = c.BrandId,
+                    BrandProduct = c.BrandProductId,
+
+                    //img
+                    SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
+                    SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
+                    SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
+                    SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
+                    SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
+                    SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                    // detail
+                    CableMaterial = c.AuxDetail.CableMaterial,
+                    CableLenght = c.AuxDetail.CableLenght
+                }).SingleOrDefaultAsync();
 
         public async Task<string> GetProductTypeAsync(int productId)
         {
@@ -928,6 +1215,12 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             await _context.LaptopDetails.AddAsync(laptopDetail);
         }
+
+        public async Task AddPowerBankDetailAsync(PowerBankDetail powerBank)
+        {
+            await _context.PowerBankDetails.AddAsync(powerBank);
+        }
+
 
         public async Task AddProductGalley(ProductGallery productGallery)
             =>
@@ -966,6 +1259,10 @@ namespace Reshop.Infrastructure.Repository.Product
             =>
                 await _context.MemoryCardDetails.AddAsync(memoryCardDetail);
 
+        public async Task AddAUXDetailAsync(AUXDetail auxDetail)
+            =>
+                await _context.AuxDetails.AddAsync(auxDetail);
+
         public void UpdateProduct(Domain.Entities.Product.Product product)
         {
             _context.Products.Update(product);
@@ -979,6 +1276,11 @@ namespace Reshop.Infrastructure.Repository.Product
         public void UpdateLaptopDetail(LaptopDetail laptopDetail)
         {
             _context.LaptopDetails.Update(laptopDetail);
+        }
+
+        public void UpdatePowerBankDetail(PowerBankDetail powerBank)
+        {
+            _context.PowerBankDetails.Update(powerBank);
         }
 
         public void UpdateMobileCoverDetail(MobileCoverDetail mobileCoverDetail)
@@ -1012,6 +1314,10 @@ namespace Reshop.Infrastructure.Repository.Product
         public void UpdateMemoryCardDetail(MemoryCardDetail memoryCardDetail)
             =>
                 _context.MemoryCardDetails.Update(memoryCardDetail);
+
+        public void UpdateAUXDetail(AUXDetail auxDetail)
+            =>
+                _context.AuxDetails.Update(auxDetail);
 
         public async Task<bool> IsProductExistByShortKeyAsync(string shortKey)
         {
