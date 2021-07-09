@@ -173,9 +173,35 @@ namespace Reshop.Application.Services.Category
             await _categoryRepository.SaveChangesAsync();
         }
 
-        public async Task AddChildCategoryToCategoryAsync(ChildCategoryToCategory childCategoryToCategory)
+        public async Task AddChildCategoryToCategoryAsync(int categoryId, List<int> childCategoriesId)
         {
-            await _categoryRepository.AddChildCategoryToCategoryAsync(childCategoryToCategory);
+            foreach (int item in childCategoriesId)
+            {
+                var childCategoryToCategory = new ChildCategoryToCategory()
+                {
+                    CategoryId = categoryId,
+                    ChildCategoryId = item
+                };
+                await _categoryRepository.AddChildCategoryToCategoryAsync(childCategoryToCategory);
+            }
+
+            
+            await _categoryRepository.SaveChangesAsync();
+        }
+
+        public async Task AddCategoryToChildCategoryAsync(int childCategoryId, List<int> categoriesId)
+        {
+            foreach (int item in categoriesId)
+            {
+                var childCategoryToCategory = new ChildCategoryToCategory()
+                {
+                    CategoryId = item,
+                    ChildCategoryId = childCategoryId
+                };
+                await _categoryRepository.AddChildCategoryToCategoryAsync(childCategoryToCategory);
+            }
+
+
             await _categoryRepository.SaveChangesAsync();
         }
 

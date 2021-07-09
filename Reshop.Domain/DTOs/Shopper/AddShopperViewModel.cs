@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Reshop.Domain.Entities.Shopper;
+using Microsoft.AspNetCore.Mvc;
+using Reshop.Domain.Attribute;
 
 namespace Reshop.Domain.DTOs.Shopper
 {
@@ -68,14 +70,17 @@ namespace Reshop.Domain.DTOs.Shopper
 
         [Display(Name = "تصویر روی کارت ملی فروشنده")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [AllowFileSize(FileSize = 1.5, ErrorMessage = "لطفا حجم فایل بیشتر از 1.5 مگابایت نباشد.")]
         public IFormFile OnNationalCardImageName { get; set; }
 
         [Display(Name = "تصویر پشت کارت ملی فروشنده")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [AllowFileSize(FileSize = 1.5, ErrorMessage = "لطفا حجم فایل بیشتر از 1.5 مگابایت نباشد.")]
         public IFormFile BackNationalCardImageName { get; set; }
 
         [Display(Name = "جواز کسب و کار")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [AllowFileSize(FileSize = 1.5, ErrorMessage = "لطفا حجم فایل بیشتر از 1.5 مگابایت نباشد.")]
         public IFormFile BusinessLicenseImageName { get; set; }
 
         public IEnumerable<StoreTitle> StoreTitles { get; set; }

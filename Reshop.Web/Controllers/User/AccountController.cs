@@ -9,18 +9,19 @@ using Reshop.Application.Enums;
 using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security;
 using Reshop.Application.Security.GoogleRecaptcha;
 using Reshop.Application.Senders;
 using Reshop.Application.Validations.Google;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.Shopper;
+using Reshop.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Domain.Entities.User;
 
 namespace Reshop.Web.Controllers.User
 {
@@ -30,7 +31,7 @@ namespace Reshop.Web.Controllers.User
         #region constructor
 
         private readonly IUserService _userService;
-     
+
         private readonly IMessageSender _messageSender;
         private readonly IOptions<GoogleReCaptchaKey> _captchaKey;
         private readonly IShopperService _shopperService;
@@ -257,7 +258,24 @@ namespace Reshop.Web.Controllers.User
 
             if (!ModelState.IsValid)
                 return View(model);
-             
+
+
+
+            //// check images is not script
+
+            #region imgValication
+
+            if (!model.OnNationalCardImageName.IsImage() ||
+              !model.BackNationalCardImageName.IsImage() ||
+              !model.BusinessLicenseImageName.IsImage())
+            {
+                ModelState.AddModelError("", "فروشنده عزیز لطفا تصاویر خود را درست وارد کنید.");
+                return View(model);
+            }
+
+            #endregion
+
+
 
             var shopper = new Shopper()
             {
@@ -272,64 +290,104 @@ namespace Reshop.Web.Controllers.User
             if (model.OnNationalCardImageName.Length > 0)
             {
                 IFormFile img = model.OnNationalCardImageName;
-                string imgName = NameGenerator.GenerateUniqCodeWithDash();
-                string imgFileName = Path.GetExtension(img.FileName);
+
+                string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
 
 
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                     "wwwroot",
                     "images",
                     "shoppersCardImages",
-                    imgName + imgFileName);
+                    "original",
+                    imgName);
 
 
-                await using var stream = new FileStream(filePath, FileMode.Create);
-                await img.CopyToAsync(stream);
+                await using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(stream);
+                }
+                //thumb
+
+                string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "shoppersCardImages",
+                    "thumb",
+                    imgName);
+
+                ImageConvertor imgResize = new ImageConvertor();
+                imgResize.ImageResize(filePath, resizePath, 270);
 
 
-                shopper.OnNationalCardImageName = imgName + imgFileName;
+                shopper.OnNationalCardImageName = imgName;
             }
 
             if (model.BackNationalCardImageName.Length > 0)
             {
                 IFormFile img = model.BackNationalCardImageName;
-                string imgName = NameGenerator.GenerateUniqCodeWithDash();
-                string imgFileName = Path.GetExtension(img.FileName);
+
+                string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
 
 
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                     "wwwroot",
                     "images",
                     "shoppersCardImages",
-                    imgName + imgFileName);
+                    "original",
+                    imgName);
 
 
-                await using var stream = new FileStream(filePath, FileMode.Create);
-                await img.CopyToAsync(stream);
+                await using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(stream);
+                }
+                //thumb
 
+                string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "shoppersCardImages",
+                    "thumb",
+                    imgName);
 
-                shopper.BackNationalCardImageName = imgName + imgFileName;
+                ImageConvertor imgResize = new ImageConvertor();
+                imgResize.ImageResize(filePath, resizePath, 270);
+
+                shopper.BackNationalCardImageName = imgName;
             }
 
             if (model.BusinessLicenseImageName.Length > 0)
             {
                 IFormFile img = model.BusinessLicenseImageName;
-                string imgName = NameGenerator.GenerateUniqCodeWithDash();
-                string imgFileName = Path.GetExtension(img.FileName);
+
+                string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
 
 
                 string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                     "wwwroot",
                     "images",
                     "shoppersCardImages",
-                    imgName + imgFileName);
+                    "original",
+                    imgName);
 
 
-                await using var stream = new FileStream(filePath, FileMode.Create);
-                await img.CopyToAsync(stream);
+                await using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(stream);
+                }
+                //thumb
 
+                string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "shoppersCardImages",
+                    "thumb",
+                    imgName);
 
-                shopper.BusinessLicenseImageName = imgName + imgFileName;
+                ImageConvertor imgResize = new ImageConvertor();
+                imgResize.ImageResize(filePath, resizePath, 270);
+
+                shopper.BusinessLicenseImageName = imgName ;
             }
 
             #endregion
@@ -361,7 +419,7 @@ namespace Reshop.Web.Controllers.User
                 };
 
                 var addUser = await _userService.AddUserAsync(user);
-                
+
                 if (addUser == ResultTypes.Successful)
                 {
                     var addUserToRoleResult = await _roleService.AddUserToRoleAsync(user.UserId, "Shopper");
@@ -377,7 +435,7 @@ namespace Reshop.Web.Controllers.User
                     ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
                     return View(model);
                 }
-                
+
 
                 #endregion
 
@@ -424,7 +482,7 @@ namespace Reshop.Web.Controllers.User
                 }
 
                 #endregion
-                 
+
                 return Redirect("/");
             }
 

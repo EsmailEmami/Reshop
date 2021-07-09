@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using Reshop.Domain.Attribute;
 using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Domain.DTOs.Product

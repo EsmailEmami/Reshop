@@ -24,7 +24,8 @@ namespace Reshop.Application.Interfaces.Category
         // insert
         Task AddCategoryAsync(Domain.Entities.Category.Category category);
         Task AddChildCategoryAsync(ChildCategory childCategory);
-        Task AddChildCategoryToCategoryAsync(ChildCategoryToCategory childCategoryToCategory);
+        Task AddChildCategoryToCategoryAsync(int categoryId, List<int> childCategoriesId);
+        Task AddCategoryToChildCategoryAsync(int childCategoryId, List<int> categoriesId);
 
         // update 
         Task UpdateCategoryAsync(Domain.Entities.Category.Category category);

@@ -279,7 +279,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
                 // update mobile detail
                 mobileDetail.Lenght = model.Lenght;
@@ -346,7 +346,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -477,7 +477,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-                    
+
                 };
 
 
@@ -569,7 +569,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
 
 
@@ -626,7 +626,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -744,7 +744,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-                    
+
                 };
 
                 var tabletDetail = new TabletDetail()
@@ -849,7 +849,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
 
                 // update mobile cover detail
@@ -919,7 +919,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -1074,7 +1074,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
 
                 // update mobile cover detail
@@ -1090,7 +1090,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -1511,7 +1511,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-                    
+
                 };
 
                 var speakerDetail = new SpeakerDetail()
@@ -1579,7 +1579,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
 
                 // update mobile cover detail
@@ -1612,7 +1612,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -1722,7 +1722,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-                    
+
                 };
 
                 var powerBank = new PowerBankDetail()
@@ -1783,7 +1783,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
                 // update mobile detail
                 powerBankDetail.Length = model.Length;
@@ -1809,7 +1809,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -1913,7 +1913,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-                    
+
                 };
 
                 var wristWatchDetail = new WristWatchDetail()
@@ -1961,7 +1961,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
 
                 // update mobile cover detail
@@ -1974,7 +1974,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2078,7 +2078,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-                    
+
                 };
 
                 var smartWatchDetail = new SmartWatchDetail()
@@ -2158,7 +2158,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
 
                 // update mobile cover detail
@@ -2203,7 +2203,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2308,7 +2308,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-                    
+
                 };
 
                 var flashMemoryDetail = new FlashMemoryDetail()
@@ -2373,7 +2373,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
 
                 // update mobile cover detail
@@ -2402,7 +2402,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2507,7 +2507,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-                    
+
                 };
 
                 var memoryCardDetail = new MemoryCardDetail()
@@ -2562,7 +2562,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
 
                 // update mobile cover detail
@@ -2582,7 +2582,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2686,7 +2686,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-                    
+
                 };
 
                 var auxDetail = new AUXDetail()
@@ -2735,7 +2735,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-                
+
 
 
                 // update mobile cover detail
@@ -2749,7 +2749,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    EditImg(new List<IFormFile>()
+                    await EditImg(new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2780,43 +2780,45 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 if (image.Length > 0)
                 {
-                    var imgName = NameGenerator.GenerateUniqCodeWithDash();
+                    var imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(image.FileName);
 
                     string filePath = Path.Combine(Directory.GetCurrentDirectory(),
                         "wwwroot",
                         "images",
                         "ProductImages",
                         "Original",
-                        imgName + Path.GetExtension(image.FileName));
+                        imgName);
 
 
-                    await using var stream = new FileStream(filePath, FileMode.Create);
-                    await image.CopyToAsync(stream);
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
 
                     var productGallery = new ProductGallery()
                     {
                         ProductId = productId,
-                        ImageName = imgName + Path.GetExtension(image.FileName)
+                        ImageName = imgName
                     };
 
                     await _productService.AddProductGalleryAsync(productGallery);
 
                     // resize img
-                    ImageConvertor imgResizer = new ImageConvertor();
+                    ImageConvertor imgResize = new ImageConvertor();
 
                     string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
                         "wwwroot",
                         "images",
                         "ProductImages",
                         "thumb",
-                        imgName + Path.GetExtension(image.FileName));
+                        imgName);
 
-                    imgResizer.Image_resize(filePath, resizePath, 750);
+                    imgResize.ImageResize(filePath, resizePath, 750);
                 }
             }
         }
 
-        private void EditImg(List<IFormFile> images, List<string> imagesName)
+        private async Task EditImg(List<IFormFile> images, List<string> imagesName)
         {
             for (int i = 0; i < images.Count; i++)
             {
@@ -2826,12 +2828,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         "wwwroot",
                         "images",
                         Path.GetFileNameWithoutExtension(imagesName[i]) + Path.GetExtension(images[i].FileName));
-                    using var stream = new FileStream(filePath, FileMode.Create);
-                    images[i].CopyTo(stream);
+
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await images[i].CopyToAsync(stream);
+                    }
+
 
 
                     // resize img
-                    ImageConvertor imgResizer = new ImageConvertor();
+                    ImageConvertor imgResize = new ImageConvertor();
 
                     string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
                         "wwwroot",
@@ -2840,7 +2846,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         "thumb",
                         Path.GetFileNameWithoutExtension(imagesName[i]) + Path.GetExtension(images[i].FileName));
 
-                    imgResizer.Image_resize(filePath, resizePath, 750);
+                    imgResize.ImageResize(filePath, resizePath, 750);
                 }
             }
         }

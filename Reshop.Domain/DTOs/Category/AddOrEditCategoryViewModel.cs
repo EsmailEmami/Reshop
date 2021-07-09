@@ -6,7 +6,7 @@ namespace Reshop.Domain.DTOs.Category
 {
     public class AddOrEditCategoryViewModel
     {
-        public int CategoryId { get; set; }
+        public int CategoryId { get; set; } = 0;
 
         [Display(Name = "نام گروه")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]

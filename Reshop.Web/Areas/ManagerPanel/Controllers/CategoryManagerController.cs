@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Interfaces.Category;
 using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.DataProtection;
+using Reshop.Application.Convertors;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -44,10 +48,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                if (!await _categoryService.IsCategoryExistAsync(categoryId))
-                    return NotFound();
+                var category = await _categoryService.GetCategoryDataAsync(categoryId);
 
-                return View(await _categoryService.GetCategoryDataAsync(categoryId));
+                if (category is null)
+                {
+                    return NotFound();
+                }
+
+
+                return View(category);
             }
         }
 
@@ -55,9 +64,14 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrEditCategory(AddOrEditCategoryViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            model.ChildCategories = _categoryService.GetChildCategories();
 
-            if (model.CategoryId == 0)
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditCategory", model) });
+
+
+
+            if (model.CategoryId ==0)
             {
                 var category = new Category()
                 {
@@ -68,20 +82,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
                 {
-                    foreach (int childCategoryId in model.SelectedChildCategories)
-                    {
-                        var childCategoryToCategory = new ChildCategoryToCategory()
-                        {
-                            CategoryId = category.CategoryId,
-                            ChildCategoryId = childCategoryId,
-                        };
-
-                        await _categoryService.AddChildCategoryToCategoryAsync(childCategoryToCategory);
-                    }
+                    await _categoryService.AddChildCategoryToCategoryAsync(category.CategoryId, model.SelectedChildCategories as List<int>);
                 }
             }
             else
             {
+           
+
+  
+
+
                 var category = await _categoryService.GetCategoryByIdAsync(model.CategoryId);
 
                 if (category == null) return NotFound();
@@ -98,20 +108,11 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 // add selected child categories
                 if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
                 {
-                    foreach (int childCategoryId in model.SelectedChildCategories)
-                    {
-                        var childCategoryToCategory = new ChildCategoryToCategory()
-                        {
-                            CategoryId = category.CategoryId,
-                            ChildCategoryId = childCategoryId,
-                        };
-
-                        await _categoryService.AddChildCategoryToCategoryAsync(childCategoryToCategory);
-                    }
+                    await _categoryService.AddChildCategoryToCategoryAsync(category.CategoryId, model.SelectedChildCategories as List<int>);
                 }
             }
 
-            return RedirectToAction("Index");
+            return Json(new { isValid = true });
         }
 
         [HttpPost]

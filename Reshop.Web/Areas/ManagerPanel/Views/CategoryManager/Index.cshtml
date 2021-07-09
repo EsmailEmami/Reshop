@@ -5,7 +5,8 @@
     int rowCount = 1;
 }
 <p>
-    <a asp-action="AddOrEditCategory" class="btn btn-success text-white">
+    <a class="btn btn-success text-white"
+       onclick="ShowModal('@Url.Action("AddOrEditCategory", "CategoryManager", null, Context.Request.Scheme)', 'گروه جدید')">
         <i class="fal fa-layer-plus"></i> افزودن گروه جدید
     </a>
 </p>
@@ -28,7 +29,8 @@
                     @Html.DisplayFor(modelItem => item.CategoryTitle)
                 </td>
                 <td>
-                    <a asp-action="AddOrEditCategory" asp-route-categoryId="@item.CategoryId" class="btn btn-warning text-white">
+                    <a class="btn btn-warning text-white"
+                       onclick="ShowModal('@Url.Action("AddOrEditCategory", "CategoryManager", new {categoryId = item.CategoryId}, Context.Request.Scheme)', 'ویرایش گروه')">
                         <i class="fal fa-marker"></i> ویرایش
                     </a>
                     <form asp-action="RemoveCategory" asp-route-categoryId="@item.CategoryId" method="post" class="d-inline">
@@ -42,3 +44,14 @@
         }
     </tbody>
 </table>
+
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+
+}
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

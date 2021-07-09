@@ -6,19 +6,20 @@
 }
 
 <p>
-    <a asp-action="AddOrEditChildCategory" class="btn btn-success text-white">
+    <a class="btn btn-success text-white"
+       onclick="ShowModal('@Url.Action("AddOrEditChildCategory", "ChildCategoryManager",null , Context.Request.Scheme)', 'زیر گروه جدید')">
         <i class="fal fa-layer-plus"></i> افزودن زیر گروه جدید
     </a>
 </p>
 <table class="table table-bordered table-striped">
     <thead>
-    <tr>
-        <th>#</th>
-        <th>
-            @Html.DisplayNameFor(model => model.ChildCategoryTitle)
-        </th>
-        <th>دستورات</th>
-    </tr>
+        <tr>
+            <th>#</th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChildCategoryTitle)
+            </th>
+            <th>دستورات</th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
@@ -29,7 +30,8 @@
                     @Html.DisplayFor(modelItem => item.ChildCategoryTitle)
                 </td>
                 <td>
-                    <a asp-action="AddOrEditChildCategory" asp-route-childCategoryId="@item.ChildCategoryId" class="btn btn-warning text-white">
+                    <a class="btn btn-warning text-white"
+                       onclick="ShowModal('@Url.Action("AddOrEditChildCategory", "ChildCategoryManager",new {childCategoryId = item.ChildCategoryId} , Context.Request.Scheme)', 'ویرایش زیر گروه')">
                         <i class="fal fa-marker"></i> ویرایش
                     </a>
                     <form asp-action="RemoveChildCategory" asp-route-childCategoryId="@item.ChildCategoryId" method="post" class="d-inline-block ml-2">
@@ -39,7 +41,17 @@
                     </form>
                 </td>
             </tr>
-            rowCount ++;
+            rowCount++;
         }
     </tbody>
 </table>
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+
+}
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
