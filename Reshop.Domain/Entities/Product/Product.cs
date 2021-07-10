@@ -45,6 +45,9 @@ namespace Reshop.Domain.Entities.Product
         [Required]
         public DateTime CreateDate { get; set; }
 
+
+        public bool Access { get; set; } = true;
+
         [ForeignKey("MobileDetail")]
         public int? MobileDetailId { get; set; }
 

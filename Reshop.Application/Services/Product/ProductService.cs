@@ -9,9 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Domain.Entities.Shopper;
+using Reshop.Domain.Interfaces.Category;
 using Reshop.Domain.Interfaces.Shopper;
 using ProductViewModel = Reshop.Domain.DTOs.Product.ProductViewModel;
 
@@ -202,7 +204,7 @@ namespace Reshop.Application.Services.Product
         }
 
         public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperUserId = null)
-        { 
+        {
             string productType = await _productRepository.GetProductTypeAsync(productId);
 
             var product = await _productRepository.GetProductWithTypeAsync(productId, productType.FixedText(), shopperUserId);
@@ -303,20 +305,6 @@ namespace Reshop.Application.Services.Product
             }
         }
 
-        public async Task RemoveLaptopAsync(int productId)
-        {
-            var product = await _productRepository.GetProductByIdAsync(productId);
-
-
-            if (product.LaptopDetailId != null)
-            {
-                var laptopDetail = await _productRepository.GetLaptopDetailByIdAsync(product.LaptopDetailId.Value);
-                _productRepository.RemoveLaptopDetail(laptopDetail);
-            }
-            _productRepository.RemoveProduct(product);
-
-            await _productRepository.SaveChangesAsync();
-        }
 
         public async Task<ResultTypes> EditProductAsync(Domain.Entities.Product.Product product)
         {
@@ -656,7 +644,7 @@ namespace Reshop.Application.Services.Product
             await _productRepository.SaveChangesAsync();
         }
 
-        public async Task<ResultTypes> RemoveMobileAsync(int productId)
+        public async Task<ResultTypes> RemoveProductAccessAsync(int productId)
         {
             var product = await _productRepository.GetProductByIdAsync(productId);
 
@@ -664,42 +652,12 @@ namespace Reshop.Application.Services.Product
             {
                 return ResultTypes.Failed;
             }
-            else if (product.MobileDetailId is null)
-            {
-                return ResultTypes.Failed;
-            }
 
+            product.Access = false;
 
-            try
-            {
-                var mobileDetail = await _productRepository.GetMobileDetailByIdAsync(product.MobileDetailId.Value);
+            await _productRepository.SaveChangesAsync();
 
-                if (mobileDetail is null) return ResultTypes.Failed;
-
-                var productShoppers = _shopperRepository.GetProductShoppersProduct(productId);
-                if (productShoppers is null) return ResultTypes.Failed;
-
-
-                foreach (var productShopper in productShoppers)
-                {
-                    _shopperRepository.RemoveShopperProduct(productShopper);
-                }
-
-
-                _productRepository.RemoveMobileDetail(mobileDetail);
-
-
-                _productRepository.RemoveProduct(product);
-
-
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
+            return ResultTypes.Successful;
         }
 
         public async Task<ResultTypes> EditLaptopAsync(Domain.Entities.Product.Product product, LaptopDetail laptopDetail)

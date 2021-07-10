@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Reshop.Application.Attribute
@@ -9,17 +10,12 @@ namespace Reshop.Application.Attribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.HttpContext.Request.GetTypedHeaders().Referer == null ||
-                context.HttpContext.Request.Host.ToString() != context.HttpContext.Request.GetTypedHeaders().Referer.Host.ToString())
+            if(context.HttpContext.Request.GetTypedHeaders().Referer == null ||
+              context.HttpContext.Request.GetTypedHeaders().Host.Host.ToString() != context.HttpContext.Request.GetTypedHeaders().Referer.Host.ToString())
             {
-                string referer = context.HttpContext.Request.GetTypedHeaders().Referer.ToString();
+                var refererPath = context.HttpContext.Request.Headers["Referer"].ToString();
 
-                if (string.IsNullOrEmpty(referer))
-                {
-                    context.HttpContext.Response.Redirect("/");
-                }
-
-                context.HttpContext.Response.Redirect(referer);
+                context.Result = string.IsNullOrEmpty(refererPath) ? new RedirectResult("/") : new RedirectResult(refererPath);
             }
         }
     }

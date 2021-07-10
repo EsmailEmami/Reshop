@@ -25,7 +25,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         void RemoveShopperProduct(ShopperProduct shopperProduct);
         Task AddShopperProductAsync(ShopperProduct shopperProduct);
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId);
-        IEnumerable<ShopperProduct> GetProductShoppersProduct(int productId);
+        IEnumerable<ShopperProduct> GetShoppersOfProduct(int productId);
         Task<bool> IsShopperProductExistAsync(string shopperUserId, int productId);
 
         #endregion

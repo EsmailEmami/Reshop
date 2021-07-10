@@ -73,8 +73,7 @@ namespace Reshop.Application.Interfaces.Product
         Task AddProductGalleryAsync(ProductGallery productGallery);
 
         // remove
-        Task<ResultTypes> RemoveMobileAsync(int productId);
-        Task RemoveLaptopAsync(int productId);
+        Task<ResultTypes> RemoveProductAccessAsync(int productId);
 
         // update
         Task<ResultTypes> EditProductAsync(Domain.Entities.Product.Product product);

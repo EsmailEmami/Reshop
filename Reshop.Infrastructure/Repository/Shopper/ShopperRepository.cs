@@ -106,7 +106,7 @@ namespace Reshop.Infrastructure.Repository.Shopper
             _context.ShopperProducts.Where(c => c.ProductId == productId)
                 .Select(c => new Tuple<string, string, string>(c.ShopperUserId, c.User.Shopper.StoreName, c.Warranty));
 
-        public IEnumerable<ShopperProduct> GetProductShoppersProduct(int productId) =>
+        public IEnumerable<ShopperProduct> GetShoppersOfProduct(int productId) =>
             _context.ShopperProducts.Where(c => c.ProductId == productId);
 
         public async Task<bool> IsShopperProductExistAsync(string shopperUserId, int productId) =>

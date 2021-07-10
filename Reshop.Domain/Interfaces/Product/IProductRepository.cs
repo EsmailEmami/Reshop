@@ -174,6 +174,11 @@ namespace Reshop.Domain.Interfaces.Product
         Task AddUserProductViewAsync(UserProductView userProductView);
         Task<bool> IsUserProductViewExistAsync(int productId, string userIP);
 
+
+        
+
+
+
         Task SaveChangesAsync();
     }
 }

@@ -12,6 +12,7 @@ using Reshop.Domain.Entities.User;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Attribute;
 using Reshop.Domain.DTOs.User;
 
 namespace Reshop.Web.Controllers.User
@@ -244,6 +245,7 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> EditUserInformation()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -262,6 +264,7 @@ namespace Reshop.Web.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [NoDirectAccess]
         public async Task<IActionResult> EditUserInformation(EditUserViewModel model)
         {
             if (!ModelState.IsValid)
@@ -331,6 +334,12 @@ namespace Reshop.Web.Controllers.User
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return View(await _productService.GetShopperProductAsync(productId, userId));
+        }
+
+        [HttpGet]
+        public IActionResult AddShopperToProduct()
+        {
+            return View();
         }
     }
 }

@@ -6,6 +6,8 @@
 @section Css
 {
     <link href="~/css/calender.min.css" rel="stylesheet" />
+    <link href="~/css/select.css" rel="stylesheet" />
+    <script src="~/js/selectize.js"></script>
 }
 
 <div class="register-shopper-area">
@@ -104,22 +106,22 @@
 
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-5">
-                        <div class="form-field">
-                            <select onchange="GetCitiesOfState(this.value)" asp-for="StateId">
+                       
+                            <select onchange="GetCitiesOfState(this.value)" asp-for="StateId" select-search="true">
                                 <option value="0">استان</option>
                                 @foreach (var state in Model.States)
                                 {
                                     <option value="@state.StateId">@state.StateName</option>
                                 }
                             </select>
-                        </div>
+                       
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-4">
-                        <div class="form-field">
-                            <select id="city" asp-for="CityId">
+                       
+                            <select id="city" asp-for="CityId" select-search="true">
                                 <option value="0">شهر</option>
                             </select>
-                        </div>
+                   
                     </div>
                     <div class="col-sm-12 col-lg-3">
                         <div class="form-field">
@@ -186,4 +188,5 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
         await Html.RenderPartialAsync("_CalenderDatePickerPartial");
     }
+<script src="~/js/select.js"></script>
 }

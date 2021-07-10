@@ -367,18 +367,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteMobile(int productId)
-        {
-            if (!await _productService.IsProductExistAsync(productId))
-                return NotFound();
-
-            await _productService.RemoveMobileAsync(productId);
-
-            return RedirectToAction("Index");
-        }
-
         // جزعیات
         [HttpGet]
         public async Task<IActionResult> MobileDetail(int productId)
@@ -647,17 +635,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteLaptop(int productId)
-        {
-            if (!await _productService.IsProductExistAsync(productId))
-                return NotFound();
-
-            await _productService.RemoveLaptopAsync(productId);
-
-            return RedirectToAction("Index");
-        }
+     
 
         #endregion
 
@@ -2768,6 +2746,20 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     return View(model);
                 }
             }
+        }
+
+        #endregion
+
+        // ---------------------------------------------------------------------
+        #region Remove
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProduct(int productId)
+        {
+            await _productService.RemoveProductAccessAsync(productId);
+
+            return RedirectToAction("Index");
         }
 
         #endregion

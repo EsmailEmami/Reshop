@@ -126,6 +126,12 @@ namespace Reshop.Infrastructure.Context
                 i.Property(w => w.AccountBalance).HasColumnType("Money");
             });
 
+            modelBuilder.Entity<Product>()
+                .HasQueryFilter(u => !u.Access);
+
+            modelBuilder.Entity<ShopperProduct>()
+                .HasQueryFilter(u => u.QuantityInStock == 0);
+
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -86,6 +86,7 @@ function GetCitiesOfState(stateId) {
             $.each(res, function (index, value) {
                 $("#city").append('<option value="' + value.cityId + '">' + value.cityName + '</option>');
             });
+            $('select:not([multiple])').selectize(options);
         });
     } else if (stateId == 0) {
         $("#city").empty();
