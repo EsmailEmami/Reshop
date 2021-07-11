@@ -29,32 +29,21 @@ namespace Reshop.Application.Middleware.HitCounter
             {
                 if (_productService != null)
                 {
-                    int productId = int.Parse(path.TextAfter("/product/").Split("/").First());
-                    if (await _productService.IsProductExistAsync(productId))
+                    try
                     {
-                        string userIP = context.Connection.RemoteIpAddress.ToString();
-                        if (!await _productService.IsUserProductViewExistAsync(productId, userIP))
+                        int productId = int.Parse(path.TextAfter("/product/").Split("/").First());
+
+                        if (await _productService.IsProductExistAsync(productId))
                         {
-                            var userProductView = new UserProductView()
-                            {
-                                UserIPAddress = userIP,
-                                ProductId = productId,
-                            };
 
-                            var result = await _productService.AddUserProductViewAsync(userProductView);
-
-                            if (result == ResultTypes.Successful)
-                            {
-                                var product = await _productService.GetProductByIdAsync(productId);
-                                //product.AllViewsCount += 1;
-
-                                await _productService.EditProductAsync(product);
-                            }
                         }
+                    }
+                    catch
+                    {
+                        await _next(context);
                     }
                 }
             }
-
             await _next(context);
         }
     }

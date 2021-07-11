@@ -45,6 +45,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<ShopperProduct> ShopperProducts { get; set; }
         public virtual DbSet<UserInvite> UserInvites { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
+        public virtual DbSet<OfficialBrandProduct> OfficialBrandProducts { get; set; }
         public virtual DbSet<TabletDetail> TabletDetails { get; set; }
         public virtual DbSet<SpeakerDetail> SpeakerDetails { get; set; }
         public virtual DbSet<AUXDetail> AuxDetails { get; set; }
@@ -62,7 +63,6 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<StateCity> StateCities { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
-        public virtual DbSet<UserProductView> UserProductsView { get; set; }
         public virtual DbSet<EditShopperProduct> EditShopperProducts { get; set; }
         public virtual DbSet<StoreAddress> StoresAddress { get; set; }
 
@@ -126,11 +126,8 @@ namespace Reshop.Infrastructure.Context
                 i.Property(w => w.AccountBalance).HasColumnType("Money");
             });
 
-            modelBuilder.Entity<Product>()
-                .HasQueryFilter(u => !u.Access);
 
-            modelBuilder.Entity<ShopperProduct>()
-                .HasQueryFilter(u => u.QuantityInStock == 0);
+
 
             base.OnModelCreating(modelBuilder);
         }

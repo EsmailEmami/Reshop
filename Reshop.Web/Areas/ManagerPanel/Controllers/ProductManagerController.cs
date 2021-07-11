@@ -178,6 +178,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
                 var mobileDetail = new MobileDetail()
@@ -279,6 +280,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
+
 
 
                 // update mobile detail
@@ -465,7 +468,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
 
@@ -557,7 +560,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
 
 
@@ -722,7 +725,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
                 var tabletDetail = new TabletDetail()
@@ -827,7 +830,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
 
                 // update mobile cover detail
@@ -1052,7 +1055,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
 
                 // update mobile cover detail
@@ -1489,7 +1492,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
                 var speakerDetail = new SpeakerDetail()
@@ -1557,7 +1560,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
 
                 // update mobile cover detail
@@ -1700,7 +1703,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
                 var powerBank = new PowerBankDetail()
@@ -1761,7 +1764,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
                 // update mobile detail
                 powerBankDetail.Length = model.Length;
@@ -1891,7 +1894,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
                 var wristWatchDetail = new WristWatchDetail()
@@ -1939,7 +1942,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
 
                 // update mobile cover detail
@@ -2056,7 +2059,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
                 var smartWatchDetail = new SmartWatchDetail()
@@ -2136,7 +2139,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
 
                 // update mobile cover detail
@@ -2286,7 +2289,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
                 var flashMemoryDetail = new FlashMemoryDetail()
@@ -2351,7 +2354,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
 
                 // update mobile cover detail
@@ -2485,7 +2488,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
                 var memoryCardDetail = new MemoryCardDetail()
@@ -2540,7 +2543,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
 
                 // update mobile cover detail
@@ -2664,7 +2667,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
-
+                    OfficialBrandProductId = model.OfficialBrandProductId
                 };
 
                 var auxDetail = new AUXDetail()
@@ -2713,7 +2716,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
                 product.BrandId = model.Brand;
-
+                product.OfficialBrandProductId = model.OfficialBrandProductId;
 
 
                 // update mobile cover detail

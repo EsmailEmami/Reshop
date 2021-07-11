@@ -663,11 +663,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 }) as IAsyncEnumerable<ProductViewModel>;
         }
 
-        public async Task AddUserProductViewAsync(UserProductView userProductView) =>
-            await _context.UserProductsView.AddAsync(userProductView);
+       
 
-        public async Task<bool> IsUserProductViewExistAsync(int productId, string userIP) =>
-            await _context.UserProductsView.AnyAsync(c => c.ProductId == productId && c.UserIPAddress == userIP);
+    
 
         public IEnumerable<Domain.Entities.Product.Product> GetTypeMobileProducts()
         {
@@ -704,6 +702,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     ProductTitle = c.ProductTitle,
                     Description = c.Description,
                     Brand = c.BrandId,
+                    OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                     //img
                     SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -781,6 +780,7 @@ namespace Reshop.Infrastructure.Repository.Product
                      ProductTitle = c.ProductTitle,
                      Description = c.Description,
                      Brand = c.BrandId,
+                     OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                      //img
                      SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -846,7 +846,8 @@ namespace Reshop.Infrastructure.Repository.Product
                      ProductTitle = c.ProductTitle,
                      Description = c.Description,
                      Brand = c.BrandId,
-                   
+                     OfficialBrandProductId = c.OfficialBrandProductId.Value,
+
 
                      //img
                      SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -882,7 +883,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
                         Brand = c.BrandId,
-                 
+                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                         //img
                         SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -908,7 +909,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
                         Brand = c.BrandId,
-     
+                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                         //img
                         SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -954,7 +955,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
                         Brand = c.BrandId,
- 
+                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                         //img
                         SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -1033,7 +1034,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
                         Brand = c.BrandId,
- 
+                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                         //img
                         SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -1075,7 +1076,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
                         Brand = c.BrandId,
- 
+                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                         //img
                         SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -1096,7 +1097,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
                         Brand = c.BrandId,
-   
+                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                         //img
                         SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -1150,7 +1151,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
                         Brand = c.BrandId,
- 
+                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                         //img
                         SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
@@ -1179,7 +1180,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     ProductTitle = c.ProductTitle,
                     Description = c.Description,
                     Brand = c.BrandId,
- 
+                    OfficialBrandProductId = c.OfficialBrandProductId.Value,
 
                     //img
                     SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,

@@ -42,6 +42,9 @@ namespace Reshop.Domain.Entities.Product
         [ForeignKey("Brand")]
         public int BrandId { get; set; }
 
+        [ForeignKey("OfficialBrandProduct")]
+        public int? OfficialBrandProductId { get; set; }
+
         [Required]
         public DateTime CreateDate { get; set; }
 
@@ -91,6 +94,8 @@ namespace Reshop.Domain.Entities.Product
 
         public virtual Brand Brand { get; set; }
 
+        public virtual OfficialBrandProduct OfficialBrandProduct { get; set; }
+
         public virtual ICollection<ProductToChildCategory> ProductToChildCategories { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
@@ -126,10 +131,9 @@ namespace Reshop.Domain.Entities.Product
         public virtual AUXDetail AuxDetail { get; set; }
 
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
-        public ICollection<EditShopperProduct> EditShopperProducts { get; set; }
-        public virtual ICollection<UserProductView> UserProductsView { get; set; }
+        public virtual ICollection<EditShopperProduct> EditShopperProducts { get; set; }
 
-        
+
 
         #endregion
     }
