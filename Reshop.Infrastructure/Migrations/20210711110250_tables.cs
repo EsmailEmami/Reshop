@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Reshop.Infrastructure.Migrations
 {
-    public partial class Tables : Migration
+    public partial class tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -601,6 +601,26 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OfficialBrandProducts",
+                columns: table => new
+                {
+                    OfficialBrandProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OfficialBrandProductName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BrandId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OfficialBrandProducts", x => x.OfficialBrandProductId);
+                    table.ForeignKey(
+                        name: "FK_OfficialBrandProducts_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "BrandId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ChildCategoryToCategories",
                 columns: table => new
                 {
@@ -775,7 +795,9 @@ namespace Reshop.Infrastructure.Migrations
                     ShortKey = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     ProductType = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false),
+                    OfficialBrandProductId = table.Column<int>(type: "int", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Access = table.Column<bool>(type: "bit", nullable: false),
                     MobileDetailId = table.Column<int>(type: "int", nullable: true),
                     LaptopDetailId = table.Column<int>(type: "int", nullable: true),
                     MobileCoverDetailId = table.Column<int>(type: "int", nullable: true),
@@ -846,6 +868,12 @@ namespace Reshop.Infrastructure.Migrations
                         column: x => x.MobileDetailId,
                         principalTable: "MobileDetails",
                         principalColumn: "MobileDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_OfficialBrandProducts_OfficialBrandProductId",
+                        column: x => x.OfficialBrandProductId,
+                        principalTable: "OfficialBrandProducts",
+                        principalColumn: "OfficialBrandProductId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Products_PowerBankDetails_PowerBankDetailId",
@@ -1219,26 +1247,6 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserProductsView",
-                columns: table => new
-                {
-                    UserProductViewId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserIPAddress = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserProductsView", x => x.UserProductViewId);
-                    table.ForeignKey(
-                        name: "FK_UserProductsView_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
@@ -1431,6 +1439,11 @@ namespace Reshop.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OfficialBrandProducts_BrandId",
+                table: "OfficialBrandProducts",
+                column: "BrandId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
                 table: "OrderDetails",
                 column: "OrderId");
@@ -1509,6 +1522,11 @@ namespace Reshop.Infrastructure.Migrations
                 name: "IX_Products_MobileDetailId",
                 table: "Products",
                 column: "MobileDetailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_OfficialBrandProductId",
+                table: "Products",
+                column: "OfficialBrandProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_PowerBankDetailId",
@@ -1611,11 +1629,6 @@ namespace Reshop.Infrastructure.Migrations
                 column: "InviterUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProductsView_ProductId",
-                table: "UserProductsView",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
                 table: "UserRoles",
                 column: "RoleId");
@@ -1684,9 +1697,6 @@ namespace Reshop.Infrastructure.Migrations
                 name: "UserInvites");
 
             migrationBuilder.DropTable(
-                name: "UserProductsView");
-
-            migrationBuilder.DropTable(
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
@@ -1744,9 +1754,6 @@ namespace Reshop.Infrastructure.Migrations
                 name: "BatteryChargerDetails");
 
             migrationBuilder.DropTable(
-                name: "Brands");
-
-            migrationBuilder.DropTable(
                 name: "FlashMemoryDetails");
 
             migrationBuilder.DropTable(
@@ -1765,6 +1772,9 @@ namespace Reshop.Infrastructure.Migrations
                 name: "MobileDetails");
 
             migrationBuilder.DropTable(
+                name: "OfficialBrandProducts");
+
+            migrationBuilder.DropTable(
                 name: "PowerBankDetails");
 
             migrationBuilder.DropTable(
@@ -1781,6 +1791,9 @@ namespace Reshop.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Shoppers");
+
+            migrationBuilder.DropTable(
+                name: "Brands");
         }
     }
 }

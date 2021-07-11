@@ -926,25 +926,7 @@ namespace Reshop.Application.Services.Product
             }
         }
 
-        public async Task<ResultTypes> AddUserProductViewAsync(UserProductView userProductView)
-        {
-            try
-            {
-                await _productRepository.AddUserProductViewAsync(userProductView);
-                await _productRepository.SaveChangesAsync();
-
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<bool> IsUserProductViewExistAsync(int productId, string userIP) =>
-            await _productRepository.IsUserProductViewExistAsync(productId, userIP);
+     
 
         public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18)
         {

@@ -171,9 +171,6 @@ namespace Reshop.Domain.Interfaces.Product
         IAsyncEnumerable<ProductViewModel> GetProductsByFilter(string productName);
 
 
-        Task AddUserProductViewAsync(UserProductView userProductView);
-        Task<bool> IsUserProductViewExistAsync(int productId, string userIP);
-
 
         
 

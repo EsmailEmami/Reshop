@@ -93,8 +93,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<bool> IsProductExistAsync(int productId);
         Task<bool> IsProductGalleriesCountValidAsync(int productId);
 
-        Task<ResultTypes> AddUserProductViewAsync(UserProductView userProductView);
-        Task<bool> IsUserProductViewExistAsync(int productId, string userIP);
+
 
         #region Favorite Product
 
