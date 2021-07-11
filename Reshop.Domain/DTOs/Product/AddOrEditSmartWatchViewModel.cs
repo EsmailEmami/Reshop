@@ -22,7 +22,11 @@ namespace Reshop.Domain.DTOs.Product
         [Display(Name = "برند محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public int Brand { get; set; }
- 
+
+        [Display(Name = "نام محصول واقعی از برند")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public int OfficialBrandProductId { get; set; }
+
         // --------------------------------------------------------------------------- ITEMS
 
         [Display(Name = "طول")]
