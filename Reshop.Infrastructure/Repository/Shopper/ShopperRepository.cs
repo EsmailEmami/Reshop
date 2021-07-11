@@ -29,6 +29,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 await _context.Users.Include(c => c.Shopper)
                     .SingleOrDefaultAsync(c => c.UserId == userId);
 
+        public async Task<bool> IsShopperExistAsync(string shopperUserId) =>
+            await _context.Users.AnyAsync(c => c.UserId == shopperUserId && c.IsUserShopper);
+
         public async Task AddShopperAsync(Domain.Entities.Shopper.Shopper shopper)
             =>
                 await _context.Shoppers.AddAsync(shopper);

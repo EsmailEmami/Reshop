@@ -10,6 +10,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> EditShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> AddShopperProductAsync(ShopperProduct shopperProduct);
+        Task<bool> IsShopperExistAsync(string shopperUserId);
 
         #region address
 

@@ -11,7 +11,7 @@ namespace Reshop.Domain.DTOs.Shopper
     {
         public string ShopperUserId { get; set; }
 
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
 
         public string Color { get; set; }
 
