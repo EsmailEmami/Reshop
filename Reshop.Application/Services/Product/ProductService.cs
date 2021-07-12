@@ -100,13 +100,13 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperUserId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18)
+        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
-            int productsCount = await _productRepository.GetShopperProductsCountWithTypeAsync(shopperUserId, type.ToString());
+            int productsCount = await _productRepository.GetShopperProductsCountWithTypeAsync(shopperId, type.ToString());
 
-            var products = (IEnumerable<ProductViewModel>)_productRepository.GetShopperProductsWithPagination(shopperUserId, type.ToString().FixedText(), sortBy.ToString().FixedText(), skip, take);
+            var products = _productRepository.GetShopperProductsWithPagination(shopperId, type.ToString().FixedText(), sortBy.ToString().FixedText(), skip, take);
 
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -119,8 +119,8 @@ namespace Reshop.Application.Services.Product
             return await _productRepository.GetProductByIdAsync(productId);
         }
 
-        public async Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperUserId) =>
-            await _productRepository.GetShopperProductAsync(shopperUserId, productId);
+        public async Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId) =>
+            await _productRepository.GetShopperProductAsync(shopperId, productId);
 
         public async Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId)
         {
@@ -203,11 +203,11 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperUserId = null)
+        public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperId = null)
         {
             string productType = await _productRepository.GetProductTypeAsync(productId);
 
-            var product = await _productRepository.GetProductWithTypeAsync(productId, productType.FixedText(), shopperUserId);
+            var product = await _productRepository.GetProductWithTypeAsync(productId, productType.FixedText(), shopperId);
 
             var childCategories = _productRepository.GetProductChildCategories(productId);
             var comments = _productRepository.GetProductComments(productId);
@@ -251,9 +251,9 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetTypeTabletProductDataForEditAsync(productId);
 
-        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperUserId)
+        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperId)
             =>
-                await _productRepository.GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(productId, shopperUserId);
+                await _productRepository.GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(productId, shopperId);
 
         public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId)
             =>
@@ -947,25 +947,26 @@ namespace Reshop.Application.Services.Product
             return await _productRepository.GetFavoriteProductAsync(favoriteProductId);
         }
 
-        public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperUserId)
+        public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperId)
         {
 
-            if (!await _shopperRepository.IsShopperProductExistAsync(shopperUserId, productId))
+            if (!await _shopperRepository.IsShopperProductExistAsync(shopperId, productId))
                 return FavoriteProductResultType.NotFound;
 
             try
             {
-                if (await _productRepository.IsFavoriteProductExistAsync(userId, productId))
+                var favoriteProduct = await _productRepository.GetFavoriteProductAsync(userId, productId);
+                if (favoriteProduct is not  null)
                 {
-                    var favoriteProduct = await _productRepository.GetFavoriteProductAsync(userId, productId);
+                    
 
-                    if (favoriteProduct.ShopperUserId == shopperUserId)
+                    if (favoriteProduct.ShopperId == shopperId)
                     {
                         return FavoriteProductResultType.Available;
                     }
                     else
                     {
-                        favoriteProduct.ShopperUserId = shopperUserId;
+                        favoriteProduct.ShopperId = shopperId;
 
                         _productRepository.UpdateFavoriteProduct(favoriteProduct);
                         await _productRepository.SaveChangesAsync();
@@ -975,15 +976,15 @@ namespace Reshop.Application.Services.Product
                 }
                 else
                 {
-                    var favoriteProduct = new FavoriteProduct()
+                    var newFavoriteProduct = new FavoriteProduct()
                     {
                         UserId = userId,
                         ProductId = productId,
-                        ShopperUserId = shopperUserId,
+                        ShopperId = shopperId,
                     };
 
 
-                    await _productRepository.AddToFavoriteProductAsync(favoriteProduct);
+                    await _productRepository.AddToFavoriteProductAsync(newFavoriteProduct);
                     await _productRepository.SaveChangesAsync();
                     return FavoriteProductResultType.Successful;
                 }

@@ -385,7 +385,7 @@ namespace Reshop.Web.Controllers.User
                 ProductId = Convert.ToInt32(model.ProductId),
                 Price = model.Price,
                 QuantityInStock = model.QuantityInStock,
-                ShopperUserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                ShopperId = User.FindFirstValue(ClaimTypes.NameIdentifier),
                 IsFinally = false
             };
 

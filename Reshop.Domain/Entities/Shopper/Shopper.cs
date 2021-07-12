@@ -15,6 +15,8 @@ namespace Reshop.Domain.Entities.Shopper
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string ShopperId { get; set; }
 
+        [ForeignKey("User")]
+        public string UserId { get; set; }
 
         [Display(Name = "نام فروشگاه")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -44,13 +46,13 @@ namespace Reshop.Domain.Entities.Shopper
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string BusinessLicenseImageName { get; set; }
 
-        [Display(Name = "وضعیت فروشنده")]
-        public bool IsFinally { get; set; }
+        [Display(Name = "وضعیت فروشنده")] public bool IsFinally { get; set; }
 
         #region Relations
 
+        public virtual User.User User { get; set; }
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
-        public ICollection<EditShopperProduct> EditShopperProducts { get; set; }
+        public ICollection<EditShopperProductRequest> EditShopperProducts { get; set; }
         public virtual ICollection<ShopperStoreTitle> ShopperTitles { get; set; }
         public virtual ICollection<StoreAddress> StoresAddress { get; set; }
 

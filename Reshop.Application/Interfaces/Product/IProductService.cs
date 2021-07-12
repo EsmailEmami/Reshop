@@ -19,11 +19,11 @@ namespace Reshop.Application.Interfaces.Product
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(string type = "all", string sortBy = "news", int pageId = 1, int take = 18);
         Task<CategoryOrChildCategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
         Task<CategoryOrChildCategoryProductsForShow> GetChildCategoryProductsWithPaginationAsync(int childCategoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
-        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperUserId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
+        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
 
         // get by id 
         Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId);
-        Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperUserId);
+        Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);
@@ -40,7 +40,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<ProductTypes> GetProductTypeByIdAsync(int productId);
 
         // detail of every product
-        Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperUserId = null);
+        Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperId = null);
         Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key);
 
         // get product types
@@ -49,7 +49,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId);
         Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId);
         Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId);
-        Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperUserId);
+        Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperId);
         Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId);
         Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId);
         Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId);
@@ -100,7 +100,7 @@ namespace Reshop.Application.Interfaces.Product
         // product , pageId , totalPages
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18);
         Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId);
-        Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperUserId);
+        Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperId);
         Task RemoveFavoriteProductAsync(FavoriteProduct favoriteProduct);
 
         #endregion

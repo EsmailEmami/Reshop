@@ -54,14 +54,14 @@ namespace Reshop.Application.Services.User
         public async Task<Order> GetOrderByIdAsync(string orderId) =>
             await _cartRepository.GetOrderByIdAsync(orderId);
 
-        public async Task<ResultTypes> AddToCart(string userId, int productId, string shopperUserId)
+        public async Task<ResultTypes> AddToCart(string userId, int productId, string shopperId)
         {
             try
             {
                 if (!await _userRepository.IsUserExistAsync(userId))
                     return ResultTypes.Failed;
 
-                var shopperProduct = await _productRepository.GetShopperProductAsync(shopperUserId, productId);
+                var shopperProduct = await _productRepository.GetShopperProductAsync(shopperId, productId);
                 if (shopperProduct is null)
                     return ResultTypes.Failed;
 
@@ -69,7 +69,7 @@ namespace Reshop.Application.Services.User
                 var order = await _cartRepository.GetOrderInCartByUserIdAsync(userId);
                 if (order is not null)
                 {
-                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, shopperProduct.ProductId,shopperUserId);
+                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, shopperProduct.ProductId,shopperId);
 
                     if (orderDetail is not null)
                     {
@@ -99,7 +99,7 @@ namespace Reshop.Application.Services.User
                             ProductDiscount = CartCalculator.CalculateDiscountPrice(shopperProduct.Price, shopperProduct.DiscountPercent),
                             CreateDate = DateTime.Now,
                             TrackingCode = "RSD" + NameGenerator.GenerateNumber(),
-                            ShopperUserId = shopperUserId
+                            ShopperId = shopperId
                         };
                         orderDetail_new.Sum = orderDetail_new.Price - orderDetail_new.ProductDiscount;
 
@@ -150,7 +150,7 @@ namespace Reshop.Application.Services.User
                         Sum = shopperProduct.Price,
                         CreateDate = DateTime.Now,
                         TrackingCode = "RSD" + NameGenerator.GenerateNumber(),
-                        ShopperUserId = shopperUserId
+                        ShopperId = shopperId
                     };
 
                     orderDetail_new.Sum = orderDetail_new.Price - orderDetail_new.ProductDiscount;

@@ -24,10 +24,10 @@ namespace Reshop.Infrastructure.Repository.User
 
         #endregion
 
-        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, int productId, string shopperUserId)
+        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, int productId, string shopperId)
         {
             return await _context.OrderDetails
-                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ProductId == productId && c.ShopperUserId == shopperUserId);
+                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ProductId == productId && c.ShopperId == shopperId);
         }
 
         public async Task<OrderDetail> GetOrderDetailByIdAsync(string orderDetailId)
@@ -89,8 +89,8 @@ namespace Reshop.Infrastructure.Repository.User
                         ProductPrice = o.Price,
                         ProductDiscount = o.ProductDiscount,
                         ProductImg = o.Product.ProductGalleries.FirstOrDefault().ImageName,
-                        Warranty = _context.ShopperProducts.Single(s => s.ShopperUserId == o.ShopperUserId).Warranty,
-                        ShopperStoreName = _context.Users.Single(u => u.UserId == o.ShopperUserId).Shopper.StoreName,
+                        Warranty = _context.ShopperProducts.Single(s => s.ShopperId == o.ShopperId).Warranty,
+                        ShopperStoreName = _context.Users.Single(u => u.UserId == o.ShopperId).Shopper.StoreName,
                     })
                 }).SingleOrDefaultAsync();
         }

@@ -120,18 +120,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
-        public async Task<IActionResult> AddShopperToProduct(int productId, string shopperUserId )
+        public async Task<IActionResult> AddShopperToProduct(int productId, string shopperId )
         {
             if (!await _productService.IsProductExistAsync(productId))
                 return NotFound();
 
-            if (!await _shopperService.IsShopperExistAsync(shopperUserId))
+            if (!await _shopperService.IsShopperExistAsync(shopperId))
                 return NotFound();
 
             var model = new AddOrEditShopperProduct()
             {
-                ProductId = _dataProtector.Protect(productId.ToString())و
-                ShopperUserId = _dataProtector.Protect(shopperUserId)
+                ProductId = _dataProtector.Protect(productId.ToString()),
+                ShopperId = _dataProtector.Protect(shopperId)
             };
 
             return View(model);
@@ -147,7 +147,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             try
             {
-                model.ShopperUserId = _dataProtector.Unprotect(model.ShopperUserId);
+                model.ShopperId = _dataProtector.Unprotect(model.ShopperId);
                 model.ProductId = _dataProtector.Unprotect(model.ProductId);
             }
             catch
@@ -160,7 +160,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             var shopperProduct = new ShopperProduct()
             {
-                ShopperUserId = model.ShopperUserId,
+                ShopperId = model.ShopperId,
                 ProductId = Convert.ToInt32(model.ProductId),
                 Price = model.Price,
                 QuantityInStock = model.QuantityInStock,
@@ -186,21 +186,21 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
-        public async Task<IActionResult> EditProductOfShopper(int productId, string shopperUserId)
+        public async Task<IActionResult> EditProductOfShopper(int productId, string shopperId)
         {
             if (!await _productService.IsProductExistAsync(productId))
                 return NotFound();
 
-            var model = new EditShopperProduct()
+            var model = new EditShopperProductRequest()
             {
                
             };
 
 
             // we do not check that user is shopper or no because coming to this method need shopper permission
-            if (!string.IsNullOrEmpty(shopperUserId))
+            if (!string.IsNullOrEmpty(shopperId))
             {
-                model.ShopperUserId = _dataProtector.Protect(shopperUserId);
+                model.ShopperId = _dataProtector.Protect(shopperId);
             }
 
 
@@ -218,9 +218,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             try
             {
-                if (model.ShopperUserId is not null)
+                if (model.ShopperId is not null)
                 {
-                    model.ShopperUserId = _dataProtector.Unprotect(model.ShopperUserId);
+                    model.ShopperId = _dataProtector.Unprotect(model.ShopperId);
                 }
 
                 model.ProductId = _dataProtector.Unprotect(model.ProductId);
@@ -240,14 +240,14 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 QuantityInStock = model.QuantityInStock
             };
 
-            if (model.ShopperUserId is null)
+            if (model.ShopperId is null)
             {
-                shopperProduct.ShopperUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                shopperProduct.ShopperId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 shopperProduct.IsFinally = false;
             }
             else
             {
-                shopperProduct.ShopperUserId = model.ShopperUserId;
+                shopperProduct.ShopperId = model.ShopperId;
                 shopperProduct.IsFinally = true;
             }
 
