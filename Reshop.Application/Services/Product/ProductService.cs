@@ -653,7 +653,7 @@ namespace Reshop.Application.Services.Product
                 return ResultTypes.Failed;
             }
 
-            product.Access = false;
+            product.IsActive = false;
 
             await _productRepository.SaveChangesAsync();
 

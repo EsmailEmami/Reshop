@@ -49,7 +49,7 @@ namespace Reshop.Domain.Entities.Product
         public DateTime CreateDate { get; set; }
 
 
-        public bool Access { get; set; } = true;
+        public bool IsActive { get; set; } = true;
 
         [ForeignKey("MobileDetail")]
         public int? MobileDetailId { get; set; }
