@@ -13,6 +13,8 @@ namespace Reshop.Domain.DTOs.Shopper
 
         public string ProductId { get; set; }
 
+        public string RequestUserId { get; set; }
+
         public string Color { get; set; }
 
         [Display(Name = "تعداد موجودی")]
@@ -27,5 +29,7 @@ namespace Reshop.Domain.DTOs.Shopper
         [Display(Name = "قیمت محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public decimal Price { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

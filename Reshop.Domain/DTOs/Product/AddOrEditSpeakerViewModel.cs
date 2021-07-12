@@ -31,6 +31,10 @@ namespace Reshop.Domain.DTOs.Product
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public int OfficialBrandProductId { get; set; }
 
+        [Display(Name = "وضعیت")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool IsActive { get; set; }
+
         // --------------------------------------------------------------------------- ITEMS
 
         //General Information
