@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Reshop.Application.Enums;
+﻿using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Shopper;
-using Reshop.Application.Interfaces.User;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Reshop.Application.Services.Shopper
 {
@@ -75,6 +71,33 @@ namespace Reshop.Application.Services.Shopper
 
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _shopperRepository.IsShopperExistAsync(shopperId);
+
+        public async Task<string> GetShopperIdOrUserAsync(string userId)
+        {
+            try
+            {
+                return await _shopperRepository.GetShopperIdOfUserByUserId(userId);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest)
+        {
+            try
+            {
+                await _shopperRepository.AddShopperProductRequestAsync(shopperProductRequest);
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
 
         public async Task<ResultTypes> AddStoreAddressAsync(StoreAddress storeAddress)
         {
@@ -202,9 +225,9 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
-        public IEnumerable<string> GetShopperStoreTitlesName(string shopperUserId)
+        public async Task<IEnumerable<string>> GetShopperStoreTitlesName(string userId)
         {
-            string shopperId = _shopperRepository.GetShopperIdOfUserByUserId(shopperUserId);
+            string shopperId = await _shopperRepository.GetShopperIdOfUserByUserId(userId);
             return _shopperRepository.GetShopperStoreTitlesName(shopperId);
         }
     }

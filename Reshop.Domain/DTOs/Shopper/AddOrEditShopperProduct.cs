@@ -13,6 +13,8 @@ namespace Reshop.Domain.DTOs.Shopper
 
         public string ProductId { get; set; }
 
+        public string RequestUserId { get; set; }
+
         public string Color { get; set; }
 
         [Display(Name = "تعداد موجودی")]
