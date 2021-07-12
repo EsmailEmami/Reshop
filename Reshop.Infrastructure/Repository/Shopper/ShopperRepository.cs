@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.DTOs.Shopper;
-using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Infrastructure.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reshop.Infrastructure.Repository.Shopper
 {
@@ -29,9 +28,11 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 await _context.Users.Include(c => c.Shopper)
                     .SingleOrDefaultAsync(c => c.UserId == userId);
 
+      
+
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _context.Shoppers.AnyAsync(c => c.ShopperId == shopperId);
-        
+
         public async Task AddShopperAsync(Domain.Entities.Shopper.Shopper shopper)
             =>
                 await _context.Shoppers.AddAsync(shopper);
@@ -56,8 +57,8 @@ namespace Reshop.Infrastructure.Repository.Shopper
                         BackNationalCardImageName = c.Shopper.BackNationalCardImageName
                     }).SingleOrDefaultAsync();
 
-        public string GetShopperIdOfUserByUserId(string userId) =>
-            _context.Users.Find(userId).ShopperId;
+        public async Task<string> GetShopperIdOfUserByUserId(string userId) =>
+            await _context.Shoppers.Where(c => c.UserId == userId).Select(c => c.ShopperId).SingleAsync();
 
         public IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null)
         {
@@ -95,6 +96,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 StoreName = c.Shopper.StoreName
             });
         }
+
+        public async Task AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest) =>
+            await _context.ShopperProductRequests.AddAsync(shopperProductRequest);
 
 
         public void UpdateShopperProduct(ShopperProduct shopperProduct) => _context.ShopperProducts.Update(shopperProduct);
@@ -141,7 +145,7 @@ namespace Reshop.Infrastructure.Repository.Shopper
                  _context.ShopperStoreTitles.Remove(shopperStoreTitle);
 
         public IEnumerable<string> GetShopperStoreTitlesName(string shopperId) =>
-            _context.ShopperStoreTitles.Where(c => c.ShopperId == shopperId).Select(c=> c.StoreTitle.StoreTitleName);
+            _context.ShopperStoreTitles.Where(c => c.ShopperId == shopperId).Select(c => c.StoreTitle.StoreTitleName);
 
         public async Task AddStoreAddressAsync(StoreAddress storeAddress) =>
             await _context.StoresAddress.AddAsync(storeAddress);

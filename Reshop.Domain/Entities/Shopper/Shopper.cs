@@ -52,7 +52,7 @@ namespace Reshop.Domain.Entities.Shopper
 
         public virtual User.User User { get; set; }
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
-        public ICollection<EditShopperProductRequest> EditShopperProducts { get; set; }
+        public ICollection<ShopperProductRequest> ShopperProductRequests { get; set; }
         public virtual ICollection<ShopperStoreTitle> ShopperTitles { get; set; }
         public virtual ICollection<StoreAddress> StoresAddress { get; set; }
 

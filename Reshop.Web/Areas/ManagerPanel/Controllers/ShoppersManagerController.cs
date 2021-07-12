@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
+using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
@@ -120,18 +121,21 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
-        public async Task<IActionResult> AddShopperToProduct(int productId, string shopperId )
+        public async Task<IActionResult> AddShopperToProduct(int productId, string shopperUserId)
         {
             if (!await _productService.IsProductExistAsync(productId))
                 return NotFound();
 
-            if (!await _shopperService.IsShopperExistAsync(shopperId))
+            string shopperId = await _shopperService.GetShopperIdOrUserAsync(shopperUserId);
+
+            if (shopperId is null)
                 return NotFound();
 
             var model = new AddOrEditShopperProduct()
             {
                 ProductId = _dataProtector.Protect(productId.ToString()),
-                ShopperId = _dataProtector.Protect(shopperId)
+                ShopperId = _dataProtector.Protect(shopperId),
+                RequestUserId = _dataProtector.Protect(User.FindFirstValue(ClaimTypes.NameIdentifier)),
             };
 
             return View(model);
@@ -149,6 +153,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 model.ShopperId = _dataProtector.Unprotect(model.ShopperId);
                 model.ProductId = _dataProtector.Unprotect(model.ProductId);
+                model.RequestUserId = _dataProtector.Unprotect(model.RequestUserId);
+
+                // try to convert to string of it is not true means user was changed it
+                Convert.ToInt32(model.ProductId);
             }
             catch
             {
@@ -164,7 +172,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 ProductId = Convert.ToInt32(model.ProductId),
                 Price = model.Price,
                 QuantityInStock = model.QuantityInStock,
-                IsFinally = true
+                IsFinally = true,
+                CreateDate = DateTime.Now,
+                Warranty = model.Warranty
             };
 
 
@@ -173,6 +183,21 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             if (result == ResultTypes.Successful)
             {
+                var shopperProductRequest = new ShopperProductRequest()
+                {
+                    ShopperId = model.ShopperId,
+                    ProductId = Convert.ToInt32(model.ProductId),
+                    RequestType = true,
+                    RequestDate = DateTime.Now,
+                    Warranty = model.Warranty,
+                    Price = model.Price,
+                    QuantityInStock = model.QuantityInStock,
+                    IsSuccess = true,
+                    RequestUserId = model.RequestUserId,
+                    Reason = ShopperProductRequestReasons.AdminAdded(),
+                };
+                await _shopperService.AddShopperProductRequestAsync(shopperProductRequest);
+
                 return Json(new { isValid = true });
             }
             else
@@ -191,9 +216,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!await _productService.IsProductExistAsync(productId))
                 return NotFound();
 
-            var model = new EditShopperProductRequest()
+            var model = new ShopperProductRequest()
             {
-               
+
             };
 
 
