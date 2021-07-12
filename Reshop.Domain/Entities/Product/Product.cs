@@ -131,7 +131,7 @@ namespace Reshop.Domain.Entities.Product
         public virtual AUXDetail AuxDetail { get; set; }
 
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
-        public virtual ICollection<EditShopperProductRequest> EditShopperProducts { get; set; }
+        public virtual ICollection<ShopperProductRequest> ShopperProductRequests { get; set; }
 
 
 

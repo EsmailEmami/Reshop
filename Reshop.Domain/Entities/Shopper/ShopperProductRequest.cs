@@ -4,16 +4,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Reshop.Domain.Entities.Shopper
 {
-    public class EditShopperProductRequest
+    public class ShopperProductRequest
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string EditShopperProductId { get; set; }
+        public string ShopperProductRequestId { get; set; }
 
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
         [ForeignKey("Shopper")]
         public string ShopperId { get; set; }
+
+        [ForeignKey("User")]
+        public string RequestUserId { get; set; }
+
+        [Display(Name = "نوع درخواست")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool RequestType { get; set; } // true = add / false = edit
 
         [Display(Name = "گارانتی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -36,10 +43,11 @@ namespace Reshop.Domain.Entities.Shopper
         [Display(Name = "دلیل")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string Reason { get; set; }
+        public string Reason { get; set; } = "Null";
 
         #region Relations
 
+        public User.User User { get; set; }
         public virtual Shopper Shopper { get; set; }
         public virtual Product.Product Product { get; set; }
 
