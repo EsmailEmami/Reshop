@@ -43,7 +43,7 @@ namespace Reshop.Domain.Entities.Shopper
         [Display(Name = "دلیل")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string Reason { get; set; }
+        public string Reason { get; set; } = "Null";
 
         #region Relations
 

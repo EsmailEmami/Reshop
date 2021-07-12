@@ -12,5 +12,9 @@ namespace Reshop.Application.Generator
         {
             return "این محصول توسط ادمین به فروشنده اضافه شده است.";
         }
+        public static string AdminEdited()
+        {
+            return "این محصول توسط ادمین ویرایش شده است.";
+        }
     }
 }
