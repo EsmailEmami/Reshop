@@ -63,7 +63,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<StateCity> StateCities { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
-        public virtual DbSet<EditShopperProduct> EditShopperProducts { get; set; }
+        public virtual DbSet<EditShopperProductRequest> EditShopperProducts { get; set; }
         public virtual DbSet<StoreAddress> StoresAddress { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -78,7 +78,7 @@ namespace Reshop.Infrastructure.Context
                 .HasKey(c => new { c.UserId, c.DiscountId });
 
             modelBuilder.Entity<ShopperProduct>()
-                .HasKey(c => new { c.ShopperUserId, c.ProductId });
+                .HasKey(c => new { c.ShopperId, c.ProductId });
 
             modelBuilder.Entity<UserRole>()
                 .HasKey(c => new { c.UserId, c.RoleId });
@@ -111,7 +111,7 @@ namespace Reshop.Infrastructure.Context
                 i.Property(w => w.Sum).HasColumnType("Money");
             });
 
-            modelBuilder.Entity<EditShopperProduct>(i =>
+            modelBuilder.Entity<EditShopperProductRequest>(i =>
             {
                 i.Property(w => w.Price).HasColumnType("Money");
             });

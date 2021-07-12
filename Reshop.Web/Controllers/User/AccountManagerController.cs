@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Convertors;
@@ -13,7 +14,9 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Reshop.Application.Attribute;
+using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.DTOs.User;
+using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Web.Controllers.User
 {
@@ -37,7 +40,7 @@ namespace Reshop.Web.Controllers.User
             _stateService = stateService;
             _shopperService = shopperService;
             _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Controllers.User.AccountManagerController",
-                new string[] { "address" });
+                new string[] { "AccountManagerController" });
         }
 
         #endregion
@@ -121,6 +124,7 @@ namespace Reshop.Web.Controllers.User
 
 
         [HttpGet]
+        [NoDirectAccess]
         public IActionResult NewAddress()
         {
             ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
@@ -130,6 +134,7 @@ namespace Reshop.Web.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [NoDirectAccess]
         public async Task<IActionResult> NewAddress(Address model)
         {
             ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
@@ -165,6 +170,7 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> EditAddress(string addressId)
         {
             if (string.IsNullOrEmpty(addressId))
@@ -192,6 +198,7 @@ namespace Reshop.Web.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [NoDirectAccess]
         public async Task<IActionResult> EditAddress(Address model)
         {
             ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
@@ -310,7 +317,7 @@ namespace Reshop.Web.Controllers.User
 
         [Route("ManageProducts")]
         [HttpGet]
-        [Permission("FullManager,Shopper")]
+        [Permission("Shopper")]
         public async Task<IActionResult> ManageProducts(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -319,7 +326,7 @@ namespace Reshop.Web.Controllers.User
 
         [Route("ProductsAccess")]
         [HttpGet]
-        [Permission("FullManager,Shopper")]
+        [Permission("Shopper")]
         public IActionResult ProductsAccess()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -329,17 +336,73 @@ namespace Reshop.Web.Controllers.User
 
         [HttpGet]
         [Route("ShopperProductDetail/{productId}")]
-        [Permission("FullManager,Shopper")]
+        [Permission("Shopper")]
         public async Task<IActionResult> ShopperProductDetail(int productId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return View(await _productService.GetShopperProductAsync(productId, userId));
         }
 
+
         [HttpGet]
-        public IActionResult AddShopperToProduct()
+        [Permission("Shopper")]
+        [NoDirectAccess]
+        public async Task<IActionResult> AddShopperToProduct(int productId)
         {
-            return View();
+            if (!await _productService.IsProductExistAsync(productId))
+                return NotFound();
+
+            var model = new AddOrEditShopperProduct()
+            {
+                ProductId = _dataProtector.Protect(productId.ToString())
+            };
+
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Permission("Shopper")]
+        [NoDirectAccess]
+        public async Task<IActionResult> AddShopperToProduct(AddOrEditShopperProduct model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });
+
+            try
+            {
+                model.ProductId = _dataProtector.Unprotect(model.ProductId);
+            }
+            catch
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", null) });
+            }
+
+            var shopperProduct = new ShopperProduct()
+            {
+                ProductId = Convert.ToInt32(model.ProductId),
+                Price = model.Price,
+                QuantityInStock = model.QuantityInStock,
+                ShopperId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                IsFinally = false
+            };
+
+
+
+
+            var result = await _shopperService.AddShopperProductAsync(shopperProduct);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });
+            }
         }
     }
 }

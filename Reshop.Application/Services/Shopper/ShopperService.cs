@@ -73,6 +73,9 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
+        public async Task<bool> IsShopperExistAsync(string shopperId) =>
+            await _shopperRepository.IsShopperExistAsync(shopperId);
+
         public async Task<ResultTypes> AddStoreAddressAsync(StoreAddress storeAddress)
         {
             try

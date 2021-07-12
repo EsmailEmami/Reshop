@@ -1,8 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Attribute;
+using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
+using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
+using Reshop.Application.Interfaces.User;
+using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
@@ -12,10 +20,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
     public class ShoppersManager : Controller
     {
         private readonly IShopperService _shopperService;
+        private readonly IProductService _productService;
+        private readonly IDataProtector _dataProtector;
 
-        public ShoppersManager(IShopperService shopperService)
+        public ShoppersManager(IShopperService shopperService, IProductService productService, IDataProtectionProvider dataProtectionProvider)
         {
             _shopperService = shopperService;
+            _productService = productService;
+            _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Areas.ManagerPanel.Controllers.ShoppersManager",
+                new string[] { "ShoppersManager" });
         }
 
         [HttpGet]
@@ -35,7 +48,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (storeTitleId == 0)
             {
-                return View(new StoreTitle(){StoreTitleId = 0});
+                return View(new StoreTitle() { StoreTitleId = 0 });
             }
             else
             {
@@ -97,6 +110,159 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
             return RedirectToAction(nameof(ManageStoreTitles));
+        }
+
+
+        /// <summary>
+        /// in this method we do not need to validation
+        ///  AccountManager/AddShopperToProduct shopper need to validation
+        /// </summary>
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> AddShopperToProduct(int productId, string shopperId )
+        {
+            if (!await _productService.IsProductExistAsync(productId))
+                return NotFound();
+
+            if (!await _shopperService.IsShopperExistAsync(shopperId))
+                return NotFound();
+
+            var model = new AddOrEditShopperProduct()
+            {
+                ProductId = _dataProtector.Protect(productId.ToString()),
+                ShopperId = _dataProtector.Protect(shopperId)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [NoDirectAccess]
+        public async Task<IActionResult> AddShopperToProduct(AddOrEditShopperProduct model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });
+
+            try
+            {
+                model.ShopperId = _dataProtector.Unprotect(model.ShopperId);
+                model.ProductId = _dataProtector.Unprotect(model.ProductId);
+            }
+            catch
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", null) });
+            }
+
+
+
+            var shopperProduct = new ShopperProduct()
+            {
+                ShopperId = model.ShopperId,
+                ProductId = Convert.ToInt32(model.ProductId),
+                Price = model.Price,
+                QuantityInStock = model.QuantityInStock,
+                IsFinally = true
+            };
+
+
+
+            var result = await _shopperService.AddShopperProductAsync(shopperProduct);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });
+            }
+        }
+
+
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> EditProductOfShopper(int productId, string shopperId)
+        {
+            if (!await _productService.IsProductExistAsync(productId))
+                return NotFound();
+
+            var model = new EditShopperProductRequest()
+            {
+               
+            };
+
+
+            // we do not check that user is shopper or no because coming to this method need shopper permission
+            if (!string.IsNullOrEmpty(shopperId))
+            {
+                model.ShopperId = _dataProtector.Protect(shopperId);
+            }
+
+
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [NoDirectAccess]
+        public async Task<IActionResult> EditProductOfShopper(AddOrEditShopperProduct model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });
+
+            try
+            {
+                if (model.ShopperId is not null)
+                {
+                    model.ShopperId = _dataProtector.Unprotect(model.ShopperId);
+                }
+
+                model.ProductId = _dataProtector.Unprotect(model.ProductId);
+            }
+            catch
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", null) });
+            }
+
+
+
+            var shopperProduct = new ShopperProduct()
+            {
+                ProductId = Convert.ToInt32(model.ProductId),
+                Price = model.Price,
+                QuantityInStock = model.QuantityInStock
+            };
+
+            if (model.ShopperId is null)
+            {
+                shopperProduct.ShopperId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                shopperProduct.IsFinally = false;
+            }
+            else
+            {
+                shopperProduct.ShopperId = model.ShopperId;
+                shopperProduct.IsFinally = true;
+            }
+
+
+            var result = await _shopperService.AddShopperProductAsync(shopperProduct);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });
+            }
         }
     }
 }

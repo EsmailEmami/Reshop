@@ -7,6 +7,6 @@
         public decimal ProductPrice { get; set; }
         public string BrandName { get; set; }
 
-        public string ShopperUserId { get; set; }
+        public string ShopperId { get; set; }
     }
 }

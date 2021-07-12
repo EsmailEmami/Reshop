@@ -71,7 +71,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
-                ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
+                ShopperId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperId,
             });
         }
 
@@ -133,7 +133,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
-                ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
+                ShopperId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperId,
             });
         }
 
@@ -189,7 +189,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
-                ShopperUserId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperUserId,
+                ShopperId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperId,
             });
         }
 
@@ -218,10 +218,10 @@ namespace Reshop.Infrastructure.Repository.Product
         public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) =>
             await _context.Products.FindAsync(productId);
 
-        public IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperUserId, string type, string sortBy, int skip, int take)
+        public IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string type, string sortBy, int skip, int take)
         {
             IQueryable<ShopperProduct> shopperProducts = _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId)
+                .Where(c => c.ShopperId == shopperId)
                 .Skip(skip).Take(take);
 
 
@@ -262,19 +262,19 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.Product.ProductTitle,
                 BrandName = c.Product.Brand.BrandName,
                 ProductPrice = c.Price,
-                ShopperUserId = c.ShopperUserId
+                ShopperId = c.ShopperId
             });
         }
 
-        public async Task<int> GetShopperProductsCountWithTypeAsync(string shopperUserId, string type)
+        public async Task<int> GetShopperProductsCountWithTypeAsync(string shopperId, string type)
         {
             if (type == "all")
             {
-                return await _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+                return await _context.ShopperProducts.Where(c => c.ShopperId == shopperId)
                     .Select(c => c.Product).CountAsync();
             }
 
-            return await _context.ShopperProducts.Where(c => c.ShopperUserId == shopperUserId)
+            return await _context.ShopperProducts.Where(c => c.ShopperId == shopperId)
                 .Select(c => c.Product).Where(c => c.ProductType == type).CountAsync();
         }
 
@@ -321,7 +321,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.Product.ProductTitle,
                 BrandName = c.Product.Brand.BrandName,
                 ProductPrice = c.Price,
-                ShopperUserId = c.ShopperUserId
+                ShopperId = c.ShopperId
             });
         }
 
@@ -381,9 +381,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ProductType == type).CountAsync();
         }
 
-        public async Task<ShopperProduct> GetProductWithTypeAsync(int productId, string type, string shopperUserId = "")
+        public async Task<ShopperProduct> GetProductWithTypeAsync(int productId, string type, string shopperId = "")
         {
-            if (string.IsNullOrEmpty(shopperUserId))
+            if (string.IsNullOrEmpty(shopperId))
             {
                 return type switch
                 {
@@ -434,43 +434,43 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 return type switch
                 {
-                    "mobile" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "mobile" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                         .Include(c => c.Product)
                         .ThenInclude(c => c.MobileDetail).FirstAsync(),
 
-                    "mobilecover" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "mobilecover" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                         .Include(c => c.Product)
                         .ThenInclude(c => c.MobileCoverDetail).FirstAsync(),
 
-                    "laptop" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "laptop" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                         .Include(c => c.Product)
                         .ThenInclude(c => c.LaptopDetailId).FirstAsync(),
 
-                    "speaker" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "speaker" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                         .Include(c => c.Product)
                         .ThenInclude(c => c.SpeakerDetail).FirstAsync(),
 
-                    "flashmemory" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "flashmemory" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                         .Include(c => c.Product)
                         .ThenInclude(c => c.FlashMemoryDetail).FirstAsync(),
 
-                    "handsfree" or "headphone" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "handsfree" or "headphone" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                         .Include(c => c.Product)
                         .ThenInclude(c => c.HandsfreeAndHeadPhoneDetail).FirstAsync(),
 
-                    "tablet" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "tablet" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                     .Include(c => c.Product)
                     .ThenInclude(c => c.TabletDetail).FirstAsync(),
 
-                    "wristwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "wristwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                         .Include(c => c.Product)
                         .ThenInclude(c => c.WristWatchDetail).FirstAsync(),
 
-                    "smartwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "smartwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                         .Include(c => c.Product)
                         .ThenInclude(c => c.SmartWatchDetail).FirstAsync(),
 
-                    "powerbank" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperUserId == shopperUserId)
+                    "powerbank" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
                         .Include(c => c.Product)
                         .ThenInclude(c => c.PowerBankDetail).FirstAsync(),
 
@@ -479,9 +479,9 @@ namespace Reshop.Infrastructure.Repository.Product
             }
         }
 
-        public async Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId) =>
+        public async Task<ShopperProduct> GetShopperProductAsync(string shopperId, int productId) =>
             await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+                .Where(c => c.ShopperId == shopperId && c.ProductId == productId)
                 .Include(c => c.Product).SingleOrDefaultAsync();
 
         public async Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId)
@@ -610,8 +610,8 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductId = c.Product.ProductId,
                 ProductTitle = c.Product.ProductTitle,
                 BrandName = c.Product.Brand.BrandName,
-                ProductPrice = _context.ShopperProducts.SingleOrDefault(s => s.ShopperUserId == c.ShopperUserId && s.ProductId == c.ProductId).Price,
-                ShopperUserId = c.ShopperUserId
+                ProductPrice = _context.ShopperProducts.SingleOrDefault(s => s.ShopperId == c.ShopperId && s.ProductId == c.ProductId).Price,
+                ShopperId = c.ShopperId
             });
         }
 
@@ -942,9 +942,9 @@ namespace Reshop.Infrastructure.Repository.Product
                         MoreInformation = c.FlashMemoryDetail.MoreInformation,
                     }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperUserId) =>
+        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperId) =>
             await _context.ShopperProducts
-                .Where(c => c.ShopperUserId == shopperUserId && c.ProductId == productId)
+                .Where(c => c.ShopperId == shopperId && c.ProductId == productId)
                     .Select(c => new AddOrEditHandsfreeAndHeadPhoneViewModel()
                     {
                        

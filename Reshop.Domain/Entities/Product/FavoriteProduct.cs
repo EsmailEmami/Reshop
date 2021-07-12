@@ -15,19 +15,20 @@ namespace Reshop.Domain.Entities.Product
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string FavoriteProductId { get; set; }
 
-        public string UserId { get; set; }
+        public string UserId { get; set; } 
 
         public int ProductId { get; set; }
 
-        [Display(Name = "آیدی فروشنده")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string ShopperUserId { get; set; }
+       
+        public string ShopperId { get; set; }
 
         #region Relations
 
         [ForeignKey("UserId")]
         public virtual User.User User { get; set; }
+
+        [ForeignKey("ShopperId")]
+        public Shopper.Shopper Shopper { get; set; }
 
         [ForeignKey("ProductId")]
         public virtual Product Product { get; set; }

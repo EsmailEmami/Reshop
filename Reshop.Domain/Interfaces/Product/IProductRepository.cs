@@ -33,10 +33,10 @@ namespace Reshop.Domain.Interfaces.Product
         #region shopper product
 
         // is shopperUser Id was NULL the query find best shopper automatically
-        Task<ShopperProduct> GetProductWithTypeAsync(int productId, string type, string shopperUserId = "");
+        Task<ShopperProduct> GetProductWithTypeAsync(int productId, string type, string shopperId = "");
 
-        IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperUserId, string type, string sortBy, int skip, int take);
-        Task<int> GetShopperProductsCountWithTypeAsync(string shopperUserId, string type);
+        IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string type, string sortBy, int skip, int take);
+        Task<int> GetShopperProductsCountWithTypeAsync(string shopperId, string type);
         IEnumerable<ProductViewModel> GetUnFinallyShopperProductRequestsWithPagination(string type, string sortBy, int skip, int take);
 
         #endregion
@@ -50,7 +50,7 @@ namespace Reshop.Domain.Interfaces.Product
 
 
 
-        Task<ShopperProduct> GetShopperProductAsync(string shopperUserId, int productId);
+        Task<ShopperProduct> GetShopperProductAsync(string shopperId, int productId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);
@@ -71,7 +71,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataForEditAsync(int productId);
         Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId);
         Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataForEditAsync(int productId);
-        Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperUserId);
+        Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperId);
         Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId);
         Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataForEditAsync(int productId);
         Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId);

@@ -9,9 +9,9 @@ namespace Reshop.Domain.DTOs.Shopper
 {
     public class AddOrEditShopperProduct
     {
-        public string ShopperUserId { get; set; }
+        public string ShopperId { get; set; }
 
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
 
         public string Color { get; set; }
 

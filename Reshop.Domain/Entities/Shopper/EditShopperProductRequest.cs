@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Reshop.Domain.Entities.Shopper
 {
-    public class EditShopperProduct
+    public class EditShopperProductRequest
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string EditShopperProductId { get; set; }
@@ -12,8 +12,8 @@ namespace Reshop.Domain.Entities.Shopper
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
-        [ForeignKey("User")]
-        public string ShopperUserId { get; set; }
+        [ForeignKey("Shopper")]
+        public string ShopperId { get; set; }
 
         [Display(Name = "گارانتی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -40,7 +40,7 @@ namespace Reshop.Domain.Entities.Shopper
 
         #region Relations
 
-        public virtual User.User User { get; set; }
+        public virtual Shopper Shopper { get; set; }
         public virtual Product.Product Product { get; set; }
 
         #endregion

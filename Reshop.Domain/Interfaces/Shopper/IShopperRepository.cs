@@ -9,6 +9,7 @@ namespace Reshop.Domain.Interfaces.Shopper
     public interface IShopperRepository
     {
         Task<Entities.User.User> GetShopperByIdAsync(string userId);
+        Task<bool> IsShopperExistAsync(string shopperId);
         Task AddShopperAsync(Entities.Shopper.Shopper shopper);
         void EditShopper(Entities.Shopper.Shopper shopper);
         Task<EditShopperViewModel> GetShopperDataForEditAsync(string userId);
@@ -26,7 +27,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task AddShopperProductAsync(ShopperProduct shopperProduct);
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId);
         IEnumerable<ShopperProduct> GetShoppersOfProduct(int productId);
-        Task<bool> IsShopperProductExistAsync(string shopperUserId, int productId);
+        Task<bool> IsShopperProductExistAsync(string shopperId, int productId);
 
         #endregion
 
