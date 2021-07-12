@@ -10,6 +10,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> EditShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> AddShopperProductAsync(ShopperProduct shopperProduct);
+        Task<ResultTypes> EditShopperProductAsync(ShopperProduct shopperProduct);
         Task<bool> IsShopperExistAsync(string shopperId);
 
         Task<string> GetShopperIdOrUserAsync(string userId);
@@ -18,7 +19,7 @@ namespace Reshop.Application.Interfaces.Shopper
 
         Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest);
 
-            #endregion
+        #endregion
 
         #region address
 
@@ -37,7 +38,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> DeleteStoreTitleAsync(int storeTitleId);
         Task<ResultTypes> AddShopperStoreTitleAsync(string shopperId, List<int> storeTitlesId);
 
-        Task<IEnumerable<string>> GetShopperStoreTitlesName(string shopperUserId);
+        IEnumerable<string> GetShopperStoreTitlesName(string shopperId);
 
         #endregion
     }

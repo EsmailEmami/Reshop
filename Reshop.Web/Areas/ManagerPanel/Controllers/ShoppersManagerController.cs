@@ -216,18 +216,21 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!await _productService.IsProductExistAsync(productId))
                 return NotFound();
 
-            var model = new ShopperProductRequest()
-            {
 
+            var product = await _productService.GetShopperProductAsync(productId, shopperId);
+
+            if (product is null)
+                return NotFound();
+
+            var model = new AddOrEditShopperProduct()
+            {
+                ShopperId = _dataProtector.Protect(shopperId),
+                ProductId = _dataProtector.Protect(productId.ToString()),
+                RequestUserId = _dataProtector.Protect(User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                Price = product.Price,
+                QuantityInStock = product.QuantityInStock,
+                Warranty = product.Warranty
             };
-
-
-            // we do not check that user is shopper or no because coming to this method need shopper permission
-            if (!string.IsNullOrEmpty(shopperId))
-            {
-                model.ShopperId = _dataProtector.Protect(shopperId);
-            }
-
 
 
             return View(model);
@@ -243,12 +246,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             try
             {
-                if (model.ShopperId is not null)
-                {
-                    model.ShopperId = _dataProtector.Unprotect(model.ShopperId);
-                }
-
                 model.ProductId = _dataProtector.Unprotect(model.ProductId);
+                model.RequestUserId = _dataProtector.Unprotect(model.RequestUserId);
+                model.ShopperId = _dataProtector.Unprotect(model.ShopperId);
+
+
+                // try to convert to string of it is not true means user was changed it
+                Convert.ToInt32(model.ProductId);
             }
             catch
             {
@@ -256,28 +260,27 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", null) });
             }
 
+            var product = await _productService.GetShopperProductAsync(Convert.ToInt32(model.ProductId), model.ShopperId);
+
+            product.IsFinally = model.IsActive;
+
+            await _shopperService.EditShopperProductAsync(product);
 
 
-            var shopperProduct = new ShopperProduct()
+            var shopperProductRequest = new ShopperProductRequest()
             {
+                ShopperId = model.ShopperId,
                 ProductId = Convert.ToInt32(model.ProductId),
+                RequestType = false,
+                RequestDate = DateTime.Now,
+                Warranty = model.Warranty,
                 Price = model.Price,
-                QuantityInStock = model.QuantityInStock
+                QuantityInStock = model.QuantityInStock,
+                IsSuccess = true,
+                RequestUserId = model.RequestUserId,
+                Reason = ShopperProductRequestReasons.AdminEdited()
             };
-
-            if (model.ShopperId is null)
-            {
-                shopperProduct.ShopperId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                shopperProduct.IsFinally = false;
-            }
-            else
-            {
-                shopperProduct.ShopperId = model.ShopperId;
-                shopperProduct.IsFinally = true;
-            }
-
-
-            var result = await _shopperService.AddShopperProductAsync(shopperProduct);
+            var result = await _shopperService.AddShopperProductRequestAsync(shopperProductRequest);
 
             if (result == ResultTypes.Successful)
             {

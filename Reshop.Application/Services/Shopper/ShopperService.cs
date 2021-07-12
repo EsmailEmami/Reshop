@@ -1,4 +1,5 @@
-﻿using Reshop.Application.Enums;
+﻿using System;
+using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Interfaces.Shopper;
@@ -61,6 +62,20 @@ namespace Reshop.Application.Services.Shopper
                 await _shopperRepository.AddShopperProductAsync(shopperProduct);
                 await _shopperRepository.SaveChangesAsync();
 
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditShopperProductAsync(ShopperProduct shopperProduct)
+        {
+            try
+            {
+                _shopperRepository.UpdateShopperProduct(shopperProduct);
+                await _shopperRepository.SaveChangesAsync();
                 return ResultTypes.Successful;
             }
             catch
@@ -225,9 +240,8 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
-        public async Task<IEnumerable<string>> GetShopperStoreTitlesName(string userId)
+        public IEnumerable<string> GetShopperStoreTitlesName(string shopperId)
         {
-            string shopperId = await _shopperRepository.GetShopperIdOfUserByUserId(userId);
             return _shopperRepository.GetShopperStoreTitlesName(shopperId);
         }
     }
