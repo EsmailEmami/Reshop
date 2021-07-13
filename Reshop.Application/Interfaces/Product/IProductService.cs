@@ -24,6 +24,7 @@ namespace Reshop.Application.Interfaces.Product
         // get by id 
         Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId);
         Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId);
+        Task<ShopperProduct> GetShopperProductAsync(string shopperProductId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);
@@ -92,7 +93,7 @@ namespace Reshop.Application.Interfaces.Product
         // validations 
         Task<bool> IsProductExistAsync(int productId);
         Task<bool> IsProductGalleriesCountValidAsync(int productId);
-
+        Task<bool> IsShopperProductExistAsync(string shopperProductId);
 
 
         #region Favorite Product

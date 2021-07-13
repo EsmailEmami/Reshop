@@ -165,6 +165,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductId) =>
             await _context.ShopperProductDiscounts.LastAsync(c => c.ShopperProductId == shopperProductId);
 
+        public async Task AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount) =>
+            await _context.ShopperProductDiscounts.AddAsync(shopperProductDiscount);
+
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }

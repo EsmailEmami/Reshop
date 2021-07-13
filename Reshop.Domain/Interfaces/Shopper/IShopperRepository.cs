@@ -66,6 +66,7 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductId);
 
+        Task AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
         #endregion
 
 

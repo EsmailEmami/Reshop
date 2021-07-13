@@ -84,6 +84,20 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
+        public async Task<ResultTypes> AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount)
+        {
+            try
+            {
+                await _shopperRepository.AddShopperProductDiscountAsync(shopperProductDiscount);
+                await _shopperRepository.SaveChangesAsync();
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _shopperRepository.IsShopperExistAsync(shopperId);
 

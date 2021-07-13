@@ -122,6 +122,11 @@ namespace Reshop.Application.Services.Product
         public async Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId) =>
             await _productRepository.GetShopperProductAsync(shopperId, productId);
 
+        public async Task<ShopperProduct> GetShopperProductAsync(string shopperProductId) =>
+            await _productRepository.GetShopperProductAsync(shopperProductId);
+
+
+
         public async Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId)
         {
             return await _productRepository.GetMobileDetailByIdAsync(mobileDetailId);
@@ -926,7 +931,9 @@ namespace Reshop.Application.Services.Product
             }
         }
 
-     
+        public async Task<bool> IsShopperProductExistAsync(string shopperProductId) =>
+            await _shopperRepository.IsShopperProductExistAsync(shopperProductId);
+
 
         public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18)
         {
@@ -956,7 +963,7 @@ namespace Reshop.Application.Services.Product
             try
             {
                 var favoriteProduct = await _productRepository.GetFavoriteProductAsync(userId, productId);
-                if (favoriteProduct is not  null)
+                if (favoriteProduct is not null)
                 {
                     if (favoriteProduct.ShopperProductId == shopperProductId)
                     {
