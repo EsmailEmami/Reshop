@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,9 @@ namespace Reshop.Domain.Entities.Shopper
         {
 
         }
+
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string ShopperProductId { get; set; }
 
         [ForeignKey("Product")]
         public int ProductId { get; set; }
@@ -43,12 +47,18 @@ namespace Reshop.Domain.Entities.Shopper
 
         public DateTime CreateDate { get; set; }
 
+        public DateTime LastModifiedDate { get; set; }
+
+        public bool IsInDiscount { get; set; }
+
         #region Relations
 
 
         public virtual Shopper Shopper { get; set; }
 
         public virtual Product.Product Product { get; set; }
+
+        public ICollection<ShopperProductDiscount> Discounts { get; set; }
 
         #endregion
     }

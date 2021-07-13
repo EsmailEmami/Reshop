@@ -34,6 +34,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId);
         IEnumerable<ShopperProduct> GetShoppersOfProduct(int productId);
         Task<bool> IsShopperProductExistAsync(string shopperId, int productId);
+        Task<bool> IsShopperProductExistAsync(string shopperProductId);
 
         #endregion
 
@@ -60,6 +61,14 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task<StoreAddress> GetStoreAddressByIdAsync(string storeAddressId);
 
         #endregion
+
+        #region Discount
+
+        Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductId);
+
+        #endregion
+
+
 
         Task SaveChangesAsync();
     }

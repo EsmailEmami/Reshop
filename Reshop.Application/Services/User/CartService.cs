@@ -54,32 +54,27 @@ namespace Reshop.Application.Services.User
         public async Task<Order> GetOrderByIdAsync(string orderId) =>
             await _cartRepository.GetOrderByIdAsync(orderId);
 
-        public async Task<ResultTypes> AddToCart(string userId, int productId, string shopperId)
+        public async Task<ResultTypes> AddToCart(string userId, int productId, string shopperProductId)
         {
             try
             {
-                if (!await _userRepository.IsUserExistAsync(userId))
+                var shopperProduct = await _productRepository.GetShopperProductAsync(shopperProductId);
+                if (shopperProduct is null || shopperProduct.ProductId != productId)
                     return ResultTypes.Failed;
 
-                var shopperProduct = await _productRepository.GetShopperProductAsync(shopperId, productId);
-                if (shopperProduct is null)
-                    return ResultTypes.Failed;
+                var discount = await _shopperRepository.GetLastShopperProductDiscountAsync(shopperProductId);
 
 
                 var order = await _cartRepository.GetOrderInCartByUserIdAsync(userId);
                 if (order is not null)
                 {
-                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, shopperProduct.ProductId,shopperId);
+                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, shopperProductId);
 
                     if (orderDetail is not null)
                     {
-                        byte discountPercent = CartCalculator.CalculatePercentOfTwoPrice((orderDetail.Price * orderDetail.Count), orderDetail.ProductDiscount);
-
                         orderDetail.Count++;
 
-                        orderDetail.ProductDiscount = CartCalculator.CalculateDiscountPrice((orderDetail.Price * orderDetail.Count), discountPercent);
-
-                        orderDetail.Sum = CartCalculator.CalculateOrderDetailSum(orderDetail.Count, orderDetail.Price, orderDetail.ProductDiscount);
+                        orderDetail.Sum = CartCalculator.CalculateOrderDetailSum(orderDetail.Count, orderDetail.Price, orderDetail.ProductDiscountPercent);
 
                         _cartRepository.UpdateOrderDetail(orderDetail);
                         await _cartRepository.SaveChangesAsync();
@@ -93,15 +88,15 @@ namespace Reshop.Application.Services.User
                         var orderDetail_new = new OrderDetail()
                         {
                             OrderId = order.OrderId,
-                            ProductId = shopperProduct.ProductId,
                             Price = shopperProduct.Price,
                             Count = 1,
-                            ProductDiscount = CartCalculator.CalculateDiscountPrice(shopperProduct.Price, shopperProduct.DiscountPercent),
+                            ProductDiscountPercent = shopperProduct.IsInDiscount ? discount.DiscountPercent : Convert.ToByte(0),
                             CreateDate = DateTime.Now,
+                            LastDataModifiedDate = DateTime.Now,
                             TrackingCode = "RSD" + NameGenerator.GenerateNumber(),
-                            ShopperId = shopperId
+                            ShopperProductId = shopperProductId
                         };
-                        orderDetail_new.Sum = orderDetail_new.Price - orderDetail_new.ProductDiscount;
+                        orderDetail_new.Sum = CartCalculator.CalculateOrderDetailSum(orderDetail_new.Count, orderDetail_new.Price, orderDetail_new.ProductDiscountPercent);
 
 
                         while (await _cartRepository.IsOrderDetailTrackingCodeExistAsync(orderDetail_new.TrackingCode))
@@ -142,18 +137,16 @@ namespace Reshop.Application.Services.User
 
                     var orderDetail_new = new OrderDetail()
                     {
-                        OrderId = order_new.OrderId,
-                        ProductId = shopperProduct.ProductId,
+                        OrderId = order.OrderId,
                         Price = shopperProduct.Price,
                         Count = 1,
-                        ProductDiscount = CartCalculator.CalculateDiscountPrice(shopperProduct.Price, shopperProduct.DiscountPercent),
-                        Sum = shopperProduct.Price,
+                        ProductDiscountPercent = shopperProduct.IsInDiscount ? discount.DiscountPercent : Convert.ToByte(0),
                         CreateDate = DateTime.Now,
+                        LastDataModifiedDate = DateTime.Now,
                         TrackingCode = "RSD" + NameGenerator.GenerateNumber(),
-                        ShopperId = shopperId
+                        ShopperProductId = shopperProductId
                     };
-
-                    orderDetail_new.Sum = orderDetail_new.Price - orderDetail_new.ProductDiscount;
+                    orderDetail_new.Sum = CartCalculator.CalculateOrderDetailSum(orderDetail_new.Count, orderDetail_new.Price, orderDetail_new.ProductDiscountPercent);
 
                     while (await _cartRepository.IsOrderDetailTrackingCodeExistAsync(orderDetail_new.TrackingCode))
                     {
@@ -191,14 +184,9 @@ namespace Reshop.Application.Services.User
 
             if (orderDetail != null)
             {
-                byte discountPercent = CartCalculator.CalculatePercentOfTwoPrice((orderDetail.Price * orderDetail.Count), orderDetail.ProductDiscount);
+              orderDetail.Count++;
 
-
-                orderDetail.Count++;
-
-                orderDetail.ProductDiscount = CartCalculator.CalculateDiscountPrice((orderDetail.Price * orderDetail.Count), discountPercent);
-
-                orderDetail.Sum = CartCalculator.CalculateOrderDetailSum(orderDetail.Count, orderDetail.Price, orderDetail.ProductDiscount);
+                orderDetail.Sum = CartCalculator.CalculateOrderDetailSum(orderDetail.Count, orderDetail.Price, orderDetail.ProductDiscountPercent);
 
                 _cartRepository.UpdateOrderDetail(orderDetail);
                 await _cartRepository.SaveChangesAsync();
@@ -226,13 +214,7 @@ namespace Reshop.Application.Services.User
 
                 if (orderDetail.Count > 1)
                 {
-                    byte discountPercent = CartCalculator.CalculatePercentOfTwoPrice((orderDetail.Price * orderDetail.Count), orderDetail.ProductDiscount);
-
-                    orderDetail.Count--;
-
-                    orderDetail.ProductDiscount = CartCalculator.CalculateDiscountPrice((orderDetail.Price * orderDetail.Count), discountPercent);
-
-                    orderDetail.Sum = CartCalculator.CalculateOrderDetailSum(orderDetail.Count, orderDetail.Price, orderDetail.ProductDiscount);
+                    orderDetail.Sum = CartCalculator.CalculateOrderDetailSum(orderDetail.Count, orderDetail.Price, orderDetail.ProductDiscountPercent);
 
                     _cartRepository.UpdateOrderDetail(orderDetail);
                 }
@@ -242,9 +224,6 @@ namespace Reshop.Application.Services.User
                 }
 
                 await _cartRepository.SaveChangesAsync();
-
-
-
 
                 if (order.OrderDetails.Any())
                 {

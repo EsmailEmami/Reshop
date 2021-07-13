@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Domain.Entities.User
 {
@@ -18,11 +19,11 @@ namespace Reshop.Domain.Entities.User
         [ForeignKey("Order")]
         public string OrderId { get; set; }
 
+        [ForeignKey("ShopperProduct")]
+        public string ShopperProductId { get; set; }
+
         [ForeignKey("Product")]
         public int ProductId { get; set; }
-
-        [ForeignKey("Shopper")]
-        public string ShopperId { get; set; }
 
         [Display(Name = "قیمت کالا")]
         [Required]
@@ -30,11 +31,13 @@ namespace Reshop.Domain.Entities.User
 
         [Display(Name = "مقدار تخفیف محصول")]
         [Required]
-        public decimal ProductDiscount { get; set; }
+        public byte ProductDiscountPercent { get; set; }
 
         [Display(Name = "تاریخ ثبت محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public DateTime CreateDate { get; set; }
+
+        public DateTime LastDataModifiedDate { get; set; } // price, discount...
 
         [Display(Name = "کد پیگیری")]
         [Required]
@@ -53,8 +56,8 @@ namespace Reshop.Domain.Entities.User
 
 
         public virtual Order Order { get; set; }
-        public virtual Product.Product Product { get; set; }
-        public virtual Shopper.Shopper Shopper { get; set; }
+        public virtual ShopperProduct ShopperProduct { get; set; }
+        public Product.Product Product { get; set; }
 
         #endregion
     }

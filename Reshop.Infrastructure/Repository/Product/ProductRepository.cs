@@ -71,7 +71,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
-                ShopperId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperId,
+                ShopperProductId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperProductId,
             });
         }
 
@@ -133,7 +133,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
-                ShopperId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperId,
+                ShopperProductId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperProductId,
             });
         }
 
@@ -189,7 +189,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.ProductTitle,
                 BrandName = c.Brand.BrandName,
                 ProductPrice = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().Price,
-                ShopperId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperId,
+                ShopperProductId = c.ShopperProducts.OrderByDescending(s => s.SaleCount).First().ShopperProductId,
             });
         }
 
@@ -262,7 +262,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.Product.ProductTitle,
                 BrandName = c.Product.Brand.BrandName,
                 ProductPrice = c.Price,
-                ShopperId = c.ShopperId
+                ShopperProductId = c.ShopperProductId
             });
         }
 
@@ -321,7 +321,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductTitle = c.Product.ProductTitle,
                 BrandName = c.Product.Brand.BrandName,
                 ProductPrice = c.Price,
-                ShopperId = c.ShopperId
+                ShopperProductId = c.ShopperProductId
             });
         }
 
@@ -484,6 +484,10 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ShopperId == shopperId && c.ProductId == productId)
                 .Include(c => c.Product).SingleOrDefaultAsync();
 
+        public async Task<ShopperProduct> GetShopperProductAsync(string shopperProductId) =>
+         await _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
+                .Include(c => c.Product).SingleOrDefaultAsync();
+
         public async Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId)
         {
             return await _context.MobileDetails.FindAsync(mobileDetailId);
@@ -610,8 +614,8 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductId = c.Product.ProductId,
                 ProductTitle = c.Product.ProductTitle,
                 BrandName = c.Product.Brand.BrandName,
-                ProductPrice = _context.ShopperProducts.SingleOrDefault(s => s.ShopperId == c.ShopperId && s.ProductId == c.ProductId).Price,
-                ShopperId = c.ShopperId
+                ProductPrice = _context.ShopperProducts.SingleOrDefault(s => s.ShopperProductId == c.ShopperProductId && s.ProductId == c.ProductId).Price,
+               ShopperProductId = c.ShopperProductId,
             });
         }
 
@@ -663,9 +667,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 }) as IAsyncEnumerable<ProductViewModel>;
         }
 
-       
 
-    
+
+
 
         public IEnumerable<Domain.Entities.Product.Product> GetTypeMobileProducts()
         {
@@ -947,7 +951,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ShopperId == shopperId && c.ProductId == productId)
                     .Select(c => new AddOrEditHandsfreeAndHeadPhoneViewModel()
                     {
-                       
+
                     }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId) =>

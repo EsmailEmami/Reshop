@@ -1,5 +1,4 @@
-﻿@using Reshop.Application.Calculate
-@model ProductDetailViewModel
+﻿@model ProductDetailViewModel
 
 
 <div class="row">
@@ -95,7 +94,7 @@
                 <select class="Seller-ipnut" id="selected-shopper" onchange="UpdateProductDetailPage('@Model.Product.ProductId','@ViewData["ProductName"].ToString()',this.value)">
                     @foreach (var item in Model.Shoppers)
                     {
-                        @:<option value="@item.Item1" @(item.Item1 == Model.Product.ShopperId ? "selected" : "")>فروشگاه @item.Item2 - @item.Item3</option>
+                        @:<option value="@item.Item1" @(item.Item1 == Model.Product.ShopperProductId ? "selected" : "")>فروشگاه @item.Item2 - @item.Item3</option>
                     }
                 </select>
 
@@ -120,7 +119,7 @@
 
                     <form asp-controller="Cart" asp-action="AddToCart" onsubmit="return  AddProductToCart(this)">
                         <input type="hidden" value="@Model.Product.Product.ProductId" name="productId" />
-                        <input type="hidden" value="@Model.Product.ShopperId" name="shopperId" />
+                        <input type="hidden" value="@Model.Product.ShopperProductId" name="shopperProductId" />
                         <button type="submit" class="btn btn-warning">افزودن به سبد خرید</button>
                     </form>
 

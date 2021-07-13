@@ -24,10 +24,10 @@ namespace Reshop.Infrastructure.Repository.User
 
         #endregion
 
-        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, int productId, string shopperId)
+        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, string shopperProductId)
         {
             return await _context.OrderDetails
-                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ProductId == productId && c.ShopperId == shopperId);
+                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ShopperProductId == shopperProductId);
         }
 
         public async Task<OrderDetail> GetOrderDetailByIdAsync(string orderDetailId)
@@ -85,12 +85,12 @@ namespace Reshop.Infrastructure.Repository.User
                         OrderDetailId = o.OrderDetailId,
                         Sum = o.Sum,
                         ProductsCount = o.Count,
-                        ProductTitle = o.Product.ProductTitle,
+                        ProductTitle = o.ShopperProduct.Product.ProductTitle,
                         ProductPrice = o.Price,
-                        ProductDiscount = o.ProductDiscount,
+                        ProductDiscountPercent = o.ProductDiscountPercent,
                         ProductImg = o.Product.ProductGalleries.FirstOrDefault().ImageName,
-                        Warranty = _context.ShopperProducts.Single(s => s.ShopperId == o.ShopperId).Warranty,
-                        ShopperStoreName = _context.Users.Single(u => u.UserId == o.ShopperId).Shopper.StoreName,
+                        Warranty = _context.ShopperProducts.Single(s => s.ShopperProductId == o.ShopperProductId).Warranty,
+                        ShopperStoreName = _context.Shoppers.Single(s=> s.ShopperId == o.ShopperProduct.ShopperId).StoreName
                     })
                 }).SingleOrDefaultAsync();
         }

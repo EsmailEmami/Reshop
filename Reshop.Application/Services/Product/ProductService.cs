@@ -947,10 +947,10 @@ namespace Reshop.Application.Services.Product
             return await _productRepository.GetFavoriteProductAsync(favoriteProductId);
         }
 
-        public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperId)
+        public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperProductId)
         {
 
-            if (!await _shopperRepository.IsShopperProductExistAsync(shopperId, productId))
+            if (!await _shopperRepository.IsShopperProductExistAsync(shopperProductId))
                 return FavoriteProductResultType.NotFound;
 
             try
@@ -958,15 +958,13 @@ namespace Reshop.Application.Services.Product
                 var favoriteProduct = await _productRepository.GetFavoriteProductAsync(userId, productId);
                 if (favoriteProduct is not  null)
                 {
-                    
-
-                    if (favoriteProduct.ShopperId == shopperId)
+                    if (favoriteProduct.ShopperProductId == shopperProductId)
                     {
                         return FavoriteProductResultType.Available;
                     }
                     else
                     {
-                        favoriteProduct.ShopperId = shopperId;
+                        favoriteProduct.ShopperProductId = shopperProductId;
 
                         _productRepository.UpdateFavoriteProduct(favoriteProduct);
                         await _productRepository.SaveChangesAsync();
@@ -980,7 +978,7 @@ namespace Reshop.Application.Services.Product
                     {
                         UserId = userId,
                         ProductId = productId,
-                        ShopperId = shopperId,
+                        ShopperProductId = shopperProductId,
                     };
 
 

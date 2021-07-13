@@ -14,11 +14,11 @@
                         <li>
                             <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToCart(this)">
                                 <input type="hidden" value="@item.ProductId" name="productId" />
-                                <input type="hidden" value="@item.ShopperId" name="shopperId" />
-                                <button type="submit"><i class="fal fa-heart"></i></button>
+                                <input type="hidden" value="@item.ShopperProductId" name="shopperProductId" />
+                                <button type="submit" ><i class="fal fa-heart"></i></button>
                             </form>
 
-
+                  
                         </li>
                         <li>
                             <a href="#" title="مقایسه"><i class="fal fa-sync-alt"></i></a>
@@ -26,8 +26,8 @@
                         <li>
                             <form asp-controller="Cart" asp-action="AddToCart" onsubmit="return  AddProductToCart(this)">
                                 <input type="hidden" value="@item.ProductId" name="productId" />
-                                <input type="hidden" value="@item.ShopperId" name="shopperId" />
-                                <button type="submit"><i class="fal fa-cart-plus"></i></button>
+                                <input type="hidden" value="@item.ShopperProductId" name="shopperProductId" />
+                                <button type="submit" class="btn btn-warning"><i class="fal fa-cart-plus"></i></button>
                             </form>
                         </li>
                     </ul>

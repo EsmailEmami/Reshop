@@ -51,6 +51,7 @@ namespace Reshop.Domain.Interfaces.Product
 
 
         Task<ShopperProduct> GetShopperProductAsync(string shopperId, int productId);
+        Task<ShopperProduct> GetShopperProductAsync(string shopperProductId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);

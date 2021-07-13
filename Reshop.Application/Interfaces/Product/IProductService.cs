@@ -100,7 +100,7 @@ namespace Reshop.Application.Interfaces.Product
         // product , pageId , totalPages
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18);
         Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId);
-        Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperId);
+        Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperProductId);
         Task RemoveFavoriteProductAsync(FavoriteProduct favoriteProduct);
 
         #endregion

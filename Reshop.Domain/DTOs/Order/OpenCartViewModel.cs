@@ -17,7 +17,7 @@ namespace Reshop.Domain.DTOs.Order
         public string OrderDetailId { get; set; }
         public int ProductsCount { get; set; }
         public decimal ProductPrice { get; set; }
-        public decimal ProductDiscount { get; set; }
+        public byte ProductDiscountPercent { get; set; }
         public decimal Sum { get; set; }
         public string ProductTitle { get; set; }
         public string ProductImg { get; set; }

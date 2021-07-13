@@ -19,16 +19,15 @@ namespace Reshop.Domain.Entities.Product
 
         public int ProductId { get; set; }
 
-       
-        public string ShopperId { get; set; }
+       [ForeignKey("ShopperProduct")]
+        public string ShopperProductId { get; set; }
 
         #region Relations
 
         [ForeignKey("UserId")]
         public virtual User.User User { get; set; }
 
-        [ForeignKey("ShopperId")]
-        public Shopper.Shopper Shopper { get; set; }
+        public ShopperProduct ShopperProduct { get; set; }
 
         [ForeignKey("ProductId")]
         public virtual Product Product { get; set; }

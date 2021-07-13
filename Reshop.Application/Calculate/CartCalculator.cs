@@ -5,9 +5,10 @@ namespace Reshop.Application.Calculate
 {
     public static class CartCalculator
     {
-        public static decimal CalculateOrderDetailSum(int count, decimal price, decimal discount)
+        public static decimal CalculateOrderDetailSum(int count, decimal price, byte discountPercent)
         {
-            return (count * price) - discount;
+            decimal fullSum = count * price;
+            return (decimal)((fullSum * discountPercent) / 100);
         }
 
         public static decimal CalculateDiscountPrice(decimal price, byte discountPercent)

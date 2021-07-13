@@ -101,7 +101,7 @@ else
 
                     @{
                         decimal productsFullPrice = Model.OrderDetails.Select(c => c.ProductPrice * c.ProductsCount).Sum();
-                        decimal productsDiscount = Model.OrderDetails.Select(c => c.ProductDiscount).Sum();
+                        decimal productsDiscount = Model.OrderDetails.Select(c => (c.Sum * c.ProductDiscountPercent) / 100).Sum();
                     }
 
 
