@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Domain.Entities.Shopper;
+using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Category;
 using Reshop.Domain.Interfaces.Shopper;
 using ProductViewModel = Reshop.Domain.DTOs.Product.ProductViewModel;
@@ -216,7 +217,6 @@ namespace Reshop.Application.Services.Product
 
             var childCategories = _productRepository.GetProductChildCategories(productId);
             var comments = _productRepository.GetProductComments(productId);
-            var questions = _productRepository.GetProductQuestions(productId);
             var productGalleries = _productRepository.GetProductImages(productId);
             var shoppers = _shopperRepository.GetProductShoppers(productId);
 
@@ -226,7 +226,6 @@ namespace Reshop.Application.Services.Product
                 Product = product,
                 ChildCategories = childCategories,
                 Comments = comments,
-                Questions = questions,
                 ProductGalleries = productGalleries,
                 Shoppers = shoppers
             };
@@ -1006,5 +1005,9 @@ namespace Reshop.Application.Services.Product
             _productRepository.RemoveFavoriteProduct(favoriteProduct);
             await _productRepository.SaveChangesAsync();
         }
+
+        public IEnumerable<Question> GetProductQuestions(int productId) =>
+            _productRepository.GetProductQuestions(productId);
+
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
+using Reshop.Domain.Entities.User;
 
 namespace Reshop.Application.Interfaces.Product
 {
@@ -103,6 +104,12 @@ namespace Reshop.Application.Interfaces.Product
         Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId);
         Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperProductId);
         Task RemoveFavoriteProductAsync(FavoriteProduct favoriteProduct);
+
+        #endregion
+
+        #region Question
+
+        IEnumerable<Question> GetProductQuestions(int productId);
 
         #endregion
     }

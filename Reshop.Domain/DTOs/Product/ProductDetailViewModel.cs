@@ -14,7 +14,6 @@ namespace Reshop.Domain.DTOs.Product
         public IEnumerable<ProductGallery> ProductGalleries { get; set; }
 
         public IEnumerable<Comment> Comments { get; set; }
-        public IEnumerable<Question> Questions { get; set; }
         public IEnumerable<ChildCategory> ChildCategories { get; set; }
 
         public IEnumerable<Tuple<string, string, string>> Shoppers { get; set; }
