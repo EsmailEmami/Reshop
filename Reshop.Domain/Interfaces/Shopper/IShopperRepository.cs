@@ -15,8 +15,10 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task<EditShopperViewModel> GetShopperDataForEditAsync(string userId);
         Task<string> GetShopperIdOfUserByUserId(string userId);
 
-        // types = all,active,block
+        // types = all,active,block,existed
         IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null);
+
+        Task<int> GetShoppersCountWithTypeAsync(string type = "all");
 
         #region reason
 
@@ -55,6 +57,7 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         #region address
 
+        IEnumerable<StoreAddress> GetShopperStoreAddresses(string shopperId);
         Task AddStoreAddressAsync(StoreAddress storeAddress);
         void EditStoreAddress(StoreAddress storeAddress);
         void RemoveStoreAddress(StoreAddress storeAddress);

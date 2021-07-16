@@ -15,7 +15,29 @@ namespace Reshop.Web.Controllers
         {
             _cartService = cartService;
         }
+        [Route("AboutUs")]
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
 
+        [Route("ContactUs")]
+        public IActionResult ContactUs()
+        {
+            return View();
+        }
+
+        [Route("FrequentlyQuestions")]
+        public IActionResult FrequentlyQuestions()
+        {
+            return View();
+        }
+
+        [Route("Guide")]
+        public IActionResult Guide()
+        {
+            return View();
+        }
 
         [Route("OnlinePayment/{paymentId}")]
         public async Task<IActionResult> OnlinePayment(string paymentId)

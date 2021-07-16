@@ -1,5 +1,4 @@
-﻿@using Reshop.Application.Calculate
-@model OpenCartViewModel
+﻿@model IEnumerable<OpenCartViewModel>
 @{
     ViewData["Title"] = "سبد خرید";
     int counter = 1;
@@ -19,7 +18,7 @@ else
     <div class="cart-box">
         <div class="main-cart">
 
-            @foreach (var item in Model.OrderDetails)
+            @foreach (var item in Model)
             {
                 <div class="item box-shadow">
 
@@ -81,7 +80,7 @@ else
 
                         <div class="price">
                             <h3>
-                                @item.Sum.ToToman()
+                                @CartCalculator.CalculateOrderDetailSum(item.ProductsCount,item.ProductPrice,item.ProductDiscountPercent).ToToman()
                                 <span class="toman">تومان</span>
                             </h3>
                         </div>
@@ -100,12 +99,12 @@ else
                 <section style="border-bottom: 1px solid #e9e8e8;">
 
                     @{
-                        decimal productsFullPrice = Model.OrderDetails.Select(c => c.ProductPrice * c.ProductsCount).Sum();
-                        decimal productsDiscount = Model.OrderDetails.Select(c => (c.Sum * c.ProductDiscountPercent) / 100).Sum();
+                        decimal productsFullPrice = Model.Select(c => c.ProductPrice * c.ProductsCount).Sum();
+                        decimal productsDiscount = Model.Select(c => ( (c.ProductPrice * c.ProductsCount) * c.ProductDiscountPercent) / 100).Sum();
                     }
 
 
-                    <h5>مبلغ کل(@Model.OrderDetails.Select(c => c.ProductsCount).Sum()):</h5>
+                    <h5>مبلغ کل(@Model.Select(c => c.ProductsCount).Sum()):</h5>
                     <p>
                         @productsFullPrice.ToToman()
                         <span class="toman">تومان</span>
@@ -132,7 +131,7 @@ else
             <section class="payment-price">
                 <h5>مبلغ قابل پرداخت</h5>
                 <p>
-                    @Model.Sum.ToToman()
+                    @((productsFullPrice - productsDiscount).ToToman())
                     <span class="toman">تومان</span>
                 </p>
             </section>

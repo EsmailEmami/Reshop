@@ -220,6 +220,14 @@ namespace Reshop.Application.Services.Product
             var productGalleries = _productRepository.GetProductImages(productId);
             var shoppers = _shopperRepository.GetProductShoppers(productId);
 
+            byte discountPercent = 0;
+
+            if (product.IsInDiscount)
+            {
+                var discount = await _shopperRepository.GetLastShopperProductDiscountAsync(product.ShopperProductId);
+                discountPercent = discount.DiscountPercent;
+            }
+
             return new ProductDetailViewModel()
             {
                 ProductType = productType,
@@ -227,7 +235,8 @@ namespace Reshop.Application.Services.Product
                 ChildCategories = childCategories,
                 Comments = comments,
                 ProductGalleries = productGalleries,
-                Shoppers = shoppers
+                Shoppers = shoppers,
+                DiscountPercent = discountPercent
             };
         }
 

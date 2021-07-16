@@ -105,15 +105,15 @@
 
                 <h5><i class="far fa-dollar-sign"></i> قیمت:</h5>
                 
-                @if (Model.Product.DiscountPercent > 0)
+                @if (Model.Product.IsInDiscount)
                 {
-                    <span class="badge badge-pill badge-info ">@Model.Product.DiscountPercent ٪ تخفیف</span>
+                    <span class="badge badge-pill badge-info ">@Model.DiscountPercent ٪ تخفیف</span>
 
-                    <span class="badge badge-pill badge-success text-black">سود شما: @CartCalculator.CalculateDiscountPrice(Model.Product.Price, Model.Product.DiscountPercent).ToToman() تومان</span>
+                    <span class="badge badge-pill badge-success text-black">سود شما: @CartCalculator.CalculateDiscountPrice(Model.Product.Price, Model.DiscountPercent).ToToman() تومان</span>
                 }
 
                 <div class="price-amount">
-                    <h3>@Model.Product.Price.ToToman() <span>تومان</span></h3>
+                    <h3>@CartCalculator.CalculateDiscountPrice(Model.Product.Price, Model.DiscountPercent).ToToman() <span>تومان</span></h3>
 
 
 

@@ -36,9 +36,6 @@ namespace Reshop.Domain.Entities.Shopper
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public decimal Price { get; set; }
 
-        [Display(Name = "درصد تخفیف")]
-        public byte DiscountPercent { get; set; }
-
         [Display(Name = "تعداد موجودی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public int QuantityInStock { get; set; }
@@ -46,8 +43,6 @@ namespace Reshop.Domain.Entities.Shopper
         public bool IsFinally { get; set; }
 
         public DateTime CreateDate { get; set; }
-
-        public DateTime LastModifiedDate { get; set; }
 
         public bool IsInDiscount { get; set; }
 

@@ -24,10 +24,10 @@ namespace Reshop.Infrastructure.Repository.User
 
         #endregion
 
-        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, string shopperProductId)
+        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, string shopperId)
         {
             return await _context.OrderDetails
-                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ShopperProductId == shopperProductId);
+                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ShopperId == shopperId);
         }
 
         public async Task<OrderDetail> GetOrderDetailByIdAsync(string orderDetailId)
@@ -73,26 +73,22 @@ namespace Reshop.Infrastructure.Repository.User
             =>
                 _context.Orders.Where(c => !c.IsPayed && !c.IsReceived && c.CreateDate > time) as IAsyncEnumerable<Order>;
 
-        public async Task<OpenCartViewModel> GetOrderInCartByUserIdForShowCartAsync(string userId)
+        public IEnumerable<OpenCartViewModel> GetOrderInCartByUserIdForShowCart(string userId)
         {
-            return await _context.Orders
+            return _context.Orders
                 .Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived)
-                .Select(c => new OpenCartViewModel()
+                .SelectMany(c => c.OrderDetails)
+                .Select(o => new OpenCartViewModel()
                 {
-                    Sum = c.Sum,
-                    OrderDetails = c.OrderDetails.Select(o => new OrderDetailViewModel()
-                    {
-                        OrderDetailId = o.OrderDetailId,
-                        Sum = o.Sum,
-                        ProductsCount = o.Count,
-                        ProductTitle = o.ShopperProduct.Product.ProductTitle,
-                        ProductPrice = o.Price,
-                        ProductDiscountPercent = o.ProductDiscountPercent,
-                        ProductImg = o.Product.ProductGalleries.FirstOrDefault().ImageName,
-                        Warranty = _context.ShopperProducts.Single(s => s.ShopperProductId == o.ShopperProductId).Warranty,
-                        ShopperStoreName = _context.Shoppers.Single(s=> s.ShopperId == o.ShopperProduct.ShopperId).StoreName
-                    })
-                }).SingleOrDefaultAsync();
+                    OrderDetailId = o.OrderDetailId,
+                    ProductsCount = o.Count,
+                    ProductPrice = _context.ShopperProducts.Single(s => s.ShopperId == o.ShopperId && s.ProductId == o.ProductId).Price,
+                    ProductDiscountPercent = _context.ShopperProducts.Single(s => s.ShopperId == o.ShopperId && s.ProductId == o.ProductId).IsInDiscount ? _context.ShopperProducts.Single(s => s.ShopperId == o.ShopperId && s.ProductId == o.ProductId).Discounts.LastOrDefault().DiscountPercent : Convert.ToByte(0),
+                    ProductTitle = o.Product.ProductTitle,
+                    ProductImg = o.Product.ProductGalleries.FirstOrDefault().ImageName,
+                    Warranty = _context.ShopperProducts.Single(a => a.ShopperId == o.ShopperId && a.ProductId == o.ProductId).Warranty,
+                    ShopperStoreName = _context.Shoppers.Single(s => s.ShopperId == o.ShopperId).StoreName
+                });
         }
 
         public async Task<Order> GetOrderInCartByUserIdAsync(string userId)

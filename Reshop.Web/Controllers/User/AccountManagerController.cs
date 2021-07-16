@@ -314,6 +314,17 @@ namespace Reshop.Web.Controllers.User
 
         //-------------------------------------- shopper --------------------------------------
 
+        [Route("StoreAddress")]
+        [HttpGet]
+        public async Task<IActionResult> StoreAddress()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return View(await _shopperService.GetShopperStoreAddressesAsync(userId));
+        }
+
+
+
         [Route("ManageProducts")]
         [HttpGet]
         [Permission("Shopper")]
@@ -584,7 +595,6 @@ namespace Reshop.Web.Controllers.User
             if (result == ResultTypes.Successful)
             {
                 shopperProduct.IsInDiscount = true;
-                shopperProduct.LastModifiedDate = DateTime.Now;
                 var editShopperProduct = await _shopperService.EditShopperProductAsync(shopperProduct);
                 if (editShopperProduct == ResultTypes.Successful)
                 {
@@ -601,7 +611,7 @@ namespace Reshop.Web.Controllers.User
         [Permission("Shopper")]
         [ValidateAntiForgeryToken]
         [NoDirectAccess]
-        public async Task<IActionResult> unAvailableProduct(string shopperProductId)
+        public async Task<IActionResult> UnAvailableProduct(string shopperProductId)
         {
             if (string.IsNullOrEmpty(shopperProductId))
             {
@@ -612,6 +622,13 @@ namespace Reshop.Web.Controllers.User
             var shopperProduct = await _productService.GetShopperProductAsync(shopperProductId);
 
             if (shopperProduct is null)
+            {
+                return Json(new { isValid = false });
+            }
+
+            string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (shopperId != shopperProduct.ShopperId)
             {
                 return Json(new { isValid = false });
             }

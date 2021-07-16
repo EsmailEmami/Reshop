@@ -6,6 +6,8 @@ using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Application.Convertors;
+using Reshop.Domain.DTOs.Shopper;
 
 namespace Reshop.Application.Services.Shopper
 {
@@ -24,6 +26,20 @@ namespace Reshop.Application.Services.Shopper
 
         #endregion
 
+
+        public async Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int>> GetShoppersInformationWithPagination(string type = "all",string filter = "", int pageId = 1, int take = 18)
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int shoppersCount = await _shopperRepository.GetShoppersCountWithTypeAsync(type.FixedText());
+
+            var shoppers = _shopperRepository.GetShoppersWithPagination(type.FixedText(),skip,take,filter);
+
+            int totalPages = (int)Math.Ceiling(1.0 * shoppersCount / take);
+
+
+            return new Tuple<IEnumerable<ShoppersListForAdmin>, int, int>(shoppers, pageId, totalPages);
+        }
 
         public async Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper)
         {
@@ -126,6 +142,13 @@ namespace Reshop.Application.Services.Shopper
             {
                 return ResultTypes.Failed;
             }
+        }
+
+        public async Task<IEnumerable<StoreAddress>> GetShopperStoreAddressesAsync(string shopperUserId)
+        {
+            var shopperId =await _shopperRepository.GetShopperIdOfUserByUserId(shopperUserId);
+
+            return _shopperRepository.GetShopperStoreAddresses(shopperId);
         }
 
         public async Task<ResultTypes> AddStoreAddressAsync(StoreAddress storeAddress)

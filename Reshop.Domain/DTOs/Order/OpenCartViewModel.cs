@@ -8,17 +8,10 @@ namespace Reshop.Domain.DTOs.Order
 {
     public class OpenCartViewModel
     {
-        public decimal Sum { get; set; }
-        public IEnumerable<OrderDetailViewModel> OrderDetails { get; set; }
-    }
-
-    public class OrderDetailViewModel
-    {
         public string OrderDetailId { get; set; }
         public int ProductsCount { get; set; }
         public decimal ProductPrice { get; set; }
         public byte ProductDiscountPercent { get; set; }
-        public decimal Sum { get; set; }
         public string ProductTitle { get; set; }
         public string ProductImg { get; set; }
         public string Warranty { get; set; }

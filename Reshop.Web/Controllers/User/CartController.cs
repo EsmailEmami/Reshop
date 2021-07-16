@@ -45,10 +45,10 @@ namespace Reshop.Web.Controllers.User
 
         [HttpGet]
         [Route("Cart")]
-        public async Task<IActionResult> ShowCart()
+        public IActionResult ShowCart()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(await _cartService.GetUserOpenOrderForShowCartAsync(userId));
+            return View( _cartService.GetUserOpenOrderForShowCart(userId));
         }
 
         [HttpPost]

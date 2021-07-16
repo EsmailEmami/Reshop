@@ -1,12 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
+using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Application.Interfaces.Shopper
 {
     public interface IShopperService
     {
+        // data , pageId , totalPages
+        Task<Tuple<IEnumerable<ShoppersListForAdmin>,int,int>> GetShoppersInformationWithPagination(string type = "all", string filter = "", int pageId = 1, int take = 18);
+
+        
         Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> EditShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> AddShopperProductAsync(ShopperProduct shopperProduct);
@@ -24,6 +30,7 @@ namespace Reshop.Application.Interfaces.Shopper
 
         #region address
 
+        Task<IEnumerable<StoreAddress>> GetShopperStoreAddressesAsync(string shopperUserId);
         Task<ResultTypes> AddStoreAddressAsync(StoreAddress storeAddress);
         Task<ResultTypes> EditStoreAddressAsync(StoreAddress storeAddress);
         Task<ResultTypes> RemoveStoreAddressAsync(string storeAddressId);

@@ -75,7 +75,10 @@ namespace Reshop.Infrastructure.Repository.Shopper
                     shoppers = shoppers.Where(c => c.IsUserShopper);
                     break;
                 case "block":
-                    shoppers = shoppers.Where(c => !c.IsBlocked);
+                    shoppers = shoppers.Where(c => c.IsBlocked);
+                    break;
+                case "existed":
+                    shoppers = shoppers.Where(c => !c.IsUserShopper);
                     break;
             }
 
@@ -95,6 +98,18 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 PhoneNumber = c.PhoneNumber,
                 StoreName = c.Shopper.StoreName
             });
+        }
+
+        public async Task<int> GetShoppersCountWithTypeAsync(string type = "all")
+        {
+            return type switch
+            {
+                "all" => await _context.Users.Where(c => c.ShopperId != null).CountAsync(),
+                "block" => await _context.Users.Where(c => c.ShopperId != null && c.IsBlocked).CountAsync(),
+                "active" => await _context.Users.Where(c => c.IsUserShopper).CountAsync(),
+                "existed" => await _context.Users.Where(c => c.ShopperId != null && !c.IsUserShopper).CountAsync(),
+                _ => await _context.Users.Where(c => c.ShopperId != null).CountAsync()
+            };
         }
 
         public async Task AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest) =>
@@ -149,6 +164,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
         public IEnumerable<string> GetShopperStoreTitlesName(string shopperId) =>
             _context.ShopperStoreTitles.Where(c => c.ShopperId == shopperId).Select(c => c.StoreTitle.StoreTitleName);
+
+        public IEnumerable<StoreAddress> GetShopperStoreAddresses(string shopperId) =>
+            _context.StoresAddress.Where(c => c.ShopperId == shopperId);
 
         public async Task AddStoreAddressAsync(StoreAddress storeAddress) =>
             await _context.StoresAddress.AddAsync(storeAddress);

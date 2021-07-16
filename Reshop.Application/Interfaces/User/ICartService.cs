@@ -12,7 +12,7 @@ namespace Reshop.Application.Interfaces.User
 {
     public interface ICartService
     {
-        Task<OpenCartViewModel> GetUserOpenOrderForShowCartAsync(string userId);
+        IEnumerable<OpenCartViewModel> GetUserOpenOrderForShowCart(string userId);
         Task<Order> GetUserOpenOrderAsync(string userId);
         Task EditOrderAsync(Order order);
         Task<Order> GetOrderByIdAsync(string orderId);

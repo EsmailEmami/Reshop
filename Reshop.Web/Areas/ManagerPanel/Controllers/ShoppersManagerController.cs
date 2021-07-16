@@ -33,9 +33,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(int pageId = 1, int take = 24)
+        public IActionResult Index(string type = "all", string filter = "", int pageId = 1)
         {
-            return View(/*_shopperService.GetShoppersInformationWithPagination(pageId, take)*/);
+            return View(_shopperService.GetShoppersInformationWithPagination(type, filter, pageId, 24));
         }
 
         [HttpGet]
@@ -290,6 +290,39 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت فروشنده به مشکلی غیر منتظره برخوردیم.");
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });
+            }
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [NoDirectAccess]
+        public async Task<IActionResult> UnAvailableShopperProduct(string shopperProductId)
+        {
+            if (string.IsNullOrEmpty(shopperProductId))
+            {
+                return Json(new { isValid = false });
+            }
+
+
+            var shopperProduct = await _productService.GetShopperProductAsync(shopperProductId);
+
+            if (shopperProduct is null)
+            {
+                return Json(new { isValid = false });
+            }
+
+            shopperProduct.IsFinally = false;
+
+            var result = await _shopperService.EditShopperProductAsync(shopperProduct);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                return Json(new { isValid = false });
             }
         }
     }
