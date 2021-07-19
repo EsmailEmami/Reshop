@@ -11,7 +11,7 @@ namespace Reshop.Domain.DTOs.Product
     {
         public ShopperProduct Product { get; set; }
 
-        public byte DiscountPercent { get; set; }
+        public ShopperProductDiscount Discount { get; set; }
 
         public IEnumerable<ProductGallery> ProductGalleries { get; set; }
 

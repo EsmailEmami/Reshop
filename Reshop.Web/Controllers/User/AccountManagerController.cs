@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Mvc;
+﻿
+
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
@@ -8,15 +7,11 @@ using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
-using Reshop.Application.Security.Attribute;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.DTOs.User;
+using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.User
 {
@@ -324,7 +319,6 @@ namespace Reshop.Web.Controllers.User
         }
 
 
-
         [Route("ManageProducts")]
         [HttpGet]
         [Permission("Shopper")]
@@ -352,10 +346,10 @@ namespace Reshop.Web.Controllers.User
         [HttpGet]
         [Route("ShopperProductDetail/{productId}")]
         [Permission("Shopper")]
-        public async Task<IActionResult> ShopperProductDetail(int productId)
+        public async Task<IActionResult> ShopperProductDetail(string productId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(await _productService.GetShopperProductAsync(productId, userId));
+            return View(await _productService.GetShopperProductAsync(productId,userId));
         }
 
 
@@ -577,14 +571,25 @@ namespace Reshop.Web.Controllers.User
             catch
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت تخفیف به مشتکلی غیر منتظره برخوردیم.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", null) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "ProductDiscount", model) });
             }
 
-            var shopperProduct = await _productService.GetShopperProductAsync(model.ShopperProductId);
+
+            if (!await _productService.IsShopperProductExistAsync(model.ShopperProductId))
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت تخفیف به مشتکلی غیر منتظره برخوردیم.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "ProductDiscount", model) });
+            }
+            else if (!await _shopperService.IsShopperProductColorExistAsync(model.ShopperProductId, model.ShopperProductColorId))
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت تخفیف به مشتکلی غیر منتظره برخوردیم.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "ProductDiscount", model) });
+            }
 
             var shopperProductDiscount = new ShopperProductDiscount()
             {
-                ShopperProductId = shopperProduct.ShopperProductId,
+                ShopperProductId = model.ShopperProductId,
+                ShopperProductColorId = model.ShopperProductColorId,
                 StartDate = model.StartDate.ConvertPersianDateToEnglishDate(),
                 EndDate = model.EndDate.ConvertPersianDateToEnglishDate(),
                 DiscountPercent = model.DiscountPercent,
@@ -594,14 +599,8 @@ namespace Reshop.Web.Controllers.User
 
             if (result == ResultTypes.Successful)
             {
-                shopperProduct.IsInDiscount = true;
-                var editShopperProduct = await _shopperService.EditShopperProductAsync(shopperProduct);
-                if (editShopperProduct == ResultTypes.Successful)
-                {
-                    return Json(new { isValid = true });
-                }
+                return Json(new { isValid = true });
             }
-
 
             ModelState.AddModelError("", "متاسفانه خطایی هنگام ثبت تخفیف رخ داده است. لطفا دوباره تلاش کنید.");
             return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });
@@ -633,7 +632,7 @@ namespace Reshop.Web.Controllers.User
                 return Json(new { isValid = false });
             }
 
-            shopperProduct.IsFinally = false;
+            shopperProduct.IsActive = false;
 
             var result = await _shopperService.EditShopperProductAsync(shopperProduct);
 

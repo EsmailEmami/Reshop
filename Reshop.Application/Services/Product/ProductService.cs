@@ -220,13 +220,9 @@ namespace Reshop.Application.Services.Product
             var productGalleries = _productRepository.GetProductImages(productId);
             var shoppers = _shopperRepository.GetProductShoppers(productId);
 
-            byte discountPercent = 0;
 
-            if (product.IsInDiscount)
-            {
-                var discount = await _shopperRepository.GetLastShopperProductDiscountAsync(product.ShopperProductId);
-                discountPercent = discount.DiscountPercent;
-            }
+            var lastDiscount = await _shopperRepository.GetLastShopperProductDiscountAsync(product.ShopperProductId);
+
 
             return new ProductDetailViewModel()
             {
@@ -236,7 +232,7 @@ namespace Reshop.Application.Services.Product
                 Comments = comments,
                 ProductGalleries = productGalleries,
                 Shoppers = shoppers,
-                DiscountPercent = discountPercent
+                Discount = lastDiscount
             };
         }
 

@@ -281,5 +281,8 @@ namespace Reshop.Application.Services.Shopper
         {
             return _shopperRepository.GetShopperStoreTitlesName(shopperId);
         }
+
+        public async Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId) =>
+            await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId, shopperProductColorId);
     }
 }

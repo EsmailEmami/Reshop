@@ -21,39 +21,22 @@ namespace Reshop.Domain.Entities.Shopper
         [ForeignKey("Shopper")]
         public string ShopperId { get; set; }
 
-        [Display(Name = "تعداد بازدید از محصول")]
-        public int ViewCount { get; set; }
-
-        [Display(Name = "تعداد فروش")]
-        public int SaleCount { get; set; }
-
         [Display(Name = "گارانتی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Warranty { get; set; }
 
-        [Display(Name = "قیمت محصول")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public decimal Price { get; set; }
-
-        [Display(Name = "تعداد موجودی")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public int QuantityInStock { get; set; }
-
         public bool IsFinally { get; set; }
+
+        public bool IsActive { get; set; }
 
         public DateTime CreateDate { get; set; }
 
-        public bool IsInDiscount { get; set; }
-
         #region Relations
 
-
         public virtual Shopper Shopper { get; set; }
-
         public virtual Product.Product Product { get; set; }
-
-        public ICollection<ShopperProductDiscount> Discounts { get; set; }
+        public virtual ICollection<ShopperProductColor> ShopperProductColors { get; set; }
 
         #endregion
     }

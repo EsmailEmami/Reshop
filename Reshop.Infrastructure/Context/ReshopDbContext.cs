@@ -17,35 +17,27 @@ namespace Reshop.Infrastructure.Context
         {
         }
 
+        #region category and child category
+
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<ChildCategory> ChildCategories { get; set; }
         public virtual DbSet<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
+        public virtual DbSet<ProductToChildCategory> ProductToChildCategories { get; set; }
+
+        #endregion
+
+        #region product
+
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<FavoriteProduct> FavoriteProducts { get; set; }
-        public virtual DbSet<LaptopDetail> LaptopDetails { get; set; }
-        public virtual DbSet<MobileDetail> MobileDetails { get; set; }
         public virtual DbSet<ProductGallery> ProductGalleries { get; set; }
-        public virtual DbSet<ProductToChildCategory> ProductToChildCategories { get; set; }
-        public virtual DbSet<Address> Addresses { get; set; }
-        public virtual DbSet<Comment> Comments { get; set; }
-        public virtual DbSet<CommentAnswer> CommentAnswers { get; set; }
-        public virtual DbSet<Order> Orders { get; set; }
-        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-        public virtual DbSet<Question> Questions { get; set; }
-        public virtual DbSet<QuestionAnswer> QuestionAnswers { get; set; }
-        public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserRole> UserRoles { get; set; }
-        public virtual DbSet<MobileCoverDetail> MobileCoverDetails { get; set; }
-        public virtual DbSet<Wallet> Wallets { get; set; }
-        public virtual DbSet<WalletType> WalletTypes { get; set; }
         public virtual DbSet<Discount> Discounts { get; set; }
-        public virtual DbSet<UserDiscountCode> UserDiscountCodes { get; set; }
-        public virtual DbSet<Shopper> Shoppers { get; set; }
-        public virtual DbSet<ShopperProduct> ShopperProducts { get; set; }
-        public virtual DbSet<UserInvite> UserInvites { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<OfficialBrandProduct> OfficialBrandProducts { get; set; }
+        public virtual DbSet<Color> Colors { get; set; }
+
+        public virtual DbSet<LaptopDetail> LaptopDetails { get; set; }
+        public virtual DbSet<MobileDetail> MobileDetails { get; set; }
         public virtual DbSet<TabletDetail> TabletDetails { get; set; }
         public virtual DbSet<SpeakerDetail> SpeakerDetails { get; set; }
         public virtual DbSet<AUXDetail> AuxDetails { get; set; }
@@ -56,16 +48,46 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<FlashMemoryDetail> FlashMemoryDetails { get; set; }
         public virtual DbSet<BatteryChargerDetail> BatteryChargerDetails { get; set; }
         public virtual DbSet<MemoryCardDetail> MemoryCardDetails { get; set; }
-        public virtual DbSet<ShopperStoreTitle> ShopperStoreTitles { get; set; }
-        public virtual DbSet<StoreTitle> StoreTitles { get; set; }
+        public virtual DbSet<MobileCoverDetail> MobileCoverDetails { get; set; }
+
+        #endregion
+
+        #region user
+
+        public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+        public virtual DbSet<Question> Questions { get; set; }
+        public virtual DbSet<QuestionAnswer> QuestionAnswers { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<Wallet> Wallets { get; set; }
+        public virtual DbSet<WalletType> WalletTypes { get; set; }
+        public virtual DbSet<UserDiscountCode> UserDiscountCodes { get; set; }
+        public virtual DbSet<UserInvite> UserInvites { get; set; }
         public virtual DbSet<State> States { get; set; }
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<StateCity> StateCities { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
+
+        #endregion
+
+        #region shopper
+
+        public virtual DbSet<Shopper> Shoppers { get; set; }
+        public virtual DbSet<ShopperProduct> ShopperProducts { get; set; }
+        public virtual DbSet<ShopperStoreTitle> ShopperStoreTitles { get; set; }
+        public virtual DbSet<StoreTitle> StoreTitles { get; set; }
         public virtual DbSet<ShopperProductRequest> ShopperProductRequests { get; set; }
         public virtual DbSet<StoreAddress> StoresAddress { get; set; }
-        public DbSet<ShopperProductDiscount> ShopperProductDiscounts { get; set; }
+        public virtual DbSet<ShopperProductDiscount> ShopperProductDiscounts { get; set; }
+        public virtual DbSet<ShopperProductColor> ShopperProductColors { get; set; }
+
+        #endregion
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -89,11 +111,6 @@ namespace Reshop.Infrastructure.Context
 
             modelBuilder.Entity<RolePermission>()
                 .HasKey(c => new { c.RoleId, c.PermissionId });
-
-            modelBuilder.Entity<ShopperProduct>(i =>
-            {
-                i.Property(w => w.Price).HasColumnType("Money");
-            });
 
             modelBuilder.Entity<Order>(i =>
             {

@@ -87,7 +87,6 @@ namespace Reshop.Domain.Entities.User
         public virtual ICollection<FavoriteProduct> FavoriteProducts { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
-        public virtual ICollection<CommentAnswer> CommentAnswers { get; set; }
         public virtual ICollection<Question> Questions { get; set; }
         public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; }
         public virtual ICollection<Wallet> Wallets { get; set; }

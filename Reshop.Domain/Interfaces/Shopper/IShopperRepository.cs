@@ -72,7 +72,11 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
         #endregion
 
+        #region color
 
+        Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId);
+
+        #endregion
 
         Task SaveChangesAsync();
     }

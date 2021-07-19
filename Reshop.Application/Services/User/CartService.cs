@@ -88,7 +88,7 @@ namespace Reshop.Application.Services.User
                         var orderDetail_new = new OrderDetail()
                         {
                             OrderId = order.OrderId,
-                            Price = shopperProduct.Price,
+                            Price = 0,
                             Count = 1,
                             ProductDiscountPrice = 0,
                             CreateDate = DateTime.Now,
@@ -134,7 +134,7 @@ namespace Reshop.Application.Services.User
                     var orderDetail_new = new OrderDetail()
                     {
                         OrderId = order.OrderId,
-                        Price = shopperProduct.Price,
+                        Price = 0,
                         Count = 1,
                         ProductDiscountPrice = 0,
                         CreateDate = DateTime.Now,

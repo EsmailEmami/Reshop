@@ -186,6 +186,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount) =>
             await _context.ShopperProductDiscounts.AddAsync(shopperProductDiscount);
 
+        public async Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId) =>
+            await _context.ShopperProductColors.AnyAsync(c => c.ShopperProductId == shopperProductId && c.ShopperProductColorId == shopperProductColorId);
+
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }

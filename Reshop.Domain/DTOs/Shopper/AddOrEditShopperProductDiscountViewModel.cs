@@ -12,6 +12,8 @@ namespace Reshop.Domain.DTOs.Shopper
 
         public string ShopperProductId { get; set; }
 
+        public string ShopperProductColorId { get; set; }
+
         public byte DiscountPercent { get; set; }
 
         public string StartDate { get; set; }

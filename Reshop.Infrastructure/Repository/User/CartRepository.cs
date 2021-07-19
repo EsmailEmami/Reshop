@@ -82,8 +82,9 @@ namespace Reshop.Infrastructure.Repository.User
                 {
                     OrderDetailId = o.OrderDetailId,
                     ProductsCount = o.Count,
-                    ProductPrice = _context.ShopperProducts.Single(s => s.ShopperId == o.ShopperId && s.ProductId == o.ProductId).Price,
-                    ProductDiscountPercent = _context.ShopperProducts.Single(s => s.ShopperId == o.ShopperId && s.ProductId == o.ProductId).IsInDiscount ? _context.ShopperProducts.Single(s => s.ShopperId == o.ShopperId && s.ProductId == o.ProductId).Discounts.LastOrDefault().DiscountPercent : Convert.ToByte(0),
+                    ProductPrice = o.ShopperProductColor.Price,
+                    ColorName = o.ShopperProductColor.Color.ColorName,
+                    Discount = o.ShopperProductColor.Discounts.Select(c=> new Tuple<byte,DateTime>(c.DiscountPercent,c.EndDate)).LastOrDefault(),
                     ProductTitle = o.Product.ProductTitle,
                     ProductImg = o.Product.ProductGalleries.FirstOrDefault().ImageName,
                     Warranty = _context.ShopperProducts.Single(a => a.ShopperId == o.ShopperId && a.ProductId == o.ProductId).Warranty,

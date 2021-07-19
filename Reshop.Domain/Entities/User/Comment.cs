@@ -42,8 +42,6 @@ namespace Reshop.Domain.Entities.User
 
         public virtual User User { get; set; }
 
-        public virtual ICollection<CommentAnswer> CommentAnswers { get; set; }
-
         #endregion
     }
 }

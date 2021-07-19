@@ -20,6 +20,9 @@ namespace Reshop.Domain.Entities.Shopper
         [ForeignKey("ShopperProduct")]
         public string ShopperProductId { get; set; }
 
+        [ForeignKey("ShopperProductColor")]
+        public string ShopperProductColorId { get; set; }
+
         [Display(Name = "درصد تخفیف")]
         public byte DiscountPercent { get; set; }
 
@@ -30,6 +33,8 @@ namespace Reshop.Domain.Entities.Shopper
         #region Relations
 
         public virtual ShopperProduct ShopperProduct { get; set; }
+
+        public virtual ShopperProductColor ShopperProductColor { get; set; }
 
         #endregion
     }
