@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Domain.Entities.Shopper
 {
@@ -17,6 +18,9 @@ namespace Reshop.Domain.Entities.Shopper
 
         [ForeignKey("User")]
         public string RequestUserId { get; set; }
+
+        [ForeignKey("Color")]
+        public int ColorId { get; set; }
 
         [Display(Name = "نوع درخواست")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -47,7 +51,8 @@ namespace Reshop.Domain.Entities.Shopper
 
         #region Relations
 
-        public User.User User { get; set; }
+        public virtual User.User User { get; set; }
+        public virtual Color Color { get; set; }
         public virtual Shopper Shopper { get; set; }
         public virtual Product.Product Product { get; set; }
 

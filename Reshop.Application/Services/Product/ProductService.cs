@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
+using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Category;
@@ -126,7 +127,12 @@ namespace Reshop.Application.Services.Product
         public async Task<ShopperProduct> GetShopperProductAsync(string shopperProductId) =>
             await _productRepository.GetShopperProductAsync(shopperProductId);
 
+        public async Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(int productId, string shopperId, int colorId)
+        {
+            string shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
 
+            return await _productRepository.GetShopperProductForEditAsync(shopperProductId, colorId);
+        }
 
         public async Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId)
         {
@@ -209,11 +215,9 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperId = null)
+        public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperProductColorId)
         {
-            string productType = await _productRepository.GetProductTypeAsync(productId);
-
-            var product = await _productRepository.GetProductWithTypeAsync(productId, productType.FixedText(), shopperId);
+            var product = await _productRepository.GetProductDateForDetailAsync(shopperProductColorId, productId);
 
             var childCategories = _productRepository.GetProductChildCategories(productId);
             var comments = _productRepository.GetProductComments(productId);
@@ -221,18 +225,15 @@ namespace Reshop.Application.Services.Product
             var shoppers = _shopperRepository.GetProductShoppers(productId);
 
 
-            var lastDiscount = await _shopperRepository.GetLastShopperProductDiscountAsync(product.ShopperProductId);
 
 
             return new ProductDetailViewModel()
             {
-                ProductType = productType,
                 Product = product,
                 ChildCategories = childCategories,
                 Comments = comments,
                 ProductGalleries = productGalleries,
                 Shoppers = shoppers,
-                Discount = lastDiscount
             };
         }
 
@@ -1013,6 +1014,5 @@ namespace Reshop.Application.Services.Product
 
         public IEnumerable<Question> GetProductQuestions(int productId) =>
             _productRepository.GetProductQuestions(productId);
-
     }
 }

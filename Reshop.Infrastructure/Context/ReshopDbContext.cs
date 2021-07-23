@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.Product;
@@ -142,7 +143,69 @@ namespace Reshop.Infrastructure.Context
             });
 
 
+            modelBuilder.Entity<ShopperProductColor>(i =>
+            {
+                i.Property(w => w.Price).HasColumnType("Money");
+            });
 
+
+            //#region data seed
+
+            //modelBuilder.Entity<Brand>().HasData(new Brand()
+            //{
+            //    BrandId = 1,
+            //    BrandName = "brandName1221"
+            //});
+
+            //modelBuilder.Entity<OfficialBrandProduct>().HasData(new OfficialBrandProduct()
+            //{
+            //    OfficialBrandProductId = 1,
+            //    OfficialBrandProductName = "OfficialBrand1221",
+            //    BrandId = 1,
+            //});
+
+            //modelBuilder.Entity<AUXDetail>().HasData(new AUXDetail()
+            //{
+            //    AUXDetailId = 1,
+            //    CableLenght = 2,
+            //    CableMaterial = "CableMaterial1221"
+            //}, new AUXDetail()
+            //{
+            //    AUXDetailId = 2,
+            //    CableLenght = 2.6,
+            //    CableMaterial = "CableMaterial1221"
+            //});
+
+
+            //modelBuilder.Entity<Product>().HasData(new Product()
+            //{
+            //    ProductId = 1,
+            //    ProductTitle = "baby1",
+            //    Description = "hello baby1",
+            //    ShortKey = "ck6u",
+            //    ProductType = "AUX",
+            //    BrandId = 1,
+            //    OfficialBrandProductId = 1,
+            //    CreateDate = DateTime.Now,
+            //    IsActive = true,
+            //    AuxDetailId = 1,
+            //}, new Product()
+            //{
+            //    ProductId = 2,
+            //    ProductTitle = "baby2",
+            //    Description = "hello baby2",
+            //    ProductType = "AUX",
+            //    ShortKey = "ck6a",
+            //    BrandId = 1,
+            //    OfficialBrandProductId = 2,
+            //    CreateDate = DateTime.Now,
+            //    IsActive = true,
+            //    AuxDetailId = 2,
+            //});
+
+
+
+            //#endregion
 
             base.OnModelCreating(modelBuilder);
         }

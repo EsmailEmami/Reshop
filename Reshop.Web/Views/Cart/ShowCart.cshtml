@@ -80,7 +80,7 @@ else
 
                         <div class="price">
                             <h3>
-                                @CartCalculator.CalculateOrderDetailSum(item.ProductsCount,item.ProductPrice,item.ProductDiscountPercent).ToToman()
+                                @CartCalculator.CalculateOrderDetailSum(item.ProductsCount, item.ProductPrice, Convert.ToByte(((item.Discount.Item2 > DateTime.Now) ? item.Discount.Item2 : 0))).ToToman()
                                 <span class="toman">تومان</span>
                             </h3>
                         </div>
@@ -100,7 +100,7 @@ else
 
                     @{
                         decimal productsFullPrice = Model.Select(c => c.ProductPrice * c.ProductsCount).Sum();
-                        decimal productsDiscount = Model.Select(c => ( (c.ProductPrice * c.ProductsCount) * c.ProductDiscountPercent) / 100).Sum();
+                        decimal productsDiscount = Model.Select(c => ((c.ProductPrice * c.ProductsCount) * (c.Discount.Item2 > DateTime.Now ? c.Discount.Item1 : 0)) / 100).Sum();
                     }
 
 
@@ -136,7 +136,7 @@ else
                 </p>
             </section>
 
-            
+
 
             <section>
                 <a class="btn finall-cart-btn" asp-controller="Cart" asp-action="Address">

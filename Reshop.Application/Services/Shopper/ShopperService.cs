@@ -282,6 +282,20 @@ namespace Reshop.Application.Services.Shopper
             return _shopperRepository.GetShopperStoreTitlesName(shopperId);
         }
 
+        public async Task<ResultTypes> AddShopperProductColorAsync(ShopperProductColor shopperProductColor)
+        {
+            try
+            {
+                await _shopperRepository.AddShopperProductColorAsync(shopperProductColor);
+                await _shopperRepository.SaveChangesAsync();
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId) =>
             await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId, shopperProductColorId);
     }

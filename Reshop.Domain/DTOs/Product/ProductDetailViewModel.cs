@@ -9,9 +9,7 @@ namespace Reshop.Domain.DTOs.Product
 {
     public class ProductDetailViewModel
     {
-        public ShopperProduct Product { get; set; }
-
-        public ShopperProductDiscount Discount { get; set; }
+        public ProductDateForDetailViewModel Product { get; set; }
 
         public IEnumerable<ProductGallery> ProductGalleries { get; set; }
 
@@ -20,6 +18,16 @@ namespace Reshop.Domain.DTOs.Product
 
         public IEnumerable<Tuple<string, string, string>> Shoppers { get; set; }
 
-        public string ProductType { get; set; }
+    }
+
+    public class ProductDateForDetailViewModel
+    {
+        public string ShopperProductColorId { get; set; }
+        public int ProductId { get; set; }
+        public Tuple<int,string> Brand { get; set; }
+        public string Title { get; set; }
+        public object Detail { get; set; }
+        public decimal Price { get; set; }
+        public Tuple<byte,DateTime> LastDiscount { get; set; }
     }
 }

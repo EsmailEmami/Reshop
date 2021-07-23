@@ -6,7 +6,7 @@
 
         <div class="img-detail box-shadow">
             <div class="show-img-product">
-                <img id="zoom" src="/images/ProductImages/@Model.ProductGalleries.First().ImageName" alt="@Model.Product.Product.ProductTitle">
+                <img id="zoom" src="/images/ProductImages/@Model.ProductGalleries.First().ImageName" alt="@Model.Product.Title">
             </div>
 
             <!-- start slider product picture -->
@@ -15,7 +15,7 @@
                 @foreach (var item in Model.ProductGalleries)
                 {
                     <div class="item mini-pic-slider">
-                        <img src="/images/ProductImages/@item.ImageName" alt="@Model.Product.Product.ProductTitle" onclick="changeDetailImg(this.src)">
+                        <img src="/images/ProductImages/@item.ImageName" alt="@Model.Product.Title" onclick="changeDetailImg(this.src)">
                     </div>
                 }
 
@@ -27,7 +27,7 @@
     <div class="col-xs-12 col-lg-8">
         <div class="detail-info box-shadow">
             <div class="product-name">
-                <h1>@Model.Product.Product.ProductTitle</h1>
+                <h1>@Model.Product.Title</h1>
             </div>
 
             <div class="pro-data">
@@ -63,7 +63,7 @@
                 </div>
                 <div>
                     <h2><i class="far fa-building"></i> برند:</h2>
-                    <a href="#">@Model.Product.Product.Brand</a>
+                    <a href="#">@Model.Product.Brand.Item2</a>
                 </div>
             </div>
 
@@ -94,7 +94,7 @@
                 <select class="Seller-ipnut" id="selected-shopper" onchange="UpdateProductDetailPage('@Model.Product.ProductId','@ViewData["ProductName"].ToString()',this.value)">
                     @foreach (var item in Model.Shoppers)
                     {
-                        @:<option value="@item.Item1" @(item.Item1 == Model.Product.ShopperProductId ? "selected" : "")>فروشگاه @item.Item2 - @item.Item3</option>
+                        @:<option value="@item.Item1" @(item.Item1 == Model.Product.ShopperProductColorId ? "selected" : "")>فروشگاه @item.Item2 - @item.Item3</option>
                     }
                 </select>
 
@@ -104,22 +104,22 @@
 
 
                 <h5><i class="far fa-dollar-sign"></i> قیمت:</h5>
-                
-                @if (Model.Product.IsInDiscount)
-                {
-                    <span class="badge badge-pill badge-info ">@Model.DiscountPercent ٪ تخفیف</span>
 
-                    <span class="badge badge-pill badge-success text-black">سود شما: @CartCalculator.CalculateDiscountPrice(Model.Product.Price, Model.DiscountPercent).ToToman() تومان</span>
+                @if (Model.Product.LastDiscount.Item2 > DateTime.Now)
+                {
+                    <span class="badge badge-pill badge-info ">@Model.Product.LastDiscount.Item1 ٪ تخفیف</span>
+
+                    <span class="badge badge-pill badge-success text-black">سود شما: @CartCalculator.CalculateDiscountPrice(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0))).ToToman() تومان</span>
                 }
 
                 <div class="price-amount">
-                    <h3>@CartCalculator.CalculateDiscountPrice(Model.Product.Price, Model.DiscountPercent).ToToman() <span>تومان</span></h3>
+                    <h3>@CartCalculator.CalculateDiscountPrice(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0))).ToToman() <span>تومان</span></h3>
 
 
 
                     <form asp-controller="Cart" asp-action="AddToCart" onsubmit="return  AddProductToCart(this)">
-                        <input type="hidden" value="@Model.Product.Product.ProductId" name="productId" />
-                        <input type="hidden" value="@Model.Product.ShopperProductId" name="shopperProductId" />
+                        <input type="hidden" value="@Model.Product.ProductId" name="productId" />
+                        <input type="hidden" value="@Model.Product.ShopperProductColorId" name="shopperProductColorId" />
                         <button type="submit" class="btn btn-warning">افزودن به سبد خرید</button>
                     </form>
 

@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace Reshop.Domain.DTOs.Shopper
 {
-    public class AddOrEditShopperProduct
+    public class AddShopperProductViewModel
     {
         public string ShopperId { get; set; }
 
         public string ProductId { get; set; }
 
-        public string RequestUserId { get; set; }
-
-        public string Color { get; set; }
+        public int Color { get; set; }
 
         [Display(Name = "تعداد موجودی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]

@@ -38,6 +38,10 @@ namespace Reshop.Domain.Entities.Shopper
         [Display(Name = "تعداد فروش")]
         public int SaleCount { get; set; }
 
+        public bool IsFinally { get; set; }
+
+        public bool IsActive { get; set; }
+
         #region Relations
 
         public virtual ShopperProduct ShopperProduct { get; set; }

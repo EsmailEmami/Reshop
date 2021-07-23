@@ -76,21 +76,129 @@ function ShowModal(url, title) {
 }
 
 function GetCitiesOfState(stateId) {
+    var city = document.getElementById('city');
+    var cityOptionList = $('.select-dropdown-list')[1];
+
+
+    function addSelectList(itemValue, itemText) {
+        let opt = document.createElement('option');
+        opt.value = itemValue;
+        opt.innerHTML = itemText;
+        city.appendChild(opt);
+
+        var op = newEl('div',
+            {
+                optEl: opt
+            });
+
+        op.appendChild(newEl('label', {
+            text: opt.text
+        }));
+
+
+        op.addEventListener('click', () => {
+
+            op.optEl.selected = !!!op.optEl.selected;
+            city.dispatchEvent(new Event('change'));
+
+        });
+
+
+        cityOptionList.appendChild(op);
+    }
+
+
+    var div = document.querySelectorAll('.select-dropdown')[1];
+
+    function refresh() {
+        div.querySelectorAll('span.optext, span.placeholder').forEach(t => div.removeChild(t));
+        var sel = Array.from(city.selectedOptions)[0];
+
+        console.log(sel);
+
+        var c = newEl('span', {
+            class: 'optext',
+            text: sel.text
+        });
+
+        div.appendChild(c);
+    }
+
     if (stateId != 0) {
         $.ajax({
             type: "GET",
             url: "/api/State?stateId=" + stateId,
         }).done(function (res) {
-            $("#city").empty();
-            $("#city").append('  <option value="0">لطفا شهر را انتخاب کنید</option>');
-            $.each(res, function (index, value) {
-                $("#city").append('<option value="' + value.cityId + '">' + value.cityName + '</option>');
+            
+
+            // make empty the select
+            city.querySelectorAll('*').forEach(n => n.remove());
+
+            // select city option
+            var selectCityOption = document.createElement('option');
+            selectCityOption.value = 0;
+            selectCityOption.innerHTML = "لطفا شهر را انتخاب کنید";
+            city.appendChild(selectCityOption);
+
+            var op = newEl('div',
+                {
+                    optEl: selectCityOption
+                });
+
+            op.appendChild(newEl('label', {
+                text: selectCityOption.text
+            }));
+
+
+            op.addEventListener('click', () => {
+
+                op.optEl.selected = !!!op.optEl.selected;
+                city.dispatchEvent(new Event('change'));
+
             });
-            $('select:not([multiple])').selectize(options);
+
+            cityOptionList.querySelectorAll('*').forEach(n => n.remove());
+
+            cityOptionList.appendChild(op);
+
+
+            $.each(res, function (index, value) {
+                addSelectList(value.cityId, value.cityName);
+            });
+
+            refresh();
+
         });
     } else if (stateId == 0) {
-        $("#city").empty();
-        $("#city").append('  <option value="0">لطفا استان را انتخاب کنید</option>');
+        // make empty the select
+        city.querySelectorAll('*').forEach(n => n.remove());
+
+        // select city option
+        var selectStateOption = document.createElement('option');
+        selectStateOption.value = 0;
+        selectStateOption.innerHTML = "لطفا استان را انتخاب کنید";
+        city.appendChild(selectStateOption);
+
+        var op = newEl('div',
+            {
+                optEl: selectStateOption
+            });
+
+        op.appendChild(newEl('label', {
+            text: selectStateOption.text
+        }));
+
+        op.addEventListener('click', () => {
+
+            op.optEl.selected = !!!op.optEl.selected;
+            city.dispatchEvent(new Event('change'));
+
+        });
+
+
+        cityOptionList.querySelectorAll('*').forEach(n => n.remove());
+        cityOptionList.appendChild(op);
+        refresh();
     }
 }
 

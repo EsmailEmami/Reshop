@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
+using Reshop.Domain.DTOs.Shopper;
 
 namespace Reshop.Domain.Interfaces.Product
 {
@@ -16,6 +17,8 @@ namespace Reshop.Domain.Interfaces.Product
         IEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
         IEnumerable<ProductViewModel> GetProductsOfChildCategoryWithPagination(int childCategoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
         Task<string> GetProductFirstPictureName(int productId);
+
+        Task<ProductDateForDetailViewModel> GetProductDateForDetailAsync(string shopperProductColorId, int productId);
 
         IEnumerable<string> GetBrandsOfCategory(int categoryId);
         IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId);
@@ -52,6 +55,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         Task<ShopperProduct> GetShopperProductAsync(string shopperId, int productId);
         Task<ShopperProduct> GetShopperProductAsync(string shopperProductId);
+        Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductId, int colorId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);
@@ -173,7 +177,7 @@ namespace Reshop.Domain.Interfaces.Product
 
 
 
-        
+
 
 
 

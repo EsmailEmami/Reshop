@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
+using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
@@ -13,7 +14,7 @@ namespace Reshop.Application.Interfaces.Product
 {
     public interface IProductService
     {
-
+        
         IEnumerable<ProductViewModel> GetProductsWithType(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int take = 18);
 
         // product , pageId , totalPages
@@ -26,6 +27,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId);
         Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId);
         Task<ShopperProduct> GetShopperProductAsync(string shopperProductId);
+        Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(int productId, string shopperId, int colorId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);

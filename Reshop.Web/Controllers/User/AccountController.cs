@@ -275,220 +275,226 @@ namespace Reshop.Web.Controllers.User
 
             #endregion
 
-
-
-            var shopper = new Shopper()
+            try
             {
-                StoreName = model.StoreName,
-                BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate(),
-                RegisterShopper = DateTime.Now,
-                IsFinally = false
-            };
-
-            #region shopper cards
-
-            if (model.OnNationalCardImageName.Length > 0)
-            {
-                IFormFile img = model.OnNationalCardImageName;
-
-                string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
-
-
-                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "images",
-                    "shoppersCardImages",
-                    "original",
-                    imgName);
-
-
-                await using (var stream = new FileStream(filePath, FileMode.Create))
+                var shopper = new Shopper()
                 {
-                    await img.CopyToAsync(stream);
-                }
-                //thumb
-
-                string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "images",
-                    "shoppersCardImages",
-                    "thumb",
-                    imgName);
-
-                ImageConvertor imgResize = new ImageConvertor();
-                imgResize.ImageResize(filePath, resizePath, 270);
-
-
-                shopper.OnNationalCardImageName = imgName;
-            }
-
-            if (model.BackNationalCardImageName.Length > 0)
-            {
-                IFormFile img = model.BackNationalCardImageName;
-
-                string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
-
-
-                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "images",
-                    "shoppersCardImages",
-                    "original",
-                    imgName);
-
-
-                await using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await img.CopyToAsync(stream);
-                }
-                //thumb
-
-                string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "images",
-                    "shoppersCardImages",
-                    "thumb",
-                    imgName);
-
-                ImageConvertor imgResize = new ImageConvertor();
-                imgResize.ImageResize(filePath, resizePath, 270);
-
-                shopper.BackNationalCardImageName = imgName;
-            }
-
-            if (model.BusinessLicenseImageName.Length > 0)
-            {
-                IFormFile img = model.BusinessLicenseImageName;
-
-                string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
-
-
-                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "images",
-                    "shoppersCardImages",
-                    "original",
-                    imgName);
-
-
-                await using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await img.CopyToAsync(stream);
-                }
-                //thumb
-
-                string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "images",
-                    "shoppersCardImages",
-                    "thumb",
-                    imgName);
-
-                ImageConvertor imgResize = new ImageConvertor();
-                imgResize.ImageResize(filePath, resizePath, 270);
-
-                shopper.BusinessLicenseImageName = imgName ;
-            }
-
-            #endregion
-
-            var addShopper = await _shopperService.AddShopperAsync(shopper);
-
-
-
-            if (addShopper == ResultTypes.Successful)
-            {
-                #region user
-
-                var user = new Domain.Entities.User.User
-                {
-                    FullName = model.FullName,
-                    ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
-                    RegisteredDate = DateTime.Now,
-                    UserAvatar = "userAvatar.jpg",
-                    PhoneNumber = model.PhoneNumber,
-                    InviteCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
-                    InviteCount = 0,
-                    Score = 0,
-                    NationalCode = model.NationalCode,
-                    Email = model.Email,
-                    IsPhoneNumberActive = true,
-                    IsBlocked = false,
-                    IsUserShopper = true,
-                    ShopperId = shopper.ShopperId
+                    StoreName = model.StoreName,
+                    BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate(),
+                    RegisterShopper = DateTime.Now,
+                    IsFinally = false
                 };
 
-                var addUser = await _userService.AddUserAsync(user);
+                #region shopper cards
 
-                if (addUser == ResultTypes.Successful)
+                if (model.OnNationalCardImageName.Length > 0)
                 {
-                    var addUserToRoleResult = await _roleService.AddUserToRoleAsync(user.UserId, "Shopper");
+                    IFormFile img = model.OnNationalCardImageName;
 
-                    if (addUserToRoleResult != ResultTypes.Successful)
+                    string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
+
+
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "shoppersCardImages",
+                        "original",
+                        imgName);
+
+
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت مقام شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                        await img.CopyToAsync(stream);
+                    }
+                    //thumb
+
+                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "shoppersCardImages",
+                        "thumb",
+                        imgName);
+
+                    ImageConvertor imgResize = new ImageConvertor();
+                    imgResize.ImageResize(filePath, resizePath, 270);
+
+
+                    shopper.OnNationalCardImageName = imgName;
+                }
+
+                if (model.BackNationalCardImageName.Length > 0)
+                {
+                    IFormFile img = model.BackNationalCardImageName;
+
+                    string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
+
+
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "shoppersCardImages",
+                        "original",
+                        imgName);
+
+
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(stream);
+                    }
+                    //thumb
+
+                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "shoppersCardImages",
+                        "thumb",
+                        imgName);
+
+                    ImageConvertor imgResize = new ImageConvertor();
+                    imgResize.ImageResize(filePath, resizePath, 270);
+
+                    shopper.BackNationalCardImageName = imgName;
+                }
+
+                if (model.BusinessLicenseImageName.Length > 0)
+                {
+                    IFormFile img = model.BusinessLicenseImageName;
+
+                    string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
+
+
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "shoppersCardImages",
+                        "original",
+                        imgName);
+
+
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(stream);
+                    }
+                    //thumb
+
+                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "shoppersCardImages",
+                        "thumb",
+                        imgName);
+
+                    ImageConvertor imgResize = new ImageConvertor();
+                    imgResize.ImageResize(filePath, resizePath, 270);
+
+                    shopper.BusinessLicenseImageName = imgName;
+                }
+
+                #endregion
+
+                var addShopper = await _shopperService.AddShopperAsync(shopper);
+
+
+
+                if (addShopper == ResultTypes.Successful)
+                {
+                    #region user
+
+                    var user = new Domain.Entities.User.User
+                    {
+                        FullName = model.FullName,
+                        ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
+                        RegisteredDate = DateTime.Now,
+                        UserAvatar = "userAvatar.jpg",
+                        PhoneNumber = model.PhoneNumber,
+                        InviteCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
+                        InviteCount = 0,
+                        Score = 0,
+                        NationalCode = model.NationalCode,
+                        Email = model.Email,
+                        IsPhoneNumberActive = true,
+                        IsBlocked = false,
+                        IsUserShopper = true,
+                        ShopperId = shopper.ShopperId
+                    };
+
+                    var addUser = await _userService.AddUserAsync(user);
+
+                    if (addUser == ResultTypes.Successful)
+                    {
+                        var addUserToRoleResult = await _roleService.AddUserToRoleAsync(user.UserId, "Shopper");
+
+                        if (addUserToRoleResult != ResultTypes.Successful)
+                        {
+                            ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت مقام شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                            return View(model);
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
                         return View(model);
                     }
+
+
+                    #endregion
+
+
+
+
+                    #region shopper storeTitle
+
+                    var addStoreTitle = await _shopperService.AddShopperStoreTitleAsync(shopper.ShopperId, model.SelectedStoreTitles as List<int>);
+
+                    if (addStoreTitle != ResultTypes.Successful)
+                    {
+                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت عناوین شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                        return View(model);
+                    }
+
+                    #endregion
+
+                    #region store address
+
+                    var storeAddress = new StoreAddress()
+                    {
+                        ShopperId = shopper.ShopperId,
+                        StateId = model.StateId,
+                        CityId = model.CityId,
+                        Plaque = model.Plaque,
+                        PostalCode = model.PostalCode,
+                        AddressText = model.AddressText,
+                        LandlinePhoneNumber = model.LandlinePhoneNumber
+                    };
+
+                    var addStoreAddress = await _shopperService.AddStoreAddressAsync(storeAddress);
+
+                    if (addStoreAddress == ResultTypes.Successful)
+                    {
+                        shopper.StoresAddress.Add(storeAddress);
+
+                        await _shopperService.EditShopperAsync(shopper);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نشانی فروشگاه شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
+                        return View(model);
+                    }
+
+                    #endregion
+
+                    return Redirect("/");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
-                    return View(model);
-                }
 
 
-                #endregion
-
-
-
-
-                #region shopper storeTitle
-
-                var addStoreTitle = await _shopperService.AddShopperStoreTitleAsync(shopper.ShopperId, model.SelectedStoreTitles as List<int>);
-
-                if (addStoreTitle != ResultTypes.Successful)
-                {
-                    ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت عناوین شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                    return View(model);
-                }
-
-                #endregion
-
-                #region store address
-
-                var storeAddress = new StoreAddress()
-                {
-                    ShopperId = shopper.ShopperId,
-                    StateId = model.StateId,
-                    CityId = model.CityId,
-                    Plaque = model.Plaque,
-                    PostalCode = model.PostalCode,
-                    AddressText = model.AddressText,
-                    LandlinePhoneNumber = model.LandlinePhoneNumber
-                };
-
-                var addStoreAddress = await _shopperService.AddStoreAddressAsync(storeAddress);
-
-                if (addStoreAddress == ResultTypes.Successful)
-                {
-                    shopper.StoresAddress.Add(storeAddress);
-
-                    await _shopperService.EditShopperAsync(shopper);
-                }
-                else
-                {
-                    ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نشانی فروشگاه شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
-                    return View(model);
-                }
-
-                #endregion
-
-                return Redirect("/");
+                ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return View(model);
             }
-
-
-            ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
-            return View(model);
+            catch
+            {
+                ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت عناوین شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return View(model);
+            }
         }
 
         #endregion

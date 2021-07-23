@@ -52,6 +52,7 @@ namespace Reshop.Application.Interfaces.Shopper
 
         #region color
 
+        Task<ResultTypes> AddShopperProductColorAsync(ShopperProductColor shopperProductColor);
         Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId);
 
         #endregion

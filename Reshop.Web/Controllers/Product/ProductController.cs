@@ -45,11 +45,12 @@ namespace Reshop.Web.Controllers.Product
             return View(product);
         }
 
+        // seller is shopperProductColorId
         [HttpGet]
-        [Route("UpdateProductDetail/{productId}/{productName}/{sellerId}")]
-        public async Task<IActionResult> UpdateProductDetail(int productId, string productName, string sellerId)
+        [Route("UpdateProductDetail/{productId}/{productName}/{seller}")]
+        public async Task<IActionResult> UpdateProductDetail(int productId, string productName, string seller)
         {
-            var product = await _productService.GetProductDetailAsync(productId, sellerId);
+            var product = await _productService.GetProductDetailAsync(productId, seller);
 
             if (product == null)
                 return NotFound();
