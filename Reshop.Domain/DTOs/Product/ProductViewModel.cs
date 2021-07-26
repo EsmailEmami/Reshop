@@ -11,6 +11,8 @@ namespace Reshop.Domain.DTOs.Product
         public Tuple<byte, DateTime> Discount { get; set; }
         public string BrandName { get; set; }
 
-        public string ShopperProductId { get; set; }
+        public string Image { get; set; }
+
+        public string ShopperProductColorId { get; set; }
     }
 }

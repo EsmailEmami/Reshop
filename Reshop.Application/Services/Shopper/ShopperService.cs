@@ -7,7 +7,9 @@ using Reshop.Domain.Interfaces.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Application.Convertors;
+using Reshop.Application.Interfaces.Product;
 using Reshop.Domain.DTOs.Shopper;
+using Reshop.Domain.Interfaces.Product;
 
 namespace Reshop.Application.Services.Shopper
 {
@@ -17,23 +19,25 @@ namespace Reshop.Application.Services.Shopper
 
         private readonly IShopperRepository _shopperRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IProductRepository _productRepository;
 
-        public ShopperService(IShopperRepository shopperRepository, IUserRepository userRepository)
+        public ShopperService(IShopperRepository shopperRepository, IUserRepository userRepository, IProductRepository productRepository)
         {
             _shopperRepository = shopperRepository;
             _userRepository = userRepository;
+            _productRepository = productRepository;
         }
-
+        
         #endregion
 
 
-        public async Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int>> GetShoppersInformationWithPagination(string type = "all",string filter = "", int pageId = 1, int take = 18)
+        public async Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int>> GetShoppersInformationWithPagination(string type = "all", string filter = "", int pageId = 1, int take = 18)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
             int shoppersCount = await _shopperRepository.GetShoppersCountWithTypeAsync(type.FixedText());
 
-            var shoppers = _shopperRepository.GetShoppersWithPagination(type.FixedText(),skip,take,filter);
+            var shoppers = _shopperRepository.GetShoppersWithPagination(type.FixedText(), skip, take, filter);
 
             int totalPages = (int)Math.Ceiling(1.0 * shoppersCount / take);
 
@@ -117,6 +121,41 @@ namespace Reshop.Application.Services.Shopper
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _shopperRepository.IsShopperExistAsync(shopperId);
 
+        public async Task<ResultTypes> UnAvailableShopperProductAsync(string shopperId, int productId)
+        {
+            var shopperProductId =await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
+
+            if (string.IsNullOrEmpty(shopperProductId))
+            {
+                return ResultTypes.Failed;
+            }
+
+            var shopperProduct = await _productRepository.GetShopperProductAsync(shopperProductId);
+            if (shopperProduct is null)
+            {
+                return ResultTypes.Failed;
+            }
+
+            if (!shopperProduct.IsFinally)
+            {
+                return ResultTypes.Failed;
+            }
+
+            try
+            {
+                shopperProduct.IsActive = false;
+                _shopperRepository.UpdateShopperProduct(shopperProduct);
+
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<string> GetShopperIdOrUserAsync(string userId)
         {
             try
@@ -146,7 +185,7 @@ namespace Reshop.Application.Services.Shopper
 
         public async Task<IEnumerable<StoreAddress>> GetShopperStoreAddressesAsync(string shopperUserId)
         {
-            var shopperId =await _shopperRepository.GetShopperIdOfUserByUserId(shopperUserId);
+            var shopperId = await _shopperRepository.GetShopperIdOfUserByUserId(shopperUserId);
 
             return _shopperRepository.GetShopperStoreAddresses(shopperId);
         }
@@ -282,11 +321,38 @@ namespace Reshop.Application.Services.Shopper
             return _shopperRepository.GetShopperStoreTitlesName(shopperId);
         }
 
+        public async Task<string> GetShopperProductColorIdAsync(string shopperId, int productId, int colorId)
+        {
+            string shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
+
+            if (shopperProductId is null)
+                return null;
+
+            return await _shopperRepository.GetShopperProductColorIdAsync(shopperProductId, colorId);
+        }
+
+        public async Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId) =>
+            await _shopperRepository.GetShopperProductColorAsync(shopperProductColorId);
+
         public async Task<ResultTypes> AddShopperProductColorAsync(ShopperProductColor shopperProductColor)
         {
             try
             {
                 await _shopperRepository.AddShopperProductColorAsync(shopperProductColor);
+                await _shopperRepository.SaveChangesAsync();
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditShopperProductColorAsync(ShopperProductColor shopperProductColor)
+        {
+            try
+            {
+                _shopperRepository.UpdateShopperProductColor(shopperProductColor);
                 await _shopperRepository.SaveChangesAsync();
                 return ResultTypes.Successful;
             }

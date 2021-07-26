@@ -54,29 +54,69 @@ namespace Reshop.Application.Services.User
         public async Task<Order> GetOrderByIdAsync(string orderId) =>
             await _cartRepository.GetOrderByIdAsync(orderId);
 
-        public async Task<ResultTypes> AddToCart(string userId, int productId, string shopperProductId)
+        public async Task<ResultTypes> MakeFinalTheOrder(Order order)
+        {
+
+            if (order.IsPayed || order.IsReceived || string.IsNullOrEmpty(order.AddressId))
+            {
+                return ResultTypes.Failed;
+            }
+
+
+            try
+            {
+                // update orderDetails
+                var orderDetails = _cartRepository.GetOrderDetailsOfOrder(order.OrderId);
+
+                await foreach (var orderDetail in orderDetails)
+                {
+                    var shopperProductColor = await _shopperRepository.GetShopperProductColorAsync(orderDetail.ShopperProductColorId);
+
+                    if (shopperProductColor is null)
+                        return ResultTypes.Failed;
+
+                    var lastDiscount = await _shopperRepository.GetLastShopperProductDiscountAsync(shopperProductColor.ShopperProductColorId);
+
+                    orderDetail.Price = shopperProductColor.Price;
+
+                    if (lastDiscount.EndDate > DateTime.Now)
+                    {
+                        order.OrderDiscount = CartCalculator.CalculateDiscount(orderDetail.Price, lastDiscount.DiscountPercent, orderDetail.Count);
+                    }
+
+                    orderDetail.Sum = (orderDetail.Count * orderDetail.Price) - orderDetail.ProductDiscountPrice;
+                }
+
+                await _cartRepository.SaveChangesAsync();
+
+                // update order
+                order.IsPayed = true;
+                order.PayDate = DateTime.Now;
+                order.Sum = _cartRepository.GetOrderDetailsSumOfOrder(order.OrderId);
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> AddToCart(string userId, int productId, string shopperProductColorId)
         {
             try
             {
-                var shopperProduct = await _productRepository.GetShopperProductAsync(shopperProductId);
-                if (shopperProduct is null)
+                if (!await _shopperRepository.IsShopperProductColorExistAsync(shopperProductColorId))
                 {
                     return ResultTypes.Failed;
                 }
-                else if (shopperProduct.ProductId != productId && shopperProduct.ShopperId is null)
-                {
-                    return ResultTypes.Failed;
-                }
-
-                var discount = await _shopperRepository.GetLastShopperProductDiscountAsync(shopperProductId);
-
 
                 var order = await _cartRepository.GetOrderInCartByUserIdAsync(userId);
-                if (order is not null)
+                if (order != null)
                 {
-                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, shopperProduct.ShopperId);
+                    var orderDetail = await _cartRepository.GetOrderDetailAsync(order.OrderId, shopperProductColorId);
 
-                    if (orderDetail is not null)
+                    if (orderDetail != null)
                     {
                         orderDetail.Count++;
 
@@ -92,8 +132,7 @@ namespace Reshop.Application.Services.User
                             Count = 1,
                             ProductDiscountPrice = 0,
                             CreateDate = DateTime.Now,
-                            TrackingCode = "RSD" + NameGenerator.GenerateNumber(),
-                            ShopperId = shopperProduct.ShopperId,
+                            TrackingCode = "RSD-" + NameGenerator.GenerateNumber(),
                             Sum = 0
                         };
 
@@ -111,49 +150,47 @@ namespace Reshop.Application.Services.User
                 }
                 else
                 {
-                    var order_new = new Order()
+                    var orderNew = new Order()
                     {
                         UserId = userId,
-                        TrackingCode = "RSO" + NameGenerator.GenerateNumber(),
+                        TrackingCode = "RSO-" + NameGenerator.GenerateNumber(),
                         CreateDate = DateTime.Now,
+                        OrderDiscount = 0,
+                        ShippingCost = 0,
                         Sum = 0,
                         IsPayed = false,
                         IsReceived = false,
-                        ShippingCost = 0,
-                        OrderDiscount = 0
                     };
-                    while (await _cartRepository.IsOrderTrackingCodeExistAsync(order_new.TrackingCode))
+                    while (await _cartRepository.IsOrderTrackingCodeExistAsync(orderNew.TrackingCode))
                     {
-                        order_new.TrackingCode = "RSO" + NameGenerator.GenerateNumber();
+                        orderNew.TrackingCode = "RSO-" + NameGenerator.GenerateNumber();
                     }
 
-                    await _cartRepository.AddOrderAsync(order_new);
+                    await _cartRepository.AddOrderAsync(orderNew);
                     await _cartRepository.SaveChangesAsync();
 
 
-                    var orderDetail_new = new OrderDetail()
+                    var orderDetailNew = new OrderDetail()
                     {
-                        OrderId = order.OrderId,
+                        OrderId = orderNew.OrderId,
                         Price = 0,
                         Count = 1,
                         ProductDiscountPrice = 0,
                         CreateDate = DateTime.Now,
-                        TrackingCode = "RSD" + NameGenerator.GenerateNumber(),
-                        ShopperId = shopperProduct.ShopperId,
+                        TrackingCode = "RSD-" + NameGenerator.GenerateNumber(),
+                        ShopperProductColorId = shopperProductColorId,
                         Sum = 0
                     };
 
 
-                    while (await _cartRepository.IsOrderDetailTrackingCodeExistAsync(orderDetail_new.TrackingCode))
+                    while (await _cartRepository.IsOrderDetailTrackingCodeExistAsync(orderDetailNew.TrackingCode))
                     {
-                        orderDetail_new.TrackingCode = "RSD" + NameGenerator.GenerateNumber();
+                        orderDetailNew.TrackingCode = "RSD" + NameGenerator.GenerateNumber();
                     }
 
-                    await _cartRepository.AddOrderDetailAsync(orderDetail_new);
+                    await _cartRepository.AddOrderDetailAsync(orderDetailNew);
                     await _cartRepository.SaveChangesAsync();
                 }
-
-
 
 
                 return ResultTypes.Successful;
@@ -196,7 +233,6 @@ namespace Reshop.Application.Services.User
 
                 var order = await _cartRepository.GetOrderByIdAsync(orderDetail.OrderId);
 
-
                 if (orderDetail.Count > 0)
                 {
 
@@ -210,7 +246,7 @@ namespace Reshop.Application.Services.User
 
                 await _cartRepository.SaveChangesAsync();
 
-                if (order.OrderDetails!.Any())
+                if (!order.OrderDetails.Any())
                 {
                     _cartRepository.RemoveOrder(order);
                     await _cartRepository.SaveChangesAsync();

@@ -19,12 +19,6 @@ namespace Reshop.Domain.Entities.User
         [ForeignKey("Order")]
         public string OrderId { get; set; }
 
-        [ForeignKey("Shopper")]
-        public string ShopperId { get; set; }
-
-        [ForeignKey("Product")]
-        public int ProductId { get; set; }
-
         [ForeignKey("ShopperProductColor")]
         public string ShopperProductColorId { get; set; }
 
@@ -57,8 +51,6 @@ namespace Reshop.Domain.Entities.User
 
 
         public virtual Order Order { get; set; }
-        public virtual Shopper.Shopper Shopper { get; set; }
-        public virtual Product.Product Product { get; set; }
         public virtual ShopperProductColor ShopperProductColor { get; set; }
 
         #endregion

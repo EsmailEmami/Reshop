@@ -131,6 +131,12 @@ namespace Reshop.Application.Services.Product
         {
             string shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
 
+            if (shopperProductId is null)
+                return null;
+
+            if (!await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId,colorId))
+                return null;
+
             return await _productRepository.GetShopperProductForEditAsync(shopperProductId, colorId);
         }
 
@@ -959,24 +965,24 @@ namespace Reshop.Application.Services.Product
             return await _productRepository.GetFavoriteProductAsync(favoriteProductId);
         }
 
-        public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperProductId)
+        public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperProductColorId)
         {
 
-            if (!await _shopperRepository.IsShopperProductExistAsync(shopperProductId))
+            if (!await _shopperRepository.IsShopperProductColorExistAsync(shopperProductColorId))
                 return FavoriteProductResultType.NotFound;
 
             try
             {
                 var favoriteProduct = await _productRepository.GetFavoriteProductAsync(userId, productId);
-                if (favoriteProduct is not null)
+                if (favoriteProduct != null)
                 {
-                    if (favoriteProduct.ShopperProductId == shopperProductId)
+                    if (favoriteProduct.ShopperProductColorId == shopperProductColorId)
                     {
                         return FavoriteProductResultType.Available;
                     }
                     else
                     {
-                        favoriteProduct.ShopperProductId = shopperProductId;
+                        favoriteProduct.ShopperProductColorId = shopperProductColorId;
 
                         _productRepository.UpdateFavoriteProduct(favoriteProduct);
                         await _productRepository.SaveChangesAsync();
@@ -990,7 +996,7 @@ namespace Reshop.Application.Services.Product
                     {
                         UserId = userId,
                         ProductId = productId,
-                        ShopperProductId = shopperProductId,
+                        ShopperProductColorId = shopperProductColorId,
                     };
 
 

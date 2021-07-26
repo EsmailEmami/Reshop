@@ -20,6 +20,7 @@
 
 	<ItemGroup>
 		<Folder Include="Interfaces\Category\" />
+		<Folder Include="Security\Middleware\" />
 	</ItemGroup>
 
 </Project>

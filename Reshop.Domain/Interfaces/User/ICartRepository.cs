@@ -10,7 +10,7 @@ namespace Reshop.Domain.Interfaces.User
     {
         #region order detail
 
-        Task<OrderDetail> GetOrderDetailAsync(string orderId, string shopperId);
+        Task<OrderDetail> GetOrderDetailAsync(string orderId, string shopperProductColorId);
         Task<OrderDetail> GetOrderDetailByIdAsync(string orderDetailId);
         IAsyncEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId);
         decimal GetOrderDetailsSumOfOrder(string orderId);

@@ -69,17 +69,22 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         #region Discount
 
-        Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductId);
+        Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductColorId);
 
         Task AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
         #endregion
 
         #region color
 
+        Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId);
         Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductId, int colorId);
         Task AddShopperProductColorAsync(ShopperProductColor shopperProductColor);
         Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId);
-
+        Task<bool> IsShopperProductColorExistAsync(string shopperProductColorId);
+        Task<bool> IsShopperProductColorExistAsync(string shopperProductId, int colorId);
+        void UpdateShopperProductColor(ShopperProductColor shopperProductColor);
+        Task<string> GetShopperProductColorIdAsync(string shopperProductId, int colorId);
+             
         #endregion
 
         Task SaveChangesAsync();

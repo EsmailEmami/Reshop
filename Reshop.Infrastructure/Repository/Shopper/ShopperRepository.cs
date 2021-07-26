@@ -63,7 +63,7 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task<string> GetShopperProductIdAsync(string shopperId, int productId) =>
             await _context.ShopperProducts.Where(c => c.ShopperId == shopperId && c.ProductId == productId)
                  .Select(c => c.ShopperProductId).SingleOrDefaultAsync();
-        
+
 
         public IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null)
         {
@@ -185,21 +185,38 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task<StoreAddress> GetStoreAddressByIdAsync(string storeAddressId) =>
             await _context.StoresAddress.FindAsync(storeAddressId);
 
-        public async Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductId) =>
-            await _context.ShopperProductDiscounts.LastAsync(c => c.ShopperProductId == shopperProductId);
+        public async Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductColorId) =>
+            await _context.ShopperProductDiscounts.LastAsync(c => c.ShopperProductColorId == shopperProductColorId);
 
         public async Task AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount) =>
             await _context.ShopperProductDiscounts.AddAsync(shopperProductDiscount);
 
-        public async Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductId, int colorId) => 
-            await   _context.ShopperProductColors.SingleOrDefaultAsync(c => c.ShopperProductId == shopperProductId && c.ColorId == colorId);
-        
+        public async Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId) =>
+            await _context.ShopperProductColors.FindAsync(shopperProductColorId);
+
+        public async Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductId, int colorId) =>
+            await _context.ShopperProductColors.SingleOrDefaultAsync(c => c.ShopperProductId == shopperProductId && c.ColorId == colorId);
+
 
         public async Task AddShopperProductColorAsync(ShopperProductColor shopperProductColor) =>
             await _context.ShopperProductColors.AddAsync(shopperProductColor);
 
         public async Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId) =>
             await _context.ShopperProductColors.AnyAsync(c => c.ShopperProductId == shopperProductId && c.ShopperProductColorId == shopperProductColorId);
+
+        public async Task<bool> IsShopperProductColorExistAsync(string shopperProductColorId) =>
+            await _context.ShopperProductColors.AnyAsync(c => c.ShopperProductColorId == shopperProductColorId);
+
+        public async Task<bool> IsShopperProductColorExistAsync(string shopperProductId, int colorId) =>
+            await _context.ShopperProductColors.AnyAsync(c => c.ShopperProductId == shopperProductId && c.ColorId == colorId);
+
+        public void UpdateShopperProductColor(ShopperProductColor shopperProductColor) =>
+            _context.ShopperProductColors.Update(shopperProductColor);
+
+        public async Task<string> GetShopperProductColorIdAsync(string shopperProductId, int colorId) =>
+            await _context.ShopperProductColors
+                .Where(c => c.ShopperProductId == shopperProductId && c.ColorId == colorId)
+                .Select(c => c.ShopperProductColorId).SingleOrDefaultAsync();
 
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();

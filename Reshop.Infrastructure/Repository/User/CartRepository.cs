@@ -24,10 +24,10 @@ namespace Reshop.Infrastructure.Repository.User
 
         #endregion
 
-        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, string shopperId)
+        public async Task<OrderDetail> GetOrderDetailAsync(string orderId, string shopperProductColorId)
         {
             return await _context.OrderDetails
-                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ShopperId == shopperId);
+                .SingleOrDefaultAsync(c => c.OrderId == orderId && c.ShopperProductColorId == shopperProductColorId);
         }
 
         public async Task<OrderDetail> GetOrderDetailByIdAsync(string orderDetailId)
@@ -84,11 +84,11 @@ namespace Reshop.Infrastructure.Repository.User
                     ProductsCount = o.Count,
                     ProductPrice = o.ShopperProductColor.Price,
                     ColorName = o.ShopperProductColor.Color.ColorName,
-                    Discount = o.ShopperProductColor.Discounts.Select(c=> new Tuple<byte,DateTime>(c.DiscountPercent,c.EndDate)).LastOrDefault(),
-                    ProductTitle = o.Product.ProductTitle,
-                    ProductImg = o.Product.ProductGalleries.FirstOrDefault().ImageName,
-                    Warranty = _context.ShopperProducts.Single(a => a.ShopperId == o.ShopperId && a.ProductId == o.ProductId).Warranty,
-                    ShopperStoreName = _context.Shoppers.Single(s => s.ShopperId == o.ShopperId).StoreName
+                    Discount = o.ShopperProductColor.Discounts.OrderByDescending(c=> c.EndDate).Select(d=> new Tuple<byte,DateTime>(d.DiscountPercent,d.EndDate)).FirstOrDefault(),
+                    ProductTitle = o.ShopperProductColor.ShopperProduct.Product.ProductTitle,
+                    ProductImg = o.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName,
+                    Warranty = o.ShopperProductColor.ShopperProduct.Warranty,
+                    ShopperStoreName = o.ShopperProductColor.ShopperProduct.Shopper.StoreName
                 });
         }
 
@@ -104,9 +104,9 @@ namespace Reshop.Infrastructure.Repository.User
                 {
                     OrderId = c.OrderId,
                     TrackingCode = c.TrackingCode,
-                    PayDate = c.PayDate,
+                    PayDate = c.PayDate.Value,
                     Sum = c.Sum,
-                    ProPics = c.OrderDetails.Select(p => p.Product.ProductGalleries.FirstOrDefault().ImageName)
+                    ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
                 });
 
         public IEnumerable<ReceivedOrdersViewModel> GetNotReceivedOrders(string userId) =>
@@ -115,9 +115,9 @@ namespace Reshop.Infrastructure.Repository.User
                 {
                     OrderId = c.OrderId,
                     TrackingCode = c.TrackingCode,
-                    PayDate = c.PayDate,
+                    PayDate = c.PayDate.Value,
                     Sum = c.Sum,
-                    ProPics = c.OrderDetails.Select(p => p.Product.ProductGalleries.FirstOrDefault().ImageName)
+                    ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
                 });
 
         public async Task<Order> GetOrderByIdAsync(string orderId)

@@ -33,8 +33,13 @@ namespace Reshop.Web.Controllers.Product
         [HttpGet]
         [Route("Product/{productId}/{productName}")]
         [Route("Product/{productId}/{productName}/{sellerId}")]
-        public async Task<IActionResult> ProductDetail(int productId, string productName, string sellerId = "")
+        public async Task<IActionResult> ProductDetail(int productId, string productName, string sellerId)
         {
+            if (productId == 0 || sellerId == null)
+            {
+                return BadRequest();
+            }
+
             var product = await _productService.GetProductDetailAsync(productId, sellerId);
 
             if (product == null)

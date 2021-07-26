@@ -58,16 +58,22 @@ namespace Reshop.Web.Controllers
 
                 var order = await _cartService.GetOrderByIdAsync(paymentId);
 
+                if (order is null)
+                {
+                    return NotFound();
+                }
+
+                if (order.IsPayed || order.IsReceived)
+                {
+                    return BadRequest();
+                }
+
                 var payment = new ZarinpalSandbox.Payment((int)order.Sum);
                 var res = payment.Verification(authority).Result;
 
                 if (res.Status == 100)
                 {
-                    ViewBag.Code = res.RefId;
-                    ViewBag.IsSuccess = true;
-                    order.IsPayed = true;
-                    order.PayDate = DateTime.Now;
-                    await _cartService.EditOrderAsync(order);
+                    await _cartService.MakeFinalTheOrder(order);
                 }
             }
 

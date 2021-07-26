@@ -6,15 +6,19 @@
         <div class="col-sm-12">
             <div class="product-item box-shadow">
                 <div class="product-img">
-                    <a asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@item.ProductId" asp-route-productName="@item.ProductTitle.Replace(" ", "-")">
-                        <img src="/images/1.jpg" alt="@item.ProductTitle" title="@item.ProductTitle" class="img-fluid">
+                    <a asp-controller="Product" 
+                       asp-action="ProductDetail" 
+                       asp-route-productId="@item.ProductId" 
+                       asp-route-productName="@item.ProductTitle.Replace(" ", "-")"
+                       asp-route-sellerId="@item.ShopperProductColorId">
+                        <img src="/images/ProductImages/thumb/@item.Image" alt="@item.ProductTitle" title="@item.ProductTitle" class="img-fluid">
                     </a>
 
                     <ul class="img-action-button">
                         <li>
                             <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToCart(this)">
                                 <input type="hidden" value="@item.ProductId" name="productId" />
-                                <input type="hidden" value="@item.ShopperProductId" name="shopperProductId" />
+                                <input type="hidden" value="@item.ShopperProductColorId" name="shopperProductColorId" />
                                 <button type="submit" ><i class="fal fa-heart"></i></button>
                             </form>
 
@@ -26,7 +30,7 @@
                         <li>
                             <form asp-controller="Cart" asp-action="AddToCart" onsubmit="return  AddProductToCart(this)">
                                 <input type="hidden" value="@item.ProductId" name="productId" />
-                                <input type="hidden" value="@item.ShopperProductId" name="shopperProductId" />
+                                <input type="hidden" value="@item.ShopperProductColorId" name="shopperProductColorId" />
                                 <button type="submit" class="btn btn-warning"><i class="fal fa-cart-plus"></i></button>
                             </form>
                         </li>
@@ -35,7 +39,7 @@
                 </div>
                 <div class="product-info">
                     <h6 class="product-title">
-                        <a asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@item.ProductId" asp-route-productName="@item.ProductTitle.Replace(" ", "-")">
+                        <a asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@item.ProductId" asp-route-productName="@item.ProductTitle.Replace(" ", "-")" asp-route-sellerId="@item.ShopperProductColorId">
                             @item.ProductTitle
                         </a>
                     </h6>

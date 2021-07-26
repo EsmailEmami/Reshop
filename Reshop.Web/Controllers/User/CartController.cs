@@ -27,11 +27,11 @@ namespace Reshop.Web.Controllers.User
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToCart(int productId, string shopperProductId)
+        public async Task<IActionResult> AddToCart(int productId, string shopperProductColorId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var result = await _cartService.AddToCart(userId, productId, shopperProductId);
+            var result = await _cartService.AddToCart(userId, productId, shopperProductColorId);
 
             if (result == ResultTypes.Successful)
             {
@@ -151,6 +151,13 @@ namespace Reshop.Web.Controllers.User
             var order = await _cartService.GetUserOpenOrderAsync(userId);
 
             if (order == null) return NotFound();
+
+            if (string.IsNullOrEmpty(order.AddressId))
+            {
+                return BadRequest();
+            }
+
+
 
             var payment = new Payment((int)order.Sum);
 

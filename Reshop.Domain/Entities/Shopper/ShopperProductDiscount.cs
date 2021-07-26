@@ -17,9 +17,6 @@ namespace Reshop.Domain.Entities.Shopper
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string ShopperProductDiscountId { get; set; }
 
-        [ForeignKey("ShopperProduct")]
-        public string ShopperProductId { get; set; }
-
         [ForeignKey("ShopperProductColor")]
         public string ShopperProductColorId { get; set; }
 
@@ -31,8 +28,6 @@ namespace Reshop.Domain.Entities.Shopper
         public DateTime EndDate { get; set; }
 
         #region Relations
-
-        public virtual ShopperProduct ShopperProduct { get; set; }
 
         public virtual ShopperProductColor ShopperProductColor { get; set; }
 

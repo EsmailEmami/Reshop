@@ -20,7 +20,7 @@ namespace Reshop.Domain.Entities.User
         public string UserId { get; set; }
 
         [ForeignKey("Address")]
-        public string AddressId { get; set; }
+        public string? AddressId { get; set; }
 
         [Display(Name = "کد پیگیری")]
         [Required]
@@ -47,7 +47,7 @@ namespace Reshop.Domain.Entities.User
         public bool IsPayed { get; set; }
 
         [Display(Name = "تاریخ پرداخت")]
-        public DateTime PayDate { get; set; }
+        public DateTime? PayDate { get; set; }
 
         [Display(Name = "وضعیت تحویل")]
         [Required]

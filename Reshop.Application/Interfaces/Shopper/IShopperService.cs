@@ -20,6 +20,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
         Task<bool> IsShopperExistAsync(string shopperId);
 
+        Task<ResultTypes> UnAvailableShopperProductAsync(string shopperId, int productId);
         Task<string> GetShopperIdOrUserAsync(string userId);
 
         #region reason
@@ -52,7 +53,10 @@ namespace Reshop.Application.Interfaces.Shopper
 
         #region color
 
+        Task<string> GetShopperProductColorIdAsync(string shopperId, int productId, int colorId);
+        Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId);
         Task<ResultTypes> AddShopperProductColorAsync(ShopperProductColor shopperProductColor);
+        Task<ResultTypes> EditShopperProductColorAsync(ShopperProductColor shopperProductColor);
         Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId);
 
         #endregion

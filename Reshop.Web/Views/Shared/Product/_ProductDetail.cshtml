@@ -6,7 +6,7 @@
 
         <div class="img-detail box-shadow">
             <div class="show-img-product">
-                <img id="zoom" src="/images/ProductImages/@Model.ProductGalleries.First().ImageName" alt="@Model.Product.Title">
+                <img id="zoom" src="/images/ProductImages/thumb/@Model.ProductGalleries.First().ImageName" alt="@Model.Product.Title">
             </div>
 
             <!-- start slider product picture -->
@@ -15,7 +15,7 @@
                 @foreach (var item in Model.ProductGalleries)
                 {
                     <div class="item mini-pic-slider">
-                        <img src="/images/ProductImages/@item.ImageName" alt="@Model.Product.Title" onclick="changeDetailImg(this.src)">
+                        <img src="/images/ProductImages/thumb/@item.ImageName" alt="@Model.Product.Title" onclick="changeDetailImg(this.src)">
                     </div>
                 }
 
@@ -105,15 +105,15 @@
 
                 <h5><i class="far fa-dollar-sign"></i> قیمت:</h5>
 
-                @if (Model.Product.LastDiscount.Item2 > DateTime.Now)
+                @if (Model.Product.LastDiscount != null && Model.Product.LastDiscount.Item2 > DateTime.Now)
                 {
                     <span class="badge badge-pill badge-info ">@Model.Product.LastDiscount.Item1 ٪ تخفیف</span>
 
-                    <span class="badge badge-pill badge-success text-black">سود شما: @CartCalculator.CalculateDiscountPrice(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0))).ToToman() تومان</span>
+                    <span class="badge badge-pill badge-success text-black">سود شما: @CartCalculator.CalculateDiscount(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0))).ToToman() تومان</span>
                 }
 
                 <div class="price-amount">
-                    <h3>@CartCalculator.CalculateDiscountPrice(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0))).ToToman() <span>تومان</span></h3>
+                    <h3>@CartCalculator.CalculateDiscount(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount != null && Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0))).ToToman() <span>تومان</span></h3>
 
 
 
@@ -199,25 +199,6 @@
                         <span>سلام</span>
                     </li>
 
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
-
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
-
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
-
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
                 </ul>
             </div>
 

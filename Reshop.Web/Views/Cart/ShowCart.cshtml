@@ -80,7 +80,18 @@ else
 
                         <div class="price">
                             <h3>
-                                @CartCalculator.CalculateOrderDetailSum(item.ProductsCount, item.ProductPrice, Convert.ToByte(((item.Discount.Item2 > DateTime.Now) ? item.Discount.Item2 : 0))).ToToman()
+                                @{
+                                    byte discount = 0;
+
+                                    if (item.Discount != null && item.Discount.Item2 > DateTime.Now)
+                                    {
+                                        discount = item.Discount.Item1;
+                                    }
+
+
+                                }
+
+                                @CartCalculator.CalculateDiscount(item.ProductPrice, discount, item.ProductsCount).ToToman()
                                 <span class="toman">تومان</span>
                             </h3>
                         </div>
@@ -100,7 +111,9 @@ else
 
                     @{
                         decimal productsFullPrice = Model.Select(c => c.ProductPrice * c.ProductsCount).Sum();
-                        decimal productsDiscount = Model.Select(c => ((c.ProductPrice * c.ProductsCount) * (c.Discount.Item2 > DateTime.Now ? c.Discount.Item1 : 0)) / 100).Sum();
+
+
+                        decimal productsDiscount = Model.Select(c => ((c.ProductPrice * c.ProductsCount) * (byte)((c.Discount != null && c.Discount.Item2 > DateTime.Now) ? c.Discount.Item1 : 0)) / 100).Sum();
                     }
 
 
@@ -117,16 +130,17 @@ else
                         رایگان
                     </p>
                 </section>
-
-                <section>
-                    <h5>سود شما:</h5>
-                    <p>
-                        @productsDiscount.ToToman()
-                        <span class="toman">تومان</span>
-                        @CartCalculator.CalculatePercentOfTwoPrice(productsFullPrice, productsDiscount) %
-                    </p>
-                </section>
-
+                @if (productsDiscount > 0)
+                {
+                    <section>
+                        <h5>سود شما:</h5>
+                        <p>
+                            @productsDiscount.ToToman()
+                            <span class="toman">تومان</span>
+                            @CartCalculator.CalculatePercentOfTwoPrice(productsFullPrice, productsDiscount) %
+                        </p>
+                    </section>
+                }
             </div>
             <section class="payment-price">
                 <h5>مبلغ قابل پرداخت</h5>

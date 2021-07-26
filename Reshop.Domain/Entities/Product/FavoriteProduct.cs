@@ -19,9 +19,6 @@ namespace Reshop.Domain.Entities.Product
 
         public int ProductId { get; set; }
 
-       [ForeignKey("ShopperProduct")]
-        public string ShopperProductId { get; set; }
-
         [ForeignKey("ShopperProductColor")]
         public string ShopperProductColorId { get; set; }
 
@@ -29,8 +26,6 @@ namespace Reshop.Domain.Entities.Product
 
         [ForeignKey("UserId")]
         public virtual User.User User { get; set; }
-
-        public virtual ShopperProduct ShopperProduct { get; set; }
 
         [ForeignKey("ProductId")]
         public virtual Product Product { get; set; }

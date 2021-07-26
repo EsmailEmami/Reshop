@@ -378,7 +378,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!await _productService.IsProductExistAsync(productId))
                 return NotFound();
 
-            return View(await _productService.GetProductDetailAsync(productId));
+            return View();
         }
 
         #endregion
