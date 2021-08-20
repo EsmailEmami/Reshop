@@ -36,8 +36,27 @@ body, html {
     direction: rtl;
 }
 
-table th, td {
-    white-space: nowrap;
+table {
+    text-align: center;
+}
+
+    table.responsive {
+        white-space: nowrap;
+        overflow-x: auto
+    }
+
+.table-responsive::-webkit-scrollbar {
+    height: 5px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #d1d1d1;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c3c3c3;
+    border-radius: 10px;
 }
 
 .toman {
@@ -63,6 +82,115 @@ table th, td {
     padding-left: 15px;
     height: auto;
 }
+
+/* -------------------------------------- preload -------------------------------------- */
+
+.loader {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #6060601f;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.loader.show {
+    display: flex;
+}
+
+    .loader .loader-main {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -160%);
+        width: 130px;
+        border-radius: 5px;
+        background: #f4f4f4;
+        border: 1px solid #cfcfcf;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: column;
+    }
+
+.loader .loader-main p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    .loader .loader-main .wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 60px;
+    }
+
+        .loader .loader-main .wrapper span {
+            background: #FC5400;
+            width: 4px;
+            border-radius: 25px;
+            margin: 3px;
+            min-height: 15px;
+            animation: load .7s ease-in-out infinite;
+        }
+
+            .loader .loader-main .wrapper span:nth-child(1) {
+                animation-delay: .2s;
+            }
+
+            .loader .loader-main .wrapper span:nth-child(2) {
+                animation-delay: .4s;
+            }
+
+            .loader .loader-main .wrapper span:nth-child(3) {
+                animation-delay: .6s;
+            }
+
+            .loader .loader-main .wrapper span:nth-child(4) {
+                animation-delay: .4s;
+            }
+
+            .loader .loader-main .wrapper span:nth-child(5) {
+                animation-delay: .2s;
+            }
+
+@keyframes load {
+    0%, 100% {
+        height: 15px;
+    }
+
+    50% {
+        height: 30px;
+    }
+}
+
+/* -------------------------------------- preload -------------------------------------- */
+
+
+/* -------------------------------------- collapsible -------------------------------------- */
+
+.collapsible:after {
+    content: '\002B';
+    color: #222;
+    font-weight: bold;
+    line-height: 34px;
+    margin: 0;
+    font-size: 22px;
+}
+
+.collapsible.active:after {
+    content: "\2212";
+}
+
+/* -------------------------------------- collapsible -------------------------------------- */
+
 /* -------------------------------------- shape -------------------------------------- */
 .shape-divider {
     position: absolute;
@@ -350,11 +478,11 @@ header .top-menu {
         content: "";
         height: 2px;
         right: 0;
-        opacity: 0;
         position: absolute;
-        transition: all 0.5s ease 0s;
-        visibility: hidden;
-        width: 0;
+        transform-origin: left top;
+        transform: scale(0, 1);
+        transition: color .2s, transform .3s ease-out;
+        width: 100%;
         border-radius: 25px;
     }
 
@@ -363,9 +491,8 @@ header .top-menu {
     }
 
         .main-nav li:hover > a::before {
-            opacity: 1;
-            visibility: visible;
-            width: 100%;
+            transform-origin: right top;
+            transform: scale(1, 1);
         }
 
     .main-nav .mega-dropdown {
@@ -3032,7 +3159,265 @@ header .top-menu {
         width: 250px;
     }
 
+
 /* -------------------------------------- cart address -------------------------------------- */
+
+
+/* -------------------------------------- shopper product detail -------------------------------------- */
+
+.product-detail {
+    position: relative;
+}
+
+    .product-detail .img-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 270px;
+        border-radius: 8px;
+        padding: 5px;
+    }
+
+        .product-detail .img-box img {
+            width: 100%;
+            max-width: 474px;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+    .product-detail .product-data {
+        width: 100%;
+        padding: 5px 15px 15px 15px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+.part-title {
+    display: block;
+    text-align: center;
+    width: 100%;
+    color: #4d4d4d;
+    font-size: 25px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+    .part-title::before {
+        background: #cecece none repeat scroll 0 0;
+        top: 41px;
+        content: "";
+        height: 2px;
+        left: 0;
+        position: absolute;
+        transition: all 0.3s ease 0s;
+        width: 100%;
+        z-index: 0;
+    }
+
+.product-detail .product-data div {
+    margin-bottom: 20px;
+    width: 50%;
+}
+
+    .product-detail .product-data div h3 {
+        margin: 0;
+        font-weight: bold;
+        font-size: 16px;
+        color: #3f3f3f;
+        display: inline-block;
+    }
+
+.chart,
+.colors {
+    width: 100%;
+    padding: 5px 15px 15px 15px;
+}
+
+.scrollChart {
+    width: 100%;
+    overflow-x: scroll;
+    margin-bottom: 1rem;
+}
+
+    .scrollChart::-webkit-scrollbar {
+        height: 5px;
+    }
+
+    .scrollChart::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px #d1d1d1;
+        border-radius: 10px;
+    }
+
+    .scrollChart::-webkit-scrollbar-thumb {
+        background: #c3c3c3;
+        border-radius: 10px;
+    }
+
+        .scrollChart::-webkit-scrollbar-thumb:hover {
+            background: #aea4a4;
+        }
+
+.chartheader {
+    font-size: 17px;
+    font-weight: bold;
+    color: #222;
+    margin-top: 10px;
+}
+
+.colors .item {
+    margin: 20px 10px 0 10px;
+    border-radius: 13px 13px 8px 8px;
+    position: relative;
+    border: 2px dashed #a0a0a0;
+    min-height: 36px;
+}
+
+    .colors .item .title {
+        width: 100%;
+        position: relative;
+        height: 32px;
+    }
+
+        .colors .item .title h3 {
+            padding: 5px 20px;
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            z-index: 2;
+            margin: 0;
+            width: auto;
+            background: #fff;
+            color: #222;
+            font-weight: bold;
+            font-size: 19px;
+            text-align: center;
+            border-radius: 3px 13px;
+            border: 2px solid #a0a0a0;
+            height: 36px;
+        }
+
+    .colors .item button.collapsible {
+        padding: 0 20px;
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        z-index: 2;
+        margin: 0;
+        width: auto;
+        background: #fff;
+        color: #222;
+        font-weight: bold;
+        font-size: 19px;
+        text-align: center;
+        border-radius: 13px 3px;
+        border: 2px solid #a0a0a0;
+        outline: none;
+        height: 36px;
+    }
+
+        .colors .item button.collapsible:hover {
+            transition: ease .3s;
+            background: #eaeaea;
+        }
+
+    .colors .item .content {
+        padding: 0 10px;
+        position: relative;
+        max-height: 0;
+        overflow-y: hidden;
+        overflow-x: hidden;
+        transition: max-height 0.2s ease-out;
+    }
+
+        .colors .item .content .content-header {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 2px solid #dee2e6;
+            padding: 0;
+            list-style: none;
+            margin-top: 20px;
+        }
+
+            .colors .item .content .content-header li {
+                padding: 5px 15px;
+                margin-bottom: -2px;
+                border: 2px solid transparent;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+                .colors .item .content .content-header li a {
+                    font-size: 17px;
+                    font-weight: bold;
+                    color: #222;
+                    text-decoration: none;
+                    text-align: center;
+                    cursor: pointer;
+                }
+
+                .colors .item .content .content-header li.active {
+                    border-color: #dee2e6;
+                }
+
+                    .colors .item .content .content-header li.active a {
+                        color: #FC5400;
+                    }
+
+                .colors .item .content .content-header li:hover {
+                    border-color: #dee2e6;
+                }
+
+.colors .item .content .data,
+.colors .item .content .action {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.colors .item .content .data div,
+.colors .item .content .action div {
+    margin: 10px 0;
+    padding: 0 15px;
+}
+
+.colors .item .content .data div h3,
+.colors .item .content .action h3 {
+    margin: 0;
+    font-weight: bold;
+    font-size: 16px;
+    color: #3f3f3f;
+    display: inline-block;
+}
+
+.colors .item .content .action {
+    align-items: center;
+    background: #f2f2f2;
+    border-radius: 8px;
+    margin-top: 1rem;
+    border: 2px solid;
+    border-color: #00a1ff #FC5400 #00a1ff #FC5400;
+    padding: 1rem 0;
+}
+
+.colors .item .content .action button {
+    display: block;
+    outline: none;
+    border-radius: 8px;
+    font-weight: bold;
+    color: white;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-left: 15px;
+    margin-right: auto;
+}
+
+
+/* -------------------------------------- shopper product detail -------------------------------------- */
+
 
 
 
@@ -3109,10 +3494,10 @@ footer {
         transition: 0.3s;
     }
 
-        footer > a:hover {
-            color: #FC5400;
-            text-decoration: none;
-        }
+    footer > a:hover {
+        color: #FC5400;
+        text-decoration: none;
+    }
 
 .footer-part ul {
     padding-right: 20px;
@@ -3378,6 +3763,11 @@ footer {
     .shopping-page .level {
         width: 85%;
     }
+
+    .colors .item {
+        margin-right: 0;
+        margin-left: 0;
+    }
 }
 
 @media screen and (max-width: 767px) {
@@ -3442,6 +3832,11 @@ footer {
     .shopping-page .level {
         width: 98%;
     }
+
+    .colors .item {
+        margin-right: -12px;
+        margin-left: -12px;
+    }
 }
 
 @media screen and (max-width: 723px) {
@@ -3495,6 +3890,10 @@ footer {
 
     .shape-divider img.product-section-shape {
         height: 60px;
+    }
+
+    .colors .item .item-content {
+        margin-top: 20px;
     }
 }
 

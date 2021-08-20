@@ -1,20 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Domain.Entities.Shopper
 {
-    public class ShopperProductRequest
+   public class ShopperProductColorRequest
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string ShopperProductRequestId { get; set; }
+        public string ShopperProductColorRequestId { get; set; }
 
-        [ForeignKey("Product")]
-        public int ProductId { get; set; }
-
-        [ForeignKey("ShopperProduct")]
-        public string ShopperProductId { get; set; }
+        [ForeignKey("ShopperProductColor")]
+        public string ShopperProductColorId { get; set; }
 
         [ForeignKey("User")]
         public string RequestUserId { get; set; }
@@ -23,11 +24,13 @@ namespace Reshop.Domain.Entities.Shopper
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool RequestType { get; set; } // true = add / false = edit
 
-
-        [Display(Name = "گارانتی")]
+        [Display(Name = "قیمت محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string Warranty { get; set; }
+        public decimal Price { get; set; }
+
+        [Display(Name = "تعداد موجودی")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public int QuantityInStock { get; set; }
 
         [Required]
         public DateTime RequestDate { get; set; }
@@ -44,8 +47,7 @@ namespace Reshop.Domain.Entities.Shopper
         #region Relations
 
         public virtual User.User User { get; set; }
-        public virtual ShopperProduct ShopperProduct { get; set; }
-        public virtual Product.Product Product { get; set; }
+        public virtual ShopperProductColor ShopperProductColor { get; set; }
 
         #endregion
     }

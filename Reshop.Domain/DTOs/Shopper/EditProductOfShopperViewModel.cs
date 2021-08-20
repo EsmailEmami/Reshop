@@ -11,8 +11,6 @@ namespace Reshop.Domain.DTOs.Shopper
     {
         public string ShopperProductColorId { get; set; }
 
-        public string ProductId { get; set; }
-
         [Display(Name = "تعداد موجودی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public int QuantityInStock { get; set; }

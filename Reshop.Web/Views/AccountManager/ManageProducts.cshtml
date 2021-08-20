@@ -18,7 +18,7 @@
                 <div class="profile-nav box-shadow">
                     <ul>
                         <li class="active"><a asp-action="Dashboard">کالا های من</a> </li>
-                        <li><a asp-action="ProductsAccess">افزودن کالا</a> </li>
+                        <li><a asp-controller="AccountManager" asp-action="ProductsAccess">افزودن کالا</a> </li>
                         <li><a asp-action="Address">گزارش کاری من</a> </li>
                     </ul>
                 </div>
@@ -52,7 +52,10 @@
                                             <td>@item.ProductPrice</td>
                                             <td>@item.BrandName</td>
                                             <td>
-                                                <a class="btn btn-info text-white">جزئیات</a>
+                                                <a class="btn btn-info text-white" 
+                                                   asp-controller="AccountManager"
+                                                   asp-action="ShopperProductDetail"
+                                                   asp-route-productId="@item.ProductId">جزئیات</a>
                                             </td>
                                         </tr>
                                     }

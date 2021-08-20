@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Shopper;
+using Reshop.Domain.DTOs.Chart;
+using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
+using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reshop.Application.Convertors;
-using Reshop.Application.Interfaces.Product;
-using Reshop.Domain.DTOs.Shopper;
-using Reshop.Domain.Interfaces.Product;
 
 namespace Reshop.Application.Services.Shopper
 {
@@ -27,7 +27,7 @@ namespace Reshop.Application.Services.Shopper
             _userRepository = userRepository;
             _productRepository = productRepository;
         }
-        
+
         #endregion
 
 
@@ -118,12 +118,19 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
+        public async Task<ShopperProductDiscount> GetLastShopperProductColorDiscountAsync(string shopperProductColorId) =>
+            await _shopperRepository.GetLastShopperProductDiscountAsync(shopperProductColorId);
+
+        public async Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId) =>
+            await _shopperRepository.IsActiveShopperProductColorDiscountExistsAsync(shopperProductColorId);
+
+
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _shopperRepository.IsShopperExistAsync(shopperId);
 
         public async Task<ResultTypes> UnAvailableShopperProductAsync(string shopperId, int productId)
         {
-            var shopperProductId =await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
+            var shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
 
             if (string.IsNullOrEmpty(shopperProductId))
             {
@@ -173,6 +180,21 @@ namespace Reshop.Application.Services.Shopper
             try
             {
                 await _shopperRepository.AddShopperProductRequestAsync(shopperProductRequest);
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> AddShopperProductColorRequestAsync(ShopperProductColorRequest shopperProductColorRequest)
+        {
+            try
+            {
+                await _shopperRepository.AddShopperProductColorRequestAsync(shopperProductColorRequest);
                 await _shopperRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
@@ -364,5 +386,54 @@ namespace Reshop.Application.Services.Shopper
 
         public async Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId) =>
             await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId, shopperProductColorId);
+
+        public async Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId) =>
+            await _shopperRepository.GetShopperProductColorDetailAsync(shopperProductColorId);
+
+        public async Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId) =>
+            await _shopperRepository.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
+
+        public async Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductColorId) =>
+            await _shopperRepository.IsAnyActiveShopperProductColorRequestAsync(shopperProductColorId);
+
+        public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(int productId, string shopperId)
+        {
+            var shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
+
+            if (shopperProductId is null)
+                return null;
+
+
+            return _shopperRepository.GetLastThirtyDayProductDataChart(shopperProductId);
+        }
+
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId) =>
+            _shopperRepository.GetLastThirtyDayColorProductDataChart(shopperProductColorId);
+
+        public IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfProductChart(int productId) =>
+            _shopperRepository.GetLastThirtyDayBestShoppersOfProductChart(productId);
+
+        public IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(string shopperProductColorId) =>
+            _shopperRepository.GetLastThirtyDayBestShoppersOfColorProductChart(shopperProductColorId);
+
+        public IEnumerable<Tuple<string, int>> GetBestShoppersOfProductChart(int productId) =>
+            _shopperRepository.GetBestShoppersOfProductChart(productId);
+
+        public IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(string shopperProductColorId) =>
+            _shopperRepository.GetBestShoppersOfColorProductChart(shopperProductColorId);
+
+        public IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(
+            string shopperProductColorId) =>
+            _shopperRepository.GetLastTwentyDiscountDataOfShopperProductColorChart(shopperProductColorId);
+
+        public async Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(int productId, string shopperId)
+        {
+            string shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
+
+            if (shopperProductId is null)
+                return null;
+
+            return _shopperRepository.GetColorsOfShopperProductDataChart(shopperProductId);
+        }
     }
 }

@@ -274,23 +274,23 @@ namespace Reshop.Infrastructure.Repository.Product
                 switch (type.ToLower())
                 {
                     case "mobile":
-                    {
-                        detail = await _context.Products.Where(c => c.ProductId == productId)
-                            .Select(c => c.MobileDetail).SingleOrDefaultAsync();
-                        break;
-                    }
+                        {
+                            detail = await _context.Products.Where(c => c.ProductId == productId)
+                                .Select(c => c.MobileDetail).SingleOrDefaultAsync();
+                            break;
+                        }
                     case "laptop":
-                    {
-                        detail = await _context.Products.Where(c => c.ProductId == productId)
-                            .Select(c => c.LaptopDetail).SingleOrDefaultAsync();
-                        break;
-                    }
+                        {
+                            detail = await _context.Products.Where(c => c.ProductId == productId)
+                                .Select(c => c.LaptopDetail).SingleOrDefaultAsync();
+                            break;
+                        }
                     case "aux":
-                    {
-                        detail = await _context.Products.Where(c => c.ProductId == productId)
-                            .Select(c => c.AuxDetail).SingleOrDefaultAsync();
-                        break;
-                    }
+                        {
+                            detail = await _context.Products.Where(c => c.ProductId == productId)
+                                .Select(c => c.AuxDetail).SingleOrDefaultAsync();
+                            break;
+                        }
                 }
 
 
@@ -304,8 +304,8 @@ namespace Reshop.Infrastructure.Repository.Product
                         Price = c.Price,
                         Brand = new Tuple<int, string>(c.ShopperProduct.Product.Brand.BrandId,
                             c.ShopperProduct.Product.Brand.BrandName),
-                        LastDiscount = c.Discounts.OrderByDescending(c=> c.EndDate)
-                            .Select(d=> new Tuple<byte,DateTime>(d.DiscountPercent,d.EndDate)).FirstOrDefault(),
+                        LastDiscount = c.Discounts.OrderByDescending(c => c.EndDate)
+                            .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate)).FirstOrDefault(),
                     }).SingleOrDefaultAsync();
 
                 return model;
@@ -332,6 +332,18 @@ namespace Reshop.Infrastructure.Repository.Product
         public async Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key)
             =>
                 await _context.Products.SingleOrDefaultAsync(c => c.ShortKey == key);
+
+        public async Task<ProductDetailForShopperViewModel> GetProductDetailForShopperAsync(string shopperProductId) =>
+            await _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
+                .Select(c => new ProductDetailForShopperViewModel()
+                {
+                    ProductId = c.ProductId,
+                    ProductName = c.Product.ProductTitle,
+                    ProductImage = c.Product.ProductGalleries.First().ImageName,
+                    BrandName = c.Product.Brand.BrandName,
+                    ShoppersCount = c.Product.ShopperProducts.Count,
+                    Colors = c.ShopperProductColors.Select(c=> new Tuple<int, string>(c.ColorId,c.Color.ColorName))
+                }).SingleOrDefaultAsync();
 
         public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) =>
             await _context.Products.FindAsync(productId);
@@ -377,10 +389,19 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductId = c.ProductId,
                 ProductTitle = c.Product.ProductTitle,
                 BrandName = c.Product.Brand.BrandName,
-                ProductPrice = c.ShopperProductColors.OrderByDescending(o => o.SaleCount).First().Price,
-                Discount = c.ShopperProductColors.OrderByDescending(o => o.SaleCount)
-                    .First().Discounts.Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate)).LastOrDefault(),
-                ShopperProductColorId = c.ShopperProductColors.OrderByDescending(o => o.SaleCount).First().ShopperProductColorId,
+                Image = c.Product.ProductGalleries.First().ImageName,
+                ProductPrice = c.ShopperProductColors
+                    .OrderByDescending(o => o.SaleCount)
+                    .First().Price,
+
+                Discount = c.ShopperProductColors
+                    .OrderByDescending(s => s.SaleCount).First()
+                    .Discounts.OrderByDescending(c => c.EndDate).Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
+                    .FirstOrDefault(),
+
+                ShopperProductColorId = c.ShopperProductColors
+                    .OrderByDescending(o => o.SaleCount)
+                    .First().ShopperProductColorId
             });
 
 
@@ -548,7 +569,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Include(c => c.Product)
                         .ThenInclude(c => c.PowerBankDetail).FirstAsync(),
 
-                    _ => null
+                    _ => null,
                 };
             }
             else
@@ -614,8 +635,16 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => new EditProductOfShopperViewModel()
                 {
                     ShopperProductColorId = c.ShopperProductColorId,
-                    ProductId = c.ShopperProduct.ProductId.ToString(),
-                    Color = c.ColorId,
+                    QuantityInStock = c.QuantityInStock,
+                    Price = c.Price,
+                    IsActive = c.IsActive
+                }).SingleOrDefaultAsync();
+
+        public async Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductColorId) =>
+            await _context.ShopperProductColors.Where(c => c.ShopperProductColorId == shopperProductColorId)
+                .Select(c => new EditProductOfShopperViewModel()
+                {
+                    ShopperProductColorId = c.ShopperProductColorId,
                     QuantityInStock = c.QuantityInStock,
                     Price = c.Price,
                     IsActive = c.IsActive

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
+using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 
@@ -17,7 +18,6 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> EditShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> AddShopperProductAsync(ShopperProduct shopperProduct);
         Task<ResultTypes> EditShopperProductAsync(ShopperProduct shopperProduct);
-        Task<ResultTypes> AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
         Task<bool> IsShopperExistAsync(string shopperId);
 
         Task<ResultTypes> UnAvailableShopperProductAsync(string shopperId, int productId);
@@ -26,6 +26,15 @@ namespace Reshop.Application.Interfaces.Shopper
         #region reason
 
         Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest);
+        Task<ResultTypes> AddShopperProductColorRequestAsync(ShopperProductColorRequest shopperProductColorRequest);
+
+        #endregion
+
+        #region discount
+
+        Task<ResultTypes> AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
+        Task<ShopperProductDiscount> GetLastShopperProductColorDiscountAsync(string shopperProductColorId);
+        Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId);
 
         #endregion
 
@@ -58,7 +67,23 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> AddShopperProductColorAsync(ShopperProductColor shopperProductColor);
         Task<ResultTypes> EditShopperProductColorAsync(ShopperProductColor shopperProductColor);
         Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId);
+        Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId);
+        Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId);
+        Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductColorId);
 
+        #endregion
+
+        #region chart
+
+        Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(int productId, string shopperId);
+        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId);
+        IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfProductChart(int productId);
+        IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(string shopperProductColorId);
+        IEnumerable<Tuple<string, int>> GetBestShoppersOfProductChart(int productId);
+        IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(string shopperProductColorId);
+        IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(string shopperProductColorId);
+        // colorName , view , sell , returned
+        Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(int productId, string shopperId);
         #endregion
     }
 }

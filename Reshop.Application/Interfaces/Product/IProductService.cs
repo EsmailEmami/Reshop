@@ -14,7 +14,7 @@ namespace Reshop.Application.Interfaces.Product
 {
     public interface IProductService
     {
-        
+
         IEnumerable<ProductViewModel> GetProductsWithType(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int take = 18);
 
         // product , pageId , totalPages
@@ -24,10 +24,12 @@ namespace Reshop.Application.Interfaces.Product
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
 
         // get by id 
+        Task<ProductDetailForShopperViewModel> GetProductDetailForShopperAsync(int productId, string shopperId);
         Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId);
         Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId);
         Task<ShopperProduct> GetShopperProductAsync(string shopperProductId);
         Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(int productId, string shopperId, int colorId);
+        Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductColorId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);
@@ -64,7 +66,7 @@ namespace Reshop.Application.Interfaces.Product
         // inserts
         Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
         Task<ResultTypes> AddLaptopAsync(Domain.Entities.Product.Product product, LaptopDetail laptopDetail);
-        Task<ResultTypes> AddPowerBankAsync(Domain.Entities.Product.Product product,PowerBankDetail powerBank);
+        Task<ResultTypes> AddPowerBankAsync(Domain.Entities.Product.Product product, PowerBankDetail powerBank);
         Task<ResultTypes> AddMobileCoverAsync(Domain.Entities.Product.Product product, MobileCoverDetail mobileCoverDetail);
         Task<ResultTypes> AddTabletAsync(Domain.Entities.Product.Product product, TabletDetail tabletDetail);
         Task<ResultTypes> AddHandsfreeAndHeadPhoneDetailAsync(Domain.Entities.Product.Product product, HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail);

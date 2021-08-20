@@ -1,4 +1,5 @@
-﻿using Reshop.Domain.Entities.Category;
+﻿using System;
+using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.User;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Reshop.Domain.Interfaces.Product
 
 
         Task<Entities.Product.Product> GetProductByShortKeyAsync(string key);
-
+        Task<ProductDetailForShopperViewModel> GetProductDetailForShopperAsync(string shopperProductId);
         Task<Entities.Product.Product> GetProductByIdAsync(int productId);
 
 
@@ -56,6 +57,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<ShopperProduct> GetShopperProductAsync(string shopperId, int productId);
         Task<ShopperProduct> GetShopperProductAsync(string shopperProductId);
         Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductId, int colorId);
+        Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductColorId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);
@@ -174,10 +176,6 @@ namespace Reshop.Domain.Interfaces.Product
 
         IAsyncEnumerable<string> GetProductsNameByFilter(string productName);
         IAsyncEnumerable<ProductViewModel> GetProductsByFilter(string productName);
-
-
-
-
 
 
 

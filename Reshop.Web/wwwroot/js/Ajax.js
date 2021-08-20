@@ -49,9 +49,6 @@ function AddProductToFavorites(form) {
                     }
                 }
             },
-            error: function (err) {
-                console.log(err);
-            }
         });
         //to prevent default form submit event
         return false;
@@ -66,11 +63,16 @@ function ShowModal(url, title) {
         url: url,
         cache: false,
         success: function (res) {
-            // modal body 
-            $("#modal .modal-body").html(res);
-            // title of modal
-            $(".modal-header-custom .header-title").html(title);
-            document.getElementById('modal').style.display = 'block';
+
+            if (res.isValid == false) {
+                ShowToast(res.errorType, res.errorText);
+            } else {
+                // modal body 
+                $("#modal .modal-body").html(res);
+                // title of modal
+                $(".modal-header-custom .header-title").html(title);
+                document.getElementById('modal').style.display = 'block';
+            }
         }
     });
 }
@@ -129,7 +131,7 @@ function GetCitiesOfState(stateId) {
             type: "GET",
             url: "/api/State?stateId=" + stateId,
         }).done(function (res) {
-            
+
 
             // make empty the select
             city.querySelectorAll('*').forEach(n => n.remove());
@@ -208,7 +210,6 @@ function SubmitFormData(form) {
             type: 'POST',
             url: form.action,
             data: new FormData(form),
-            cache: false,
             processData: false,
             contentType: false,
             success: function (res) {
@@ -218,12 +219,15 @@ function SubmitFormData(form) {
                     // title of modal
                     $(".modal-header-custom .header-title").html('');
                     document.getElementById('modal').style.display = 'none';
-                    location.reload();
+
+                    if (res.returnUrl != "") {
+                        ShowToast('success', 'عملیات با موفقیت انجام شد.', res.returnUrl);
+                    } else {
+                        ShowToast('success', 'عملیات با موفقیت انجام شد.');
+                    }
+
                 } else
                     $("#modal .modal-body").html(res.html);
-            },
-            error: function (err) {
-                console.log(err);
             }
         });
         //to prevent default form submit event
@@ -265,6 +269,32 @@ function SetCartAddress(form, returnUrl) {
 function UpdateProductDetailPage(productId, productName, sellerId) {
     $("#productDetail").load('/UpdateProductDetail/' + productId + '/' + productName + '/' + sellerId);
     let url = window.location.origin + "/Product/" + productId + '/' + productName + '/' + sellerId;
-    console.log(url);
     window.history.replaceState(null, productName, url);
+}
+
+
+function ColorsDetailData(where, productId, colorId) {
+
+    $.ajax({
+        type: 'GET',
+        url: '/AccountManager/ShopperProductColorDetail?productId=' + productId + '&colorId=' + colorId,
+        cache: true,
+    }).done(function (res) {
+        var place = document.getElementById(where);
+
+        $(place).html(res);
+    });
+}
+
+function ColorsDiscountDetailData(where, productId, colorId) {
+
+    $.ajax({
+        type: 'GET',
+        url: '/AccountManager/ShopperProductDiscountDetail?productId=' + productId + '&colorId=' + colorId,
+        cache: true
+    }).done(function (res) {
+        var place = document.getElementById(where);
+
+        $(place).html(res);
+    });
 }

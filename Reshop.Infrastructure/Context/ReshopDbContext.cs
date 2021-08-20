@@ -86,6 +86,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<StoreAddress> StoresAddress { get; set; }
         public virtual DbSet<ShopperProductDiscount> ShopperProductDiscounts { get; set; }
         public virtual DbSet<ShopperProductColor> ShopperProductColors { get; set; }
+        public virtual DbSet<ShopperProductColorRequest> ShopperProductColorRequests { get; set; }
 
         #endregion
 
@@ -127,7 +128,7 @@ namespace Reshop.Infrastructure.Context
                 i.Property(w => w.Sum).HasColumnType("Money");
             });
 
-            modelBuilder.Entity<ShopperProductRequest>(i =>
+            modelBuilder.Entity<ShopperProductColorRequest>(i =>
             {
                 i.Property(w => w.Price).HasColumnType("Money");
             });

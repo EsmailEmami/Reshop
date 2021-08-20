@@ -34,6 +34,19 @@
 }
 
 
+// loader
+
+
+//$(document).ajaxStart(function () {
+
+//    alert("start");
+
+//    setTimeout(function () {
+//        $(".loader").fadeOut(1000);
+//    }, 500);
+//});
+
+// loader
 
 
 let megaDropDowns = $(".main-nav .mega-dropdown");
@@ -249,3 +262,24 @@ $(function () {
 
 
 function changeDetailImg(imgSrc) { document.getElementById("zoom").src = imgSrc; }
+
+/*collapsible*/
+var coll = document.getElementsByClassName("collapsible");
+
+for (var i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+        } else {
+
+            if (content.scrollHeight >= 700) {
+                content.style.maxHeight = 700 + "px";
+                content.style.overflowY = "scroll";
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+    });
+}

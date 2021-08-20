@@ -3,6 +3,7 @@ using Reshop.Domain.Entities.Shopper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.Chart;
 
 namespace Reshop.Domain.Interfaces.Shopper
 {
@@ -25,6 +26,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         #region reason
 
         Task AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest);
+        Task AddShopperProductColorRequestAsync(ShopperProductColorRequest shopperProductColorRequest);
 
         #endregion
 
@@ -70,8 +72,9 @@ namespace Reshop.Domain.Interfaces.Shopper
         #region Discount
 
         Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductColorId);
-
         Task AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
+        Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId);
+
         #endregion
 
         #region color
@@ -84,7 +87,23 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task<bool> IsShopperProductColorExistAsync(string shopperProductId, int colorId);
         void UpdateShopperProductColor(ShopperProductColor shopperProductColor);
         Task<string> GetShopperProductColorIdAsync(string shopperProductId, int colorId);
-             
+        Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId);
+        Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId);
+        Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductColorId);
+
+        #endregion
+
+        #region Chart
+
+        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(string shopperProductId);
+        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId);
+        IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfProductChart(int productId);
+        IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(string shopperProductColorId);
+        IEnumerable<Tuple<string, int>> GetBestShoppersOfProductChart(int productId);
+        IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(string shopperProductColorId);
+        IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(string shopperProductColorId);
+        // colorName , view , sell , returned
+        IEnumerable<Tuple<string, int,int,int>> GetColorsOfShopperProductDataChart(string shopperProductId);
         #endregion
 
         Task SaveChangesAsync();

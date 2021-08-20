@@ -17,7 +17,6 @@ using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Category;
 using Reshop.Domain.Interfaces.Shopper;
-using ProductViewModel = Reshop.Domain.DTOs.Product.ProductViewModel;
 
 namespace Reshop.Application.Services.Product
 {
@@ -116,6 +115,18 @@ namespace Reshop.Application.Services.Product
             return new Tuple<IEnumerable<ProductViewModel>, int, int>(products, pageId, totalPages);
         }
 
+        public async Task<ProductDetailForShopperViewModel> GetProductDetailForShopperAsync(int productId, string shopperId)
+        {
+            string shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
+
+            if (shopperProductId == null)
+            {
+                return null;
+            }
+
+            return await _productRepository.GetProductDetailForShopperAsync(shopperProductId);
+        }
+
         public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId)
         {
             return await _productRepository.GetProductByIdAsync(productId);
@@ -134,11 +145,14 @@ namespace Reshop.Application.Services.Product
             if (shopperProductId is null)
                 return null;
 
-            if (!await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId,colorId))
+            if (!await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId, colorId))
                 return null;
 
             return await _productRepository.GetShopperProductForEditAsync(shopperProductId, colorId);
         }
+
+        public async Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductColorId) =>
+            await _productRepository.GetShopperProductForEditAsync(shopperProductColorId);
 
         public async Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId)
         {
