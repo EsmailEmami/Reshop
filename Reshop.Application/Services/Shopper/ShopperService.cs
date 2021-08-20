@@ -10,6 +10,7 @@ using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Application.Services.Shopper
 {
@@ -174,6 +175,9 @@ namespace Reshop.Application.Services.Shopper
                 return null;
             }
         }
+
+        public async Task<string> GetShopperProductIdAsync(string shopperId, int productId) =>
+            await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
 
         public async Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest)
         {
@@ -343,6 +347,9 @@ namespace Reshop.Application.Services.Shopper
             return _shopperRepository.GetShopperStoreTitlesName(shopperId);
         }
 
+        public IEnumerable<Color> GetColors() =>
+            _shopperRepository.GetColors();
+
         public async Task<string> GetShopperProductColorIdAsync(string shopperId, int productId, int colorId)
         {
             string shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
@@ -393,8 +400,8 @@ namespace Reshop.Application.Services.Shopper
         public async Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId) =>
             await _shopperRepository.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
 
-        public async Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductColorId) =>
-            await _shopperRepository.IsAnyActiveShopperProductColorRequestAsync(shopperProductColorId);
+        public async Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId) =>
+            await _shopperRepository.IsAnyActiveShopperProductColorRequestAsync(shopperProductId,colorId);
 
         public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(int productId, string shopperId)
         {

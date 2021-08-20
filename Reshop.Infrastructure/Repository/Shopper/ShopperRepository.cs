@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Infrastructure.Repository.Shopper
 {
@@ -199,9 +200,12 @@ namespace Reshop.Infrastructure.Repository.Shopper
             await _context.ShopperProductDiscounts.AnyAsync(c =>
                 c.ShopperProductColorId == shopperProductColorId && c.EndDate >= DateTime.Now);
 
-        public async Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductColorId) =>
+        public IEnumerable<Color> GetColors() =>
+            _context.Colors;
+
+        public async Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId) =>
             await _context.ShopperProductColorRequests
-                .AnyAsync(c => c.ShopperProductColorId == shopperProductColorId && !c.IsRead);
+                .AnyAsync(c => c.ShopperProductId == shopperProductId && c.ColorId == colorId && !c.IsRead);
 
         public async Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId) =>
             await _context.ShopperProductColors.FindAsync(shopperProductColorId);

@@ -140,7 +140,7 @@ function MultiSelectDropdown() {
             search.select();
         });
 
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             if (!div.contains(event.target)) {
                 listWrap.style.display = 'none';
                 div.refresh();
@@ -148,12 +148,6 @@ function MultiSelectDropdown() {
         });
     });
 }
-
-window.addEventListener('load', () => {
-    MultiSelectDropdown();
-});
-
-
 function SelectDropdown() {
     document.querySelectorAll("select:not([multiple])").forEach((el, k) => {
 
@@ -185,9 +179,10 @@ function SelectDropdown() {
 
 
             Array.from(el.options).map(o => {
-                var op = newEl('div', {
-                    optEl: o
-                })
+                var op = newEl('div',
+                    {
+                        optEl: o
+                    });
 
                 op.appendChild(newEl('label', {
                     text: o.text
@@ -237,12 +232,9 @@ function SelectDropdown() {
             search.select();
             div.refresh();
         });
-
-
-
     });
 }
 
-window.addEventListener('load', () => {
-    SelectDropdown();
-});
+
+MultiSelectDropdown();
+SelectDropdown();

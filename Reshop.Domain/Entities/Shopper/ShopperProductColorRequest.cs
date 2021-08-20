@@ -14,11 +14,14 @@ namespace Reshop.Domain.Entities.Shopper
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string ShopperProductColorRequestId { get; set; }
 
-        [ForeignKey("ShopperProductColor")]
-        public string ShopperProductColorId { get; set; }
+        [ForeignKey("ShopperProduct")]
+        public string ShopperProductId { get; set; }
 
         [ForeignKey("User")]
         public string RequestUserId { get; set; }
+
+        [ForeignKey("Color")]
+        public int ColorId { get; set; }
 
         [Display(Name = "نوع درخواست")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -47,7 +50,8 @@ namespace Reshop.Domain.Entities.Shopper
         #region Relations
 
         public virtual User.User User { get; set; }
-        public virtual ShopperProductColor ShopperProductColor { get; set; }
+        public virtual ShopperProduct ShopperProduct { get; set; }
+        public virtual Color Color { get; set; }
 
         #endregion
     }

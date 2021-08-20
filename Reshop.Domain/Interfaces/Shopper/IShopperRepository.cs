@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Chart;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Domain.Interfaces.Shopper
 {
@@ -79,6 +80,7 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         #region color
 
+        IEnumerable<Color> GetColors();
         Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId);
         Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductId, int colorId);
         Task AddShopperProductColorAsync(ShopperProductColor shopperProductColor);
@@ -89,7 +91,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task<string> GetShopperProductColorIdAsync(string shopperProductId, int colorId);
         Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId);
         Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId);
-        Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductColorId);
+        Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId,int colorId);
 
         #endregion
 

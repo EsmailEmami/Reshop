@@ -6,6 +6,7 @@
 @section Css
 {
     <link href="~/css/calender.min.css" rel="stylesheet" />
+    <link href="~/css/select.css" rel="stylesheet" />
 }
 
 <section class="product-detail mb-3">
@@ -75,14 +76,10 @@
         <div id="ColorsColumnChart" style="overflow: hidden; width: 100%; min-width: 877px;"></div>
     </div>
 
-    <div class="mt-3 mb-3 row">
-        <div class="col-sm-12 col-md-6">
-            <button class="btn btn-success text-white btn-block">افزودن رنگ</button>
-        </div>
-        <div class="col-sm-12 col-md-6">
-            <button class="btn btn-info text-white btn-block">افزودن تخفیف</button>
-        </div>
-    </div>
+
+    <button class="btn btn-success text-white mt-3 mb-3"
+            onclick="ShowModal('@Url.Action("AddProductOfShopper", "AccountManager", new {productId= Model.ProductId}, Context.Request.Scheme)','افزودن رنگ')">افزودن رنگ</button>
+
 
     @foreach (var color in Model.Colors)
     {

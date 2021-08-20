@@ -250,7 +250,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             var shopperProductColorRequest = new ShopperProductColorRequest()
             {
-                ShopperProductColorId = model.ShopperProductColorId,
+                ShopperProductId = shopperProductColor.ShopperProductId,
                 RequestType = false,
                 RequestDate = DateTime.Now,
                 Price = model.Price,

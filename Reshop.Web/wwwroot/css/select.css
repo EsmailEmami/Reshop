@@ -10,6 +10,7 @@
     background-size: 18px 11px;
     width: 100%;
     height: 38px;
+    margin-bottom: 1.5rem;
 }
 
 .multiselect-dropdown span.optext,
@@ -136,6 +137,7 @@
     background-size: 18px 11px;
     width: 100%;
     height: 38px;
+    margin-bottom: 1.5rem;
 }
 
 .select-dropdown span.optext {

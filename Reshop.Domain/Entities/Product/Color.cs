@@ -4,6 +4,10 @@ namespace Reshop.Domain.Entities.Product
 {
     public class Color
     {
+        public Color()
+        {
+        }
+
         [Key]
         public int ColorId { get; set; }
 
