@@ -175,7 +175,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -466,7 +465,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
+              
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -725,7 +724,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
+
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -1005,7 +1004,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
+                 
                     ProductType = ProductTypes.MobileCover.ToString(),
 
                 };
@@ -1163,7 +1162,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.HeadPhone.ToString(),
 
                 };
@@ -1307,7 +1305,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Handsfree.ToString(),
 
                 };
@@ -1493,7 +1490,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -1705,7 +1701,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -1898,7 +1893,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -2064,7 +2058,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -2295,7 +2288,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -2495,7 +2487,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -2675,7 +2666,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ShortKey = NameGenerator.GenerateShortKey(),
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,

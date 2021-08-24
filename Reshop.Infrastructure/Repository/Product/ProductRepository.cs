@@ -294,10 +294,11 @@ namespace Reshop.Infrastructure.Repository.Product
                 }
 
 
-                ProductDateForDetailViewModel model = await _context.ShopperProductColors.Where(c => c.ShopperProductColorId == shopperProductColorId)
+                var model = await _context.ShopperProductColors.Where(c => c.ShopperProductColorId == shopperProductColorId)
                     .Select(c => new ProductDateForDetailViewModel()
                     {
                         ShopperProductColorId = c.ShopperProductColorId,
+                        SelectedColor = c.ColorId,
                         ProductId = c.ShopperProduct.ProductId,
                         Title = c.ShopperProduct.Product.ProductTitle,
                         Detail = detail,
@@ -329,9 +330,10 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ChildCategoryId == childCategoryId)
                 .Select(c => c.Product.Brand.BrandName).Distinct();
 
-        public async Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key)
-            =>
-                await _context.Products.SingleOrDefaultAsync(c => c.ShortKey == key);
+        public async Task<Tuple<int, string, string>> GetProductRedirectionByShortKeyAsync(string key)
+            => await _context.ShopperProductColors.Where(c => c.ShortKey == key)
+                .Select(c => new Tuple<int, string, string>(c.ShopperProduct.ProductId, c.ShopperProduct.Product.ProductTitle, c.ShopperProductColorId))
+                .SingleOrDefaultAsync();
 
         public async Task<ProductDetailForShopperViewModel> GetProductDetailForShopperAsync(string shopperProductId) =>
             await _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
@@ -342,11 +344,45 @@ namespace Reshop.Infrastructure.Repository.Product
                     ProductImage = c.Product.ProductGalleries.First().ImageName,
                     BrandName = c.Product.Brand.BrandName,
                     ShoppersCount = c.Product.ShopperProducts.Count,
-                    Colors = c.ShopperProductColors.Select(c=> new Tuple<int, string>(c.ColorId,c.Color.ColorName))
+                    Colors = c.ShopperProductColors.Select(c => new Tuple<int, string>(c.ColorId, c.Color.ColorName))
                 }).SingleOrDefaultAsync();
+
+        public IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId) =>
+            _context.ShopperProducts.Where(c => c.ProductId == productId)
+                .SelectMany(c => c.ShopperProductColors)
+                .Where(c => c.ColorId == colorId)
+                .Select(c => new Tuple<string, string, string>(c.ShopperProductColorId, c.ShopperProduct.Shopper.StoreName, c.ShopperProduct.Warranty));
+
+        public IEnumerable<Tuple<int, string, string, string>> GetProductColors(int productId) =>
+            _context.ShopperProducts
+                .Where(c => c.ProductId == productId)
+                .SelectMany(c => c.ShopperProductColors)
+                .Select(c => c.Color).Distinct()
+                .Select(c => new Tuple<int, string, string, string>(
+                    c.ColorId,
+                    c.ColorName,
+                    c.ColorCode,
+                    _context.Products.Where(c => c.ProductId == productId)
+                        .SelectMany(c => c.ShopperProducts)
+                        .SelectMany(a => a.ShopperProductColors)
+                        .OrderByDescending(o => o.SaleCount)
+                        .First().ShopperProductColorId
+                    ));
 
         public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) =>
             await _context.Products.FindAsync(productId);
+
+        public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId) =>
+            await _context.ShopperProductColors
+                .Where(c => c.ShopperProductColorId == shopperProductColorId)
+                .Select(c => new EditProductDetailShopperViewModel()
+                {
+                    SelectedShopper = c.ShopperProductColorId,
+                    SelectedColor = c.ColorId,
+                    Price = c.Price,
+                    Shoppers = GetProductShoppers(productId, c.ColorId),
+                    Colors = GetProductColors(productId)
+                }).SingleOrDefaultAsync();
 
         public IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string type, string sortBy, int skip, int take)
         {
@@ -1501,7 +1537,7 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<bool> IsProductExistByShortKeyAsync(string shortKey)
         {
-            return await _context.Products.AnyAsync(c => c.ShortKey == shortKey);
+            return await _context.ShopperProductColors.AnyAsync(c => c.ShortKey == shortKey);
         }
 
         public async Task SaveChangesAsync()

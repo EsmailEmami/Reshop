@@ -28,6 +28,10 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         Task AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest);
         Task AddShopperProductColorRequestAsync(ShopperProductColorRequest shopperProductColorRequest);
+        IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductColorRequestsForShow(string shopperId, int skip, int take);
+        IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductRequestsForShow(string shopperId, int skip, int take);
+       Task<int> GetShopperProductColorRequestsCountAsync(string shopperId);
+       Task<int> GetShopperProductRequestsCountAsync(string shopperId);
 
         #endregion
 
@@ -38,7 +42,6 @@ namespace Reshop.Domain.Interfaces.Shopper
         void UpdateShopperProduct(ShopperProduct shopperProduct);
         void RemoveShopperProduct(ShopperProduct shopperProduct);
         Task AddShopperProductAsync(ShopperProduct shopperProduct);
-        IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId);
         IEnumerable<ShopperProduct> GetShoppersOfProduct(int productId);
         Task<bool> IsShopperProductExistAsync(string shopperId, int productId);
         Task<bool> IsShopperProductExistAsync(string shopperProductId);

@@ -242,9 +242,8 @@ namespace Reshop.Application.Services.Product
             var childCategories = _productRepository.GetProductChildCategories(productId);
             var comments = _productRepository.GetProductComments(productId);
             var productGalleries = _productRepository.GetProductImages(productId);
-            var shoppers = _shopperRepository.GetProductShoppers(productId);
-
-
+            var shoppers = _productRepository.GetProductShoppers(productId,product.SelectedColor);
+            var colors = _productRepository.GetProductColors(productId);
 
 
             return new ProductDetailViewModel()
@@ -254,12 +253,16 @@ namespace Reshop.Application.Services.Product
                 Comments = comments,
                 ProductGalleries = productGalleries,
                 Shoppers = shoppers,
+                Colors = colors
             };
         }
 
-        public async Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key)
+        public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId) =>
+            await _productRepository.EditProductDetailShopperAsync(productId, shopperProductColorId);
+
+        public async Task<Tuple<int, string, string>> GetProductRedirectionByShortKeyAsync(string key)
             =>
-                await _productRepository.GetProductByShortKeyAsync(key);
+                await _productRepository.GetProductRedirectionByShortKeyAsync(key);
 
         public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId)
             =>
@@ -319,11 +322,6 @@ namespace Reshop.Application.Services.Product
                 product.MobileDetailId = mobileDetail.MobileDetailId;
                 product.MobileDetail = mobileDetail;
 
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
-
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
 
@@ -340,11 +338,6 @@ namespace Reshop.Application.Services.Product
         {
             try
             {
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
-
                 _productRepository.UpdateProduct(product);
                 await _productRepository.SaveChangesAsync();
 
@@ -365,11 +358,6 @@ namespace Reshop.Application.Services.Product
 
                 product.MobileDetailId = mobileDetail.MobileDetailId;
                 product.MobileDetail = mobileDetail;
-
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
 
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
@@ -392,11 +380,6 @@ namespace Reshop.Application.Services.Product
                 product.LaptopDetailId = laptopDetail.LaptopDetailId;
                 product.LaptopDetail = laptopDetail;
 
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
-
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
 
@@ -417,11 +400,6 @@ namespace Reshop.Application.Services.Product
 
                 product.PowerBankDetailId = powerBank.PowerBankId;
                 product.PowerBankDetail = powerBank;
-
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
 
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
@@ -444,11 +422,6 @@ namespace Reshop.Application.Services.Product
                 product.MobileCoverDetailId = mobileCoverDetail.MobileCoverDetailId;
                 product.MobileCoverDetail = mobileCoverDetail;
 
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
-
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
 
@@ -469,11 +442,6 @@ namespace Reshop.Application.Services.Product
 
                 product.TabletDetailId = tabletDetail.TabletDetailId;
                 product.TabletDetail = tabletDetail;
-
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
 
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
@@ -496,11 +464,6 @@ namespace Reshop.Application.Services.Product
                 product.HandsfreeAndHeadPhoneDetailId = handsfreeAndHeadPhoneDetail.HeadPhoneDetailId;
                 product.HandsfreeAndHeadPhoneDetail = handsfreeAndHeadPhoneDetail;
 
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
-
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
 
@@ -521,11 +484,6 @@ namespace Reshop.Application.Services.Product
 
                 product.SpeakerDetailId = speakerDetail.SpeakerDetailId;
                 product.SpeakerDetail = speakerDetail;
-
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
 
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
@@ -548,11 +506,6 @@ namespace Reshop.Application.Services.Product
                 product.FlashMemoryDetailId = flashMemoryDetail.FlashDetailId;
                 product.FlashMemoryDetail = flashMemoryDetail;
 
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
-
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
 
@@ -573,11 +526,6 @@ namespace Reshop.Application.Services.Product
 
                 product.SmartWatchDetailId = smartWatchDetail.SmartWatchDetailId;
                 product.SmartWatchDetail = smartWatchDetail;
-
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
 
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
@@ -600,11 +548,6 @@ namespace Reshop.Application.Services.Product
                 product.WristWatchDetailId = wristWatchDetail.WristWatchDetailId;
                 product.WristWatchDetail = wristWatchDetail;
 
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
-
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
 
@@ -626,11 +569,6 @@ namespace Reshop.Application.Services.Product
                 product.MemoryCardDetailId = memoryCardDetail.MemoryCardDetailId;
                 product.MemoryCardDetail = memoryCardDetail;
 
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
-
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
 
@@ -651,11 +589,6 @@ namespace Reshop.Application.Services.Product
 
                 product.AuxDetailId = auxDetail.AUXDetailId;
                 product.AuxDetail = auxDetail;
-
-                while (await _productRepository.IsProductExistByShortKeyAsync(product.ShortKey))
-                {
-                    product.ShortKey = NameGenerator.GenerateShortKey();
-                }
 
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();

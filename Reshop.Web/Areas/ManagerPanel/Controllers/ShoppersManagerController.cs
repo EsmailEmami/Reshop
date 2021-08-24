@@ -181,7 +181,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 var shopperProductRequest = new ShopperProductRequest()
                 {
-                    ShopperProductId = shopperProduct.ShopperProductId,
+                    ShopperId = model.ShopperId,
                     ProductId = Convert.ToInt32(model.ProductId),
                     RequestType = true,
                     RequestDate = DateTime.Now,

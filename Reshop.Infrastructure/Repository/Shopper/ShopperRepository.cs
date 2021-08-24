@@ -126,6 +126,36 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task AddShopperProductColorRequestAsync(ShopperProductColorRequest shopperProductColorRequest) =>
             await _context.ShopperProductColorRequests.AddAsync(shopperProductColorRequest);
 
+        public IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductColorRequestsForShow(string shopperId, int skip, int take) =>
+            _context.ShopperProductColorRequests.Where(c => c.ShopperProduct.ShopperId == shopperId)
+                .Select(c => new ShopperRequestsForShowViewModel()
+                {
+                    RequestId = c.ShopperProductColorRequestId,
+                    RequestType = "color",
+                    RequestDate = c.RequestDate,
+                    IsRead = c.IsRead,
+                    IsSuccess = c.IsSuccess
+                });
+
+        public IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductRequestsForShow(string shopperId, int skip, int take) =>
+            _context.ShopperProductRequests.Where(c => c.ShopperId == shopperId)
+                .Select(c => new ShopperRequestsForShowViewModel()
+                {
+                    RequestId = c.ShopperProductRequestId,
+                    RequestType = "product",
+                    RequestDate = c.RequestDate,
+                    IsRead = c.IsRead,
+                    IsSuccess = c.IsSuccess
+                });
+
+        public async Task<int> GetShopperProductColorRequestsCountAsync(string shopperId) =>
+            await _context.ShopperProductColorRequests.Where(c => c.ShopperProduct.ShopperId == shopperId)
+                .CountAsync();
+
+        public async Task<int> GetShopperProductRequestsCountAsync(string shopperId) =>
+            await _context.ShopperProductRequests.Where(c => c.ShopperId == shopperId)
+                .CountAsync();
+
         public void UpdateShopperProduct(ShopperProduct shopperProduct) => _context.ShopperProducts.Update(shopperProduct);
 
         public void RemoveShopperProduct(ShopperProduct shopperProduct) =>
@@ -133,10 +163,6 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
         public async Task AddShopperProductAsync(ShopperProduct shopperProduct) =>
             await _context.ShopperProducts.AddAsync(shopperProduct);
-
-        public IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId) =>
-            _context.ShopperProducts.Where(c => c.ProductId == productId)
-                .Select(c => new Tuple<string, string, string>(c.ShopperProductId, c.Shopper.StoreName, c.Warranty));
 
         public IEnumerable<ShopperProduct> GetShoppersOfProduct(int productId) =>
             _context.ShopperProducts.Where(c => c.ProductId == productId);

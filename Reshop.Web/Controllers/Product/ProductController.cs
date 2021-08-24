@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Attribute;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
@@ -50,19 +51,21 @@ namespace Reshop.Web.Controllers.Product
             return View(product);
         }
 
-        // seller is shopperProductColorId
+        // change seller 
         [HttpGet]
-        [Route("UpdateProductDetail/{productId}/{productName}/{seller}")]
-        public async Task<IActionResult> UpdateProductDetail(int productId, string productName, string seller)
+        [NoDirectAccess]
+        public async Task<IActionResult> ChangeProductShopper(int productId, string seller)
         {
-            var product = await _productService.GetProductDetailAsync(productId, seller);
+            if (productId is 0 && string.IsNullOrEmpty(seller))
+                return BadRequest();
+
+
+            var product = await _productService.EditProductDetailShopperAsync(productId, seller);
 
             if (product == null)
                 return NotFound();
 
-            ViewData["ProductName"] = productName;
-
-            return PartialView("Product/_ProductDetail", product);
+            return View();
         }
 
         [HttpGet]
@@ -73,14 +76,14 @@ namespace Reshop.Web.Controllers.Product
                 return NotFound();
 
 
-            var product = await _productService.GetProductByShortKeyAsync(key);
+            var product = await _productService.GetProductRedirectionByShortKeyAsync(key);
 
             if (product == null)
                 return NotFound();
 
 
             return RedirectToAction("ProductDetail", "Product",
-                new { productId = product.ProductId, productName = product.ProductTitle });
+                new { productId = product.Item1, productName = product.Item2, seller = product.Item3 });
         }
 
         [HttpGet]

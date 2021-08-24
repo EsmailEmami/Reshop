@@ -24,6 +24,10 @@ namespace Reshop.Domain.Entities.Shopper
         [ForeignKey("Color")]
         public int ColorId { get; set; }
 
+        [Required]
+        [MaxLength(9, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string ShortKey { get; set; }
+
         [Display(Name = "قیمت محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public decimal Price { get; set; }

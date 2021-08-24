@@ -29,6 +29,9 @@ namespace Reshop.Application.Interfaces.Shopper
 
         Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest);
         Task<ResultTypes> AddShopperProductColorRequestAsync(ShopperProductColorRequest shopperProductColorRequest);
+        // data , pageId , totalPages
+        Task<Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>> GetShopperRequestsForShowAsync(string shopperId, int pageId = 1, int take = 18);
+
 
         #endregion
 

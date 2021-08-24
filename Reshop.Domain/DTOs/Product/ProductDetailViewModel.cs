@@ -17,6 +17,7 @@ namespace Reshop.Domain.DTOs.Product
         public IEnumerable<ChildCategory> ChildCategories { get; set; }
 
         public IEnumerable<Tuple<string, string, string>> Shoppers { get; set; }
+        public IEnumerable<Tuple<int, string, string,string>> Colors { get; set; }
 
     }
 
@@ -29,5 +30,6 @@ namespace Reshop.Domain.DTOs.Product
         public object Detail { get; set; }
         public decimal Price { get; set; }
         public Tuple<byte,DateTime> LastDiscount { get; set; }
+        public int SelectedColor { get; set; }
     }
 }

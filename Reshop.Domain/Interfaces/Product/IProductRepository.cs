@@ -29,10 +29,13 @@ namespace Reshop.Domain.Interfaces.Product
 
 
 
-        Task<Entities.Product.Product> GetProductByShortKeyAsync(string key);
+        Task<Tuple<int, string, string>> GetProductRedirectionByShortKeyAsync(string key);
         Task<ProductDetailForShopperViewModel> GetProductDetailForShopperAsync(string shopperProductId);
+        IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId);
+        IEnumerable<Tuple<int, string, string, string>> GetProductColors(int productId);
         Task<Entities.Product.Product> GetProductByIdAsync(int productId);
 
+        Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId);
 
         #region shopper product
 

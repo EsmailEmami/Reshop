@@ -3,6 +3,7 @@ using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Shopper;
+using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
@@ -10,7 +11,6 @@ using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Application.Services.Shopper
 {
@@ -103,6 +103,26 @@ namespace Reshop.Application.Services.Shopper
             {
                 return ResultTypes.Failed;
             }
+        }
+
+        public async Task<Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>> GetShopperRequestsForShowAsync(string shopperId, int pageId = 1, int take = 18)
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int count = 0;
+
+            count += await _shopperRepository.GetShopperProductColorRequestsCountAsync(shopperId);
+            count += await _shopperRepository.GetShopperProductRequestsCountAsync(shopperId);
+
+            int totalPages = (int)Math.Ceiling(1.0 * count / take);
+
+            var model = new List<ShopperRequestsForShowViewModel>();
+
+            model.AddRange(_shopperRepository.GetShopperProductColorRequestsForShow(shopperId, skip, take));
+            model.AddRange(_shopperRepository.GetShopperProductRequestsForShow(shopperId, skip, take));
+
+
+            return new Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>(model, pageId, totalPages);
         }
 
         public async Task<ResultTypes> AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount)
@@ -401,7 +421,7 @@ namespace Reshop.Application.Services.Shopper
             await _shopperRepository.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
 
         public async Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId) =>
-            await _shopperRepository.IsAnyActiveShopperProductColorRequestAsync(shopperProductId,colorId);
+            await _shopperRepository.IsAnyActiveShopperProductColorRequestAsync(shopperProductId, colorId);
 
         public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(int productId, string shopperId)
         {

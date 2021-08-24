@@ -129,6 +129,11 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ColorCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<string>("ColorName")
                         .IsRequired()
                         .HasMaxLength(15)
@@ -247,11 +252,6 @@ namespace Reshop.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("ShortKey")
-                        .IsRequired()
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
 
                     b.Property<int?>("SmartWatchDetailId")
                         .HasColumnType("int");
@@ -1936,6 +1936,11 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.Property<string>("ShopperProductId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ShortKey")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
 
                     b.Property<int>("ViewCount")
                         .HasColumnType("int");

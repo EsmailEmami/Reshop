@@ -47,8 +47,11 @@ namespace Reshop.Application.Interfaces.Product
 
         // detail of every product
         Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperProductColorId);
-        Task<Domain.Entities.Product.Product> GetProductByShortKeyAsync(string key);
 
+        Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId);
+
+        // productId , productName , sellerId
+        Task<Tuple<int,string,string>> GetProductRedirectionByShortKeyAsync(string key);
         // get product types
         Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId);
         Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId);

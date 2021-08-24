@@ -701,5 +701,24 @@ namespace Reshop.Web.Controllers.User
                 return Json(new { isValid = false });
             }
         }
+
+
+        [Route("ShopperRequests/{pageId}")]
+        [HttpGet]
+        [Permission("Shopper")]
+        public async Task<IActionResult> ShopperRequests(int pageId = 1)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string shopperId = await _shopperService.GetShopperIdOrUserAsync(userId);
+
+            if (shopperId == null)
+            {
+                return NotFound();
+            }
+
+            var model = await _shopperService.GetShopperRequestsForShowAsync(shopperId, pageId, 24);
+
+            return View(model);
+        }
     }
 }
