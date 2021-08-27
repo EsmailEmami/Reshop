@@ -349,7 +349,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId,new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -465,7 +465,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-              
+
                     ProductType = ProductTypes.Mobile.ToString(),
                     BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
@@ -619,7 +619,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -640,7 +640,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
         }
 
-     
+
 
         #endregion
 
@@ -903,7 +903,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -1004,7 +1004,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                 
+
                     ProductType = ProductTypes.MobileCover.ToString(),
 
                 };
@@ -1074,7 +1074,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -1594,7 +1594,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -1792,7 +1792,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -1957,7 +1957,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2186,7 +2186,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2385,7 +2385,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2565,7 +2565,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2732,7 +2732,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -2777,20 +2777,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 if (image.Length > 0)
                 {
-                    var imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(image.FileName);
-
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                    string path = Path.Combine(Directory.GetCurrentDirectory(),
                         "wwwroot",
                         "images",
-                        "ProductImages",
-                        "Original",
-                        imgName);
+                        "ProductImages");
 
-
-                    await using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await image.CopyToAsync(stream);
-                    }
+                    string imgName = await ImageConvertor.CreateNewImage(image, path, 750);
 
                     var productGallery = new ProductGallery()
                     {
@@ -2799,51 +2791,37 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     };
 
                     await _productService.AddProductGalleryAsync(productGallery);
-
-                    // resize img
-                    ImageConvertor imgResize = new ImageConvertor();
-
-                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "ProductImages",
-                        "thumb",
-                        imgName);
-
-                    imgResize.ImageResize(filePath, resizePath, 750);
                 }
             }
         }
 
-        private async Task EditImg(List<IFormFile> images, List<string> imagesName)
+        // توجه داشته باشید عکس های قبلی و جدید به ترتیب داده شده باشند
+        private async Task EditImg(int productId, List<IFormFile> images, List<string> imagesName)
         {
             for (int i = 0; i < images.Count; i++)
             {
-                if (images[i].Length > 0)
+                if (images[i] != null && images[i].Length > 0)
                 {
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        Path.GetFileNameWithoutExtension(imagesName[i]) + Path.GetExtension(images[i].FileName));
+                    var imageInDatabase = await _productService.GetProductGalleryAsync(productId, imagesName[i]);
 
-                    await using (var stream = new FileStream(filePath, FileMode.Create))
+                    if (imageInDatabase != null)
                     {
-                        await images[i].CopyToAsync(stream);
+                        string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                            "wwwroot",
+                            "images",
+                            "ProductImages");
+
+                        // delete last image
+                        ImageConvertor.DeleteImage(filePath + "/" + imagesName[i]);
+
+                        // create new image
+
+
+                        var newImageName = await ImageConvertor.CreateNewImage(images[i], filePath, 750);
+
+                        imageInDatabase.ImageName = newImageName;
+                        var res = await _productService.EditProductGalleryAsync(imageInDatabase);
                     }
-
-
-
-                    // resize img
-                    ImageConvertor imgResize = new ImageConvertor();
-
-                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "ProductImages",
-                        "thumb",
-                        Path.GetFileNameWithoutExtension(imagesName[i]) + Path.GetExtension(images[i].FileName));
-
-                    imgResize.ImageResize(filePath, resizePath, 750);
                 }
             }
         }

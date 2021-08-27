@@ -1907,6 +1907,7 @@ header .top-menu {
 .form-field {
     padding: 0;
     margin-bottom: 1.5rem;
+    position: relative;
 }
 
     .form-field input,

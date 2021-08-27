@@ -886,9 +886,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Include(c => c.LaptopDetail);
         }
 
-        public async Task<ProductGallery> GetProductGalleryByIdAsync(string productGalleryId)
+        public async Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName)
             =>
-                await _context.ProductGalleries.FindAsync(productGalleryId);
+                await _context.ProductGalleries.SingleOrDefaultAsync(c=> c.ProductId == productId && c.ImageName == imageName);
 
         public async Task<int> GetProductGalleriesCountByProductIdAsync(int productId)
             =>
@@ -1483,6 +1483,9 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             _context.Products.Update(product);
         }
+
+        public void UpdateProductGallery(ProductGallery productGallery)
+            => _context.ProductGalleries.Update(productGallery);
 
         public void UpdateMobileDetail(MobileDetail mobileDetail)
         {

@@ -1,0 +1,72 @@
+﻿@model RightMenuActivePage
+
+@{
+    Layout = null;
+}
+
+<div class="right-menu">
+    <div class="logo">
+        <a href="#">
+            logo
+        </a>
+    </div>
+
+    <ul>
+        <li class="@(Model == RightMenuActivePage.DashboardPage? "active":"")">
+            <a href="#"><i class="far fa-home"></i> <span>داشبورد</span></a>
+        </li>
+
+        <li class="@(Model == RightMenuActivePage.ProductPage? "active":"")">
+            <a href="#"><i class="fas fa-inventory"></i> <span>کالاها</span></a>
+        </li>
+
+        <li class="dropdown @(Model == RightMenuActivePage.UserPage? "active":"")">
+            <a href="#"><i class="far fa-user"></i> <span>کاربر</span></a>
+
+            <ul>
+                <li>
+                    <a href="#"><i class="far fa-user"></i> کاربران</a>
+                </li>
+                <li>
+                    <a href="#"><i class="far fa-shield-check"></i> مقام</a>
+                </li>
+            </ul>
+        </li>
+        <li class="dropdown @(Model == RightMenuActivePage.ShopperPage? "active":"")">
+            <a href="#"><i class="far fa-store"></i> <span>فروشگاه</span></a>
+            <ul>
+                <li>
+                    <a href="#"><i class="far fa-layer-group"></i> عناوین</a>
+                </li>
+                <li>
+                    <a href="#"><i class="far fa-database"></i> فروشندگان</a>
+                </li>
+            </ul>
+        </li>
+        <li class="dropdown @(Model == RightMenuActivePage.CategoryPage? "active":"")">
+            <a href="#"><i class="far fa-books"></i> <span>دسته بندی</span></a>
+
+            <ul>
+                <li>
+                    <a href="#"><i class="far fa-bring-forward"></i> گروه ها</a>
+                </li>
+                <li>
+                    <a href="#"><i class="far fa-bring-front"></i> زیر گروه ها</a>
+                </li>
+            </ul>
+        </li>
+        <li class="dropdown @(Model == RightMenuActivePage.OriginPage? "active":"")">
+            <a href="#"><i class="far fa-map-signs"></i> <span>منطقه</span></a>
+
+            <ul>
+                <li>
+                    <a href="#"> <i class="far fa-globe"></i> استان</a>
+                </li>
+                <li>
+                    <a href="#"><i class="far fa-city"></i> شهر</a>
+                </li>
+            </ul>
+        </li>
+
+    </ul>
+</div>

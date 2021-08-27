@@ -108,6 +108,9 @@ namespace Reshop.Infrastructure.Context
             modelBuilder.Entity<ShopperStoreTitle>()
                 .HasKey(c => new { c.ShopperId, c.StoreTitleId });
 
+            modelBuilder.Entity<ProductGallery>()
+                .HasKey(c => new { c.ProductId, c.ImageName });
+
             modelBuilder.Entity<StateCity>()
                 .HasKey(c => new { c.StateId, c.CityId });
 

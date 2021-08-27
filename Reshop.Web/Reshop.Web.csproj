@@ -33,7 +33,6 @@
   <ItemGroup>
     <Folder Include="Areas\ManagerPanel\Views\Shared\" />
     <Folder Include="wwwroot\images\shoppersCardImages\" />
-    <Folder Include="wwwroot\images\shoppersCardImages\thumb\" />
   </ItemGroup>
 
 </Project>

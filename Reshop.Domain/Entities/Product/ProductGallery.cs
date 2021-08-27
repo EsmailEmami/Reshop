@@ -7,11 +7,7 @@ namespace Reshop.Domain.Entities.Product
     {
         public ProductGallery()
         {
-            
         }
-
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string ProductGalleryId { get; set; }
 
         [ForeignKey("Product")]
         public int ProductId { get; set; }

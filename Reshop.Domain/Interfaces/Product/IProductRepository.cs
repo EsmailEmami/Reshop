@@ -89,7 +89,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId);
         Task<AddOrEditAUXViewModel> GetTypeAUXProductDataForEditAsync(int productId);
         Task<string> GetProductTypeAsync(int productId);
-        Task<ProductGallery> GetProductGalleryByIdAsync(string productGalleryId);
+        Task<ProductGallery> GetProductGalleryAsync(int productId , string imageName);
         Task<int> GetProductGalleriesCountByProductIdAsync(int productId);
 
 
@@ -122,6 +122,7 @@ namespace Reshop.Domain.Interfaces.Product
 
 
         void UpdateProduct(Entities.Product.Product product);
+        void UpdateProductGallery(ProductGallery productGallery);
         void UpdateMobileDetail(MobileDetail mobileDetail);
         void UpdateLaptopDetail(LaptopDetail laptopDetail);
         void UpdatePowerBankDetail(PowerBankDetail powerBank);

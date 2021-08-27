@@ -1,20 +1,23 @@
-﻿using System.Drawing;
+﻿using Microsoft.AspNetCore.Http;
+using Reshop.Application.Generator;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reshop.Application.Convertors
 {
-    public class ImageConvertor
+    public static class ImageConvertor
     {
-        public void ImageResize(string inputImagePath, string outputImagePath, int newWidth)
+        public static void ImageResize(string inputImagePath, string outputImagePath, int newWidth)
         {
             const long quality = 50L;
 
             Bitmap sourceBitmap = new Bitmap(inputImagePath);
 
-           
+
 
             double dblWidthOriginal = sourceBitmap.Width;
 
@@ -101,6 +104,40 @@ namespace Reshop.Application.Convertors
             sourceBitmap.Dispose();
 
             //---------------</ Image_resize() >---------------
+        }
+
+        public static async Task<string> CreateNewImage(IFormFile image, string path, int thumbWidth = 270)
+        {
+            string originalImgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(image.FileName);
+            string thumbImgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(image.FileName);
+
+            string originalFilePath = path + "/" + originalImgName;
+            string thumbFilePath = path + "/" + thumbImgName;
+
+            // create original image
+            await using (var stream = new FileStream(originalFilePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+
+            // ---------------thumb---------------
+
+            // create thumb image
+            ImageResize(originalFilePath, thumbFilePath, thumbWidth);
+
+            // delete original Image
+            DeleteImage(originalFilePath);
+
+            return thumbImgName;
+        }
+
+        public static void DeleteImage(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
         }
     }
 }

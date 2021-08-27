@@ -1,14 +1,14 @@
-﻿using Reshop.Application.Enums.Product;
+﻿using Reshop.Application.Enums;
+using Reshop.Application.Enums.Product;
 using Reshop.Domain.DTOs.Product;
-using Reshop.Domain.Entities.Product;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.Shopper;
+using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Reshop.Application.Interfaces.Product
 {
@@ -42,7 +42,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<MemoryCardDetail> GetMemoryCardByIdAsync(int memoryCardId);
         Task<AUXDetail> GetAUXByIdAsync(int auxId);
         Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeAndHeadPhoneDetailId);
-        Task<ProductGallery> GetProductGalleryByIdAsync(string productGalleryId);
+        Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName);
         Task<ProductTypes> GetProductTypeByIdAsync(int productId);
 
         // detail of every product
@@ -51,7 +51,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId);
 
         // productId , productName , sellerId
-        Task<Tuple<int,string,string>> GetProductRedirectionByShortKeyAsync(string key);
+        Task<Tuple<int, string, string>> GetProductRedirectionByShortKeyAsync(string key);
         // get product types
         Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId);
         Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId);
@@ -86,6 +86,7 @@ namespace Reshop.Application.Interfaces.Product
 
         // update
         Task<ResultTypes> EditProductAsync(Domain.Entities.Product.Product product);
+        Task<ResultTypes> EditProductGalleryAsync(ProductGallery productGallery);
         Task<ResultTypes> EditMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
         Task<ResultTypes> EditLaptopAsync(Domain.Entities.Product.Product product, LaptopDetail laptopDetail);
         Task<ResultTypes> EditPowerBankAsync(Domain.Entities.Product.Product product, PowerBankDetail powerBank);

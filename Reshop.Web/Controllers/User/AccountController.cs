@@ -289,105 +289,32 @@ namespace Reshop.Web.Controllers.User
 
                 if (model.OnNationalCardImageName.Length > 0)
                 {
-                    IFormFile img = model.OnNationalCardImageName;
-
-                    string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
-
-
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                    var path = Path.Combine(Directory.GetCurrentDirectory(),
                         "wwwroot",
                         "images",
-                        "shoppersCardImages",
-                        "original",
-                        imgName);
-
-
-                    await using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await img.CopyToAsync(stream);
-                    }
-                    //thumb
-
-                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "shoppersCardImages",
-                        "thumb",
-                        imgName);
-
-                    ImageConvertor imgResize = new ImageConvertor();
-                    imgResize.ImageResize(filePath, resizePath, 270);
-
-
-                    shopper.OnNationalCardImageName = imgName;
+                        "shoppersCardImages");
+                  string imageName =   await ImageConvertor.CreateNewImage(model.OnNationalCardImageName, path);
+                    shopper.OnNationalCardImageName = imageName;
                 }
 
                 if (model.BackNationalCardImageName.Length > 0)
                 {
-                    IFormFile img = model.BackNationalCardImageName;
-
-                    string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
-
-
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                    var path = Path.Combine(Directory.GetCurrentDirectory(),
                         "wwwroot",
                         "images",
-                        "shoppersCardImages",
-                        "original",
-                        imgName);
-
-
-                    await using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await img.CopyToAsync(stream);
-                    }
-                    //thumb
-
-                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "shoppersCardImages",
-                        "thumb",
-                        imgName);
-
-                    ImageConvertor imgResize = new ImageConvertor();
-                    imgResize.ImageResize(filePath, resizePath, 270);
-
-                    shopper.BackNationalCardImageName = imgName;
+                        "shoppersCardImages");
+                    string imageName = await ImageConvertor.CreateNewImage(model.BackNationalCardImageName, path);
+                    shopper.BackNationalCardImageName = imageName;
                 }
 
                 if (model.BusinessLicenseImageName.Length > 0)
                 {
-                    IFormFile img = model.BusinessLicenseImageName;
-
-                    string imgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(img.FileName);
-
-
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                    var path = Path.Combine(Directory.GetCurrentDirectory(),
                         "wwwroot",
                         "images",
-                        "shoppersCardImages",
-                        "original",
-                        imgName);
-
-
-                    await using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await img.CopyToAsync(stream);
-                    }
-                    //thumb
-
-                    string resizePath = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "shoppersCardImages",
-                        "thumb",
-                        imgName);
-
-                    ImageConvertor imgResize = new ImageConvertor();
-                    imgResize.ImageResize(filePath, resizePath, 270);
-
-                    shopper.BusinessLicenseImageName = imgName;
+                        "shoppersCardImages");
+                    string imageName = await ImageConvertor.CreateNewImage(model.BusinessLicenseImageName, path);
+                    shopper.BusinessLicenseImageName = imageName;
                 }
 
                 #endregion

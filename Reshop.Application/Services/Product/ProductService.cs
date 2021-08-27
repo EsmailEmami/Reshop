@@ -1,22 +1,18 @@
-﻿using Reshop.Application.Enums.Product;
-using Reshop.Application.Generator;
+﻿using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
+using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Domain.DTOs.Product;
+using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
-using Reshop.Domain.Interfaces.Product;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Reshop.Application.Convertors;
-using Reshop.Application.Enums;
-using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
-using Reshop.Domain.Interfaces.Category;
+using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Reshop.Application.Services.Product
 {
@@ -204,9 +200,9 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetHandsfreeAndHeadPhoneDetailByIdAsync(handsfreeAndHeadPhoneDetailId);
 
-        public async Task<ProductGallery> GetProductGalleryByIdAsync(string productGalleryId)
+        public async Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName)
             =>
-                await _productRepository.GetProductGalleryByIdAsync(productGalleryId);
+                await _productRepository.GetProductGalleryAsync(productId, imageName);
 
         public async Task<ProductTypes> GetProductTypeByIdAsync(int productId)
         {
@@ -242,7 +238,7 @@ namespace Reshop.Application.Services.Product
             var childCategories = _productRepository.GetProductChildCategories(productId);
             var comments = _productRepository.GetProductComments(productId);
             var productGalleries = _productRepository.GetProductImages(productId);
-            var shoppers = _productRepository.GetProductShoppers(productId,product.SelectedColor);
+            var shoppers = _productRepository.GetProductShoppers(productId, product.SelectedColor);
             var colors = _productRepository.GetProductColors(productId);
 
 
@@ -339,6 +335,21 @@ namespace Reshop.Application.Services.Product
             try
             {
                 _productRepository.UpdateProduct(product);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditProductGalleryAsync(ProductGallery productGallery)
+        {
+            try
+            {
+                _productRepository.UpdateProductGallery(productGallery);
                 await _productRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
