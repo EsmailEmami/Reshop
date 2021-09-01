@@ -20,6 +20,7 @@ namespace Reshop.Web.API.Controllers
 
 
         [HttpGet("GetLastThirtyDayProductData/{productId}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> GetLastThirtyDayProductDataChart(int productId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -42,6 +43,7 @@ namespace Reshop.Web.API.Controllers
         }
 
         [HttpGet("GetLastThirtyDayBestShoppersOfProduct/{productId}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetLastThirtyDayBestShoppersOfProductChart(int productId)
         {
             var res = _shopperService.GetLastThirtyDayBestShoppersOfProductChart(productId);
@@ -55,6 +57,7 @@ namespace Reshop.Web.API.Controllers
         }
 
         [HttpGet("GetBestShoppersOfProduct/{productId}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetBestShoppersOfProductChart(int productId)
         {
             var res = _shopperService.GetBestShoppersOfProductChart(productId);
@@ -67,7 +70,8 @@ namespace Reshop.Web.API.Controllers
             return new ObjectResult(res);
         }
 
-        [HttpGet("GetColorsOfShopperProductData/{productId}")]
+        [HttpGet("GetColorsOfShopperProductData/{productId}")]  
+        [ResponseCache(Duration = 30,Location = ResponseCacheLocation.Client)]  
         public async Task<IActionResult> GetColorsOfShopperProductDataChart(int productId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -91,6 +95,7 @@ namespace Reshop.Web.API.Controllers
 
         //color
         [HttpGet("GetLastThirtyDayColorProductData/{productId}/{colorId}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> GetLastThirtyDayColorProductDataChart(int productId,int colorId)
         {
             string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -118,6 +123,7 @@ namespace Reshop.Web.API.Controllers
         }
 
         [HttpGet("GetLastThirtyDayBestShoppersOfColorProduct/{productId}/{colorId}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> GetLastThirtyDayBestShoppersOfColorProductChart(int productId, int colorId)
         {
             string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -145,6 +151,7 @@ namespace Reshop.Web.API.Controllers
         }
 
         [HttpGet("GetBestShoppersOfColorProduct/{productId}/{colorId}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> GetBestShoppersOfColorProductChart(int productId,int colorId)
         {
             string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -174,6 +181,7 @@ namespace Reshop.Web.API.Controllers
 
         //discount
         [HttpGet("GetLastTwentyDiscountDataOfShopperProductColor/{productId}/{colorId}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> GetLastTwentyDiscountDataOfShopperProductColorChart(int productId, int colorId)
         {
             string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));

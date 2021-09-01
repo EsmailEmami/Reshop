@@ -98,7 +98,6 @@ namespace Reshop.Web.Controllers.User
                 IsPhoneNumberActive = false,
                 Email = "-",
                 IsBlocked = false,
-                IsUserShopper = false,
             };
 
             var result = await _userService.AddUserAsync(user);
@@ -277,12 +276,54 @@ namespace Reshop.Web.Controllers.User
 
             try
             {
+                #region user
+
+                var user = new Domain.Entities.User.User
+                {
+                    FullName = model.FullName,
+                    ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
+                    RegisteredDate = DateTime.Now,
+                    UserAvatar = "userAvatar.jpg",
+                    PhoneNumber = model.PhoneNumber,
+                    InviteCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
+                    InviteCount = 0,
+                    Score = 0,
+                    NationalCode = model.NationalCode,
+                    Email = model.Email,
+                    IsPhoneNumberActive = true,
+                    IsBlocked = false
+                };
+
+                var addUser = await _userService.AddUserAsync(user);
+
+                if (addUser == ResultTypes.Successful)
+                {
+                    var addUserToRoleResult = await _roleService.AddUserToRoleAsync(user.UserId, "Shopper");
+
+                    if (addUserToRoleResult != ResultTypes.Successful)
+                    {
+                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت مقام شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                        return View(model);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
+                    return View(model);
+                }
+
+
+                #endregion
+
+
                 var shopper = new Shopper()
                 {
                     StoreName = model.StoreName,
                     BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate(),
                     RegisterShopper = DateTime.Now,
-                    IsFinally = false
+                    IsActive = false,
+                    User = user,
+                    UserId = user.UserId
                 };
 
                 #region shopper cards
@@ -293,7 +334,7 @@ namespace Reshop.Web.Controllers.User
                         "wwwroot",
                         "images",
                         "shoppersCardImages");
-                  string imageName =   await ImageConvertor.CreateNewImage(model.OnNationalCardImageName, path);
+                    string imageName = await ImageConvertor.CreateNewImage(model.OnNationalCardImageName, path);
                     shopper.OnNationalCardImageName = imageName;
                 }
 
@@ -321,53 +362,8 @@ namespace Reshop.Web.Controllers.User
 
                 var addShopper = await _shopperService.AddShopperAsync(shopper);
 
-
-
                 if (addShopper == ResultTypes.Successful)
                 {
-                    #region user
-
-                    var user = new Domain.Entities.User.User
-                    {
-                        FullName = model.FullName,
-                        ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
-                        RegisteredDate = DateTime.Now,
-                        UserAvatar = "userAvatar.jpg",
-                        PhoneNumber = model.PhoneNumber,
-                        InviteCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
-                        InviteCount = 0,
-                        Score = 0,
-                        NationalCode = model.NationalCode,
-                        Email = model.Email,
-                        IsPhoneNumberActive = true,
-                        IsBlocked = false,
-                        IsUserShopper = true,
-                        ShopperId = shopper.ShopperId
-                    };
-
-                    var addUser = await _userService.AddUserAsync(user);
-
-                    if (addUser == ResultTypes.Successful)
-                    {
-                        var addUserToRoleResult = await _roleService.AddUserToRoleAsync(user.UserId, "Shopper");
-
-                        if (addUserToRoleResult != ResultTypes.Successful)
-                        {
-                            ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت مقام شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                            return View(model);
-                        }
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
-                        return View(model);
-                    }
-
-
-                    #endregion
-
-
-
 
                     #region shopper storeTitle
 
@@ -427,6 +423,3 @@ namespace Reshop.Web.Controllers.User
         #endregion
     }
 }
-
-
-

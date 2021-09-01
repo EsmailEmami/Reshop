@@ -13,6 +13,7 @@ using Reshop.Domain.Interfaces.Shopper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.Chart;
 
 namespace Reshop.Application.Services.Product
 {
@@ -49,6 +50,21 @@ namespace Reshop.Application.Services.Product
 
 
             return new Tuple<IEnumerable<ProductViewModel>, int, int>(products, pageId, totalPages);
+        }
+
+        public async Task<Tuple<IEnumerable<ProductDataForAdmin>, int, int>> GetProductsWithPaginationForAdminAsync(string type = "all", int pageId = 1, int take = 18, string filter = "")
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int productsCount = await _productRepository.GetProductsCountWithTypeAsync(type.FixedText());
+
+            var products = _productRepository.GetProductsWithPaginationForAdmin(type.FixedText(), skip, take, filter);
+
+
+            int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
+
+
+            return new Tuple<IEnumerable<ProductDataForAdmin>, int, int>(products, pageId, totalPages);
         }
 
         public async Task<CategoryOrChildCategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null)
@@ -111,7 +127,10 @@ namespace Reshop.Application.Services.Product
             return new Tuple<IEnumerable<ProductViewModel>, int, int>(products, pageId, totalPages);
         }
 
-        public async Task<ProductDetailForShopperViewModel> GetProductDetailForShopperAsync(int productId, string shopperId)
+        public async Task<int> GetProductsCountWithTypeAsync(string type = "all")
+            => await _productRepository.GetProductsCountWithTypeAsync(type);
+
+        public async Task<ProductDetailForShow> GetProductDetailForShopperAsync(int productId, string shopperId)
         {
             string shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
 
@@ -123,10 +142,17 @@ namespace Reshop.Application.Services.Product
             return await _productRepository.GetProductDetailForShopperAsync(shopperProductId);
         }
 
-        public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId)
+        public async Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId)
         {
-            return await _productRepository.GetProductByIdAsync(productId);
+            var model = await _productRepository.GetProductDetailForAdminAsync(productId);
+            model.Colors = _productRepository.GetProductColors(model.ProductId);
+
+            return model;
         }
+
+
+        public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) => 
+            await _productRepository.GetProductByIdAsync(productId);
 
         public async Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId) =>
             await _productRepository.GetShopperProductAsync(shopperId, productId);
@@ -226,8 +252,9 @@ namespace Reshop.Application.Services.Product
                 "MobileBatteryCharger" => ProductTypes.MobileBatteryCharger,
                 "LaptopBatteryCharger" => ProductTypes.LaptopBatteryCharger,
                 "FlashMemory" => ProductTypes.FlashMemory,
+                "AUX" => ProductTypes.AUX,
 
-                _ => ProductTypes.NotFound
+                _ => ProductTypes.NotFound,
             };
         }
 
@@ -239,7 +266,7 @@ namespace Reshop.Application.Services.Product
             var comments = _productRepository.GetProductComments(productId);
             var productGalleries = _productRepository.GetProductImages(productId);
             var shoppers = _productRepository.GetProductShoppers(productId, product.SelectedColor);
-            var colors = _productRepository.GetProductColors(productId);
+            var colors = _productRepository.GetProductColorsWithDetail(productId);
 
 
             return new ProductDetailViewModel()
@@ -345,11 +372,11 @@ namespace Reshop.Application.Services.Product
             }
         }
 
-        public async Task<ResultTypes> EditProductGalleryAsync(ProductGallery productGallery)
+        public async Task<ResultTypes> DeleteProductGalleryAsync(ProductGallery productGallery)
         {
             try
             {
-                _productRepository.UpdateProductGallery(productGallery);
+                _productRepository.RemoveProductGallery(productGallery);
                 await _productRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
@@ -978,5 +1005,14 @@ namespace Reshop.Application.Services.Product
 
         public IEnumerable<Question> GetProductQuestions(int productId) =>
             _productRepository.GetProductQuestions(productId);
+
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId) =>
+            _productRepository.GetLastThirtyDayProductDataChart(productId);
+
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId,
+            int colorId) => _productRepository.GetLastThirtyDayColorProductDataChart(productId, colorId);
+
+        public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
+            _productRepository.GetColorsOfProductDataChart(productId);
     }
 }

@@ -34,12 +34,8 @@ namespace Reshop.Domain.Entities.Product
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ProductType { get; set; }
 
-
-        [ForeignKey("Brand")]
-        public int BrandId { get; set; }
-
         [ForeignKey("OfficialBrandProduct")]
-        public int? OfficialBrandProductId { get; set; }
+        public int OfficialBrandProductId { get; set; }
 
         [Required]
         public DateTime CreateDate { get; set; }
@@ -88,8 +84,6 @@ namespace Reshop.Domain.Entities.Product
 
         #region Relations
 
-        public virtual Brand Brand { get; set; }
-
         public virtual OfficialBrandProduct OfficialBrandProduct { get; set; }
 
         public virtual ICollection<ProductToChildCategory> ProductToChildCategories { get; set; }
@@ -127,9 +121,6 @@ namespace Reshop.Domain.Entities.Product
         public virtual AUXDetail AuxDetail { get; set; }
 
         public virtual ICollection<ShopperProduct> ShopperProducts { get; set; }
-        public virtual ICollection<ShopperProductRequest> ShopperProductRequests { get; set; }
-
-
 
         #endregion
     }

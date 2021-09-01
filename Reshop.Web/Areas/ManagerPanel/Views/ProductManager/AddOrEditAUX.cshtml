@@ -1,7 +1,247 @@
-﻿
+﻿@model AddOrEditAUXViewModel
+
 @{
-    ViewData["Title"] = "AddOrEditAUX";
+    ViewData["Title"] = Model.ProductId == 0 ? "AUX افزودن" : "AUX ویرایش";
+}
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ProductPage); }
 }
 
-<h1>AddOrEditAUX</h1>
+<form asp-action="AddOrEditAUX" method="post" enctype="multipart/form-data">
 
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="ProductId" />
+    <h3 class="title-header">مشخصات کالا</h3>
+    <div class="row">
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="form-field">
+                <input type="text" asp-for="ProductTitle" />
+                <label><i class="far fa-box-open"></i> نام کالا</label>
+                <span asp-validation-for="ProductTitle" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <select select-search="true">
+                <option value="">برند</option>
+                <option value="1">سامسونگ</option>
+                <option value="2">هواوی</option>
+            </select>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <select select-search="true" asp-for="OfficialBrandProductId">
+                <option value="">نام رسمی کالا</option>
+                <option value="1">سامسونگ</option>
+                <option value="2">هواوی</option>
+            </select>
+        </div>
+
+        <div class="col-sm-12 ">
+            <div class="form-field">
+                <textarea asp-for="Description"></textarea>
+                <label><i class="far fa-audio-description"></i> توضیجات</label>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="form-check">
+                <label>
+                    این کالا فعال است
+                    <input type="checkbox" checked asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="title-header">تصاویر</h3>
+
+    <div class="row justify-content-around">
+
+        @if (Model.ProductId == 0)
+        {
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct1">
+                    </div>
+                    <div class="file-field">
+                        <input asp-for="SelectedImage1" onchange="readURL(this, 'imgProduct1')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct2">
+                    </div>
+                    <div class="file-field">
+                        <input asp-for="SelectedImage2" onchange="readURL(this, 'imgProduct2')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct3">
+                    </div>
+                    <div class="file-field">
+                        <input asp-for="SelectedImage3" onchange="readURL(this, 'imgProduct3')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct4">
+                    </div>
+                    <div class="file-field">
+                        <input asp-for="SelectedImage4" onchange="readURL(this, 'imgProduct4')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct5">
+                    </div>
+                    <div class="file-field">
+                        <input asp-for="SelectedImage5" onchange="readURL(this, 'imgProduct5')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct6">
+                    </div>
+                    <div class="file-field">
+                        <input asp-for="SelectedImage6" onchange="readURL(this, 'imgProduct6')">
+                    </div>
+                </div>
+
+            </div>
+        }
+        else
+        {
+
+
+            //images
+
+
+            <input type="hidden" asp-for="SelectedImage1IMG" />
+            <input type="hidden" asp-for="SelectedImage2IMG" />
+            <input type="hidden" asp-for="SelectedImage3IMG" />
+            <input type="hidden" asp-for="SelectedImage4IMG" />
+            <input type="hidden" asp-for="SelectedImage5IMG" />
+            <input type="hidden" asp-for="SelectedImage6IMG" />
+
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/@Model.SelectedImage1IMG" alt="تصویر کالا" id="imgProduct1">
+                    </div>
+                    <div class="file-field">
+                        <input type="file" asp-for="SelectedImage1" onchange="readURL(this, 'imgProduct1')">
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/@Model.SelectedImage2IMG" alt="تصویر کالا" id="imgProduct2">
+                    </div>
+                    <div class="file-field">
+                        <input type="file" asp-for="SelectedImage2" onchange="readURL(this, 'imgProduct2')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/@Model.SelectedImage3IMG" alt="تصویر کالا" id="imgProduct3">
+                    </div>
+                    <div class="file-field">
+                        <input type="file" asp-for="SelectedImage3" onchange="readURL(this, 'imgProduct3')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/@Model.SelectedImage4IMG" alt="تصویر کالا" id="imgProduct4">
+                    </div>
+                    <div class="file-field">
+                        <input type="file" asp-for="SelectedImage4" onchange="readURL(this, 'imgProduct4')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/@Model.SelectedImage5IMG" alt="تصویر کالا" id="imgProduct5">
+                    </div>
+                    <div class="file-field">
+                        <input type="file" asp-for="SelectedImage5" onchange="readURL(this, 'imgProduct5')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <img src="~/images/ProductImages/@Model.SelectedImage6IMG" alt="تصویر کالا" id="imgProduct6">
+                    </div>
+                    <div class="file-field">
+                        <input type="file" asp-for="SelectedImage6" onchange="readURL(this, 'imgProduct6')">
+                    </div>
+                </div>
+
+            </div>
+        }
+
+
+    </div>
+
+
+
+
+    <h3 class="title-header">مشخصات کابل AUX</h3>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="form-field">
+                <input type="text" asp-for="CableMaterial" />
+                <label><i class="far fa-venus-mars"></i> نوع کابل</label>
+                <span asp-validation-for="CableMaterial" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="form-field">
+                <input type="text" asp-for="CableLenght" />
+                <label><i class="fal fa-ruler"></i> طول کابل</label>
+                <span asp-validation-for="CableLenght" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-success text-white">ثبت</button>
+    </div>
+</form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+}

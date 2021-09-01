@@ -13,7 +13,7 @@ namespace Reshop.Application.Interfaces.Shopper
     {
         // data , pageId , totalPages
         Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int>> GetShoppersInformationWithPagination(string type = "all", string filter = "", int pageId = 1, int take = 18);
-
+        Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int>> GetProductShoppersInformationWithPagination(int productId, string type = "all", string filter = "", int pageId = 1, int take = 18);
 
         Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> EditShopperAsync(Domain.Entities.Shopper.Shopper shopper);
@@ -90,6 +90,7 @@ namespace Reshop.Application.Interfaces.Shopper
         IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(string shopperProductColorId);
         // colorName , view , sell , returned
         Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(int productId, string shopperId);
+
         #endregion
     }
 }

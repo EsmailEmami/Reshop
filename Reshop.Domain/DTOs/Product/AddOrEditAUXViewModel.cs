@@ -23,10 +23,6 @@ namespace Reshop.Domain.DTOs.Product
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public string Description { get; set; }
 
-        [Display(Name = "برند محصول")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public int Brand { get; set; }
-
         [Display(Name = "نام محصول واقعی از برند")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public int OfficialBrandProductId { get; set; }
@@ -44,33 +40,27 @@ namespace Reshop.Domain.DTOs.Product
 
         [Display(Name = "طول کابل")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public double CableLenght { get; set; }
+        [Range(0, 99999, ErrorMessage = "{0} نمی تواند بیشتر از {2} کاراکتر باشد .")]
+        public int CableLenght { get; set; }
 
         // ---------------------------------------------------------------------------IMG
 
         [Display(Name = "عکس شماره 1")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public IFormFile SelectedImage1 { get; set; }
 
         [Display(Name = "عکس شماره 2")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public IFormFile SelectedImage2 { get; set; }
 
         [Display(Name = "عکس شماره 3")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public IFormFile SelectedImage3 { get; set; }
 
         [Display(Name = "عکس شماره 4")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public IFormFile SelectedImage4 { get; set; }
 
         [Display(Name = "عکس شماره 5")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public IFormFile SelectedImage5 { get; set; }
 
         [Display(Name = "عکس شماره 6")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public IFormFile SelectedImage6 { get; set; }
 
 

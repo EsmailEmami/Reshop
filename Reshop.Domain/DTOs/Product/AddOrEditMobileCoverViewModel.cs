@@ -21,10 +21,6 @@ namespace Reshop.Domain.DTOs.Product
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public string Description { get; set; }
 
-        [Display(Name = "برند محصول")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public int Brand { get; set; }
-
         [Display(Name = "نام محصول واقعی از برند")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public int OfficialBrandProductId { get; set; }

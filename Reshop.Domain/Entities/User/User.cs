@@ -73,13 +73,6 @@ namespace Reshop.Domain.Entities.User
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsBlocked { get; set; }
 
-        [Display(Name = "ایا کاربر فروشنده است ؟")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public bool IsUserShopper { get; set; }
-
-        [ForeignKey("Shopper")]
-        public string? ShopperId { get; set; }
-
         #region Relations
 
         public virtual ICollection<UserRole> UserRoles { get; set; }
@@ -91,7 +84,6 @@ namespace Reshop.Domain.Entities.User
         public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; }
         public virtual ICollection<Wallet> Wallets { get; set; }
         public virtual ICollection<UserDiscountCode> UserDiscountCodes { get; set; }
-        public virtual Shopper.Shopper Shopper { get; set; }
         public virtual ICollection<UserInvite> UserInvites { get; set; }
 
         #endregion

@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Application.Convertors;
+using Reshop.Domain.DTOs.Chart;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -31,9 +33,9 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public IEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take)
         {
+
             IQueryable<Domain.Entities.Product.Product> products = _context.Products
-                .Where(c => c.IsActive)
-                .Skip(skip).Take(take);
+                .Where(c => c.IsActive && c.ShopperProducts.Any());
 
 
             #region filter product
@@ -74,24 +76,58 @@ namespace Reshop.Infrastructure.Repository.Product
             #endregion
 
 
+            products = products.Skip(skip).Take(take);
+
+
             return products.Select(c => new ProductViewModel()
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand.BrandName,
-                Image = c.ProductGalleries.First().ImageName,
+                BrandName = c.OfficialBrandProduct.Brand.BrandName,
+                Image = c.ProductGalleries.FirstOrDefault().ImageName,
                 ProductPrice = c.ShopperProducts.SelectMany(a => a.ShopperProductColors)
-                    .OrderByDescending(o => o.SaleCount)
-                    .First().Price,
+                     .OrderByDescending(o => o.SaleCount)
+                     .FirstOrDefault().Price,
 
                 Discount = c.ShopperProducts.SelectMany(c => c.ShopperProductColors)
-                    .OrderByDescending(s => s.SaleCount).First()
-                    .Discounts.OrderByDescending(c => c.EndDate).Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
-                    .FirstOrDefault(),
+                     .OrderByDescending(s => s.SaleCount).First()
+                     .Discounts.OrderByDescending(c => c.EndDate).Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
+                     .FirstOrDefault(),
 
                 ShopperProductColorId = c.ShopperProducts.SelectMany(a => a.ShopperProductColors)
-                    .OrderByDescending(o => o.SaleCount)
-                    .First().ShopperProductColorId
+                     .OrderByDescending(o => o.SaleCount)
+                     .FirstOrDefault().ShopperProductColorId
+            });
+        }
+
+        public IEnumerable<ProductDataForAdmin> GetProductsWithPaginationForAdmin(string type, int skip, int take, string filter)
+        {
+            IQueryable<Domain.Entities.Product.Product> products = _context.Products
+                .Where(c => c.IsActive)
+                .Skip(skip).Take(take);
+
+
+            #region filter product
+
+            if (type != "all")
+            {
+                products = products.Where(c => c.ProductType.ToLower() == type);
+            }
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ProductTitle.Contains(filter));
+            }
+
+            #endregion
+
+
+            return products.Select(c => new ProductDataForAdmin()
+            {
+                ProductId = c.ProductId,
+                ProductTitle = c.ProductTitle,
+                BrandName = c.OfficialBrandProduct.Brand.BrandName,
+                OfficialName = c.OfficialBrandProduct.OfficialBrandProductName
             });
         }
 
@@ -160,7 +196,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand.BrandName,
+                BrandName = c.OfficialBrandProduct.Brand.BrandName,
                 Image = c.ProductGalleries.First().ImageName,
                 ProductPrice = c.ShopperProducts.SelectMany(a => a.ShopperProductColors)
                     .OrderByDescending(o => o.SaleCount)
@@ -237,7 +273,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.ProductTitle,
-                BrandName = c.Brand.BrandName,
+                BrandName = c.OfficialBrandProduct.Brand.BrandName,
                 Image = c.ProductGalleries.First().ImageName,
                 ProductPrice = c.ShopperProducts.SelectMany(a => a.ShopperProductColors)
                     .OrderByDescending(o => o.SaleCount)
@@ -303,8 +339,8 @@ namespace Reshop.Infrastructure.Repository.Product
                         Title = c.ShopperProduct.Product.ProductTitle,
                         Detail = detail,
                         Price = c.Price,
-                        Brand = new Tuple<int, string>(c.ShopperProduct.Product.Brand.BrandId,
-                            c.ShopperProduct.Product.Brand.BrandName),
+                        Brand = new Tuple<int, string>(c.ShopperProduct.Product.OfficialBrandProduct.BrandId,
+                            c.ShopperProduct.Product.OfficialBrandProduct.Brand.BrandName),
                         LastDiscount = c.Discounts.OrderByDescending(c => c.EndDate)
                             .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate)).FirstOrDefault(),
                     }).SingleOrDefaultAsync();
@@ -323,28 +359,39 @@ namespace Reshop.Infrastructure.Repository.Product
                     .Where(c => c.CategoryId == categoryId)
                     .Select(c => c.ChildCategory)
                     .SelectMany(c => c.ProductToChildCategories)
-                    .Select(c => c.Product.Brand.BrandName).Distinct();
+                    .Select(c => c.Product.OfficialBrandProduct.Brand.BrandName).Distinct();
 
         public IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId) =>
             _context.ProductToChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.Product.Brand.BrandName).Distinct();
+                .Select(c => c.Product.OfficialBrandProduct.Brand.BrandName).Distinct();
 
         public async Task<Tuple<int, string, string>> GetProductRedirectionByShortKeyAsync(string key)
             => await _context.ShopperProductColors.Where(c => c.ShortKey == key)
                 .Select(c => new Tuple<int, string, string>(c.ShopperProduct.ProductId, c.ShopperProduct.Product.ProductTitle, c.ShopperProductColorId))
                 .SingleOrDefaultAsync();
 
-        public async Task<ProductDetailForShopperViewModel> GetProductDetailForShopperAsync(string shopperProductId) =>
+        public async Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId) =>
             await _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
-                .Select(c => new ProductDetailForShopperViewModel()
+                .Select(c => new ProductDetailForShow()
                 {
                     ProductId = c.ProductId,
                     ProductName = c.Product.ProductTitle,
                     ProductImage = c.Product.ProductGalleries.First().ImageName,
-                    BrandName = c.Product.Brand.BrandName,
+                    BrandName = c.Product.OfficialBrandProduct.Brand.BrandName,
                     ShoppersCount = c.Product.ShopperProducts.Count,
                     Colors = c.ShopperProductColors.Select(c => new Tuple<int, string>(c.ColorId, c.Color.ColorName))
+                }).SingleOrDefaultAsync();
+
+        public async Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId) =>
+            await _context.Products.Where(c => c.ProductId == productId)
+                .Select(c => new ProductDetailForShow()
+                {
+                    ProductId = c.ProductId,
+                    ProductName = c.ProductTitle,
+                    ProductImage = c.ProductGalleries.First().ImageName,
+                    BrandName = c.OfficialBrandProduct.Brand.BrandName,
+                    ShoppersCount = c.ShopperProducts.Count,
                 }).SingleOrDefaultAsync();
 
         public IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId) =>
@@ -353,7 +400,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ColorId == colorId)
                 .Select(c => new Tuple<string, string, string>(c.ShopperProductColorId, c.ShopperProduct.Shopper.StoreName, c.ShopperProduct.Warranty));
 
-        public IEnumerable<Tuple<int, string, string, string>> GetProductColors(int productId) =>
+        public IEnumerable<Tuple<int, string, string, string>> GetProductColorsWithDetail(int productId) =>
             _context.ShopperProducts
                 .Where(c => c.ProductId == productId)
                 .SelectMany(c => c.ShopperProductColors)
@@ -372,6 +419,12 @@ namespace Reshop.Infrastructure.Repository.Product
         public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) =>
             await _context.Products.FindAsync(productId);
 
+        public IEnumerable<Tuple<int, string>> GetProductColors(int productId) =>
+            _context.ShopperProducts.Where(c => c.ProductId == productId)
+                .SelectMany(c => c.ShopperProductColors)
+                .Select(c => c.Color).Distinct()
+                .Select(c => new Tuple<int, string>(c.ColorId, c.ColorName));
+
         public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId) =>
             await _context.ShopperProductColors
                 .Where(c => c.ShopperProductColorId == shopperProductColorId)
@@ -381,7 +434,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     SelectedColor = c.ColorId,
                     Price = c.Price,
                     Shoppers = GetProductShoppers(productId, c.ColorId),
-                    Colors = GetProductColors(productId)
+                    Colors = GetProductColorsWithDetail(productId)
                 }).SingleOrDefaultAsync();
 
         public IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string type, string sortBy, int skip, int take)
@@ -424,7 +477,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.Product.ProductTitle,
-                BrandName = c.Product.Brand.BrandName,
+                BrandName = c.Product.OfficialBrandProduct.Brand.BrandName,
                 Image = c.Product.ProductGalleries.First().ImageName,
                 ProductPrice = c.ShopperProductColors
                     .OrderByDescending(o => o.SaleCount)
@@ -495,7 +548,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.ProductId,
                 ProductTitle = c.Product.ProductTitle,
-                BrandName = c.Product.Brand.BrandName,
+                BrandName = c.Product.OfficialBrandProduct.Brand.BrandName,
                 ProductPrice = c.ShopperProductColors.OrderByDescending(o => o.SaleCount).First().Price,
                 Discount = c.ShopperProductColors.OrderByDescending(o => o.SaleCount)
                     .First().Discounts.Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate)).LastOrDefault(),
@@ -810,7 +863,7 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 ProductId = c.Product.ProductId,
                 ProductTitle = c.Product.ProductTitle,
-                BrandName = c.Product.Brand.BrandName,
+                BrandName = c.Product.OfficialBrandProduct.Brand.BrandName,
                 ProductPrice = c.ShopperProductColor.Price,
                 ShopperProductColorId = c.ShopperProductColorId,
             });
@@ -859,7 +912,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 {
                     ProductId = c.ProductId,
                     ProductTitle = c.ProductTitle,
-                    BrandName = c.Brand.BrandName,
+                    BrandName = c.OfficialBrandProduct.Brand.BrandName,
                     ProductPrice = c.ShopperProducts.SelectMany(a => a.ShopperProductColors)
                         .OrderByDescending(o => o.SaleCount)
                         .First().Price,
@@ -873,6 +926,45 @@ namespace Reshop.Infrastructure.Repository.Product
                         .First().ShopperProductColorId
                 }) as IAsyncEnumerable<ProductViewModel>;
         }
+
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId) =>
+            _context.OrderDetails.Where(c =>
+                    c.ShopperProductColor.ShopperProduct.ProductId == productId &&
+                    c.Order.IsPayed &&
+                    c.Order.PayDate >= DateTime.Now.AddDays(-30))
+                .OrderBy(c => c.Order.PayDate)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Order.PayDate.Value.ToShamsiDate(),
+                    ViewCount = 10,
+                    SellCount = c.Count,
+                });
+
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId) =>
+            _context.OrderDetails.Where(c =>
+                    c.ShopperProductColor.ShopperProduct.ProductId == productId &&
+                    c.ShopperProductColor.ColorId == colorId &&
+                    c.Order.IsPayed &&
+                    c.Order.PayDate >= DateTime.Now.AddDays(-30))
+                .OrderBy(c => c.Order.PayDate)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Order.PayDate.Value.ToShamsiDate(),
+                    ViewCount = 10,
+                    SellCount = c.Count,
+                });
+
+        public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
+            _context.Products.Where(c => c.ProductId == productId)
+                .SelectMany(c => c.ShopperProducts)
+                .SelectMany(c => c.ShopperProductColors)
+                .Select(c => new Tuple<string, int, int, int>(
+                    c.Color.ColorName,
+                    10,
+                    _context.OrderDetails
+                        .Where(o => o.ShopperProductColorId == c.ShopperProductColorId)
+                        .Sum(s => s.Count), 10));
+
 
         public IEnumerable<Domain.Entities.Product.Product> GetTypeMobileProducts()
         {
@@ -888,7 +980,7 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName)
             =>
-                await _context.ProductGalleries.SingleOrDefaultAsync(c=> c.ProductId == productId && c.ImageName == imageName);
+                await _context.ProductGalleries.SingleOrDefaultAsync(c => c.ProductId == productId && c.ImageName == imageName);
 
         public async Task<int> GetProductGalleriesCountByProductIdAsync(int productId)
             =>
@@ -908,8 +1000,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     ProductId = c.ProductId,
                     ProductTitle = c.ProductTitle,
                     Description = c.Description,
-                    Brand = c.BrandId,
-                    OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                    OfficialBrandProductId = c.OfficialBrandProductId,
                     IsActive = c.IsActive,
 
                     //img
@@ -987,8 +1078,7 @@ namespace Reshop.Infrastructure.Repository.Product
                      ProductId = c.ProductId,
                      ProductTitle = c.ProductTitle,
                      Description = c.Description,
-                     Brand = c.BrandId,
-                     OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                     OfficialBrandProductId = c.OfficialBrandProductId,
                      IsActive = c.IsActive,
 
                      //img
@@ -1054,8 +1144,7 @@ namespace Reshop.Infrastructure.Repository.Product
                      ProductId = c.ProductId,
                      ProductTitle = c.ProductTitle,
                      Description = c.Description,
-                     Brand = c.BrandId,
-                     OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                     OfficialBrandProductId = c.OfficialBrandProductId,
                      IsActive = c.IsActive,
 
                      //img
@@ -1091,8 +1180,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductId = c.ProductId,
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
-                        Brand = c.BrandId,
-                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                        OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
 
                         //img
@@ -1118,8 +1206,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductId = c.ProductId,
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
-                        Brand = c.BrandId,
-                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                        OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
 
                         //img
@@ -1165,8 +1252,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductId = c.ProductId,
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
-                        Brand = c.BrandId,
-                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                        OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
 
                         //img
@@ -1245,8 +1331,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductId = c.ProductId,
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
-                        Brand = c.BrandId,
-                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                        OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
 
                         //img
@@ -1288,8 +1373,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductId = c.ProductId,
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
-                        Brand = c.BrandId,
-                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                        OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
 
                         //img
@@ -1310,8 +1394,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductId = c.ProductId,
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
-                        Brand = c.BrandId,
-                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                        OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
 
                         //img
@@ -1365,8 +1448,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         ProductId = c.ProductId,
                         ProductTitle = c.ProductTitle,
                         Description = c.Description,
-                        Brand = c.BrandId,
-                        OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                        OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
 
                         //img
@@ -1395,8 +1477,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     ProductId = c.ProductId,
                     ProductTitle = c.ProductTitle,
                     Description = c.Description,
-                    Brand = c.BrandId,
-                    OfficialBrandProductId = c.OfficialBrandProductId.Value,
+                    OfficialBrandProductId = c.OfficialBrandProductId,
                     IsActive = c.IsActive,
 
                     //img
@@ -1484,8 +1565,8 @@ namespace Reshop.Infrastructure.Repository.Product
             _context.Products.Update(product);
         }
 
-        public void UpdateProductGallery(ProductGallery productGallery)
-            => _context.ProductGalleries.Update(productGallery);
+        public void RemoveProductGallery(ProductGallery productGallery)
+            => _context.ProductGalleries.Remove(productGallery);
 
         public void UpdateMobileDetail(MobileDetail mobileDetail)
         {
@@ -1577,7 +1658,6 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             _context.LaptopDetails.RemoveRange(laptopDetails);
         }
-
 
     }
 }

@@ -46,7 +46,9 @@ namespace Reshop.Domain.Entities.Shopper
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string BusinessLicenseImageName { get; set; }
 
-        [Display(Name = "وضعیت فروشنده")] public bool IsFinally { get; set; }
+        [Display(Name = "وضعیت فروشنده")] 
+        public bool IsActive { get; set; }
+
 
         #region Relations
 

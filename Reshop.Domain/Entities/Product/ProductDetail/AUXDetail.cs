@@ -14,7 +14,7 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         [Display(Name = "طول کابل")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public double CableLenght { get; set; }
+        [Range(0, 99999, ErrorMessage = "{0} نمی تواند بیشتر از {2} کاراکتر باشد .")]
+        public int CableLenght { get; set; }
     }
 }

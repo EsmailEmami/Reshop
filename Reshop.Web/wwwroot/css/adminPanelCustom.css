@@ -35,11 +35,128 @@ html {
     overflow-x: hidden;
 }
 
+.box-shadow {
+    border: 1px solid #e9e8e8;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #d5d0c2c2;
+    background-color: #fff;
+}
+
+.scrollChart {
+    width: 100%;
+    overflow-x: scroll;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+    .scrollChart::-webkit-scrollbar {
+        height: 5px;
+    }
+
+    .scrollChart::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px #d1d1d1;
+        border-radius: 10px;
+    }
+
+    .scrollChart::-webkit-scrollbar-thumb {
+        background: #c3c3c3;
+        border-radius: 10px;
+    }
+
+        .scrollChart::-webkit-scrollbar-thumb:hover {
+            background: #aea4a4;
+        }
+
+.chartheader {
+    font-size: 17px;
+    font-weight: bold;
+    color: #222;
+    margin-top: 10px;
+}
+
+.table-responsive {
+    margin-bottom: 1rem;
+}
+
+table.responsive {
+    overflow-x: auto
+}
+
+table tr th {
+    white-space: nowrap;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 5px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #d1d1d1;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #c3c3c3;
+    border-radius: 10px;
+}
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #aea4a4;
+    }
+
 
 /* width */
 
 ::-webkit-scrollbar {
     width: 0;
+}
+
+/* -------------------------------------- pagination -------------------------------------- */
+
+
+ul.pagination-custom {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    list-style: none;
+    margin: 2rem 0 0 0;
+}
+
+.pagination-custom li {
+    display: inline-block;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    transition: background-color .3s;
+    border: 2px solid #edebeb;
+    border-radius: 25px;
+    margin: 0 4px;
+    text-align: center;
+    line-height: 40px
+}
+
+.pagination-custom li.disabled a {
+    pointer-events: none;
+}
+
+.pagination-custom a {
+    text-decoration: none;
+    color: #222;
+    background: none;
+}
+
+.pagination-custom li.active {
+    background-color: #FC5400;
+    border: 2px solid #232323;
+}
+
+.pagination-custom li.active a {
+    color: white;
+}
+
+.pagination-custom li:hover:not(.active) {
+    background-color: #edebeb;
 }
 
 
@@ -103,7 +220,8 @@ html {
             white-space: nowrap;
         }
 
-            .right-menu ul li a {
+            .right-menu ul li a,
+            .right-menu ul li.dropdown span.name {
                 font-size: 17px;
                 text-decoration: none;
                 color: #fff;
@@ -113,7 +231,8 @@ html {
                 padding-right: 25px;
             }
 
-                .right-menu ul li a i {
+                .right-menu ul li a i,
+                .right-menu ul li.dropdown span.name i {
                     padding-left: 7px;
                     color: #ffffffe3;
                 }
@@ -127,7 +246,9 @@ html {
             }
 
                 .right-menu ul li.active a,
-                .right-menu ul li.active a i {
+                .right-menu ul li.active a i,
+                .right-menu ul li.dropdown.active span.name,
+                .right-menu ul li.dropdown.active span.name i {
                     color: #FC5400;
                 }
 
@@ -218,16 +339,19 @@ html {
             width: 53px;
         }
 
-            .right-menu.min ul li a {
+            .right-menu.min ul li a,
+            .right-menu.min ul li.dropdown span.name {
                 padding-right: 0;
                 text-align: center;
             }
 
-                .right-menu.min ul li a span {
+                .right-menu.min ul li a span,
+                .right-menu.min ul li.dropdown span.name span {
                     display: none;
                 }
 
-                .right-menu.min ul li a i {
+                .right-menu.min ul li a i,
+                .right-menu.min ul li.dropdown span.name i {
                     padding-left: 0;
                     font-size: 22px;
                 }
@@ -381,12 +505,716 @@ html {
     .content-page .content-main {
         padding: 0 10px;
         width: 100%;
-        margin-top: 80px;
+        margin-top: 90px;
         overflow: hidden;
     }
 
-@media screen and (max-width: 1026px) {
+
+        /* product panel */
+
+
+        /* card */
+
+        .content-page .content-main .card-data {
+            border: 2px solid #eaeaea;
+            padding: 10px;
+            border-radius: 7px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            background: #f2f2f2;
+        }
+
+            .content-page .content-main .card-data:hover {
+                transition: ease-in .3s;
+                border-color: #FC5400;
+            }
+
+            .content-page .content-main .card-data .header {
+                margin-bottom: 5px;
+                position: relative;
+            }
+
+                .content-page .content-main .card-data .header h3 {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #242424;
+                }
+
+                .content-page .content-main .card-data .header i {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    font-size: 19px;
+                    color: #242424;
+                }
+
+
+            /* main */
+
+            .content-page .content-main .card-data .content {
+                border-top: 1px solid #e1e1e1;
+                padding-top: 5px;
+                font-family: cursive;
+                text-align: left;
+            }
+
+
+        /* add product */
+
+        .content-page .content-main .add-product {
+            border-top: 1px solid #d7d7d7;
+            border-bottom: 1px solid #d7d7d7;
+            padding: 10px 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+        }
+
+            .content-page .content-main .add-product h3 {
+                width: 100%;
+                font-size: 17px;
+                font-weight: bold;
+                color: #242424;
+                margin-bottom: 15px;
+            }
+
+            .content-page .content-main .add-product a {
+                margin: 10px 15px;
+                border-radius: 8px;
+                color: #fff;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+        .content-page .content-main .table-list {
+            padding: 10px 0;
+            position: relative;
+        }
+
+            .content-page .content-main .table-list .filter {
+                border: 2px solid #d7d7d7;
+                box-shadow: 0 0 5px 0 #d1d1d1eb;
+                border-radius: 5px;
+                padding: 10px 0;
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: space-between;
+            }
+
+                .content-page .content-main .table-list .filter .filter-input {
+                    width: 100%;
+                    display: inline-block;
+                    padding: 5px 12px;
+                    border: 2px solid #ced4da;
+                    border-radius: 5px;
+                    position: relative;
+                    width: 100%;
+                    height: 38px;
+                    margin-right: 10px;
+                    margin-left: 10px;
+                    outline: none;
+                }
+
+                    .content-page .content-main .table-list .filter .filter-input:focus {
+                        border-color: #222;
+                    }
+
+
+                /* custom select */
+
+                .content-page .content-main .table-list .filter .select-dropdown {
+                    margin-right: 10px;
+                    margin-left: 10px;
+                    margin-bottom: 0;
+                }
+
+
+/* product detail */
+
+.general-detail {
+    position: relative;
 }
+
+    .general-detail .img-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 270px;
+        border-radius: 8px;
+        padding: 5px;
+    }
+
+        .general-detail .img-box img {
+            width: 100%;
+            max-width: 474px;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+    .general-detail .general-data {
+        width: 100%;
+        padding: 5px 15px 15px 15px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+.part-title {
+    display: block;
+    text-align: center;
+    width: 100%;
+    color: #4d4d4d;
+    font-size: 25px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+    .part-title::before {
+        background: #cecece none repeat scroll 0 0;
+        top: 41px;
+        content: "";
+        height: 2px;
+        left: 0;
+        position: absolute;
+        transition: all 0.3s ease 0s;
+        width: 100%;
+        z-index: 0;
+    }
+
+.general-detail .general-data div {
+    margin-bottom: 20px;
+    width: 50%;
+}
+
+    .general-detail .general-data div h3 {
+        margin: 0;
+        font-weight: bold;
+        font-size: 16px;
+        color: #3f3f3f;
+        display: inline-block;
+    }
+
+.chart,
+.colors {
+    width: 100%;
+    padding: 5px 15px 15px 15px;
+}
+
+.scrollChart {
+    width: 100%;
+    overflow-x: scroll;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+    .scrollChart::-webkit-scrollbar {
+        height: 5px;
+    }
+
+    .scrollChart::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px #d1d1d1;
+        border-radius: 10px;
+    }
+
+    .scrollChart::-webkit-scrollbar-thumb {
+        background: #c3c3c3;
+        border-radius: 10px;
+    }
+
+        .scrollChart::-webkit-scrollbar-thumb:hover {
+            background: #aea4a4;
+        }
+
+.chartheader {
+    font-size: 17px;
+    font-weight: bold;
+    color: #222;
+    margin-top: 10px;
+}
+
+.colors .item {
+    margin: 20px 10px 0 10px;
+    border-radius: 13px 13px 8px 8px;
+    position: relative;
+    border: 2px dashed #a0a0a0;
+    min-height: 36px;
+}
+
+    .colors .item .title {
+        width: 100%;
+        position: relative;
+        height: 32px;
+    }
+
+        .colors .item .title h3 {
+            padding: 5px 20px;
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            z-index: 2;
+            margin: 0;
+            width: auto;
+            background: #fff;
+            color: #222;
+            font-weight: bold;
+            font-size: 19px;
+            text-align: center;
+            border-radius: 3px 13px;
+            border: 2px solid #a0a0a0;
+            height: 36px;
+        }
+
+    .colors .item button.collapsible {
+        padding: 0 20px;
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        z-index: 2;
+        margin: 0;
+        width: auto;
+        background: #fff;
+        color: #222;
+        font-weight: bold;
+        font-size: 19px;
+        text-align: center;
+        border-radius: 13px 3px;
+        border: 2px solid #a0a0a0;
+        outline: none;
+        height: 36px;
+    }
+
+        .colors .item button.collapsible:hover {
+            transition: ease .3s;
+            background: #eaeaea;
+        }
+
+    .colors .item .content {
+        padding: 0 10px;
+        position: relative;
+        /* max-height: 0; */
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+    }
+
+        .colors .item .content .content-header {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 2px solid #dee2e6;
+            padding: 0;
+            list-style: none;
+            margin-top: 20px;
+        }
+
+            .colors .item .content .content-header li {
+                padding: 5px 15px;
+                margin-bottom: -2px;
+                border: 2px solid transparent;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+            }
+
+                .colors .item .content .content-header li a {
+                    font-size: 17px;
+                    font-weight: bold;
+                    color: #222;
+                    text-decoration: none;
+                    text-align: center;
+                }
+
+                .colors .item .content .content-header li.active {
+                    border-color: #dee2e6;
+                }
+
+                    .colors .item .content .content-header li.active a {
+                        color: #FC5400;
+                    }
+
+                .colors .item .content .content-header li:hover {
+                    border-color: #dee2e6;
+                }
+
+        .colors .item .content .data,
+        .colors .item .content .action {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+            .colors .item .content .data div,
+            .colors .item .content .action div {
+                margin: 10px 0;
+                padding: 0 15px;
+            }
+
+                .colors .item .content .data div h3,
+                .colors .item .content .action h3 {
+                    margin: 0;
+                    font-weight: bold;
+                    font-size: 16px;
+                    color: #3f3f3f;
+                    display: inline-block;
+                }
+
+        .colors .item .content .action {
+            align-items: center;
+            background: #f2f2f2;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 2px solid;
+            border-color: #00a1ff #FC5400 #00a1ff #FC5400;
+            padding: 1rem 0;
+        }
+
+            .colors .item .content .action button {
+                display: block;
+                outline: none;
+                border-radius: 8px;
+                font-weight: bold;
+                color: white;
+                padding-left: 20px;
+                padding-right: 20px;
+                margin-left: 15px;
+                margin-right: auto;
+            }
+
+/* inputs */
+
+.form-field,
+.image-field {
+    padding: 0;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+    .form-field input,
+    textarea {
+        display: block;
+        position: relative;
+        width: 100%;
+        font-size: 14px;
+        height: 38px;
+        padding: 6px 8px;
+        line-height: 30px;
+        color: #222222;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 2px solid #ced4da;
+        border-radius: 5px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .form-field textarea {
+        min-height: 38px;
+        height: auto;
+    }
+
+    .form-field label {
+        position: absolute;
+        top: .58rem;
+        right: 15px;
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        color: #6d6d6d;
+        pointer-events: none;
+        transition: all ease 0.3s;
+        border-radius: 25px;
+    }
+
+    .form-field input:focus,
+    .form-field textarea:focus,
+    .register-shopper-area select:focus,
+    .form-file input:focus ~ label {
+        border-color: #FC5400;
+        outline: none;
+        box-shadow: 0 0 5px #FC5400;
+    }
+
+        .form-field input:focus ~ label,
+        .form-field textarea:focus ~ label {
+            background-color: #ffffff;
+            top: -12px;
+            color: #FC5400;
+            font-size: 14px;
+            padding: 0 5px;
+            right: 15px;
+        }
+
+    .form-field input.active ~ label,
+    .form-field textarea.active ~ label {
+        background-color: #ffffff;
+        top: -12px;
+        color: #495057;
+        font-size: 14px;
+        padding: 0 5px;
+        right: 25px;
+    }
+
+    .form-field input:focus ~ label i,
+    .form-field textarea:focus ~ label i {
+        display: none;
+    }
+
+    .form-field input.active ~ label i,
+    .form-field textarea.active ~ label i {
+        display: none;
+    }
+
+    .form-field select {
+        width: 100%;
+        border: 2px solid #ced4da;
+        border-radius: 5px;
+        height: 38px;
+    }
+
+.form-file {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 38px;
+    margin-bottom: 1rem;
+}
+
+    .form-file input {
+        position: relative;
+        width: 100%;
+        height: 38px;
+        margin: 0;
+        opacity: 0;
+        border: none;
+        outline: none;
+        z-index: 2;
+    }
+
+    .form-file label {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1;
+        height: 38px;
+        padding: 6px 8px;
+        margin: 0;
+        line-height: 25px;
+        color: #495057;
+        background-color: #fff;
+        border: 2px solid #ced4da;
+        border-radius: 5px;
+    }
+
+        .form-file label::after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 3;
+            display: block;
+            line-height: 22px;
+            padding: 6px 8px;
+            color: #495057;
+            content: "?????";
+            background-color: #e9ecef;
+            border-left: none;
+            border-right: 2px solid #ced4da;
+            outline: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+    .form-field input:focus,
+    .form-field textarea:focus,
+    .register-shopper-area select:focus,
+    .form-file input:focus ~ label {
+        border-color: #FC5400;
+        outline: none;
+        box-shadow: 0 0 5px #FC5400;
+    }
+
+.radio label {
+    position: relative;
+    padding-right: 27px;
+    margin: 0;
+    cursor: pointer;
+    font-size: 13px;
+    color: #3f3f3f;
+    font-weight: bold;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    .radio label > input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+        .radio label > input:checked ~ span {
+            background: #FC5400;
+        }
+
+    .radio label > span {
+        position: absolute;
+        top: 3px;
+        right: 0;
+        height: 30px;
+        width: 30px;
+        background-color: #eee;
+        border-radius: 50%;
+    }
+
+        .radio label > span::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            margin: auto;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+.form-check {
+    padding: 0;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+    .form-check label {
+        display: block;
+        position: relative;
+        padding-right: 23px;
+        cursor: pointer;
+        font-size: 13px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        font-weight: bold;
+        color: #222;
+    }
+
+        .form-check label input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+
+        /* Create a custom checkbox */
+
+        .form-check label span {
+            position: absolute;
+            top: 1px;
+            right: 0;
+            height: 18px;
+            width: 18px;
+            background-color: #eee;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+
+        /* On mouse-over, add a grey background color */
+
+        .form-check label:hover input ~ span {
+            background-color: #e8e8e8;
+        }
+
+
+        /* When the checkbox is checked, add a blue background */
+
+        .form-check label input:checked ~ span {
+            background-color: #FC5400;
+            border-color: #e9ecef;
+        }
+
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+
+        .form-check label span::after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+
+        /* Show the checkmark when checked */
+
+        .form-check label input:checked ~ span::after {
+            display: block;
+        }
+
+
+        /* Style the checkmark/indicator */
+
+        .form-check label span::after {
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 9px;
+            border: solid #fff;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate( 45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate( 45deg);
+        }
+
+.image-field {
+    border: 2px solid #ced4da;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 360px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+    .image-field .image-area {
+        padding: 5px;
+        position: relative;
+        height: 270px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+        .image-field .image-area img {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+.file-field {
+    border-top: 2px solid #ced4da;
+    padding: 2px;
+    height: 38px;
+    padding: 6px 8px;
+}
+
+    .file-field input {
+        line-height: 17px;
+    }
+
+.title-header {
+    width: 100%;
+    font-size: 17px;
+    font-weight: bold;
+    color: #222;
+}
+
+/* media queries */
 
 @media screen and (max-width: 767px) {
     .right-menu {
@@ -394,7 +1222,6 @@ html {
     }
 
     .content-page {
-        width: 100%;
         margin-right: 0;
     }
 

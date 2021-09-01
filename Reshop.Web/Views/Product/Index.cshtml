@@ -273,12 +273,10 @@
 
 <cache expires-after="TimeSpan.FromMinutes(15)">
     @await Component.InvokeAsync("PopularProductsComponent")
-</cache>
 
-
-<cache expires-after="TimeSpan.FromMinutes(15)">
     @await Component.InvokeAsync("MostViewProductsComponent")
 </cache>
+
 
 
 @section Scripts

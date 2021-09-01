@@ -10,17 +10,17 @@ namespace Reshop.Domain.Interfaces.Shopper
 {
     public interface IShopperRepository
     {
-        Task<Entities.User.User> GetShopperByIdAsync(string userId);
         Task<bool> IsShopperExistAsync(string shopperId);
         Task AddShopperAsync(Entities.Shopper.Shopper shopper);
         void EditShopper(Entities.Shopper.Shopper shopper);
-        Task<EditShopperViewModel> GetShopperDataForEditAsync(string userId);
+        Task<EditShopperViewModel> GetShopperDataForEditAsync(string shopperId);
         Task<string> GetShopperIdOfUserByUserId(string userId);
 
         Task<string> GetShopperProductIdAsync(string shopperId, int productId);
 
-        // types = all,active,block,existed
+        // types = all,active,existed
         IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null);
+        IEnumerable<ShoppersListForAdmin> GetProductShoppersWithPagination(int productId, string type = "all", int skip = 0, int take = 18, string filter = null);
 
         Task<int> GetShoppersCountWithTypeAsync(string type = "all");
 
@@ -30,8 +30,8 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task AddShopperProductColorRequestAsync(ShopperProductColorRequest shopperProductColorRequest);
         IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductColorRequestsForShow(string shopperId, int skip, int take);
         IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductRequestsForShow(string shopperId, int skip, int take);
-       Task<int> GetShopperProductColorRequestsCountAsync(string shopperId);
-       Task<int> GetShopperProductRequestsCountAsync(string shopperId);
+        Task<int> GetShopperProductColorRequestsCountAsync(string shopperId);
+        Task<int> GetShopperProductRequestsCountAsync(string shopperId);
 
         #endregion
 
@@ -94,7 +94,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task<string> GetShopperProductColorIdAsync(string shopperProductId, int colorId);
         Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId);
         Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId);
-        Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId,int colorId);
+        Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId);
 
         #endregion
 
@@ -108,7 +108,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(string shopperProductColorId);
         IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(string shopperProductColorId);
         // colorName , view , sell , returned
-        IEnumerable<Tuple<string, int,int,int>> GetColorsOfShopperProductDataChart(string shopperProductId);
+        IEnumerable<Tuple<string, int, int, int>> GetColorsOfShopperProductDataChart(string shopperProductId);
         #endregion
 
         Task SaveChangesAsync();

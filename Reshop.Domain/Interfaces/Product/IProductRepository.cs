@@ -5,6 +5,7 @@ using Reshop.Domain.Entities.User;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
@@ -15,6 +16,7 @@ namespace Reshop.Domain.Interfaces.Product
     public interface IProductRepository
     {
         IEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take);
+        IEnumerable<ProductDataForAdmin> GetProductsWithPaginationForAdmin(string type, int skip, int take, string filter);
         IEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
         IEnumerable<ProductViewModel> GetProductsOfChildCategoryWithPagination(int childCategoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
         Task<string> GetProductFirstPictureName(int productId);
@@ -30,11 +32,12 @@ namespace Reshop.Domain.Interfaces.Product
 
 
         Task<Tuple<int, string, string>> GetProductRedirectionByShortKeyAsync(string key);
-        Task<ProductDetailForShopperViewModel> GetProductDetailForShopperAsync(string shopperProductId);
+        Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId);
+        Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId);
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId);
-        IEnumerable<Tuple<int, string, string, string>> GetProductColors(int productId);
+        IEnumerable<Tuple<int, string, string, string>> GetProductColorsWithDetail(int productId);
         Task<Entities.Product.Product> GetProductByIdAsync(int productId);
-
+        IEnumerable<Tuple<int, string>> GetProductColors(int productId);
         Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId);
 
         #region shopper product
@@ -89,7 +92,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId);
         Task<AddOrEditAUXViewModel> GetTypeAUXProductDataForEditAsync(int productId);
         Task<string> GetProductTypeAsync(int productId);
-        Task<ProductGallery> GetProductGalleryAsync(int productId , string imageName);
+        Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName);
         Task<int> GetProductGalleriesCountByProductIdAsync(int productId);
 
 
@@ -122,7 +125,7 @@ namespace Reshop.Domain.Interfaces.Product
 
 
         void UpdateProduct(Entities.Product.Product product);
-        void UpdateProductGallery(ProductGallery productGallery);
+        void RemoveProductGallery(ProductGallery productGallery);
         void UpdateMobileDetail(MobileDetail mobileDetail);
         void UpdateLaptopDetail(LaptopDetail laptopDetail);
         void UpdatePowerBankDetail(PowerBankDetail powerBank);
@@ -181,7 +184,14 @@ namespace Reshop.Domain.Interfaces.Product
         IAsyncEnumerable<string> GetProductsNameByFilter(string productName);
         IAsyncEnumerable<ProductViewModel> GetProductsByFilter(string productName);
 
+        #region Chart
 
+        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId);
+        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId);
+        // colorName , view , sell , returned
+        IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId);
+
+        #endregion
 
         Task SaveChangesAsync();
     }

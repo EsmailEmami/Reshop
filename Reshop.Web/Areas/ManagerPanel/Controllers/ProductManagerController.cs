@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
@@ -37,13 +38,50 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #endregion
 
-
         [HttpGet]
-        public async Task<IActionResult> Index(string type = "all", string soryBy = "news", int pageId = 1)
+        public async Task<IActionResult> Index()
         {
-            return View(await _productService.GetProductsWithPaginationAsync(type, soryBy, pageId, 24));
+            ViewData["ProductsCount"] = await _productService.GetProductsCountWithTypeAsync();
+            return View();
         }
 
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult ProductsList(string type, int pageId, string filter)
+        {
+            if (filter.ToLower() == "undefined")
+            {
+                filter = "";
+            }
+
+            if (type.ToLower() == "undefined")
+            {
+                type = "all";
+            }
+
+
+            return ViewComponent("ProductsListForAdminComponent", new { type, pageId, filter });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ProductDetail(int productId)
+        {
+            if (productId == 0)
+                return NotFound();
+
+            var product = await _productService.GetProductDetailForAdminAsync(productId);
+
+            if (product == null)
+                return NotFound();
+
+
+            return View(product);
+        }
+
+        public IActionResult GetProductColorDetail(int productId, int colorId)
+        {
+            return View();
+        }
 
         #region ProductType
 
@@ -52,43 +90,40 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             var productType = await _productService.GetProductTypeByIdAsync(productId);
 
-
-
-
             return productType switch
             {
                 ProductTypes.Mobile => RedirectToAction("AddOrEditMobile", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
 
                 ProductTypes.Laptop => RedirectToAction("AddOrEditLaptop", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
 
                 ProductTypes.Tablet => RedirectToAction("AddOrEditTablet", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
 
                 ProductTypes.MobileCover => RedirectToAction("AddOrEditMobileCover", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
 
                 ProductTypes.LaptopCover => RedirectToAction("AddOrEditLaptopCover", "ProductManager",
-                    new { productId = productId }),
-
-                ProductTypes.Handsfree or ProductTypes.Handsfree => RedirectToAction("AddOrEditHandsfreeAndHeadPhone", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
 
                 ProductTypes.Speaker => RedirectToAction("AddOrEditSpeaker", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
 
                 ProductTypes.PowerBank => RedirectToAction("AddOrEditPowerBank", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
 
                 ProductTypes.WristWatch => RedirectToAction("AddOrEditWristWatch", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
 
                 ProductTypes.SmartWatch => RedirectToAction("AddOrEditSmartWatch", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
 
                 ProductTypes.FlashMemory => RedirectToAction("AddOrEditFlashMemory", "ProductManager",
-                    new { productId = productId }),
+                    new { productId }),
+
+                ProductTypes.AUX => RedirectToAction("AddOrEditAUX", "ProductManager",
+                    new { productId }),
 
                 ProductTypes.NotFound => NotFound(),
 
@@ -176,7 +211,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -279,7 +313,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -349,7 +382,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (result == ResultTypes.Successful)
                 {
                     // edit product images
-                    await EditImg(product.ProductId,new List<IFormFile>()
+                    await EditImg(product.ProductId, new List<IFormFile>()
                     {
                         model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
                         model.SelectedImage5, model.SelectedImage6
@@ -465,9 +498,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-
                     ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -560,7 +591,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -726,7 +756,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
 
                     ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -832,7 +861,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -1057,7 +1085,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -1181,7 +1208,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    if (model.SelectedImages is not null)
+                    if (model.SelectedImages != null)
                     {
                         foreach (var image in model.SelectedImages)
                         {
@@ -1324,7 +1351,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    if (model.SelectedImages is not null)
+                    if (model.SelectedImages != null)
                     {
                         foreach (var image in model.SelectedImages)
                         {
@@ -1491,7 +1518,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -1560,7 +1586,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -1702,7 +1727,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -1764,7 +1788,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
+
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -1894,7 +1918,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
+
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -1943,7 +1967,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
+
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -2059,7 +2083,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -2140,7 +2163,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -2289,7 +2311,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -2355,7 +2376,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -2488,7 +2508,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
                     ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
+
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -2544,7 +2564,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
+
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -2599,7 +2619,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-                var product = await _productService.GetTypeMemoryCardProductDataAsync(productId);
+                var product = await _productService.GetTypeAUXProductDataAsync(productId);
                 if (product == null)
                 {
                     return NotFound();
@@ -2645,7 +2665,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
             {
-                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
+                ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تصاویر را درست انتخاب کنید.");
                 return View(model);
             }
 
@@ -2666,8 +2686,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ProductType = ProductTypes.Mobile.ToString(),
-                    BrandId = model.Brand,
+                    ProductType = ProductTypes.AUX.ToString(),
                     OfficialBrandProductId = model.OfficialBrandProductId,
                     IsActive = model.IsActive
                 };
@@ -2717,7 +2736,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 //  update product
                 product.ProductTitle = model.ProductTitle;
                 product.Description = model.Description;
-                product.BrandId = model.Brand;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
 
@@ -2800,7 +2818,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             for (int i = 0; i < images.Count; i++)
             {
-                if (images[i] != null && images[i].Length > 0)
+                if (images[i] != null && images.Count > 0)
                 {
                     var imageInDatabase = await _productService.GetProductGalleryAsync(productId, imagesName[i]);
 
@@ -2814,13 +2832,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         // delete last image
                         ImageConvertor.DeleteImage(filePath + "/" + imagesName[i]);
 
+                        await _productService.DeleteProductGalleryAsync(imageInDatabase);
                         // create new image
-
 
                         var newImageName = await ImageConvertor.CreateNewImage(images[i], filePath, 750);
 
-                        imageInDatabase.ImageName = newImageName;
-                        var res = await _productService.EditProductGalleryAsync(imageInDatabase);
+                        var newProductGallery = new ProductGallery()
+                        {
+                            ProductId = productId,
+                            ImageName = newImageName
+                        };
+
+                        await _productService.AddProductGalleryAsync(newProductGallery);
                     }
                 }
             }

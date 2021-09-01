@@ -1,91 +1,172 @@
-﻿@model Tuple<IEnumerable<ProductViewModel>, int, int>
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "مدیریت کالاها";
+}
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ProductPage); }
+}
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
 }
 
+<section class="row mb-3">
+    <div class="col-xs-12 col-sm-6 col-xl-3">
+        <div class="card-data">
+            <div class="header">
+                <h3>تعداد کالاها</h3>
 
-<div class="row pb-3">
-    <div class="col-sm-12 col-md-6 col-lg-3">
-        <div class="card h-100 py-2 rounded">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-dark text-uppercase mb-2">
-                            تعداد محصولات
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            @Model.Item1.Count()
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+                <i class="fas fa-map-signs"></i>
+
+            </div>
+            <div class="content">
+                @ViewData["ProductsCount"]
             </div>
         </div>
     </div>
-    <div class="col-sm-12 col-md-6 col-lg-3">
-        <div class="card h-100 py-2 rounded">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-dark text-uppercase mb-2">
-                            تعداد محصولات
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            1,000
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+    <div class="col-xs-12 col-sm-6 col-xl-3">
+        <div class="card-data">
+            <div class="header">
+                <h3>تعداد کالاها</h3>
+
+                <i class="fas fa-map-signs"></i>
+
+            </div>
+            <div class="content">
+                12,000,000 <span>تومان</span>
             </div>
         </div>
     </div>
-</div>
+    <div class="col-xs-12 col-sm-6 col-xl-3">
+        <div class="card-data">
+            <div class="header">
+                <h3>تعداد فروش 30 روز اخیر</h3>
+
+                <i class="fas fa-map-signs"></i>
+
+            </div>
+            <div class="content">
+                12,000,000 <span>تومان</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-xl-3">
+        <div class="card-data">
+            <div class="header">
+                <h3>تعداد فروش 30 روز اخیر</h3>
+
+                <i class="fas fa-map-signs"></i>
+
+            </div>
+            <div class="content">
+                12,000,000 <span>تومان</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="add-product mb-3">
+    <h3>افزودن کالا</h3>
 
 
-<a asp-action="AddOrEditMobile" class="btn btn-success text-white mb-2">افزودن موبایل</a>
-<a asp-action="AddOrEditLaptop" class="btn btn-success text-white mb-2">افزودن لپتاپ</a>
-<a asp-action="AddOrEditMobileCover" class="btn btn-success text-white mb-2">افزودن کاور موبایل</a>
-<a asp-action="AddOrEditTablet" class="btn btn-success text-white mb-2">افزودن تبلت</a>
-<a asp-action="AddOrEditSpeaker" class="btn btn-success text-white mb-2">افزودن اسپیکر</a>
-<a asp-action="AddOrEditHandsfree" class="btn btn-success text-white mb-2">افزودن هندزفری </a>
-<a asp-action="AddOrEditHeadPhone" class="btn btn-success text-white mb-2">افزودن هدفون </a>
-<a asp-action="AddOrEditFlashMemory" class="btn btn-success text-white mb-2">افزودن فلش مموری</a>
-<a asp-action="AddOrEditWristWatch" class="btn btn-success text-white mb-2">افزودن مچ بند</a>
-<a asp-action="AddOrEditSmartWatch" class="btn btn-success text-white mb-2">افزودن ساعت هوشمند</a>
+    <a asp-action="AddOrEditMobile" class="btn btn-success ">افزودن موبایل</a>
+    <a asp-action="AddOrEditLaptop" class="btn btn-success ">افزودن لپتاپ</a>
+    <a asp-action="AddOrEditMobileCover" class="btn btn-success ">افزودن کاور موبایل</a>
+    <a asp-action="AddOrEditTablet" class="btn btn-success ">افزودن تبلت</a>
+    <a asp-action="AddOrEditSpeaker" class="btn btn-success ">افزودن اسپیکر</a>
+    <a asp-action="AddOrEditHandsfree" class="btn btn-success ">افزودن هندزفری </a>
+    <a asp-action="AddOrEditHeadPhone" class="btn btn-success ">افزودن هدفون </a>
+    <a asp-action="AddOrEditFlashMemory" class="btn btn-success ">افزودن فلش مموری</a>
+    <a asp-action="AddOrEditWristWatch" class="btn btn-success ">افزودن مچ بند</a>
+    <a asp-action="AddOrEditSmartWatch" class="btn btn-success ">افزودن ساعت هوشمند</a>
+    <a asp-action="AddOrEditAUX" class="btn btn-success ">افزودن AUX</a>
+</section>
+
+<section class="scrollChart">
+    <h2 class="chartheader">بازدید و فروش ماه اخیر</h2>
+    <div id="productsLineChart" style="overflow: hidden; width: 100%; min-width: 877px;"></div>
+</section>
+
+<section class="table-list" id="tableList">
+
+
+    @await Component.InvokeAsync("ProductsListForAdminComponent")
+
+
+</section>
+
+@section Scripts{
+    <script src="~/js/select.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawLineChart);
+
+        function drawLineChart() {
+
+
+            var data = new google.visualization.DataTable();
 
 
 
-<div class="table-responsive">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th scope="col">نام کالا</th>
-                <th scope="col">برند کالا</th>
-                <th scope="col">قیمت کالا</th>
-                <th scope="col">دستورات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Item1)
-            {
-                <tr>
-                    <td>@item.ProductTitle</td>
-                    <td>@item.BrandName</td>
-                    <td>@item.ProductPrice.ToToman()</td>
-                    <td>
-                        <a asp-action="EditProduct" asp-route-productId="@item.ProductId" class="btn btn-warning text-white"><i class="fal fa-user-edit"></i> ویرایش</a>
-                        <a asp-action="UserDetail" asp-route-userId="@item.ProductTitle" class="btn btn-info text-white"><i class="fal fa-file-user"></i> جزئیات</a>
-                        <form asp-action="DeleteMobile" asp-route-productId="@item.ProductId" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-danger text-white"><i class="fal fa-user-minus"></i> حذف</button>
-                        </form>
+            data.addColumn('string', 'تاریخ');
+            data.addColumn('number', 'بازدید');
+            data.addColumn('number', 'فروش');
+            data.addColumn('number', 'مرجوعی');
 
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            data.addRow(['2000', 2050, 4000, 364]);
+            data.addRow(['2001', 4794, 6879, 9699]);
+            data.addRow(['2002', 2794, 4806, 532]);
+            data.addRow(['2003', 4974, 3798, 6493]);
+            data.addRow(['2004', 8648, 9758, 468]);
+            data.addRow(['2005', 2050, 4000, 305]);
+
+
+            var options = {
+                width: '100%',
+                height: '100%',
+                isStacked: 'relative',
+                fontName: 'Sahel, sans-serif',
+                color: '#4d4d4d',
+                fontSize: 17,
+                height: 400,
+                curveType: 'function',
+                colors: ['#FC5400', '#3366cc', '#f95d6a', '#58508d'],
+                pointSize: 3,
+                chartArea: {
+                    right: 0,
+                    top: 20,
+                    left: 100,
+                    width: '95%',
+                },
+
+
+                hAxis: {
+                    direction: 1,
+                    slantedText: true,
+                    slantedTextAngle: 50,
+                },
+
+                vAxis: {
+                    format: 'short',
+                    title: 'تعداد',
+                    titleTextStyle: {
+                        color: '#333',
+                    },
+                    minValue: 0,
+                    scaleType: 'Linear',
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('productsLineChart'));
+
+            chart.draw(data, options);
+        }
+
+        window.onresize = drawLineChart;
+    </script>
+}

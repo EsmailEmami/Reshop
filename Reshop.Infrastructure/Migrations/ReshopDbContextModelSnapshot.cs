@@ -205,9 +205,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<int?>("BatteryChargerDetailId")
                         .HasColumnType("int");
 
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
@@ -237,7 +234,7 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<int?>("MobileDetailId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OfficialBrandProductId")
+                    b.Property<int>("OfficialBrandProductId")
                         .HasColumnType("int");
 
                     b.Property<int?>("PowerBankDetailId")
@@ -270,8 +267,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("AuxDetailId");
 
                     b.HasIndex("BatteryChargerDetailId");
-
-                    b.HasIndex("BrandId");
 
                     b.HasIndex("FlashMemoryDetailId");
 
@@ -307,9 +302,8 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("CableLenght")
-                        .HasMaxLength(20)
-                        .HasColumnType("float");
+                    b.Property<int>("CableLenght")
+                        .HasColumnType("int");
 
                     b.Property<string>("CableMaterial")
                         .IsRequired()
@@ -1796,21 +1790,14 @@ namespace Reshop.Infrastructure.Migrations
 
             modelBuilder.Entity("Reshop.Domain.Entities.Product.ProductGallery", b =>
                 {
-                    b.Property<string>("ProductGalleryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ImageName")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductGalleryId");
+                    b.Property<string>("ImageName")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("ProductId");
+                    b.HasKey("ProductId", "ImageName");
 
                     b.ToTable("ProductGalleries");
                 });
@@ -2749,12 +2736,6 @@ namespace Reshop.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("BatteryChargerDetailId");
 
-                    b.HasOne("Reshop.Domain.Entities.Product.Brand", "Brand")
-                        .WithMany()
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Reshop.Domain.Entities.Product.ProductDetail.FlashMemoryDetail", "FlashMemoryDetail")
                         .WithMany()
                         .HasForeignKey("FlashMemoryDetailId");
@@ -2780,8 +2761,10 @@ namespace Reshop.Infrastructure.Migrations
                         .HasForeignKey("MobileDetailId");
 
                     b.HasOne("Reshop.Domain.Entities.Product.OfficialBrandProduct", "OfficialBrandProduct")
-                        .WithMany()
-                        .HasForeignKey("OfficialBrandProductId");
+                        .WithMany("Products")
+                        .HasForeignKey("OfficialBrandProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Reshop.Domain.Entities.Product.ProductDetail.PowerBankDetail", "PowerBankDetail")
                         .WithMany()
@@ -2806,8 +2789,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("AuxDetail");
 
                     b.Navigation("BatteryChargerDetail");
-
-                    b.Navigation("Brand");
 
                     b.Navigation("FlashMemoryDetail");
 
@@ -3228,6 +3209,11 @@ namespace Reshop.Infrastructure.Migrations
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Brand", b =>
                 {
                     b.Navigation("OfficialBrandProducts");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Product.OfficialBrandProduct", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Product", b =>

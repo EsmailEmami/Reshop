@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Reshop.Domain.Entities.Product
@@ -24,6 +25,7 @@ namespace Reshop.Domain.Entities.Product
         #region Relations
 
         public virtual Brand Brand { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
 
         #endregion
     }

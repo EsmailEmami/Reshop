@@ -26,12 +26,6 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
         #endregion
 
-        public async Task<Domain.Entities.User.User> GetShopperByIdAsync(string userId)
-            =>
-                await _context.Users.Include(c => c.Shopper)
-                    .SingleOrDefaultAsync(c => c.UserId == userId);
-
-
 
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _context.Shoppers.AnyAsync(c => c.ShopperId == shopperId);
@@ -43,21 +37,21 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public void EditShopper(Domain.Entities.Shopper.Shopper shopper) =>
             _context.Shoppers.Update(shopper);
 
-        public async Task<EditShopperViewModel> GetShopperDataForEditAsync(string userId)
+        public async Task<EditShopperViewModel> GetShopperDataForEditAsync(string shopperId)
             =>
-                await _context.Users.Where(c => c.UserId == userId)
+                await _context.Shoppers.Where(c => c.ShopperId == shopperId)
                     .Select(c => new EditShopperViewModel()
                     {
                         UserId = c.UserId,
-                        FullName = c.FullName,
-                        Email = c.Email,
-                        PhoneNumber = c.PhoneNumber,
-                        NationalCode = c.NationalCode,
-                        BirthDay = c.Shopper.BirthDay.ToString(),
-                        StoreName = c.Shopper.StoreName,
-                        BusinessLicenseImageName = c.Shopper.BusinessLicenseImageName,
-                        OnNationalCardImageName = c.Shopper.OnNationalCardImageName,
-                        BackNationalCardImageName = c.Shopper.BackNationalCardImageName
+                        FullName = c.User.FullName,
+                        Email = c.User.Email,
+                        PhoneNumber = c.User.PhoneNumber,
+                        NationalCode = c.User.NationalCode,
+                        BirthDay = c.BirthDay.ToString(),
+                        StoreName = c.StoreName,
+                        BusinessLicenseImageName = c.BusinessLicenseImageName,
+                        OnNationalCardImageName = c.OnNationalCardImageName,
+                        BackNationalCardImageName = c.BackNationalCardImageName
                     }).SingleOrDefaultAsync();
 
         public async Task<string> GetShopperIdOfUserByUserId(string userId) =>
@@ -70,9 +64,7 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
         public IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null)
         {
-            IQueryable<Domain.Entities.User.User> shoppers = _context.Users
-                .Where(c => c.ShopperId != null)
-                .Skip(skip).Take(take);
+            IQueryable<Domain.Entities.Shopper.Shopper> shoppers = _context.Shoppers;
 
 
             switch (type)
@@ -80,31 +72,65 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 case "all":
                     break;
                 case "active":
-                    shoppers = shoppers.Where(c => c.IsUserShopper);
-                    break;
-                case "block":
-                    shoppers = shoppers.Where(c => c.IsBlocked);
+                    shoppers = shoppers.Where(c => c.IsActive);
                     break;
                 case "existed":
-                    shoppers = shoppers.Where(c => !c.IsUserShopper);
+                    shoppers = shoppers.Where(c => !c.IsActive);
                     break;
             }
 
             if (!string.IsNullOrEmpty(filter))
             {
                 shoppers = shoppers
-                    .Where(c => c.FullName.Contains(filter) ||
-                                c.NationalCode.Contains(filter) ||
-                                c.PhoneNumber.Contains(filter) ||
-                                c.Email.Contains(filter));
+                    .Where(c => c.User.FullName.Contains(filter) ||
+                                c.User.NationalCode.Contains(filter) ||
+                                c.User.Email.Contains(filter));
             }
+
+
+            shoppers = shoppers.Skip(skip).Take(take);
 
             return shoppers.Select(c => new ShoppersListForAdmin()
             {
-                ShopperUserId = c.UserId,
-                ShopperName = c.FullName,
-                PhoneNumber = c.PhoneNumber,
-                StoreName = c.Shopper.StoreName
+                ShopperId = c.ShopperId,
+                ShopperName = c.User.FullName,
+                StoreName = c.StoreName
+            });
+        }
+
+        public IEnumerable<ShoppersListForAdmin> GetProductShoppersWithPagination(int productId, string type = "all", int skip = 0, int take = 18, string filter = null)
+        {
+            IQueryable<Domain.Entities.Shopper.Shopper> shoppers = _context.ShopperProducts
+                .Where(c => c.ProductId == productId)
+                .Select(c => c.Shopper).Distinct();
+
+
+            switch (type)
+            {
+                case "all":
+                    break;
+                case "active":
+                    shoppers = shoppers.Where(c => c.IsActive);
+                    break;
+                case "existed":
+                    shoppers = shoppers.Where(c => !c.IsActive);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                shoppers = shoppers
+                    .Where(c => c.User.FullName.Contains(filter) ||
+                                c.User.NationalCode.Contains(filter) ||
+                                c.User.Email.Contains(filter));
+            }
+
+            shoppers = shoppers.Skip(skip).Take(take);
+            return shoppers.Select(c => new ShoppersListForAdmin()
+            {
+                ShopperId = c.ShopperId,
+                ShopperName = c.User.FullName,
+                StoreName = c.StoreName
             });
         }
 
@@ -112,13 +138,13 @@ namespace Reshop.Infrastructure.Repository.Shopper
         {
             return type switch
             {
-                "all" => await _context.Users.Where(c => c.ShopperId != null).CountAsync(),
-                "block" => await _context.Users.Where(c => c.ShopperId != null && c.IsBlocked).CountAsync(),
-                "active" => await _context.Users.Where(c => c.IsUserShopper).CountAsync(),
-                "existed" => await _context.Users.Where(c => c.ShopperId != null && !c.IsUserShopper).CountAsync(),
-                _ => await _context.Users.Where(c => c.ShopperId != null).CountAsync()
+                "all" => await _context.Shoppers.CountAsync(),
+                "active" => await _context.Shoppers.Where(c => c.IsActive).CountAsync(),
+                "existed" => await _context.Shoppers.Where(c => !c.IsActive).CountAsync(),
+                _ => await _context.Shoppers.CountAsync()
             };
         }
+
 
         public async Task AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest) =>
             await _context.ShopperProductRequests.AddAsync(shopperProductRequest);
@@ -375,7 +401,12 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public IEnumerable<Tuple<string, int, int, int>> GetColorsOfShopperProductDataChart(string shopperProductId) =>
             _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
                 .SelectMany(c => c.ShopperProductColors)
-                .Select(c => new Tuple<string, int, int, int>(c.Color.ColorName, 10, _context.OrderDetails.Where(o => o.ShopperProductColorId == c.ShopperProductColorId).Sum(s => s.Count), 10));
+                .Select(c => new Tuple<string, int, int, int>(
+                    c.Color.ColorName,
+                    10,
+                    _context.OrderDetails
+                        .Where(o => o.ShopperProductColorId == c.ShopperProductColorId)
+                        .Sum(s => s.Count), 10));
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }
