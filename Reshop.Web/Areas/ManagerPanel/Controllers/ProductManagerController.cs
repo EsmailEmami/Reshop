@@ -83,6 +83,29 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return View();
         }
 
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult ShoppersOfProduct(int productId, string type, int pageId, string filter)
+        {
+            if (productId == 0)
+                return NotFound();
+
+
+            if (filter.ToLower() == "undefined")
+            {
+                filter = "";
+            }
+
+            if (type.ToLower() == "undefined")
+            {
+                type = "all";
+            }
+
+
+            return ViewComponent("ShoppersListOfProductComponent", new { type, pageId, filter });
+        }
+
+
         #region ProductType
 
         [HttpGet]

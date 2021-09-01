@@ -46,18 +46,18 @@ namespace Reshop.Application.Services.Shopper
             return new Tuple<IEnumerable<ShoppersListForAdmin>, int, int>(shoppers, pageId, totalPages);
         }
 
-        public async Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int>> GetProductShoppersInformationWithPagination(int productId, string type = "all", string filter = "", int pageId = 1, int take = 18)
+        public async Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>> GetProductShoppersInformationWithPagination(int productId, string type = "all", string filter = "", int pageId = 1, int take = 18)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
             int shoppersCount = await _shopperRepository.GetShoppersCountWithTypeAsync(type.FixedText());
 
-            var shoppers = _shopperRepository.GetShoppersWithPagination(type.FixedText(), skip, take, filter);
+            var shoppers = _shopperRepository.GetProductShoppersWithPagination(productId, type.FixedText(), skip, take, filter);
 
             int totalPages = (int)Math.Ceiling(1.0 * shoppersCount / take);
 
 
-            return new Tuple<IEnumerable<ShoppersListForAdmin>, int, int>(shoppers, pageId, totalPages);
+            return new Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>(shoppers, pageId, totalPages, productId);
         }
 
         public async Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper)

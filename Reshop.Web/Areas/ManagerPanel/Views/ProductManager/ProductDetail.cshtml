@@ -69,6 +69,13 @@
 
 </section>
 
+<section class="table-list" id="tableList">
+    @await Component.InvokeAsync("ShoppersListOfProductComponent", new { productId = Model.ProductId })
+</section>
+
+
+
+
 @if (Model.Colors.Any())
 {
     <section class="colors box-shadow mb-3">

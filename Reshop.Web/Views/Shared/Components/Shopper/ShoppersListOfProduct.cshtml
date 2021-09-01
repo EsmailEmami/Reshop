@@ -1,9 +1,9 @@
-﻿@model Tuple<IEnumerable<ProductDataForAdmin>, int, int>
+﻿@model Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>
 
 @if (Model.Item1.Any())
 {
-    
     <input type="hidden" name="pageId" id="pageId" value="@Model.Item2" />
+
     <div class="filter">
         <input type="text" placeholder="دنبال کالا بگرد..." class="filter-input" id="filter">
         <select select-search="true" id="type" onchange="changeList()">
@@ -17,9 +17,8 @@
     <table class="table responsive table-hover table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">نام کالا</th>
-                <th scope="col">برند</th>
-                <th scope="col">نام رسمی</th>
+                <th scope="col">نام فروشنده</th>
+                <th scope="col">نام فروشگاه</th>
                 <th scope="col">دستورات</th>
             </tr>
         </thead>
@@ -28,15 +27,11 @@
             @foreach (var item in Model.Item1)
             {
                 <tr>
-                    <td>@item.ProductTitle</td>
-                    <td>@item.BrandName</td>
-                    <td>@item.OfficialName</td>
+                    <td>@item.ShopperName</td>
+                    <td>@item.StoreName</td>
+
                     <td>
-                        <a asp-action="EditProduct" asp-route-productId="@item.ProductId"
-                           target="_blank" class="btn btn-warning text-white">
-                            ویرایش
-                        </a>
-                        <a asp-action="ProductDetail" asp-route-productId="@item.ProductId"
+                        <a asp-action="ProductDetail" asp-route-productId="@item.ShopperId"
                            target="_blank" class="btn btn-info text-white">
                             جزئیات
                         </a>
@@ -74,7 +69,7 @@
 else
 {
     <div class="alert alert-warning">
-        کالایی یاف نشد
+        فروشنده ای یافت نشد.
     </div>
 }
 
@@ -93,7 +88,7 @@ else
 
         $.ajax({
             type: 'GET',
-            url: '/ManagerPanel/ProductManager/ProductsList/?type=' + type + '&pageId=' + pageId + '&filter=' + filter,
+            url: '/ManagerPanel/ProductManager/ShoppersOfProduct/?productId='+@Model.Item4 +   '&type=' + type + '&pageId=' + pageId + '&filter=' + filter,
             processData: false,
             contentType: false
         }).done(function (res) {
