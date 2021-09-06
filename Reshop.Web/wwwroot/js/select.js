@@ -32,11 +32,16 @@ function MultiSelectDropdown() {
         });
         var search = newEl('input', {
             class: ['multiselect-dropdown-search'],
-            style: {
-                display: el.attributes['multiselect-search']?.value == 'true' ? 'block' : 'none'
-            },
             placeholder: 'جستجو'
         });
+
+
+        // search attr
+        if (el.hasAttribute('search')) {
+            search.style.display = el.attributes['search'].value === 'true' ? 'block' : 'none';
+        }
+
+
         listWrap.appendChild(search);
         div.appendChild(listWrap);
         listWrap.appendChild(list);
@@ -44,7 +49,15 @@ function MultiSelectDropdown() {
         el.loadOptions = () => {
             list.innerHTML = '';
 
-            if (el.attributes['multiselect-select-all']?.value == 'true') {
+            if (el.hasAttribute('select-all')) {
+                if (el.attributes['select-all'].value == 'true') {
+                    selectAllBox();
+                }
+            } else {
+                selectAllBox();
+            }
+
+            function selectAllBox() {
                 var op = newEl('div', {
                     class: 'multiselect-dropdown-all-selector'
                 })
@@ -72,6 +85,9 @@ function MultiSelectDropdown() {
 
                 list.appendChild(op);
             }
+
+
+
 
             Array.from(el.options).map(o => {
                 var op = newEl('div', {
@@ -132,6 +148,25 @@ function MultiSelectDropdown() {
                 var txt = d.querySelector("label").innerText.toUpperCase();
                 d.style.display = txt.includes(search.value.toUpperCase()) ? 'block' : 'none';
             });
+
+
+            var filteredItem = list.querySelectorAll('div[style="display: block;"]')
+
+
+            var notFound = list.querySelector("h3");
+
+            if (filteredItem.length == 0) {
+                if (notFound == null) {
+                    list.appendChild(newEl('h3', {
+                        class: 'not-found',
+                        text: 'نتیجه ای یافت نشد'
+                    }));
+                }
+            } else {
+                if (notFound != null) {
+                    list.removeChild(notFound);
+                }
+            }
         });
 
         div.addEventListener('click', () => {
@@ -148,12 +183,20 @@ function MultiSelectDropdown() {
         });
     });
 }
+
 function SelectDropdown() {
     document.querySelectorAll("select:not([multiple])").forEach((el, k) => {
 
         var div = newEl('div', {
             class: 'select-dropdown'
         });
+
+        // add id to div while select had id
+        if (el.hasAttribute('id')) {
+            div.setAttribute('id', el.attributes['id'].value + '-select');
+        }
+
+
         el.style.display = 'none';
         el.parentNode.insertBefore(div, el.nextSibling);
         var listWrap = newEl('div', {
@@ -164,11 +207,16 @@ function SelectDropdown() {
         });
         var search = newEl('input', {
             class: ['select-dropdown-search'],
-            style: {
-                display: el.attributes['select-search'].value === 'true' ? 'block' : 'none'
-            },
             placeholder: 'جستجو'
         });
+
+        // search attr
+        if (el.hasAttribute('search')) {
+            search.style.display = el.attributes['search'].value === 'true' ? 'block' : 'none';
+        }
+
+
+
         listWrap.appendChild(search);
         div.appendChild(listWrap);
         listWrap.appendChild(list);
@@ -179,10 +227,9 @@ function SelectDropdown() {
 
 
             Array.from(el.options).map(o => {
-                var op = newEl('div',
-                    {
-                        optEl: o
-                    });
+                var op = newEl('div', {
+                    optEl: o
+                });
 
                 op.appendChild(newEl('label', {
                     text: o.text
@@ -224,6 +271,27 @@ function SelectDropdown() {
                 var txt = d.querySelector("label").innerText.toUpperCase();
                 d.style.display = txt.includes(search.value.toUpperCase()) ? 'block' : 'none';
             });
+
+            var filteredItem = list.querySelectorAll('div[style="display: block;"]')
+
+
+            var notFound = list.querySelector("h3");
+
+            if (filteredItem.length == 0) {
+                if (notFound == null) {
+                    list.appendChild(newEl('h3', {
+                        class: 'not-found',
+                        text: 'نتیجه ای یافت نشد'
+                    }));
+                }
+            } else {
+                if (notFound != null) {
+                    list.removeChild(notFound);
+                }
+            }
+
+
+
         });
 
         div.addEventListener('click', () => {
@@ -232,6 +300,9 @@ function SelectDropdown() {
             search.select();
             div.refresh();
         });
+
+
+
     });
 }
 

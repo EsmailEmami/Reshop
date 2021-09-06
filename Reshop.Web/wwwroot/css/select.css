@@ -85,6 +85,14 @@
     border-radius: 3px;
 }
 
+
+.multiselect-dropdown-list .not-found {
+    text-align: center;
+    font-size: 17px;
+    color: #222;
+    margin: 5px 0;
+}
+
 .multiselect-dropdown-list div {
     padding: 5px;
     position: relative;
@@ -196,6 +204,13 @@
 .select-dropdown-list::-webkit-scrollbar-thumb {
     background-color: #bec4ca;
     border-radius: 3px;
+}
+
+.select-dropdown-list .not-found {
+    text-align: center;
+    font-size: 17px;
+    color: #222;
+    margin: 5px 0;
 }
 
 .select-dropdown-list div {

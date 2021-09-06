@@ -316,7 +316,7 @@ namespace Reshop.Web.Controllers.User
                 #endregion
 
 
-                var shopper = new Shopper()
+                var shopper = new Domain.Entities.Shopper.Shopper()
                 {
                     StoreName = model.StoreName,
                     BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate(),

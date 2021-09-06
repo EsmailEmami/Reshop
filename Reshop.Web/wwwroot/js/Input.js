@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿function inputJs() {
     let formFieldInputs = $(".form-field input");
     let formFieldTextAreas = $(".form-field textarea");
 
@@ -33,4 +33,6 @@
             }
         });
     }
-});
+}
+
+inputJs();

@@ -11,5 +11,6 @@ namespace Reshop.Domain.DTOs.Shopper
         public string ShopperId { get; set; }
         public string ShopperName { get; set; }
         public string StoreName { get; set; }
+        public bool IsActive { get; set; }
     }
 }

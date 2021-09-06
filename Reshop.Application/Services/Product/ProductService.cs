@@ -97,12 +97,11 @@ namespace Reshop.Application.Services.Product
 
             int productsCount = await _productRepository.GetChildCategoryProductsCountWithTypeAsync(childCategoryId);
 
-            var products = _productRepository.GetProductsOfChildCategoryWithPagination(childCategoryId, Fixer.FixedText(sortBy), skip, take, filter, minPrice != null ? decimal.Parse(minPrice) : 0, maxPrice != null ? decimal.Parse(maxPrice) : 0, brands);
+            var products = _productRepository.GetProductsOfChildCategoryWithPagination(childCategoryId, sortBy.FixedText(), skip, take, filter, minPrice != null ? decimal.Parse(minPrice) : 0, maxPrice != null ? decimal.Parse(maxPrice) : 0, brands);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
             IEnumerable<string> brandsShow = _productRepository.GetBrandsOfChildCategory(childCategoryId);
-
 
             return new CategoryOrChildCategoryProductsForShow()
             {
@@ -113,13 +112,13 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18)
+        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
-            int productsCount = await _productRepository.GetShopperProductsCountWithTypeAsync(shopperId, type.ToString());
+            int productsCount = await _shopperRepository.GetShopperProductsCountWithTypeAsync(shopperId, type.FixedText());
 
-            var products = _productRepository.GetShopperProductsWithPagination(shopperId, type.ToString().FixedText(), sortBy.ToString().FixedText(), skip, take);
+            var products = _productRepository.GetShopperProductsWithPagination(shopperId, sortBy.FixedText(), skip, take, filter, minPrice != null ? decimal.Parse(minPrice) : 0, maxPrice != null ? decimal.Parse(maxPrice) : 0, brands);
 
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -142,6 +141,9 @@ namespace Reshop.Application.Services.Product
             return await _productRepository.GetProductDetailForShopperAsync(shopperProductId);
         }
 
+        public async Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId) =>
+            await _productRepository.GetProductDetailForShopperAsync(shopperProductId);
+
         public async Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId)
         {
             var model = await _productRepository.GetProductDetailForAdminAsync(productId);
@@ -151,7 +153,7 @@ namespace Reshop.Application.Services.Product
         }
 
 
-        public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) => 
+        public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) =>
             await _productRepository.GetProductByIdAsync(productId);
 
         public async Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId) =>
@@ -1014,5 +1016,14 @@ namespace Reshop.Application.Services.Product
 
         public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
             _productRepository.GetColorsOfProductDataChart(productId);
+
+        public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
+            _productRepository.GetBrandOfficialProducts(brandId);
+
+        public IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId) =>
+            _productRepository.GetProductsOfOfficialProduct(officialProductId);
+
+        public IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId) =>
+            _productRepository.GetBrandsOfStoreTitle(storeTitleId);
     }
 }

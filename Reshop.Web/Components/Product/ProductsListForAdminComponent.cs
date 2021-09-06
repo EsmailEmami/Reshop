@@ -17,6 +17,10 @@ namespace Reshop.Web.Components.Product
         public async Task<IViewComponentResult> InvokeAsync(string type = "all", int pageId = 1, int take = 50, string filter = "")
         {
             var products = await _productService.GetProductsWithPaginationForAdminAsync(type, pageId, take, filter);
+
+            ViewBag.SearchText = filter;
+            ViewBag.SelectedType = type;
+
             return View("/Views/Shared/Components/Product/ProductsListForAdmin.cshtml", products);
         }
     }

@@ -23,11 +23,14 @@ namespace Reshop.Application.Interfaces.Product
         Task<Tuple<IEnumerable<ProductDataForAdmin>, int, int>> GetProductsWithPaginationForAdminAsync(string type = "all", int pageId = 1, int take = 18, string filter = "");
         Task<CategoryOrChildCategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
         Task<CategoryOrChildCategoryProductsForShow> GetChildCategoryProductsWithPaginationAsync(int childCategoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
-        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int pageId = 1, int take = 18);
+
+        // this is for list of shopper products
+        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
 
         Task<int> GetProductsCountWithTypeAsync(string type = "all");
         // get by id 
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(int productId, string shopperId);
+        Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId);
         Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId);
         Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId);
         Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId);
@@ -131,6 +134,19 @@ namespace Reshop.Application.Interfaces.Product
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId);
         // colorName , view , sell , returned
         IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId);
+
+        #endregion
+
+        #region brand
+
+        IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId);
+        IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId);
+
+        #endregion
+
+        #region store title
+
+        IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId);
 
         #endregion
     }

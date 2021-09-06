@@ -219,8 +219,8 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             IQueryable<Domain.Entities.Product.Product> products = _context.ProductToChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.Product)
-                .Skip(skip).Take(take);
+                .Select(c => c.Product);
+
 
 
             #region filter product
@@ -268,6 +268,8 @@ namespace Reshop.Infrastructure.Repository.Product
 
             #endregion
 
+
+            products = products.Skip(skip).Take(take);
 
             return products.Select(c => new ProductViewModel()
             {
@@ -377,7 +379,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 {
                     ProductId = c.ProductId,
                     ProductName = c.Product.ProductTitle,
-                    ProductImage = c.Product.ProductGalleries.First().ImageName,
+                    ProductImages = c.Product.ProductGalleries.OrderBy(i => i.OrderBy).Select(i => i.ImageName).ToList(),
                     BrandName = c.Product.OfficialBrandProduct.Brand.BrandName,
                     ShoppersCount = c.Product.ShopperProducts.Count,
                     Colors = c.ShopperProductColors.Select(c => new Tuple<int, string>(c.ColorId, c.Color.ColorName))
@@ -389,7 +391,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 {
                     ProductId = c.ProductId,
                     ProductName = c.ProductTitle,
-                    ProductImage = c.ProductGalleries.First().ImageName,
+                    ProductImages = c.ProductGalleries.OrderBy(i => i.OrderBy).Select(i => i.ImageName).ToList(),
                     BrandName = c.OfficialBrandProduct.Brand.BrandName,
                     ShoppersCount = c.ShopperProducts.Count,
                 }).SingleOrDefaultAsync();
@@ -437,41 +439,53 @@ namespace Reshop.Infrastructure.Repository.Product
                     Colors = GetProductColorsWithDetail(productId)
                 }).SingleOrDefaultAsync();
 
-        public IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string type, string sortBy, int skip, int take)
+        public IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null)
         {
             IQueryable<ShopperProduct> shopperProducts = _context.ShopperProducts
-                .Where(c => c.ShopperId == shopperId)
-                .Skip(skip).Take(take);
-
+                .Where(c => c.ShopperId == shopperId);
 
             #region filter product
 
-            if (type == "all")
+            shopperProducts = sortBy switch
             {
-                shopperProducts = sortBy switch
-                {
-                    "news" => shopperProducts.OrderByDescending(c => c.CreateDate),
-                    "expensive" => shopperProducts.OrderByDescending(c => c.ShopperProductColors.OrderByDescending(c => c.Price).First()),
-                    "cheap" => shopperProducts.OrderBy(c => c.ShopperProductColors.OrderByDescending(c => c.Price).First()),
-                    "mostsale" => shopperProducts.OrderByDescending(c => c.ShopperProductColors.OrderByDescending(c => c.SaleCount).First()),
-                    "mostviews" => shopperProducts.OrderByDescending(c => c.ShopperProductColors.OrderByDescending(c => c.ViewCount).First()),
-                    _ => shopperProducts.OrderByDescending(c => c.CreateDate),
-                };
+                "news" => shopperProducts.OrderByDescending(c => c.CreateDate),
+                "expensive" => shopperProducts.OrderByDescending(s => s.ShopperProductColors.Max(s => s.Price)),
+                "cheap" => shopperProducts.OrderBy(s => s.ShopperProductColors.Max(s => s.Price)),
+                "mostsale" => shopperProducts.OrderByDescending(s => s.ShopperProductColors.Max(s => s.SaleCount)),
+                "mostviews" => shopperProducts.OrderByDescending(s => s.ShopperProductColors.Max(s => s.ViewCount)),
+            };
+
+
+            if (minPrice != 0)
+            {
+                shopperProducts = shopperProducts.Where(c => c.ShopperProductColors
+                    .OrderByDescending(c => c.SaleCount)
+                    .FirstOrDefault().Price >= minPrice);
             }
-            else
+
+            if (maxPrice != 0)
             {
-                shopperProducts = sortBy switch
-                {
-                    "news" => shopperProducts.Where(c => c.Product.ProductType == type).OrderByDescending(c => c.CreateDate),
-                    "expensive" => shopperProducts.Where(c => c.Product.ProductType == type).OrderByDescending(c => c.ShopperProductColors.OrderByDescending(c => c.Price).First()),
-                    "cheap" => shopperProducts.Where(c => c.Product.ProductType == type).OrderBy(c => c.ShopperProductColors.OrderByDescending(c => c.Price).First()),
-                    "mostsale" => shopperProducts.Where(c => c.Product.ProductType == type).OrderByDescending(c => c.ShopperProductColors.OrderByDescending(c => c.SaleCount).First()),
-                    "mostviews" => shopperProducts.Where(c => c.Product.ProductType == type).OrderByDescending(c => c.ShopperProductColors.OrderByDescending(c => c.ViewCount).First()),
-                    _ => shopperProducts.Where(c => c.Product.ProductType == type).OrderByDescending(c => c.CreateDate),
-                };
+                shopperProducts = shopperProducts.Where(c => c.ShopperProductColors
+                    .OrderByDescending(c => c.SaleCount)
+                    .FirstOrDefault().Price <= minPrice);
+            }
+
+
+            if (filter != null)
+            {
+                shopperProducts = shopperProducts.Where(c => c.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+
+
             }
 
             #endregion
+
+
+            shopperProducts = shopperProducts.Skip(skip).Take(take);
 
             return shopperProducts.Select(c => new ProductViewModel()
             {
@@ -494,18 +508,6 @@ namespace Reshop.Infrastructure.Repository.Product
             });
 
 
-        }
-
-        public async Task<int> GetShopperProductsCountWithTypeAsync(string shopperId, string type)
-        {
-            if (type == "all")
-            {
-                return await _context.ShopperProducts.Where(c => c.ShopperId == shopperId)
-                    .Select(c => c.Product).CountAsync();
-            }
-
-            return await _context.ShopperProducts.Where(c => c.ShopperId == shopperId)
-                .Select(c => c.Product).Where(c => c.ProductType == type).CountAsync();
         }
 
         public IEnumerable<ProductViewModel> GetUnFinallyShopperProductRequestsWithPagination(string type, string sortBy, int skip, int take)
@@ -965,6 +967,21 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Where(o => o.ShopperProductColorId == c.ShopperProductColorId)
                         .Sum(s => s.Count), 10));
 
+        public IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId) =>
+            _context.StoreTitles.Where(c => c.StoreTitleId == storeTitleId)
+                .SelectMany(c => c.Brands)
+                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
+
+        public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
+            _context.Brands.Where(c => c.BrandId == brandId)
+                .SelectMany(c => c.OfficialBrandProducts)
+                .Select(c => new Tuple<int, string>(c.OfficialBrandProductId, c.OfficialBrandProductName));
+
+        public IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId) =>
+            _context.OfficialBrandProducts.Where(c => c.OfficialBrandProductId == officialProductId)
+                .SelectMany(c => c.Products)
+                .Select(c => new Tuple<int, string>(c.ProductId, c.ProductTitle));
+
 
         public IEnumerable<Domain.Entities.Product.Product> GetTypeMobileProducts()
         {
@@ -1004,12 +1021,12 @@ namespace Reshop.Infrastructure.Repository.Product
                     IsActive = c.IsActive,
 
                     //img
-                    SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                    SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                    SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                    SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                    SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                    SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                    SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                    SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                    SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                    SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                    SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                    SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                     // detail
                     Lenght = c.MobileDetail.Lenght,
                     Width = c.MobileDetail.Width,
@@ -1082,12 +1099,12 @@ namespace Reshop.Infrastructure.Repository.Product
                      IsActive = c.IsActive,
 
                      //img
-                     SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                     SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                     SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                     SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                     SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                     SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                     SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                     SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                     SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                     SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                     SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                     SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                      // detail
                      Length = c.LaptopDetail.Length,
                      Width = c.LaptopDetail.Width,
@@ -1148,12 +1165,12 @@ namespace Reshop.Infrastructure.Repository.Product
                      IsActive = c.IsActive,
 
                      //img
-                     SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                     SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                     SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                     SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                     SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                     SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                     SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                     SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                     SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                     SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                     SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                     SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                      // detail
                      Length = c.PowerBankDetail.Length,
                      Width = c.PowerBankDetail.Width,
@@ -1184,12 +1201,12 @@ namespace Reshop.Infrastructure.Repository.Product
                         IsActive = c.IsActive,
 
                         //img
-                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                         // detail
                         SuitablePhones = c.MobileCoverDetail.SuitablePhones,
                         Gender = c.MobileCoverDetail.Gender,
@@ -1210,12 +1227,12 @@ namespace Reshop.Infrastructure.Repository.Product
                         IsActive = c.IsActive,
 
                         //img
-                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                         // detail
                         Length = c.FlashMemoryDetail.Length,
                         Width = c.FlashMemoryDetail.Width,
@@ -1256,12 +1273,12 @@ namespace Reshop.Infrastructure.Repository.Product
                         IsActive = c.IsActive,
 
                         //img
-                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                         // detail
                         Lenght = c.TabletDetail.Lenght,
                         Width = c.TabletDetail.Width,
@@ -1335,12 +1352,12 @@ namespace Reshop.Infrastructure.Repository.Product
                         IsActive = c.IsActive,
 
                         //img
-                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                         // detail
                         Lenght = c.SpeakerDetail.Lenght,
                         Width = c.SpeakerDetail.Width,
@@ -1377,12 +1394,12 @@ namespace Reshop.Infrastructure.Repository.Product
                         IsActive = c.IsActive,
 
                         //img
-                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                         // detail
                     }).SingleOrDefaultAsync();
 
@@ -1398,12 +1415,12 @@ namespace Reshop.Infrastructure.Repository.Product
                         IsActive = c.IsActive,
 
                         //img
-                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                         // detail
                         Lenght = c.SmartWatchDetail.Lenght,
                         Width = c.SmartWatchDetail.Width,
@@ -1452,12 +1469,12 @@ namespace Reshop.Infrastructure.Repository.Product
                         IsActive = c.IsActive,
 
                         //img
-                        SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                        SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                        SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                        SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                        SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                        SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                        SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                        SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                        SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                        SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                        SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                        SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                         // detail
                         Length = c.MemoryCardDetail.Length,
                         Width = c.MemoryCardDetail.Width,
@@ -1481,12 +1498,12 @@ namespace Reshop.Infrastructure.Repository.Product
                     IsActive = c.IsActive,
 
                     //img
-                    SelectedImage1IMG = c.ProductGalleries.Skip(0).First().ImageName,
-                    SelectedImage2IMG = c.ProductGalleries.Skip(1).First().ImageName,
-                    SelectedImage3IMG = c.ProductGalleries.Skip(2).First().ImageName,
-                    SelectedImage4IMG = c.ProductGalleries.Skip(3).First().ImageName,
-                    SelectedImage5IMG = c.ProductGalleries.Skip(4).First().ImageName,
-                    SelectedImage6IMG = c.ProductGalleries.Skip(5).First().ImageName,
+                    SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
+                    SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
+                    SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
+                    SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
+                    SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
+                    SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
                     // detail
                     CableMaterial = c.AuxDetail.CableMaterial,
                     CableLenght = c.AuxDetail.CableLenght

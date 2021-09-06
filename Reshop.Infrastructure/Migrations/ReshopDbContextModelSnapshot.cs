@@ -117,7 +117,12 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("StoreTitleId")
+                        .HasColumnType("int");
+
                     b.HasKey("BrandId");
+
+                    b.HasIndex("StoreTitleId");
 
                     b.ToTable("Brands");
                 });
@@ -1797,6 +1802,9 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("OrderBy")
+                        .HasColumnType("int");
+
                     b.HasKey("ProductId", "ImageName");
 
                     b.ToTable("ProductGalleries");
@@ -2684,6 +2692,17 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Product.Brand", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Shopper.StoreTitle", "StoreTitle")
+                        .WithMany("Brands")
+                        .HasForeignKey("StoreTitleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StoreTitle");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Product.FavoriteProduct", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.Product.Product", "Product")
@@ -3235,6 +3254,8 @@ namespace Reshop.Infrastructure.Migrations
 
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreTitle", b =>
                 {
+                    b.Navigation("Brands");
+
                     b.Navigation("ShopperTitles");
                 });
 

@@ -11,7 +11,7 @@ namespace Reshop.Domain.DTOs.Shopper
         // product
         public int ProductId { get; set; }
         public string ProductName { get; set; }
-        public string ProductImage { get; set; }
+        public IEnumerable<string> ProductImages { get; set; }
         public string BrandName { get; set; }
         public int ShoppersCount { get; set; }
 

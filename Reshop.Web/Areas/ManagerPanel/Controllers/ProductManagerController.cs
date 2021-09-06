@@ -49,17 +49,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public IActionResult ProductsList(string type, int pageId, string filter)
         {
-            if (filter.ToLower() == "undefined")
-            {
-                filter = "";
-            }
-
-            if (type.ToLower() == "undefined")
-            {
-                type = "all";
-            }
-
-
             return ViewComponent("ProductsListForAdminComponent", new { type, pageId, filter });
         }
 
@@ -2814,21 +2803,23 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         private async Task AddImg(List<IFormFile> images, int productId)
         {
-            foreach (var image in images)
+
+            for (int i = 0; i < images.Count; i++)
             {
-                if (image.Length > 0)
+                if (images[i].Length > 0)
                 {
                     string path = Path.Combine(Directory.GetCurrentDirectory(),
                         "wwwroot",
                         "images",
                         "ProductImages");
 
-                    string imgName = await ImageConvertor.CreateNewImage(image, path, 750);
+                    string imgName = await ImageConvertor.CreateNewImage(images[i], path, 750);
 
                     var productGallery = new ProductGallery()
                     {
                         ProductId = productId,
-                        ImageName = imgName
+                        ImageName = imgName,
+                        OrderBy = i + 1,
                     };
 
                     await _productService.AddProductGalleryAsync(productGallery);
@@ -2863,7 +2854,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         var newProductGallery = new ProductGallery()
                         {
                             ProductId = productId,
-                            ImageName = newImageName
+                            ImageName = newImageName,
+                            OrderBy = i + 1,
                         };
 
                         await _productService.AddProductGalleryAsync(newProductGallery);

@@ -7,6 +7,7 @@ using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Domain.Entities.Product;
@@ -94,7 +95,8 @@ namespace Reshop.Infrastructure.Repository.Shopper
             {
                 ShopperId = c.ShopperId,
                 ShopperName = c.User.FullName,
-                StoreName = c.StoreName
+                StoreName = c.StoreName,
+                IsActive = c.IsActive
             });
         }
 
@@ -130,7 +132,45 @@ namespace Reshop.Infrastructure.Repository.Shopper
             {
                 ShopperId = c.ShopperId,
                 ShopperName = c.User.FullName,
-                StoreName = c.StoreName
+                StoreName = c.StoreName,
+                IsActive = c.IsActive
+            });
+        }
+
+        public IEnumerable<ShopperProductsListForShow> GetShopperProductsWithPagination(string shopperId, string type = "all", int skip = 0, int take = 18, string filter = null)
+        {
+            IQueryable<ShopperProduct> products = _context.ShopperProducts
+                .Where(c => c.ShopperId == shopperId);
+
+
+            switch (type)
+            {
+                case "all":
+                    break;
+                case "active":
+                    products = products.Where(c => c.IsActive);
+                    break;
+                case "existed":
+                    products = products.Where(c => !c.IsActive);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                products = products
+                    .Where(c => c.Product.ProductTitle.Contains(filter));
+            }
+
+
+            products = products.Skip(skip).Take(take);
+
+            return products.Select(c => new ShopperProductsListForShow()
+            {
+                ShopperProductId = c.ShopperProductId,
+                ProductName = c.Product.ProductTitle,
+                ColorsCount = c.ShopperProductColors.Count,
+                CreateDate = c.CreateDate,
+                IsActive = c.IsActive
             });
         }
 
@@ -144,6 +184,33 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 _ => await _context.Shoppers.CountAsync()
             };
         }
+
+        public async Task<int> GetShopperProductsCountWithTypeAsync(string shopperId, string type = "all")
+        {
+            if (type == "all")
+            {
+                return await _context.ShopperProducts.Where(c => c.ShopperId == shopperId)
+                    .Select(c => c.Product).CountAsync();
+            }
+
+            return await _context.ShopperProducts.Where(c => c.ShopperId == shopperId)
+                .Select(c => c.Product).Where(c => c.ProductType == type).CountAsync();
+        }
+
+        public async Task<ShopperDataForAdmin> GetShopperDataForAdminAsync(string shopperId) =>
+            await _context.Shoppers.Where(c => c.ShopperId == shopperId)
+                .Select(c => new ShopperDataForAdmin()
+                {
+                    ShopperId = c.ShopperId,
+                    ShopperFullName = c.User.FullName,
+                    BirthDay = c.BirthDay,
+                    Email = c.User.Email,
+                    FullIdOfIdentityCard = "be zodi ezafeh mikonam",
+                    IsActive = c.IsActive,
+                    IssuanceOfIdentityCard = "be zodi ezafeh mikomnam",
+                    NationalCode = c.User.NationalCode,
+                    PhoneNumber = c.User.PhoneNumber
+                }).SingleOrDefaultAsync();
 
 
         public async Task AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest) =>
@@ -225,7 +292,15 @@ namespace Reshop.Infrastructure.Repository.Shopper
                  _context.ShopperStoreTitles.Remove(shopperStoreTitle);
 
         public IEnumerable<string> GetShopperStoreTitlesName(string shopperId) =>
-            _context.ShopperStoreTitles.Where(c => c.ShopperId == shopperId).Select(c => c.StoreTitle.StoreTitleName);
+            _context.ShopperStoreTitles
+                .Where(c => c.ShopperId == shopperId)
+                .Select(c => c.StoreTitle.StoreTitleName);
+
+        public IEnumerable<Tuple<int, string>> GetShopperStoreTitles(string shopperId) =>
+            _context.ShopperStoreTitles
+                .Where(c => c.ShopperId == shopperId)
+                .Select(c => c.StoreTitle)
+                .Select(c => new Tuple<int, string>(c.StoreTitleId, c.StoreTitleName));
 
         public IEnumerable<StoreAddress> GetShopperStoreAddresses(string shopperId) =>
             _context.StoresAddress.Where(c => c.ShopperId == shopperId);

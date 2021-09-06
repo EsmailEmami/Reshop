@@ -12,8 +12,24 @@
     <div class="row">
         <!-- img part -->
         <div class="col-sm-12 col-md-4 mb-3 mb-md-0">
-            <div class="img-box box-shadow">
-                <img src="/images/ProductImages/@Model.ProductImage" alt="@Model.ProductName">
+            <div class="box-shadow">
+                <div class="show-img-box">
+                    <img src="/images/ProductImages/@Model.ProductImages.First()" alt="@Model.ProductName">
+                </div>
+
+                <!-- start slider pictures -->
+                <div id="images" class="owl-carousel owl-theme" style="border-top: 1px solid #eee;">
+
+                    @foreach (var item in Model.ProductImages)
+                    {
+                        <div class="mini-pic-slider">
+                            <a href="#">
+                                <img src="/images/ProductImages/@item" alt="@Model.ProductName">
+                            </a>
+                        </div>
+                    }
+
+                </div>
             </div>
         </div>
 
@@ -289,60 +305,60 @@ else
         <script>
             google.charts.setOnLoadCallback(drawColorsColumnChart);
 
-          function drawColorsColumnChart()
-                            {
-            $.ajax({
-                                type: 'GET',
-                url: '/api/Product/GetColorsOfProductData/' + @Model.ProductId,
-            }).done(function(res) {
-                        var data = new google.visualization.DataTable();
+            function drawColorsColumnChart()
+            {
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/Product/GetColorsOfProductData/' + @Model.ProductId,
+                }).done(function(res) {
+                    var data = new google.visualization.DataTable();
 
-                        data.addColumn('string', 'رنگ');
-                        data.addColumn('number', 'بازدید');
-                        data.addColumn('number', 'فروش');
-                        data.addColumn('number', 'مرجوعی');
+                    data.addColumn('string', 'رنگ');
+                    data.addColumn('number', 'بازدید');
+                    data.addColumn('number', 'فروش');
+                    data.addColumn('number', 'مرجوعی');
 
-                $.each(res,
-                    function(index, value) {
+                    $.each(res,
+                        function(index, value) {
                             data.addRow([value.item1, value.item2, value.item3, value.item4]);
                         });
 
-                        var options = {
-                    width: '100%',
-                    height: '100%',
-                    fontName: 'Sahel, sans-serif',
-                    color: '#4d4d4d',
-                    fontSize: 17,
-                    height: 400,
-                    colors:['#FC5400', '#3366cc', '#f95d6a', '#58508d'],
-                    chartArea:
+                    var options = {
+                        width: '100%',
+                        height: '100%',
+                        fontName: 'Sahel, sans-serif',
+                        color: '#4d4d4d',
+                        fontSize: 17,
+                        height: 400,
+                        colors:['#FC5400', '#3366cc', '#f95d6a', '#58508d'],
+                        chartArea:
                         {
-                        right: 0,
-                        top: 20,
-                        left: 100,
-                        width: '95%',
-                    },
-                    hAxis:
-                        {
-                        direction: 1,
-                        slantedText: true,
-                        slantedTextAngle: 50,
-                    },
-                    vAxis:
-                        {
-                        format: 'short',
-                        title: 'تعداد',
-                        titleTextStyle:
-                            {
-                            color: '#333',
+                            right: 0,
+                            top: 20,
+                            left: 100,
+                            width: '95%',
                         },
-                        minValue: 0,
-                        scaleType: 'Linear',
-                    },
-                    legend:
+                        hAxis:
                         {
-                        position: 'bottom'
-                    }
+                            direction: 1,
+                            slantedText: true,
+                            slantedTextAngle: 50,
+                        },
+                        vAxis:
+                        {
+                            format: 'short',
+                            title: 'تعداد',
+                            titleTextStyle:
+                            {
+                                color: '#333',
+                            },
+                            minValue: 0,
+                            scaleType: 'Linear',
+                        },
+                        legend:
+                        {
+                            position: 'bottom'
+                        }
                     };
 
                     var chart = new google.visualization.ColumnChart(document.getElementById('ColorsColumnChart'));
@@ -356,4 +372,22 @@ else
         </script>
     }
 
+
+    <script>
+        $("#images").owlCarousel({
+            rtl: true,
+            loop: false,
+            nav: false,
+            dots: true,
+            items: 4,
+            responsive: {
+                0: {
+                    items: 4
+                },
+                600: {
+                    items: 3
+                }
+            },
+        });
+    </script>
 }

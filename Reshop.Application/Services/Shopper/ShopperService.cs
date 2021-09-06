@@ -46,6 +46,20 @@ namespace Reshop.Application.Services.Shopper
             return new Tuple<IEnumerable<ShoppersListForAdmin>, int, int>(shoppers, pageId, totalPages);
         }
 
+        public async Task<Tuple<IEnumerable<ShopperProductsListForShow>, int, int>> GetShopperProductsInformationWithPagination(string shopperId, string type = "all", string filter = "", int pageId = 1, int take = 18)
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int shoppersCount = await _shopperRepository.GetShopperProductsCountWithTypeAsync(shopperId, type.FixedText());
+
+            var products = _shopperRepository.GetShopperProductsWithPagination(shopperId, type.FixedText(), skip, take, filter);
+
+            int totalPages = (int)Math.Ceiling(1.0 * shoppersCount / take);
+
+
+            return new Tuple<IEnumerable<ShopperProductsListForShow>, int, int>(products, pageId, totalPages);
+        }
+
         public async Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>> GetProductShoppersInformationWithPagination(int productId, string type = "all", string filter = "", int pageId = 1, int take = 18)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
@@ -213,6 +227,9 @@ namespace Reshop.Application.Services.Shopper
         public async Task<string> GetShopperProductIdAsync(string shopperId, int productId) =>
             await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
 
+        public async Task<ShopperDataForAdmin> GetShopperDataForAdminAsync(string shopperId) =>
+            await _shopperRepository.GetShopperDataForAdminAsync(shopperId);
+
         public async Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest)
         {
             try
@@ -376,10 +393,12 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
-        public IEnumerable<string> GetShopperStoreTitlesName(string shopperId)
-        {
-            return _shopperRepository.GetShopperStoreTitlesName(shopperId);
-        }
+        public IEnumerable<string> GetShopperStoreTitlesName(string shopperId) =>
+            _shopperRepository.GetShopperStoreTitlesName(shopperId);
+
+
+        public IEnumerable<Tuple<int, string>> GetShopperStoreTitles(string shopperId) =>
+            _shopperRepository.GetShopperStoreTitles(shopperId);
 
         public IEnumerable<Color> GetColors() =>
             _shopperRepository.GetColors();

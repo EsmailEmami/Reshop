@@ -13,8 +13,24 @@
     <div class="row">
         <!-- img part -->
         <div class="col-sm-12 col-md-4 mb-3 mb-md-0">
-            <div class="img-box box-shadow">
-                <img src="/images/ProductImages/thumb/@Model.ProductImage" alt="@Model.ProductName">
+            <div class="box-shadow">
+                <div class="show-img-box">
+                    <img src="/images/ProductImages/@Model.ProductImages.First()" alt="@Model.ProductName">
+                </div>
+
+                <!-- start slider pictures -->
+                <div id="owl-one" class="owl-carousel owl-theme" style="border-top: 1px solid #eee;">
+
+                    @foreach (var item in Model.ProductImages)
+                    {
+                        <div class="mini-pic-slider">
+                            <a href="#">
+                                <img src="/images/ProductImages/@item" alt="@Model.ProductName">
+                            </a>
+                        </div>
+                    }
+
+                </div>
             </div>
         </div>
 

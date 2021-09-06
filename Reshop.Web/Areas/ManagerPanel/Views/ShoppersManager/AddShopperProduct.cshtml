@@ -1,0 +1,77 @@
+﻿@model AddOrEditShopperProductViewModel
+@{
+    Layout = null;
+}
+<link href="~/css/select.css" rel="stylesheet" />
+
+<form asp-action="AddShopperProduct" method="post" onsubmit="return SubmitFormData(this)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+    <input type="hidden" asp-for="ShopperId" />
+
+    <h3 class="title-header">انتخاب کالا</h3>
+    <div class="row">
+        <div class="col-sm-12 col-lg-6">
+            <select onchange="GetBrandsOfStoreTitle(this.value)" select-search="true">
+                <option value="">عنوان کالا</option>
+                @foreach (var item in Model.StoreTitles)
+                {
+                    <option value="@item.Item1">@item.Item2</option>
+                }
+            </select>
+        </div>
+
+
+        @* this is for brand *@
+        <div class="col-sm-12 col-lg-6">
+            <select id="brand" onchange="GetOfficialProductsOfBrand(this.value)">
+                <option value="">لطفا عنوان کالا را انتخاب کنید</option>
+            </select>
+        </div>
+
+        @* this is for official product *@
+        <div class="col-sm-12 col-lg-6">
+            <select id="officialProduct" onchange="GetProductsOfOfficialProduct(this.value)">
+                <option value="">لطفا برند را انتخاب کنید</option>
+            </select>
+        </div>
+
+        @* this is for product *@
+        <div class="col-sm-12 col-lg-6">
+            <select asp-for="ProductId" id="product">
+                <option value="">لطفا نام اختصاصی کالا را انتخاب کنید</option>
+            </select>
+        </div>
+    </div>
+
+
+    <h3 class="title-header">کالای فروشنده</h3>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-field">
+                <input asp-for="Warranty">
+                <label><i class="far fa-phone"></i> گارانتی</label>
+                <span asp-validation-for="Warranty" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-check">
+                <label>
+                    این کالا فعال است
+                    <input type="checkbox" checked asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">ثبت</button>
+</form>
+
+
+
+<script src="~/js/select.js"></script>
+<script>
+    inputJs();
+</script>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Domain.Entities.Shopper
 {
@@ -21,6 +22,7 @@ namespace Reshop.Domain.Entities.Shopper
         #region Relations
 
         public virtual ICollection<ShopperStoreTitle> ShopperTitles { get; set; }
+        public virtual ICollection<Brand> Brands { get; set; }
 
         #endregion
     }

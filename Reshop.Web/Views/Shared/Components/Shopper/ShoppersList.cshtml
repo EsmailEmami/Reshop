@@ -1,0 +1,148 @@
+﻿@model Tuple<IEnumerable<ShoppersListForAdmin>, int, int>
+
+
+<link href="~/css/select.css" rel="stylesheet" />
+<div class="filter">
+    <input type="hidden" name="pageId" id="pageId" value="@Model.Item2" />
+
+    @if (ViewBag.SearchText != null)
+    {
+        <div class="filter-input">
+            <input type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
+            <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
+        </div>
+    }
+    else
+    {
+        <div class="filter-input">
+            <input type="text" placeholder="دنبال کالا بگرد..." id="filter">
+            <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
+        </div>
+    }
+
+    <select select-search="true" id="type" onchange="changeList()">
+
+        @switch (ViewBag.SelectedType.ToString())
+        {
+            case "all":
+                {
+                    <option value="all" selected>همه</option>
+                    <option value="active">فعال</option>
+                    <option value="existed">غیر فعال</option>
+                    break;
+                }
+            case "active":
+                {
+                    <option value="all">همه</option>
+                    <option value="active" selected>فعال</option>
+                    <option value="existed">غیر فعال</option>
+                    break;
+                }
+            case "existed":
+                {
+                    <option value="all">همه</option>
+                    <option value="active">فعال</option>
+                    <option value="existed" selected>غیر فعال</option>
+                    break;
+                }
+        }
+
+    </select>
+
+
+</div>
+
+
+
+@if (Model.Item1.Any())
+{
+    <table class="table responsive table-hover table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">نام فروشنده</th>
+                <th scope="col">نام فروشگاه</th>
+                <th scope="col">دستورات</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model.Item1)
+            {
+                <tr>
+                    <td>@item.ShopperName</td>
+                    <td>@item.StoreName</td>
+
+                    <td>
+                        <a asp-area="ManagerPanel" asp-controller="ShoppersManager" asp-action="ShopperDetail" asp-route-shopperId="@item.ShopperId"
+                           target="_blank" class="btn btn-info text-white">
+                            جزئیات
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Model.Item3 > 1)
+    {
+        <ul class="pagination-custom">
+            <li class="@(Model.Item2<=1?"disabled":"")">
+                <a onclick="pagination('@(Model.Item2 - 1)')" href="#">
+                    <i class="far fa-angle-right"></i>
+                </a>
+            </li>
+            @for (var i = 1; i <= Model.Item3; i++)
+            {
+                <li class="@(Model.Item2 == i? "active":"")">
+                    <a onclick="pagination('@i')" href="#">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")">
+                <a onclick="pagination('@(Model.Item2+1)')" href="#">
+                    <i class="far fa-angle-left"></i>
+                </a>
+            </li>
+        </ul>
+    }
+
+
+
+
+
+    <script>
+        function pagination(pageId) {
+            $('#pageId').val(pageId);
+            changeList();
+        }
+
+        function changeList() {
+            var pageId = $('#pageId').val();
+            var type = $('#type').val();
+            var filter = $('#filter').val();
+
+
+
+            $.ajax({
+                type: 'GET',
+                url: '/ManagerPanel/ShoppersManager/ShoppersList/?type=' + type + '&pageId=' + pageId + '&filter=' + filter,
+                processData: false,
+                contentType: false
+            }).done(function (res) {
+                console.log(res);
+                $("#tableList").html(res);
+            });
+        }
+
+    </script>
+}
+else
+{
+    <div class="alert alert-warning">
+        فروشنده ای یافت نشد.
+    </div>
+}
+
+<script src="~/js/select.js"></script>

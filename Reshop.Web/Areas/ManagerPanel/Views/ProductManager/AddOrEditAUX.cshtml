@@ -8,6 +8,10 @@
     @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ProductPage); }
 }
 
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+
 <form asp-action="AddOrEditAUX" method="post" enctype="multipart/form-data">
 
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -242,6 +246,7 @@
 
 
 @section Scripts {
+    <script src="~/js/select.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 }

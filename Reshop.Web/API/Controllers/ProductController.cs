@@ -11,6 +11,7 @@ namespace Reshop.Web.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -60,6 +61,41 @@ namespace Reshop.Web.API.Controllers
             {
                 return NotFound();
             }
+
+            return new ObjectResult(res);
+        }
+
+
+        // store title
+        [HttpGet("GetBrandsOfStoreTitle/{storeTitleId}")]
+        public IActionResult GetBrandsOfStoreTitle(int storeTitleId)
+        {
+            var res = _productService.GetBrandsOfStoreTitle(storeTitleId);
+
+            if (res == null)
+                return NotFound();
+
+            return new ObjectResult(res);
+        }
+
+        [HttpGet("GetBrandOfficialProducts/{brandId}")]
+        public IActionResult GetBrandOfficialProducts(int brandId)
+        {
+            var res = _productService.GetBrandOfficialProducts(brandId);
+
+            if (res == null)
+                return NotFound();
+
+            return new ObjectResult(res);
+        }
+
+        [HttpGet("GetProductsOfOfficialProduct/{officialProductId}")]
+        public IActionResult GetProductsOfOfficialProduct(int officialProductId)
+        {
+            var res = _productService.GetProductsOfOfficialProduct(officialProductId);
+
+            if (res == null)
+                return NotFound();
 
             return new ObjectResult(res);
         }

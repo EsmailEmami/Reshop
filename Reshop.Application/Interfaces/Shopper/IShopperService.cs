@@ -13,6 +13,7 @@ namespace Reshop.Application.Interfaces.Shopper
     {
         // data , pageId , totalPages
         Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int>> GetShoppersInformationWithPagination(string type = "all", string filter = "", int pageId = 1, int take = 18);
+        Task<Tuple<IEnumerable<ShopperProductsListForShow>, int, int>> GetShopperProductsInformationWithPagination(string shopperId, string type = "all", string filter = "", int pageId = 1, int take = 18);
         Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>> GetProductShoppersInformationWithPagination(int productId, string type = "all", string filter = "", int pageId = 1, int take = 18);
 
         Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper);
@@ -25,6 +26,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<string> GetShopperIdOrUserAsync(string userId);
         Task<string> GetShopperProductIdAsync(string shopperId, int productId);
 
+        Task<ShopperDataForAdmin> GetShopperDataForAdminAsync(string shopperId);
         #region reason
 
         Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest);
@@ -62,6 +64,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> AddShopperStoreTitleAsync(string shopperId, List<int> storeTitlesId);
 
         IEnumerable<string> GetShopperStoreTitlesName(string shopperId);
+        IEnumerable<Tuple<int, string>> GetShopperStoreTitles(string shopperId);
 
         #endregion
 

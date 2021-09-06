@@ -77,131 +77,90 @@ function ShowModal(url, title) {
     });
 }
 
+// this function is for add select option
+function addSelectList(select, selectDropdown, itemValue, itemText) {
+
+    // create new option for select
+    let opt = document.createElement('option');
+    opt.value = itemValue;
+    opt.innerHTML = itemText;
+    select.appendChild(opt);
+
+    // create new option for select dropDown
+    var op = newEl('div',
+        {
+            optEl: opt
+        });
+
+    op.appendChild(newEl('label', {
+        text: opt.text
+    }));
+
+
+    op.addEventListener('click', () => {
+
+        op.optEl.selected = !!!op.optEl.selected;
+        select.dispatchEvent(new Event('change'));
+
+    });
+
+
+    selectDropdown.appendChild(op);
+}
+
+// refresh dropdown 
+function selectRefresh(select, dropDown) {
+    var optext = dropDown.querySelector('span.optext');
+
+    dropDown.removeChild(optext);
+
+    var sel = Array.from(select.selectedOptions)[0];
+
+    var c = newEl('span', {
+        class: 'optext',
+        text: sel.text
+    });
+
+    dropDown.appendChild(c);
+}
+
+
 function GetCitiesOfState(stateId) {
-    var city = document.getElementById('city');
-    var cityOptionList = $('.select-dropdown-list')[1];
 
+    var select = document.getElementById('city');
+    // dropDown 
+    var selectDropDown = document.getElementById('city-select');
+    // dropDown Options
+    var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
 
-    function addSelectList(itemValue, itemText) {
-        let opt = document.createElement('option');
-        opt.value = itemValue;
-        opt.innerHTML = itemText;
-        city.appendChild(opt);
-
-        var op = newEl('div',
-            {
-                optEl: opt
-            });
-
-        op.appendChild(newEl('label', {
-            text: opt.text
-        }));
-
-
-        op.addEventListener('click', () => {
-
-            op.optEl.selected = !!!op.optEl.selected;
-            city.dispatchEvent(new Event('change'));
-
-        });
-
-
-        cityOptionList.appendChild(op);
-    }
-
-
-    var div = document.querySelectorAll('.select-dropdown')[1];
-
-    function refresh() {
-        div.querySelectorAll('span.optext, span.placeholder').forEach(t => div.removeChild(t));
-        var sel = Array.from(city.selectedOptions)[0];
-
-        console.log(sel);
-
-        var c = newEl('span', {
-            class: 'optext',
-            text: sel.text
-        });
-
-        div.appendChild(c);
-    }
-
-    if (stateId != 0) {
+    if (stateId != '') {
         $.ajax({
             type: "GET",
             url: "/api/State?stateId=" + stateId,
         }).done(function (res) {
 
-
             // make empty the select
-            city.querySelectorAll('*').forEach(n => n.remove());
+            select.querySelectorAll('*').forEach(n => n.remove());
+            selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
 
-            // select city option
-            var selectCityOption = document.createElement('option');
-            selectCityOption.value = 0;
-            selectCityOption.innerHTML = "لطفا شهر را انتخاب کنید";
-            city.appendChild(selectCityOption);
-
-            var op = newEl('div',
-                {
-                    optEl: selectCityOption
-                });
-
-            op.appendChild(newEl('label', {
-                text: selectCityOption.text
-            }));
-
-
-            op.addEventListener('click', () => {
-
-                op.optEl.selected = !!!op.optEl.selected;
-                city.dispatchEvent(new Event('change'));
-
-            });
-
-            cityOptionList.querySelectorAll('*').forEach(n => n.remove());
-
-            cityOptionList.appendChild(op);
+            addSelectList(select, selectDropDownList, '', 'لطفا شهر را انتخاب کنید');
 
 
             $.each(res, function (index, value) {
-                addSelectList(value.cityId, value.cityName);
+                addSelectList(select, selectDropDownList, value.cityId, value.cityName);
             });
 
-            refresh();
+            selectRefresh(select, selectDropDown);
 
         });
-    } else if (stateId == 0) {
+    } else
         // make empty the select
-        city.querySelectorAll('*').forEach(n => n.remove());
+        select.querySelectorAll('*').forEach(n => n.remove());
+    selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
 
-        // select city option
-        var selectStateOption = document.createElement('option');
-        selectStateOption.value = 0;
-        selectStateOption.innerHTML = "لطفا استان را انتخاب کنید";
-        city.appendChild(selectStateOption);
+    addSelectList(select, selectDropDownList, '', 'لطفا استان را انتخاب کنید');
 
-        var op = newEl('div',
-            {
-                optEl: selectStateOption
-            });
-
-        op.appendChild(newEl('label', {
-            text: selectStateOption.text
-        }));
-
-        op.addEventListener('click', () => {
-
-            op.optEl.selected = !!!op.optEl.selected;
-            city.dispatchEvent(new Event('change'));
-
-        });
-
-
-        cityOptionList.querySelectorAll('*').forEach(n => n.remove());
-        cityOptionList.appendChild(op);
-        refresh();
-    }
+    selectRefresh(select, selectDropDown);
 }
 
 function SubmitFormData(form) {
@@ -220,8 +179,11 @@ function SubmitFormData(form) {
                     $(".modal-header-custom .header-title").html('');
                     document.getElementById('modal').style.display = 'none';
 
-                    if (res.returnUrl != "") {
+                    if (res.returnUrl !== '') {
                         ShowToast('success', 'عملیات با موفقیت انجام شد.', res.returnUrl);
+                    } else if (res.returnUrl.toLowerCase() === 'current') {
+                        var loc = window.location.href;
+                        ShowToast('success', 'عملیات با موفقیت انجام شد.', loc);
                     } else {
                         ShowToast('success', 'عملیات با موفقیت انجام شد.');
                     }
@@ -272,7 +234,6 @@ function UpdateProductDetailShopper(productId, productName, sellerId) {
     window.history.replaceState(null, productName, url);
 }
 
-
 function ColorsDetailData(where, productId, colorId) {
 
     $.ajax({
@@ -297,4 +258,122 @@ function ColorsDiscountDetailData(where, productId, colorId) {
 
         $(place).html(res);
     });
+}
+
+
+// brand 
+
+function GetBrandsOfStoreTitle(storeTitleId) {
+
+    var select = document.getElementById('brand');
+    // dropDown 
+    var selectDropDown = document.getElementById('brand-select');
+    // dropDown Options
+    var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
+
+    if (storeTitleId != '') {
+        $.ajax({
+            type: "GET",
+            url: "/api/Product/GetBrandsOfStoreTitle/" + storeTitleId,
+        }).done(function (res) {
+
+            // make empty the select
+            select.querySelectorAll('*').forEach(n => n.remove());
+            selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+            addSelectList(select, selectDropDownList, '', 'لطفا برند را انتخاب کنید');
+
+
+            $.each(res, function (index, value) {
+                addSelectList(select, selectDropDownList, value.item1, value.item2);
+            });
+
+            selectRefresh(select, selectDropDown);
+
+        });
+    } else
+        // make empty the select
+        select.querySelectorAll('*').forEach(n => n.remove());
+    selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+    addSelectList(select, selectDropDownList, '', 'لطفا عنوان کالا را انتخاب کنید');
+
+    selectRefresh(select, selectDropDown);
+}
+
+function GetOfficialProductsOfBrand(brandId) {
+
+    var select = document.getElementById('officialProduct');
+    // dropDown 
+    var selectDropDown = document.getElementById('officialProduct-select');
+    // dropDown Options
+    var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
+
+    if (brandId !== '') {
+        $.ajax({
+            type: "GET",
+            url: "/api/Product/GetBrandOfficialProducts/" + brandId,
+        }).done(function (res) {
+
+            // make empty the select
+            select.querySelectorAll('*').forEach(n => n.remove());
+            selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+            addSelectList(select, selectDropDownList, '', 'لطفا نام اختصاصی کالا را انتخاب کنید');
+
+
+            $.each(res, function (index, value) {
+                addSelectList(select, selectDropDownList, value.item1, value.item2);
+            });
+
+            selectRefresh(select, selectDropDown);
+
+        });
+    } else
+        // make empty the select
+        select.querySelectorAll('*').forEach(n => n.remove());
+    selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+    addSelectList(select, selectDropDownList, '', 'لطفا برند را انتخاب کنید');
+
+    selectRefresh(select, selectDropDown);
+}
+
+
+function GetProductsOfOfficialProduct(officialProductId) {
+
+    var select = document.getElementById('product');
+    // dropDown 
+    var selectDropDown = document.getElementById('product-select');
+    // dropDown Options
+    var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
+
+    if (officialProductId !== '') {
+        $.ajax({
+            type: "GET",
+            url: "/api/Product/GetProductsOfOfficialProduct/" + officialProductId,
+        }).done(function (res) {
+
+            // make empty the select
+            select.querySelectorAll('*').forEach(n => n.remove());
+            selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+            addSelectList(select, selectDropDownList, '', 'لطفا کالا را انتخاب کنید');
+
+
+            $.each(res, function (index, value) {
+                addSelectList(select, selectDropDownList, value.item1, value.item2);
+            });
+
+            selectRefresh(select, selectDropDown);
+
+        });
+    } else
+        // make empty the select
+        select.querySelectorAll('*').forEach(n => n.remove());
+    selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+    addSelectList(select, selectDropDownList, '', 'لطفا نام اختصاصی کالا را انتخاب کنید');
+
+    selectRefresh(select, selectDropDown);
 }

@@ -107,7 +107,7 @@
                     <div class="col-sm-12 col-md-6 col-lg-5">
                        
                             <select onchange="GetCitiesOfState(this.value)" asp-for="StateId" select-search="true">
-                                <option value="0">استان</option>
+                                <option value="">استان</option>
                                 @foreach (var state in Model.States)
                                 {
                                     <option value="@state.StateId">@state.StateName</option>

@@ -21,8 +21,10 @@ namespace Reshop.Domain.Interfaces.Shopper
         // types = all,active,existed
         IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null);
         IEnumerable<ShoppersListForAdmin> GetProductShoppersWithPagination(int productId, string type = "all", int skip = 0, int take = 18, string filter = null);
-
+        IEnumerable<ShopperProductsListForShow> GetShopperProductsWithPagination(string shopperId, string type = "all", int skip = 0, int take = 18, string filter = null);
         Task<int> GetShoppersCountWithTypeAsync(string type = "all");
+        Task<int> GetShopperProductsCountWithTypeAsync(string shopperId, string type = "all");
+        Task<ShopperDataForAdmin> GetShopperDataForAdminAsync(string shopperId);
 
         #region reason
 
@@ -61,6 +63,8 @@ namespace Reshop.Domain.Interfaces.Shopper
         void RemoveShopperStoreTitle(ShopperStoreTitle shopperStoreTitle);
 
         IEnumerable<string> GetShopperStoreTitlesName(string shopperId);
+        IEnumerable<Tuple<int, string>> GetShopperStoreTitles(string shopperId);
+
         #endregion
 
         #region address

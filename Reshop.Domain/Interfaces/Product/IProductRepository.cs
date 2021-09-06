@@ -45,8 +45,7 @@ namespace Reshop.Domain.Interfaces.Product
         // is shopperUser Id was NULL the query find best shopper automatically
         Task<ShopperProduct> GetProductWithTypeAsync(int productId, string type, string shopperId = "");
 
-        IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string type, string sortBy, int skip, int take);
-        Task<int> GetShopperProductsCountWithTypeAsync(string shopperId, string type);
+        IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
         IEnumerable<ProductViewModel> GetUnFinallyShopperProductRequestsWithPagination(string type, string sortBy, int skip, int take);
 
         #endregion
@@ -190,6 +189,19 @@ namespace Reshop.Domain.Interfaces.Product
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId);
         // colorName , view , sell , returned
         IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId);
+
+        #endregion
+
+        #region store title
+
+        IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId);
+
+        #endregion
+
+        #region brand
+
+        IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId);
+        IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId);
 
         #endregion
 
