@@ -46,7 +46,7 @@ namespace Reshop.Application.Services.User
                 IsPhoneNumberActive = user.IsPhoneNumberActive,
                 IsBlocked = user.IsBlocked,
                 Roles = roles as IEnumerable<Role>,
-                SelectedRoles = userRoles as IEnumerable<string>
+                SelectedRoles = userRoles 
             };
         }
 

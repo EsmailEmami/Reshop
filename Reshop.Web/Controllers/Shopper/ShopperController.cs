@@ -148,7 +148,7 @@ namespace Reshop.Web.Controllers.Shopper
 
 
 
-            var model = new AddProductOfShopperViewModel()
+            var model = new AddColorToShopperProductViewModel()
             {
                 ShopperProductId = _dataProtector.Protect(shopperProductId)
             };
@@ -161,7 +161,7 @@ namespace Reshop.Web.Controllers.Shopper
         [HttpPost]
         [NoDirectAccess]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProductOfShopper(AddProductOfShopperViewModel model)
+        public async Task<IActionResult> AddProductOfShopper(AddColorToShopperProductViewModel model)
         {
             ViewData["Colors"] = _shopperService.GetColors();
             if (!ModelState.IsValid)
@@ -405,20 +405,20 @@ namespace Reshop.Web.Controllers.Shopper
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ShopperRequests(int pageId = 1)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string shopperId = await _shopperService.GetShopperIdOrUserAsync(userId);
+        //[HttpGet]
+        //public async Task<IActionResult> ShopperRequests(int pageId = 1)
+        //{
+        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    string shopperId = await _shopperService.GetShopperIdOrUserAsync(userId);
 
-            if (shopperId == null)
-            {
-                return NotFound();
-            }
+        //    if (shopperId == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var model = await _shopperService.GetShopperRequestsForShowAsync(shopperId, pageId, 24);
+        //    var model = await _shopperService.GetShopperRequestsForShowAsync(shopperId,ty, 24);
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
     }
 }

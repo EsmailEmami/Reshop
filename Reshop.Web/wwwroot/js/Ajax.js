@@ -179,11 +179,11 @@ function SubmitFormData(form) {
                     $(".modal-header-custom .header-title").html('');
                     document.getElementById('modal').style.display = 'none';
 
-                    if (res.returnUrl !== '') {
-                        ShowToast('success', 'عملیات با موفقیت انجام شد.', res.returnUrl);
-                    } else if (res.returnUrl.toLowerCase() === 'current') {
+                    if (res.returnUrl !== '' && res.returnUrl.toLowerCase() === 'current') {
                         var loc = window.location.href;
                         ShowToast('success', 'عملیات با موفقیت انجام شد.', loc);
+                    } else if (res.returnUrl !== '' && res.returnUrl.toLowerCase() !== 'current') {
+                        ShowToast('success', 'عملیات با موفقیت انجام شد.', res.returnUrl);
                     } else {
                         ShowToast('success', 'عملیات با موفقیت انجام شد.');
                     }
@@ -265,6 +265,9 @@ function ColorsDiscountDetailData(where, productId, colorId) {
 
 function GetBrandsOfStoreTitle(storeTitleId) {
 
+    GetOfficialProductsOfBrand('');
+    GetProductsOfOfficialProduct('');
+
     var select = document.getElementById('brand');
     // dropDown 
     var selectDropDown = document.getElementById('brand-select');
@@ -303,6 +306,8 @@ function GetBrandsOfStoreTitle(storeTitleId) {
 
 function GetOfficialProductsOfBrand(brandId) {
 
+    GetProductsOfOfficialProduct('');
+
     var select = document.getElementById('officialProduct');
     // dropDown 
     var selectDropDown = document.getElementById('officialProduct-select');
@@ -338,7 +343,6 @@ function GetOfficialProductsOfBrand(brandId) {
 
     selectRefresh(select, selectDropDown);
 }
-
 
 function GetProductsOfOfficialProduct(officialProductId) {
 

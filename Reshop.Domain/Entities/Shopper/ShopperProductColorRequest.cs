@@ -47,6 +47,9 @@ namespace Reshop.Domain.Entities.Shopper
 
         public bool IsRead { get; set; }
 
+        [Required]
+        public bool IsActive { get; set; }
+
         #region Relations
 
         public virtual User.User User { get; set; }

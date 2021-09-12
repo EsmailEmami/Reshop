@@ -2,13 +2,15 @@ function newEl(tag, attrs) {
     var e = document.createElement(tag);
     if (attrs !== undefined) Object.keys(attrs).forEach(k => {
         if (k === 'class') {
-            Array.isArray(attrs[k]) ? attrs[k].forEach(o => o !== '' ? e.classList.add(o) : 0) : (attrs[k] !== '' ? e.classList.add(attrs[k]) : 0)
+            Array.isArray(attrs[k])
+                ? attrs[k].forEach(o => o !== '' ? e.classList.add(o) : 0)
+                : (attrs[k] !== '' ? e.classList.add(attrs[k]) : 0);
         } else if (k === 'style') {
             Object.keys(attrs[k]).forEach(ks => {
                 e.style[ks] = attrs[k][ks];
             });
         } else if (k === 'text') {
-            attrs[k] === '' ? e.innerHTML = '&nbsp;' : e.innerText = attrs[k]
+            attrs[k] === '' ? e.innerHTML = '&nbsp;' : e.innerText = attrs[k];
         } else e[k] = attrs[k];
     });
     return e;
@@ -22,6 +24,14 @@ function MultiSelectDropdown() {
         var div = newEl('div', {
             class: 'multiselect-dropdown'
         });
+
+        if (el.hasAttribute('isDone')) {
+            return;
+        }
+
+        // add attr to select that select is done
+        el.setAttribute('isDone', '');
+
         el.style.display = 'none';
         el.parentNode.insertBefore(div, el.nextSibling);
         var listWrap = newEl('div', {
@@ -196,6 +206,14 @@ function SelectDropdown() {
             div.setAttribute('id', el.attributes['id'].value + '-select');
         }
 
+        if (el.hasAttribute('isDone')) {
+            return;
+        }
+
+        // add attr to select that select is done
+        el.setAttribute('isDone', '');
+
+        
 
         el.style.display = 'none';
         el.parentNode.insertBefore(div, el.nextSibling);
@@ -309,3 +327,9 @@ function SelectDropdown() {
 
 MultiSelectDropdown();
 SelectDropdown();
+
+
+function callSelect() {
+    MultiSelectDropdown();
+    SelectDropdown();
+}

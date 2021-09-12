@@ -4,11 +4,12 @@
     Layout = null;
 }
 
-<form asp-controller="ShoppersManager" asp-action="AddProductOfShopper" method="post" onsubmit="return SubmitFormData(this)">
+<form asp-action="AddColorToShopperProduct" method="post" onsubmit="return SubmitFormData(this)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
 
         <input type="hidden" asp-for="ShopperProductId" />
+
 
         <div class="col-sm-12 col-lg-4">
             <div class="form-field">
@@ -28,7 +29,7 @@
 
         @* colors *@
         @{
-            var colors = ViewData["Colors"] as IEnumerable<Color>;
+            var colors = ViewBag.Colors as IEnumerable<Tuple<int, string>>;
         }
 
         <div class="col-sm-12">
@@ -39,10 +40,21 @@
                 {
                     @foreach (var item in colors)
                     {
-                        @:<option value="@item.ColorId" @((Model.ColorId != 0 && item.ColorId == Model.ColorId) ? "selected" : "" )>@item.ColorName</option>
+                        @:<option value="@item.Item1" @((Model.ColorId != 0 && item.Item1 == Model.ColorId) ? "selected" : "" )>@item.Item2</option>
                     }
                 }
             </select>
+        </div>
+        
+        
+        <div class="col-sm-12">
+            <div class="form-check">
+                <label>
+                    این رنگ فعال است
+                    <input type="checkbox" checked asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
         </div>
     </div>
 

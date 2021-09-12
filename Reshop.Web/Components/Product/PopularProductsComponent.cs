@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
+using Reshop.Domain.DTOs.Product;
 
 namespace Reshop.Web.Components.Product
 {
@@ -17,6 +19,8 @@ namespace Reshop.Web.Components.Product
         public IViewComponentResult Invoke()
         {
             var products = _productService.GetProductsWithType(ProductTypes.All, SortTypes.MostSale, 20);
+
+
             return View("/Views/Shared/Components/Product/PopularProducts.cshtml", products);
         }
     }

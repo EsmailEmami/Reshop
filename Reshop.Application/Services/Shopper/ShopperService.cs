@@ -133,21 +133,41 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
-        public async Task<Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>> GetShopperRequestsForShowAsync(string shopperId, int pageId = 1, int take = 18)
+        public async Task<Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>> GetShopperRequestsForShowAsync(string shopperId, string type = "all", int pageId = 1, int take = 18)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
-
             int count = 0;
-
-            count += await _shopperRepository.GetShopperProductColorRequestsCountAsync(shopperId);
-            count += await _shopperRepository.GetShopperProductRequestsCountAsync(shopperId);
-
-            int totalPages = (int)Math.Ceiling(1.0 * count / take);
 
             var model = new List<ShopperRequestsForShowViewModel>();
 
-            model.AddRange(_shopperRepository.GetShopperProductColorRequestsForShow(shopperId, skip, take));
-            model.AddRange(_shopperRepository.GetShopperProductRequestsForShow(shopperId, skip, take));
+            switch (type)
+            {
+                case "all":
+                    {
+                        count += await _shopperRepository.GetShopperProductColorRequestsCountAsync(shopperId);
+                        count += await _shopperRepository.GetShopperProductRequestsCountAsync(shopperId);
+
+                        model.AddRange(_shopperRepository.GetShopperProductColorRequestsForShow(shopperId, skip, take));
+                        model.AddRange(_shopperRepository.GetShopperProductRequestsForShow(shopperId, skip, take));
+                        break;
+                    }
+                case "product":
+                    {
+                        count += await _shopperRepository.GetShopperProductRequestsCountAsync(shopperId);
+
+                        model.AddRange(_shopperRepository.GetShopperProductRequestsForShow(shopperId, skip, take));
+                        break;
+                    }
+                case "color":
+                    {
+                        count += await _shopperRepository.GetShopperProductColorRequestsCountAsync(shopperId);
+
+                        model.AddRange(_shopperRepository.GetShopperProductColorRequestsForShow(shopperId, skip, take));
+                        break;
+                    }
+            }
+
+            int totalPages = (int)Math.Ceiling(1.0 * count / take);
 
 
             return new Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>(model, pageId, totalPages);
@@ -229,6 +249,9 @@ namespace Reshop.Application.Services.Shopper
 
         public async Task<ShopperDataForAdmin> GetShopperDataForAdminAsync(string shopperId) =>
             await _shopperRepository.GetShopperDataForAdminAsync(shopperId);
+
+        public async Task<AddOrEditShopperProductViewModel> GetShopperProductDataForEditAsync(string shopperProductId) =>
+            await _shopperRepository.GetShopperProductDataForEditAsync(shopperProductId);
 
         public async Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest)
         {
@@ -402,6 +425,9 @@ namespace Reshop.Application.Services.Shopper
 
         public IEnumerable<Color> GetColors() =>
             _shopperRepository.GetColors();
+
+        public IEnumerable<Tuple<int, string>> GetColorsIdAndName() =>
+            _shopperRepository.GetColorsIdAndName();
 
         public async Task<string> GetShopperProductColorIdAsync(string shopperId, int productId, int colorId)
         {

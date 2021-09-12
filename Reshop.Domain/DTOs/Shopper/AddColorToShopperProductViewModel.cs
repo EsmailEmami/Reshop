@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Reshop.Domain.DTOs.Shopper
 {
-    public class AddProductOfShopperViewModel
+    public class AddColorToShopperProductViewModel
     {
         [Required]
         public string ShopperProductId { get; set; }
@@ -22,5 +17,7 @@ namespace Reshop.Domain.DTOs.Shopper
         [Display(Name = "قیمت محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public decimal Price { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

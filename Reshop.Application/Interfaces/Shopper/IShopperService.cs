@@ -27,12 +27,15 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<string> GetShopperProductIdAsync(string shopperId, int productId);
 
         Task<ShopperDataForAdmin> GetShopperDataForAdminAsync(string shopperId);
+
+        Task<AddOrEditShopperProductViewModel> GetShopperProductDataForEditAsync(string shopperProductId);
+
         #region reason
 
         Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest);
         Task<ResultTypes> AddShopperProductColorRequestAsync(ShopperProductColorRequest shopperProductColorRequest);
         // data , pageId , totalPages
-        Task<Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>> GetShopperRequestsForShowAsync(string shopperId, int pageId = 1, int take = 18);
+        Task<Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>> GetShopperRequestsForShowAsync(string shopperId, string type = "all", int pageId = 1, int take = 18);
 
 
         #endregion
@@ -71,6 +74,7 @@ namespace Reshop.Application.Interfaces.Shopper
         #region color
 
         IEnumerable<Color> GetColors();
+        IEnumerable<Tuple<int,string>> GetColorsIdAndName();
         Task<string> GetShopperProductColorIdAsync(string shopperId, int productId, int colorId);
         Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId);
         Task<ResultTypes> AddShopperProductColorAsync(ShopperProductColor shopperProductColor);

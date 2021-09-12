@@ -14,12 +14,16 @@ namespace Reshop.Web.Components.Shopper
             _shopperService = shopperService;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(int productId, string type = "all", int pageId = 1, int take = 50, string filter = "")
+        public async Task<IViewComponentResult> InvokeAsync(int productId, string type = "all", int pageId = 1, string filter = "")
         {
-            var products = await _shopperService.GetProductShoppersInformationWithPagination(productId, type, filter, pageId, 35);
+            int take = 20;
+
+            var products = await _shopperService.GetProductShoppersInformationWithPagination(productId, type, filter, pageId, take);
 
             ViewBag.SearchText = filter;
             ViewBag.SelectedType = type;
+            ViewBag.TakeCount = take;
+
 
             return View("/Views/Shared/Components/Shopper/ShoppersListOfProduct.cshtml", products);
         }

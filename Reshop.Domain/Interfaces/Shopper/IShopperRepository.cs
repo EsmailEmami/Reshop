@@ -26,6 +26,8 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task<int> GetShopperProductsCountWithTypeAsync(string shopperId, string type = "all");
         Task<ShopperDataForAdmin> GetShopperDataForAdminAsync(string shopperId);
 
+        Task<AddOrEditShopperProductViewModel> GetShopperProductDataForEditAsync(string shopperProductId);
+
         #region reason
 
         Task AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest);
@@ -88,6 +90,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         #region color
 
         IEnumerable<Color> GetColors();
+        IEnumerable<Tuple<int, string>> GetColorsIdAndName();
         Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId);
         Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductId, int colorId);
         Task AddShopperProductColorAsync(ShopperProductColor shopperProductColor);

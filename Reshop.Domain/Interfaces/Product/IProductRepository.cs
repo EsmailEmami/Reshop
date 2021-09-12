@@ -21,7 +21,7 @@ namespace Reshop.Domain.Interfaces.Product
         IEnumerable<ProductViewModel> GetProductsOfChildCategoryWithPagination(int childCategoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
         Task<string> GetProductFirstPictureName(int productId);
 
-        Task<ProductDateForDetailViewModel> GetProductDateForDetailAsync(string shopperProductColorId, int productId);
+        Task<ProductDataForDetailViewModel> GetProductDataForDetailAsync(string shopperProductColorId);
 
         IEnumerable<string> GetBrandsOfCategory(int categoryId);
         IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId);
@@ -46,8 +46,6 @@ namespace Reshop.Domain.Interfaces.Product
         Task<ShopperProduct> GetProductWithTypeAsync(int productId, string type, string shopperId = "");
 
         IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
-        IEnumerable<ProductViewModel> GetUnFinallyShopperProductRequestsWithPagination(string type, string sortBy, int skip, int take);
-
         #endregion
 
 
@@ -173,15 +171,11 @@ namespace Reshop.Domain.Interfaces.Product
         void RemoveFavoriteProduct(FavoriteProduct favoriteProduct);
         void UpdateFavoriteProduct(FavoriteProduct favoriteProduct);
         Task<bool> IsFavoriteProductExistAsync(string favoriteProductId);
-        Task<bool> IsFavoriteProductExistAsync(string userId, int productId);
+        Task<bool> IsFavoriteProductExistAsync(string userId, string shopperProductColorId);
         Task<FavoriteProduct> GetFavoriteProductAsync(string favoriteProductId);
-        Task<FavoriteProduct> GetFavoriteProductAsync(string userId, int productId);
+        Task<FavoriteProduct> GetFavoriteProductAsync(string userId, string shopperProductColorId);
 
 
-
-
-        IAsyncEnumerable<string> GetProductsNameByFilter(string productName);
-        IAsyncEnumerable<ProductViewModel> GetProductsByFilter(string productName);
 
         #region Chart
 

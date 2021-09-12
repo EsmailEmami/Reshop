@@ -102,7 +102,7 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<ResultTypes> AddToCart(string userId, int productId, string shopperProductColorId)
+        public async Task<ResultTypes> AddToCart(string userId, string shopperProductColorId)
         {
             try
             {

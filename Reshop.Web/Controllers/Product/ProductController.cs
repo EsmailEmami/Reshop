@@ -118,11 +118,11 @@ namespace Reshop.Web.Controllers.Product
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddToFavoriteProduct(int productId, string shopperProductId)
+        public async Task<IActionResult> AddToFavoriteProduct(string shopperProductColorId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var result = await _productService.AddFavoriteProductAsync(userId, productId, shopperProductId);
+            var result = await _productService.AddFavoriteProductAsync(userId,shopperProductColorId);
 
             return result switch
             {

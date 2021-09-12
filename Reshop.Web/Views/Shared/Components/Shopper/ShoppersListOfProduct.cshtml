@@ -1,5 +1,23 @@
 ﻿@model Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>
 
+@{
+    int counter;
+
+
+    if (Model.Item2 == 1)
+    {
+        counter = 1;
+    }
+    else
+    {
+        int skip = (Model.Item2 - 1) * Convert.ToInt32(ViewBag.TakeCount);
+
+        counter = skip + 1;
+    }
+}
+
+
+
 <link href="~/css/select.css" rel="stylesheet" />
 <div class="filter">
     <input type="hidden" name="pageId" id="pageId" value="@Model.Item2" />
@@ -22,26 +40,26 @@
         @switch (ViewBag.SelectedType.ToString())
         {
             case "all":
-            {
-                <option value="all" selected>همه</option>
-                <option value="active">فعال</option>
-                <option value="existed">غیر فعال</option>
-                break;
-            }
+                {
+                    <option value="all" selected>همه</option>
+                    <option value="active">فعال</option>
+                    <option value="existed">غیر فعال</option>
+                    break;
+                }
             case "active":
-            {
-                <option value="all">همه</option>
-                <option value="active" selected>فعال</option>
-                <option value="existed">غیر فعال</option>
-                break;
-            }
+                {
+                    <option value="all">همه</option>
+                    <option value="active" selected>فعال</option>
+                    <option value="existed">غیر فعال</option>
+                    break;
+                }
             case "existed":
-            {
-                <option value="all">همه</option>
-                <option value="active">فعال</option>
-                <option value="existed" selected>غیر فعال</option>
-                break;
-            }
+                {
+                    <option value="all">همه</option>
+                    <option value="active">فعال</option>
+                    <option value="existed" selected>غیر فعال</option>
+                    break;
+                }
         }
 
     </select>
@@ -52,19 +70,24 @@
 
 @if (Model.Item1.Any())
 {
-   <table class="table responsive table-hover table-striped table-bordered">
-        <thead class="thead-dark">
+    <div class="table-responsive">
+        <table class="table responsive table-hover table-striped table-bordered">
+            <thead class="thead-dark">
             <tr>
+                <th scope="col">#</th>
                 <th scope="col">نام فروشنده</th>
                 <th scope="col">نام فروشگاه</th>
                 <th scope="col">دستورات</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
 
             @foreach (var item in Model.Item1)
             {
                 <tr>
+                    <td class="text-center">
+                        @counter
+                    </td>
                     <td>@item.ShopperName</td>
                     <td>@item.StoreName</td>
 
@@ -75,36 +98,37 @@
                         </a>
                     </td>
                 </tr>
+                counter++;
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 
+    </div>
+
+
+ 
     @if (Model.Item3 > 1)
     {
         <ul class="pagination-custom">
-            <li class="@(Model.Item2<=1?"disabled":"")">
-                <a onclick="pagination('@(Model.Item2 - 1)')" href="#">
-                    <i class="far fa-angle-right"></i>
-                </a>
+            <li class="@(Model.Item2<=1?"disabled":"")" onclick="pagination('@(Model.Item2 - 1)')">
+                <i class="far fa-angle-right"></i>
             </li>
+
             @for (var i = 1; i <= Model.Item3; i++)
             {
-                <li class="@(Model.Item2 == i? "active":"")">
-                    <a onclick="pagination('@i')" href="#">
-                        @i
-                    </a>
+                <li class="@(Model.Item2 == i? "active":"")" onclick="pagination('@i')">
+                    @i
                 </li>
             }
 
-            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")">
-                <a onclick="pagination('@(Model.Item2+1)')" href="#">
-                    <i class="far fa-angle-left"></i>
-                </a>
+            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="pagination('@(Model.Item2+1)')">
+                <i class="far fa-angle-left"></i>
             </li>
+
         </ul>
     }
 
-    
+
     <script>
         function pagination(pageId) {
             $('#pageId').val(pageId);

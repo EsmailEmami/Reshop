@@ -1,6 +1,6 @@
 ﻿@model ProductDetailForShow
 @{
-    ViewData["Title"] = " جزعیات محصول" + Model.ProductName;
+    ViewData["Title"] = "جزئیات کالا فروشنده " + Model.ProductName;
 }
 @section RightMenu
 {
@@ -13,8 +13,9 @@
     <link href="~/css/select.css" rel="stylesheet" />
 }
 
-<section class="product-detail mb-3">
+<section class="general-detail mb-3">
     <div class="row">
+        
         <!-- img part -->
         <div class="col-sm-12 col-md-4 mb-3 mb-md-0">
             <div class="box-shadow">
@@ -23,16 +24,16 @@
                 </div>
 
                 <!-- start slider pictures -->
-                <div id="owl-one" class="owl-carousel owl-theme" style="border-top: 1px solid #eee;">
+                <div id="images" class="owl-carousel owl-theme" style="border-top: 1px solid #eee;">
+
 
                     @foreach (var item in Model.ProductImages)
                     {
                         <div class="mini-pic-slider">
-                            <a href="#">
-                                <img src="/images/ProductImages/@item" alt="@Model.ProductName">
-                            </a>
+                            <img src="/images/ProductImages/@item" alt="@Model.ProductName">
                         </div>
                     }
+
 
                 </div>
             </div>
@@ -40,7 +41,7 @@
 
         <!-- product data part -->
         <div class="col-sm-12 col-md-8">
-            <div class="product-data box-shadow">
+            <div class="general-data box-shadow">
                 <span class="part-title">مشخصات محصول</span>
                 <div>
                     <h3><i class="far fa-tags"></i> نام کالا: </h3>
@@ -81,11 +82,6 @@
             <div id="LastMonthBestShoppersPieChart"></div>
         </div>
     </div>
-
-
-
-
-
 </section>
 
 <section class="colors box-shadow mb-3">
@@ -98,23 +94,31 @@
 
 
     <button class="btn btn-success text-white mt-3 mb-3"
-            onclick="ShowModal('@Url.Action("AddProductOfShopper", "AccountManager", new {productId= Model.ProductId}, Context.Request.Scheme)','افزودن رنگ')">
+            onclick="ShowModal('@Url.Action("AddColorToShopperProduct", "ShoppersManager", new {shopperProductId= ViewBag.ShopperProductId}, Context.Request.Scheme)', 'افزودن رنگ')">
         افزودن رنگ
     </button>
 
 
-    @foreach (var color in Model.Colors)
+    @if (Model.Colors.Any())
     {
-        <div class="item">
-            <div class="title">
-                <h3>@color.Item2</h3>
-            </div>
-            <button type="button" class="collapsible" onclick="ColorsDetailData('colorDetail@(color.Item1)','@Model.ProductId','@color.Item1')"></button>
-            <div class="content" id="colorDetail@(color.Item1)">
+        @foreach (var color in Model.Colors)
+        {
+            <div class="item">
+                <div class="title">
+                    <h3>@color.Item2</h3>
+                </div>
+                <button type="button" class="collapsible" onclick="ColorsDetailData('colorDetail@(color.Item1)','@Model.ProductId','@color.Item1')"></button>
+                <div class="content" id="colorDetail@(color.Item1)">
 
+                </div>
             </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            کالای فروشنده رنگی ندارد.
         </div>
-
     }
 
 
@@ -358,5 +362,24 @@
         window.addEventListener('resize', drawLastMonthBestShoppersPieChart);
         window.addEventListener('resize', drawBestShoppersPieChart);
         window.addEventListener('resize', drawColorsColumnChart);
+    </script>
+
+
+    <script>
+        $("#images").owlCarousel({
+            rtl: true,
+            loop: false,
+            nav: false,
+            dots: true,
+            items: 4,
+            responsive: {
+                0: {
+                    items: 4
+                },
+                600: {
+                    items: 3
+                }
+            },
+        });
     </script>
 }

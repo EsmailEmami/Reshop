@@ -7,6 +7,9 @@
     @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ShopperPage); }
 }
 
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
 
 <section class="general-detail mb-3">
     <div class="row">
@@ -22,9 +25,8 @@
 
 
                     <div class="mini-pic-slider">
-                        <a href="#">
+                    
                             <img src="/images/ProductImages/placeholder-image.png" alt="@Model.ShopperFullName">
-                        </a>
                     </div>
 
 
@@ -35,7 +37,7 @@
         <!-- product data part -->
         <div class="col-sm-12 col-md-8">
             <div class="general-data box-shadow">
-                <span class="part-title">مشخصات محصول</span>
+                <span class="part-title">مشخصات فروشنده</span>
                 <div>
                     <h3><i class="far fa-tags"></i> نام و نام خانوادگی فروشنده: </h3>
                     <span>@Model.ShopperFullName</span>
@@ -100,11 +102,18 @@
 </section>
 
 <a onclick="ShowModal('@Url.Action("AddShopperProduct","ShoppersManager",new {shopperId = Model.ShopperId},Context.Request.Scheme)','افزودن کالا به فروشنده')"
-    class="btn btn-success text-white mt-3 mb-2">افزودن کالا</a>
+   class="btn btn-success text-white mt-3 mb-2">افزودن کالا</a>
 
 <section class="table-list" id="tableList">
     @await Component.InvokeAsync("ShopperProductsOfShopperComponent", new { shopperId = Model.ShopperId })
 </section>
+
+
+
+<section class="table-list" id="tableRequestList">
+    @await Component.InvokeAsync("ShopperRequestsComponent", new { shopperId = Model.ShopperId })
+</section>
+
 
 
 @section AfterMainOptions
@@ -117,6 +126,8 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script src="~/js/select.js"></script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 

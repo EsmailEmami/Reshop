@@ -33,10 +33,9 @@ namespace Reshop.Infrastructure.Repository.User
             =>
                 await _context.Roles.SingleOrDefaultAsync(c => c.RoleTitle == roleName);
 
-        public IAsyncEnumerable<string> GetRolesIdOfUser(string userId)
-            =>
+        public IEnumerable<string> GetRolesIdOfUser(string userId) =>
                 _context.UserRoles.Where(c => c.UserId == userId)
-                    .Select(c => c.RoleId) as IAsyncEnumerable<string>;
+                    .Select(c => c.RoleId);
 
         public IAsyncEnumerable<string> GetUsersIdOfRole(string roleId)
             =>

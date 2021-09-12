@@ -110,14 +110,14 @@ namespace Reshop.Application.Interfaces.Product
         Task<bool> IsProductExistAsync(int productId);
         Task<bool> IsProductGalleriesCountValidAsync(int productId);
         Task<bool> IsShopperProductExistAsync(string shopperProductId);
-
+        Task<bool> IsShopperProductExistAsync(string shopperId, int productId);
 
         #region Favorite Product
 
         // product , pageId , totalPages
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18);
         Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId);
-        Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperProductId);
+        Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, string shopperProductColorId);
         Task RemoveFavoriteProductAsync(FavoriteProduct favoriteProduct);
 
         #endregion

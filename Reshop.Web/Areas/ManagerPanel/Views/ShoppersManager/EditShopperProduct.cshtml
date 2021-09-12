@@ -2,11 +2,11 @@
 @{
     Layout = null;
 }
-<link href="~/css/select.css" rel="stylesheet" />
 
-<form asp-action="AddShopperProduct" method="post" onsubmit="return SubmitFormData(this)">
+<form asp-controller="ShoppersManager" asp-action="EditShopperProduct"
+      asp-route-lastProductId="@Convert.ToInt32(ViewBag.CurrentProductId)" method="post"
+      onsubmit="return SubmitFormData(this)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
 
     <input type="hidden" asp-for="ShopperId" />
 
@@ -119,8 +119,7 @@
 </form>
 
 
-
-<script src="~/js/select.js"></script>
 <script>
     inputJs();
+    callSelect();
 </script>

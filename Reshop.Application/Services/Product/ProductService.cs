@@ -262,7 +262,7 @@ namespace Reshop.Application.Services.Product
 
         public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperProductColorId)
         {
-            var product = await _productRepository.GetProductDateForDetailAsync(shopperProductColorId, productId);
+            var product = await _productRepository.GetProductDataForDetailAsync(shopperProductColorId);
 
             var childCategories = _productRepository.GetProductChildCategories(productId);
             var comments = _productRepository.GetProductComments(productId);
@@ -932,6 +932,9 @@ namespace Reshop.Application.Services.Product
         public async Task<bool> IsShopperProductExistAsync(string shopperProductId) =>
             await _shopperRepository.IsShopperProductExistAsync(shopperProductId);
 
+        public async Task<bool> IsShopperProductExistAsync(string shopperId, int productId) =>
+            await _shopperRepository.IsShopperProductExistAsync(shopperId, productId);
+
 
         public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18)
         {
@@ -952,15 +955,14 @@ namespace Reshop.Application.Services.Product
             return await _productRepository.GetFavoriteProductAsync(favoriteProductId);
         }
 
-        public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, int productId, string shopperProductColorId)
+        public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, string shopperProductColorId)
         {
-
             if (!await _shopperRepository.IsShopperProductColorExistAsync(shopperProductColorId))
                 return FavoriteProductResultType.NotFound;
 
             try
             {
-                var favoriteProduct = await _productRepository.GetFavoriteProductAsync(userId, productId);
+                var favoriteProduct = await _productRepository.GetFavoriteProductAsync(userId, shopperProductColorId);
                 if (favoriteProduct != null)
                 {
                     if (favoriteProduct.ShopperProductColorId == shopperProductColorId)
@@ -982,7 +984,6 @@ namespace Reshop.Application.Services.Product
                     var newFavoriteProduct = new FavoriteProduct()
                     {
                         UserId = userId,
-                        ProductId = productId,
                         ShopperProductColorId = shopperProductColorId,
                     };
 

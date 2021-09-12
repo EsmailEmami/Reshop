@@ -1,0 +1,198 @@
+﻿@model Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>
+
+@{
+    int counter;
+
+
+    if (Model.Item2 == 1)
+    {
+        counter = 1;
+    }
+    else
+    {
+        int skip = (Model.Item2 - 1) * Convert.ToInt32(ViewBag.TakeCount);
+
+        counter = skip + 1;
+    }
+}
+
+<link href="~/css/select.css" rel="stylesheet" />
+<div class="filter">
+    <input type="hidden" id="pageIdRequest" value="@Model.Item2" />
+
+    <select id="typeRequest" onchange="changeListRequest()">
+
+        @switch (ViewBag.SelectedType.ToString())
+        {
+            case "all":
+                {
+                    <option value="all" selected>همه</option>
+                    <option value="product">کالا</option>
+                    <option value="color">رنگ</option>
+                    break;
+                }
+            case "product":
+                {
+                    <option value="all">همه</option>
+                    <option value="product" selected>کالا</option>
+                    <option value="color">رنگ</option>
+                    break;
+                }
+            case "color":
+                {
+                    <option value="all">همه</option>
+                    <option value="product">کالا</option>
+                    <option value="color" selected>رنگ</option>
+                    break;
+                }
+        }
+
+    </select>
+</div>
+
+
+
+
+@if (Model.Item1.Any())
+{
+    <div class="table-responsive">
+        <table class="table responsive table-hover table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">نوع درخواست</th>
+                    <th scope="col">تاریخ درخواست</th>
+                    <th scope="col">وضعیت</th>
+                    <th scope="col">خوانده شده</th>
+                    <th scope="col">توضیحات</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Item1)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @counter
+                        </td>
+
+                        <td>
+                            @if (item.RequestType == "product")
+                            {
+                                if (item.Type)
+                                {
+                                    <span>افزودن کالا</span>
+                                }
+                                else
+                                {
+                                    <span>ویرایش کالا</span>
+                                }
+                            }
+                            else
+                            {
+                                if (item.Type)
+                                {
+                                    <span>افزودن رنگ</span>
+                                }
+                                else
+                                {
+                                    <span>ویرایش رنگ</span>
+                                }
+                            }
+                        </td>
+                        <td>@item.RequestDate.ToShamsiDateTime()</td>
+                        <td>
+                            @if (item.IsSuccess == false && item.IsRead == false)
+                            {
+                                <span>درحال بررسی</span>
+                            }
+                            else if (item.IsSuccess)
+                            {
+                                <span>تایید شده</span>
+                            }
+                            else
+                            {
+                                <span>تایید نشده</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.IsRead)
+                            {
+                                <span>خوانده شده</span>
+                            }
+                            else
+                            {
+                                <span>خوانده نشده</span>
+                            }
+                        </td>
+                        <td>
+                            <span style="text-align: justify">
+                                @item.Description
+                            </span>
+                        </td>
+                    </tr>
+
+                    counter++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+    @if (Model.Item3 > 1)
+    {
+        <ul class="pagination-custom">
+            <li class="@(Model.Item2<=1?"disabled":"")" onclick="paginationRequest('@(Model.Item2 - 1)')">
+                <i class="far fa-angle-right"></i>
+            </li>
+
+            @for (var i = 1; i <= Model.Item3; i++)
+            {
+                <li class="@(Model.Item2 == i? "active":"")" onclick="paginationRequest('@i')">
+                    @i
+                </li>
+            }
+
+            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="paginationRequest('@(Model.Item2+1)')">
+                <i class="far fa-angle-left"></i>
+            </li>
+
+        </ul>
+    }
+
+
+    <script>
+        function paginationRequest(pageId) {
+            $('#pageIdRequest').val(pageId);
+            changeListRequest();
+        }
+
+        function changeListRequest() {
+            let pageId = $('#pageIdRequest').val();
+            let type = $('#typeRequest').val();
+
+      
+            $.ajax({
+                type: 'GET',
+                url: '/ManagerPanel/ShoppersManager/ShopperRequestsList/?shopperId=@ViewBag.ShopperId.ToString()&type=' + type + '&pageId=' + pageId
+            }).done(function (res) {
+                $("#tableRequestList").html(res);
+            });
+        }
+
+    </script>
+
+
+}
+else
+{
+    <div class="alert alert-warning">
+        درخواستی یافت شد
+    </div>
+}
+
+<script src="~/js/select.js"></script>

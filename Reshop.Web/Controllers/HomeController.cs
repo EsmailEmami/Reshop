@@ -15,6 +15,12 @@ namespace Reshop.Web.Controllers
         {
             _cartService = cartService;
         }
+
+        public IActionResult Error()
+        {
+            return View();
+        }
+
         [Route("AboutUs")]
         public IActionResult AboutUs()
         {

@@ -23,8 +23,6 @@ namespace Reshop.Application.Interfaces.User
 
         Task<ResultTypes> AddUserRoleAsync(UserRole userRole);
 
-        IAsyncEnumerable<string> GetUserRolesIdByUserId(string userId);
-
 
         #region Permission
 

@@ -79,7 +79,8 @@ html {
 }
 
 table.responsive {
-    overflow-x: auto
+    overflow-x: auto;
+    min-width: 800px;
 }
 
 table tr th {
@@ -356,22 +357,13 @@ ul.pagination-custom {
     line-height: 40px
 }
 
-    .pagination-custom li.disabled a {
-        pointer-events: none;
+    .pagination-custom li.disabled {
+        display: none;
     }
 
-.pagination-custom a {
-    text-decoration: none;
-    color: #222;
-    background: none;
-}
-
-.pagination-custom li.active {
-    background-color: #FC5400;
-    border: 2px solid #232323;
-}
-
-    .pagination-custom li.active a {
+    .pagination-custom li.active {
+        background-color: #FC5400;
+        border: 2px solid #232323;
         color: white;
     }
 
@@ -401,17 +393,22 @@ ul.pagination-custom {
 .mini-pic-slider {
     border: 1px solid rgb(209, 209, 209);
     border-radius: 8px;
-    margin: 10px;
+    margin: 10px 10px 0 10px;
     transition: 0.2s;
     padding: 5px;
+    width: 120px;
+    height: 83px;
 }
 
     .mini-pic-slider img {
-        border-radius: 8px;
+        border-radius: 4px;
+        width: 100%;
+        height: 100%;
     }
 
     .mini-pic-slider:hover {
-        border: 1px solid orange;
+        transition: ease .3s;
+        border: 1px solid #fc5400;
     }
 
 /* right menu */
@@ -424,6 +421,7 @@ ul.pagination-custom {
     width: 270px;
     background: #FC5400;
     padding: 20px;
+    z-index: 99;
 }
 
 

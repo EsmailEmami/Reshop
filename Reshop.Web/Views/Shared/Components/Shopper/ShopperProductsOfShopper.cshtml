@@ -1,6 +1,24 @@
 ﻿@model Tuple<IEnumerable<ShopperProductsListForShow>, int, int>
 
+@{
+    int counter;
+
+
+    if (Model.Item2 == 1)
+    {
+        counter = 1;
+    }
+    else
+    {
+        int skip = (Model.Item2 - 1) * Convert.ToInt32(ViewBag.TakeCount);
+
+        counter = skip + 1;
+    }
+}
+
+
 <link href="~/css/select.css" rel="stylesheet" />
+
 <div class="filter">
     <input type="hidden" name="pageId" id="pageId" value="@Model.Item2" />
 
@@ -47,65 +65,74 @@
         }
 
     </select>
-
-
 </div>
 
 
 
 @if (Model.Item1.Any())
 {
-    <table class="table responsive table-hover table-striped table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">نام کالا</th>
-                <th scope="col">تاریخ ثبت</th>
-                <th scope="col">تعداد رنگ ها</th>
-                <th scope="col">وضعیت</th>
-                <th scope="col">دستورات</th>
-            </tr>
-        </thead>
-        <tbody>
-
-            @foreach (var item in Model.Item1)
-            {
+    <div class="table-responsive">
+        <table class="table responsive table-hover table-striped table-bordered">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@item.ProductName</td>
-                    <td>@item.CreateDate</td>
-                    <td>@item.ColorsCount</td>
-                    <td>@(item.IsActive?"فعال":"غیر فعال")</td>
-                    <td>
-                        <a target="_blank" class="btn btn-info text-white">
-                            جزئیات
-                        </a>
-                    </td>
+                    <th scope="col">#</th>
+                    <th scope="col">نام کالا</th>
+                    <th scope="col">تاریخ ثبت</th>
+                    <th scope="col">تعداد رنگ ها</th>
+                    <th scope="col">وضعیت</th>
+                    <th scope="col">دستورات</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Item1)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @counter
+                        </td>
+                        <td>@item.ProductName</td>
+                        <td>@item.CreateDate</td>
+                        <td>@item.ColorsCount</td>
+                        <td>@(item.IsActive ? "فعال" : "غیر فعال")</td>
+                        <td>
+                            <a asp-controller="ShoppersManager" asp-action="ShopperProductDetail"
+                               asp-route-shopperProductId="@item.ShopperProductId"
+                               target="_blank" class="btn btn-info text-white">
+                                جزئیات
+                            </a>
+                            <a onclick="ShowModal('@Url.Action("EditShopperProduct", "ShoppersManager", new {shopperProductId = item.ShopperProductId}, Context.Request.Scheme)', 'ویرایش کالای فروشنده')"
+                               class="btn btn-warning text-white">
+                                ویرایش
+                            </a>
+                        </td>
+                    </tr>
+                    counter++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+
 
     @if (Model.Item3 > 1)
     {
         <ul class="pagination-custom">
-            <li class="@(Model.Item2<=1?"disabled":"")">
-                <a onclick="pagination('@(Model.Item2 - 1)')" href="#">
-                    <i class="far fa-angle-right"></i>
-                </a>
+            <li class="@(Model.Item2<=1?"disabled":"")" onclick="pagination('@(Model.Item2 - 1)')">
+                <i class="far fa-angle-right"></i>
             </li>
+
             @for (var i = 1; i <= Model.Item3; i++)
             {
-                <li class="@(Model.Item2 == i? "active":"")">
-                    <a onclick="pagination('@i')" href="#">
-                        @i
-                    </a>
+                <li class="@(Model.Item2 == i? "active":"")" onclick="pagination('@i')">
+                    @i
                 </li>
             }
 
-            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")">
-                <a onclick="pagination('@(Model.Item2+1)')" href="#">
-                    <i class="far fa-angle-left"></i>
-                </a>
+            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="pagination('@(Model.Item2+1)')">
+                <i class="far fa-angle-left"></i>
             </li>
+
         </ul>
     }
 
@@ -128,11 +155,10 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/ManagerPanel/ShoppersManager/ShoppersList/?type=' + type + '&pageId=' + pageId + '&filter=' + filter,
+                url: '/ManagerPanel/ShoppersManager/ShopperProductsList/?shopperId=@ViewBag.ShopperId.ToString()' + '&type=' + type + '&pageId=' + pageId + '&filter=' + filter,
                 processData: false,
                 contentType: false
             }).done(function (res) {
-                console.log(res);
                 $("#tableList").html(res);
             });
         }

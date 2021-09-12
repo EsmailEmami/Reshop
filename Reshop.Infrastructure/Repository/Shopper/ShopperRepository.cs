@@ -60,10 +60,11 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
         public async Task<string> GetShopperProductIdAsync(string shopperId, int productId) =>
             await _context.ShopperProducts.Where(c => c.ShopperId == shopperId && c.ProductId == productId)
-                 .Select(c => c.ShopperProductId).SingleOrDefaultAsync();
+                .Select(c => c.ShopperProductId).SingleOrDefaultAsync();
 
 
-        public IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null)
+        public IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0,
+            int take = 18, string filter = null)
         {
             IQueryable<Domain.Entities.Shopper.Shopper> shoppers = _context.Shoppers;
 
@@ -100,7 +101,8 @@ namespace Reshop.Infrastructure.Repository.Shopper
             });
         }
 
-        public IEnumerable<ShoppersListForAdmin> GetProductShoppersWithPagination(int productId, string type = "all", int skip = 0, int take = 18, string filter = null)
+        public IEnumerable<ShoppersListForAdmin> GetProductShoppersWithPagination(int productId, string type = "all",
+            int skip = 0, int take = 18, string filter = null)
         {
             IQueryable<Domain.Entities.Shopper.Shopper> shoppers = _context.ShopperProducts
                 .Where(c => c.ProductId == productId)
@@ -137,7 +139,8 @@ namespace Reshop.Infrastructure.Repository.Shopper
             });
         }
 
-        public IEnumerable<ShopperProductsListForShow> GetShopperProductsWithPagination(string shopperId, string type = "all", int skip = 0, int take = 18, string filter = null)
+        public IEnumerable<ShopperProductsListForShow> GetShopperProductsWithPagination(string shopperId,
+            string type = "all", int skip = 0, int take = 18, string filter = null)
         {
             IQueryable<ShopperProduct> products = _context.ShopperProducts
                 .Where(c => c.ShopperId == shopperId);
@@ -212,6 +215,20 @@ namespace Reshop.Infrastructure.Repository.Shopper
                     PhoneNumber = c.User.PhoneNumber
                 }).SingleOrDefaultAsync();
 
+        public async Task<AddOrEditShopperProductViewModel>
+            GetShopperProductDataForEditAsync(string shopperProductId) =>
+            await _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
+                .Select(c => new AddOrEditShopperProductViewModel()
+                {
+                    ShopperId = c.ShopperId,
+                    ProductId = c.ProductId,
+                    Warranty = c.Warranty,
+                    IsActive = c.IsActive,
+                    SelectedOfficialProduct = c.Product.OfficialBrandProductId,
+                    SelectedBrand = c.Product.OfficialBrandProduct.BrandId,
+                    SelectedStoreTitle = c.Product.OfficialBrandProduct.Brand.StoreTitleId,
+                }).SingleOrDefaultAsync();
+
 
         public async Task AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest) =>
             await _context.ShopperProductRequests.AddAsync(shopperProductRequest);
@@ -219,27 +236,44 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task AddShopperProductColorRequestAsync(ShopperProductColorRequest shopperProductColorRequest) =>
             await _context.ShopperProductColorRequests.AddAsync(shopperProductColorRequest);
 
-        public IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductColorRequestsForShow(string shopperId, int skip, int take) =>
-            _context.ShopperProductColorRequests.Where(c => c.ShopperProduct.ShopperId == shopperId)
-                .Select(c => new ShopperRequestsForShowViewModel()
-                {
-                    RequestId = c.ShopperProductColorRequestId,
-                    RequestType = "color",
-                    RequestDate = c.RequestDate,
-                    IsRead = c.IsRead,
-                    IsSuccess = c.IsSuccess
-                });
+        public IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductColorRequestsForShow(string shopperId, int skip, int take)
+        {
+            IQueryable<ShopperRequestsForShowViewModel> requests = _context.ShopperProductColorRequests
+                .Where(c => c.ShopperProduct.ShopperId == shopperId)
+                 .Select(c => new ShopperRequestsForShowViewModel()
+                 {
+                     RequestId = c.ShopperProductColorRequestId,
+                     RequestType = "color",
+                     RequestDate = c.RequestDate,
+                     IsRead = c.IsRead,
+                     IsSuccess = c.IsSuccess,
+                     Description = c.Reason
+                 });
 
-        public IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductRequestsForShow(string shopperId, int skip, int take) =>
-            _context.ShopperProductRequests.Where(c => c.ShopperId == shopperId)
+            requests = requests.Skip(skip).Take(take);
+
+
+            return requests;
+        }
+
+        public IEnumerable<ShopperRequestsForShowViewModel> GetShopperProductRequestsForShow(string shopperId, int skip, int take)
+        {
+            IQueryable<ShopperRequestsForShowViewModel> requests = _context.ShopperProductRequests.Where(c => c.ShopperId == shopperId)
                 .Select(c => new ShopperRequestsForShowViewModel()
                 {
                     RequestId = c.ShopperProductRequestId,
                     RequestType = "product",
                     RequestDate = c.RequestDate,
                     IsRead = c.IsRead,
-                    IsSuccess = c.IsSuccess
+                    IsSuccess = c.IsSuccess,
+                    Description = c.Reason
                 });
+
+            requests = requests.Skip(skip).Take(take);
+
+
+            return requests;
+        }
 
         public async Task<int> GetShopperProductColorRequestsCountAsync(string shopperId) =>
             await _context.ShopperProductColorRequests.Where(c => c.ShopperProduct.ShopperId == shopperId)
@@ -329,6 +363,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
         public IEnumerable<Color> GetColors() =>
             _context.Colors;
+
+        public IEnumerable<Tuple<int, string>> GetColorsIdAndName() =>
+            _context.Colors.Select(c => new Tuple<int, string>(c.ColorId, c.ColorName));
 
         public async Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId) =>
             await _context.ShopperProductColorRequests

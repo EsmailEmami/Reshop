@@ -39,8 +39,8 @@
                                     <tr>
                                         <th scope="col">نام محصول</th>
                                         <th scope="col">قیمت</th>
-                                        <th scope="col">برند</th>
-                                        <th scope="col"></th>
+                                        @*<th scope="col">برند</th>
+                                        <th scope="col"></th>*@
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,13 +50,13 @@
                                         <tr>
                                             <th scope="row">@item.ProductTitle</th>
                                             <td>@item.ProductPrice</td>
-                                            <td>@item.BrandName</td>
+                                            @*<td>@item.BrandName</td>
                                             <td>
                                                 <a class="btn btn-info text-white" 
                                                    asp-controller="AccountManager"
                                                    asp-action="ShopperProductDetail"
                                                    asp-route-productId="@item.ProductId">جزئیات</a>
-                                            </td>
+                                            </td>*@
                                         </tr>
                                     }
                                 </tbody>

@@ -12,8 +12,8 @@ namespace Reshop.Domain.DTOs.Shopper
     {
         public string ShopperId { get; set; }
 
-        public IEnumerable<Tuple<int, string>> StoreTitles { get; set; }
-
+        [Display(Name = "کالا")]
+        [Required(ErrorMessage = "لطفا {0} را انتخاب کنید.")]
         public int ProductId { get; set; }
 
         [Display(Name = "گارانتی")]
@@ -22,5 +22,10 @@ namespace Reshop.Domain.DTOs.Shopper
         public string Warranty { get; set; }
 
         public bool IsActive { get; set; }
+
+
+        public int SelectedStoreTitle { get; set; }
+        public int SelectedBrand { get; set; }
+        public int SelectedOfficialProduct { get; set; }
     }
 }

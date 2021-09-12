@@ -12,7 +12,7 @@ namespace Reshop.Domain.Interfaces.User
         IAsyncEnumerable<Role> GetRoles();
         Task<Role> GetRoleByIdAsync(string roleId);
         Task<Role> GetRoleByNameAsync(string roleName);
-        IAsyncEnumerable<string> GetRolesIdOfUser(string userId);
+        IEnumerable<string> GetRolesIdOfUser(string userId);
         IAsyncEnumerable<string> GetUsersIdOfRole(string roleId);
         Task AddRoleAsync(Role role);
         void UpdateRole(Role role);

@@ -206,9 +206,6 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public IAsyncEnumerable<string> GetUserRolesIdByUserId(string userId) =>
-            _roleRepository.GetRolesIdOfUser(userId);
-
 
         public IAsyncEnumerable<Permission> GetPermissions()
             =>
