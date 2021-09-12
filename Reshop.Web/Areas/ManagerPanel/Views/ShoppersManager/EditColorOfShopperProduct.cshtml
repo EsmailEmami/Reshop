@@ -4,11 +4,12 @@
     Layout = null;
 }
 
-<form asp-action="EditProductOfShopper" method="post" onsubmit="return SubmitFormData(this)">
+<form asp-action="AddColorToShopperProduct" method="post" onsubmit="return SubmitFormData(this)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
 
         <input type="hidden" asp-for="ShopperProductColorId" />
+
 
         <div class="col-sm-12 col-lg-4">
             <div class="form-field">
@@ -21,15 +22,18 @@
         <div class="col-sm-12 col-lg-8">
             <div class="form-field">
                 <input asp-for="Price">
-                <label><i class="far fa-phone"></i> شماره تلفن</label>
+                <label><i class="far fa-phone"></i> قیمت</label>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
         </div>
 
-        <div class="col-sm-12 ">
+        <div class="col-sm-12">
             <div class="form-check">
-                <input type="checkbox" asp-for="IsActive">
-                <label>ادامه به فروش </label>
+                <label>
+                    این رنگ فعال است
+                    <input type="checkbox" checked asp-for="IsActive">
+                    <span></span>
+                </label>
             </div>
         </div>
     </div>
@@ -38,4 +42,5 @@
     <button type="submit" class="btn btn-success">ثبت</button>
 </form>
 
+<script src="~/js/select.js"></script>
 <script src="~/js/Input.js"></script>

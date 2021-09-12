@@ -234,16 +234,41 @@ function UpdateProductDetailShopper(productId, productName, sellerId) {
     window.history.replaceState(null, productName, url);
 }
 
-function ColorsDetailData(where, productId, colorId) {
+function ColorsDetailData(btn, where, url) {
 
     $.ajax({
         type: 'GET',
-        url: '/AccountManager/ShopperProductColorDetail?productId=' + productId + '&colorId=' + colorId,
-        cache: true,
+        url: url,
     }).done(function (res) {
-        var place = document.getElementById(where);
+        if (res.isValid == false) {
+            ShowToast(res.errorType, res.errorText);
+        } else {
+            var content = document.getElementById(where);
 
-        $(place).html(res);
+            $(content).html(res);
+
+            btn.classList.toggle("active");
+
+            if (!content.style.maxHeight) {
+                if (content.scrollHeight >= 700) {
+                    content.style.maxHeight = 700 + "px";
+                    content.style.overflowY = "scroll";
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            } else {
+                if (content.style.maxHeight != "0px") {
+                    content.style.maxHeight = "0px";
+                } else {
+                    if (content.scrollHeight >= 700) {
+                        content.style.maxHeight = 700 + "px";
+                        content.style.overflowY = "scroll";
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                }
+            }
+        }
     });
 }
 

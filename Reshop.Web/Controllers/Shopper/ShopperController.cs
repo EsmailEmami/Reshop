@@ -225,7 +225,7 @@ namespace Reshop.Web.Controllers.Shopper
             if (await _shopperService.IsAnyActiveShopperProductColorRequestAsync(shopperProductId, colorId))
                 return Json(new { isValid = false, errorType = "warning", errorText = "درخواست قبلی شما بررسی نشده است. لطفا منتظر بمانید." });
 
-            var model = await _productService.GetShopperProductForEditAsync(productId, shopperProductId, colorId);
+            var model = await _productService.GetShopperProductColorForEditAsync(productId, shopperProductId, colorId);
 
             if (model == null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید." });
@@ -238,7 +238,7 @@ namespace Reshop.Web.Controllers.Shopper
         [HttpPost]
         [ValidateAntiForgeryToken]
         [NoDirectAccess]
-        public async Task<IActionResult> EditProductOfShopper(EditProductOfShopperViewModel model)
+        public async Task<IActionResult> EditProductOfShopper(EditColorOfShopperProductViewModel model)
         {
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });

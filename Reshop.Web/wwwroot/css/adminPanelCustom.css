@@ -230,6 +230,23 @@ table tr th {
 
 /* -------------------------------------- modal -------------------------------------- */
 
+/* -------------------------------------- collapsible -------------------------------------- */
+
+.collapsible:after {
+    content: '\002B';
+    color: #222;
+    font-weight: bold;
+    line-height: 34px;
+    margin: 0;
+    font-size: 22px;
+}
+
+.collapsible.active:after {
+    content: "\2212";
+}
+
+/* -------------------------------------- collapsible -------------------------------------- */
+
 /* -------------------------------------- toast -------------------------------------- */
 
 #toast-success, #toast-wrong, #toast-warning {
@@ -264,23 +281,23 @@ table tr th {
     border: 1px solid #ca9d18;
 }
 
-#toast-success svg, #toast-wrong svg, #toast-warning svg {
-    background: transparent;
-    width: 30px;
-    height: 30px;
-}
+    #toast-success svg, #toast-wrong svg, #toast-warning svg {
+        background: transparent;
+        width: 30px;
+        height: 30px;
+    }
 
-#toast-success span, #toast-wrong span, #toast-warning span {
-    display: inline-block;
-    margin: 5px 0 5px 10px;
-    color: #fff;
-}
+    #toast-success span, #toast-wrong span, #toast-warning span {
+        display: inline-block;
+        margin: 5px 0 5px 10px;
+        color: #fff;
+    }
 
-#toast-success.show, #toast-wrong.show, #toast-warning.show {
-    display: flex;
-    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
-}
+    #toast-success.show, #toast-wrong.show, #toast-warning.show {
+        display: flex;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
 
 @-webkit-keyframes fadein {
     from {
@@ -367,9 +384,9 @@ ul.pagination-custom {
         color: white;
     }
 
-.pagination-custom li:hover:not(.active) {
-    background-color: #edebeb;
-}
+    .pagination-custom li:hover:not(.active) {
+        background-color: #edebeb;
+    }
 
 
 /* img box */
@@ -682,7 +699,7 @@ ul.pagination-custom {
     position: relative;
 }
 
-    .content-page .content-header {
+    .content-page > .content-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -698,48 +715,48 @@ ul.pagination-custom {
     }
 
 
-        /* header-button */
+    /* header-button */
 
-        .content-page .content-header button {
-            outline: none;
-            border: none;
-            background: none;
-            font-size: 25px;
-            padding: 0;
-            width: 45px;
-            height: 45px;
-            transition: all ease .3s;
+    .content-page .content-header button {
+        outline: none;
+        border: none;
+        background: none;
+        font-size: 25px;
+        padding: 0;
+        width: 45px;
+        height: 45px;
+        transition: all ease .3s;
+    }
+
+        .content-page .content-header button i {
+            line-height: 45px;
+            color: #414141;
         }
 
-            .content-page .content-header button i {
-                line-height: 45px;
-                color: #414141;
-            }
+        .content-page .content-header button:hover {
+            border-radius: 50%;
+            background: #e6e6e68c;
+        }
 
-            .content-page .content-header button:hover {
+    .content-page .content-header .user-img {
+        border-radius: 25px;
+        box-shadow: 0 0 2px 2px #d9d9d9;
+        padding: 5px;
+    }
+
+        .content-page .content-header .user-img a {
+            text-decoration: none;
+            color: #292929;
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+            .content-page .content-header .user-img a img {
+                width: 45px;
+                height: 45px;
                 border-radius: 50%;
-                background: #e6e6e68c;
             }
-
-        .content-page .content-header .user-img {
-            border-radius: 25px;
-            box-shadow: 0 0 2px 2px #d9d9d9;
-            padding: 5px;
-        }
-
-            .content-page .content-header .user-img a {
-                text-decoration: none;
-                color: #292929;
-                font-weight: bold;
-                padding-left: 5px;
-                padding-right: 5px;
-            }
-
-                .content-page .content-header .user-img a img {
-                    width: 45px;
-                    height: 45px;
-                    border-radius: 50%;
-                }
 
 
     /* min menu */

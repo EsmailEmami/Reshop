@@ -94,7 +94,6 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId);
         Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductId, int colorId);
         Task AddShopperProductColorAsync(ShopperProductColor shopperProductColor);
-        Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId);
         Task<bool> IsShopperProductColorExistAsync(string shopperProductColorId);
         Task<bool> IsShopperProductColorExistAsync(string shopperProductId, int colorId);
         void UpdateShopperProductColor(ShopperProductColor shopperProductColor);

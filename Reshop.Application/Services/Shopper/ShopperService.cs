@@ -439,6 +439,9 @@ namespace Reshop.Application.Services.Shopper
             return await _shopperRepository.GetShopperProductColorIdAsync(shopperProductId, colorId);
         }
 
+        public async Task<string> GetShopperProductColorIdAsync(string shopperProductId, int colorId) =>
+            await _shopperRepository.GetShopperProductColorIdAsync(shopperProductId, colorId);
+
         public async Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId) =>
             await _shopperRepository.GetShopperProductColorAsync(shopperProductColorId);
 
@@ -470,8 +473,8 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
-        public async Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId) =>
-            await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId, shopperProductColorId);
+        public async Task<bool> IsShopperProductColorExistAsync(string shopperProductId, int colorId) =>
+            await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId, colorId);
 
         public async Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId) =>
             await _shopperRepository.GetShopperProductColorDetailAsync(shopperProductColorId);

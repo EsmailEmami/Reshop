@@ -162,7 +162,7 @@ namespace Reshop.Application.Services.Product
         public async Task<ShopperProduct> GetShopperProductAsync(string shopperProductId) =>
             await _productRepository.GetShopperProductAsync(shopperProductId);
 
-        public async Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(int productId, string shopperId, int colorId)
+        public async Task<EditColorOfShopperProductViewModel> GetShopperProductColorForEditAsync(int productId, string shopperId, int colorId)
         {
             string shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);
 
@@ -172,11 +172,11 @@ namespace Reshop.Application.Services.Product
             if (!await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId, colorId))
                 return null;
 
-            return await _productRepository.GetShopperProductForEditAsync(shopperProductId, colorId);
+            return await _productRepository.GetShopperProductColorForEditAsync(shopperProductId, colorId);
         }
 
-        public async Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductColorId) =>
-            await _productRepository.GetShopperProductForEditAsync(shopperProductColorId);
+        public async Task<EditColorOfShopperProductViewModel> GetShopperProductColorForEditAsync(string shopperProductColorId) =>
+            await _productRepository.GetShopperProductColorForEditAsync(shopperProductColorId);
 
         public async Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId)
         {

@@ -15,7 +15,7 @@
 
 <section class="general-detail mb-3">
     <div class="row">
-        
+
         <!-- img part -->
         <div class="col-sm-12 col-md-4 mb-3 mb-md-0">
             <div class="box-shadow">
@@ -107,7 +107,7 @@
                 <div class="title">
                     <h3>@color.Item2</h3>
                 </div>
-                <button type="button" class="collapsible" onclick="ColorsDetailData('colorDetail@(color.Item1)','@Model.ProductId','@color.Item1')"></button>
+                <button type="button" class="collapsible" onclick="ColorsDetailData(this,'colorDetail@(color.Item1)', '@Url.Action("ShopperProductColorDetail","ShoppersManager",new{shopperProductId = ViewBag.ShopperProductId,colorId = color.Item1},Context.Request.Scheme)')"></button>
                 <div class="content" id="colorDetail@(color.Item1)">
 
                 </div>

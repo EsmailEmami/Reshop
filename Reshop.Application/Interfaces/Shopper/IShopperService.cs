@@ -74,12 +74,14 @@ namespace Reshop.Application.Interfaces.Shopper
         #region color
 
         IEnumerable<Color> GetColors();
-        IEnumerable<Tuple<int,string>> GetColorsIdAndName();
+        IEnumerable<Tuple<int, string>> GetColorsIdAndName();
         Task<string> GetShopperProductColorIdAsync(string shopperId, int productId, int colorId);
+        Task<string> GetShopperProductColorIdAsync(string shopperProductId, int colorId);
         Task<ShopperProductColor> GetShopperProductColorAsync(string shopperProductColorId);
         Task<ResultTypes> AddShopperProductColorAsync(ShopperProductColor shopperProductColor);
         Task<ResultTypes> EditShopperProductColorAsync(ShopperProductColor shopperProductColor);
-        Task<bool> IsShopperProductColorExistAsync(string shopperProductId, string shopperProductColorId);
+        Task<bool> IsShopperProductColorExistAsync(string shopperProductId, int colorId);
+
         Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId);
         Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId);
         Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId);

@@ -662,9 +662,9 @@ namespace Reshop.Infrastructure.Repository.Product
              await _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
                     .Include(c => c.Product).SingleOrDefaultAsync();
 
-        public async Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductId, int colorId) =>
+        public async Task<EditColorOfShopperProductViewModel> GetShopperProductColorForEditAsync(string shopperProductId, int colorId) =>
             await _context.ShopperProductColors.Where(c => c.ShopperProductId == shopperProductId && c.ColorId == colorId)
-                .Select(c => new EditProductOfShopperViewModel()
+                .Select(c => new EditColorOfShopperProductViewModel()
                 {
                     ShopperProductColorId = c.ShopperProductColorId,
                     QuantityInStock = c.QuantityInStock,
@@ -672,9 +672,9 @@ namespace Reshop.Infrastructure.Repository.Product
                     IsActive = c.IsActive
                 }).SingleOrDefaultAsync();
 
-        public async Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductColorId) =>
+        public async Task<EditColorOfShopperProductViewModel> GetShopperProductColorForEditAsync(string shopperProductColorId) =>
             await _context.ShopperProductColors.Where(c => c.ShopperProductColorId == shopperProductColorId)
-                .Select(c => new EditProductOfShopperViewModel()
+                .Select(c => new EditColorOfShopperProductViewModel()
                 {
                     ShopperProductColorId = c.ShopperProductColorId,
                     QuantityInStock = c.QuantityInStock,

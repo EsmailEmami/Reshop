@@ -59,8 +59,8 @@ namespace Reshop.Domain.Interfaces.Product
 
         Task<ShopperProduct> GetShopperProductAsync(string shopperId, int productId);
         Task<ShopperProduct> GetShopperProductAsync(string shopperProductId);
-        Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductId, int colorId);
-        Task<EditProductOfShopperViewModel> GetShopperProductForEditAsync(string shopperProductColorId);
+        Task<EditColorOfShopperProductViewModel> GetShopperProductColorForEditAsync(string shopperProductId, int colorId);
+        Task<EditColorOfShopperProductViewModel> GetShopperProductColorForEditAsync(string shopperProductColorId);
         Task<MobileDetail> GetMobileDetailByIdAsync(int mobileDetailId);
         Task<LaptopDetail> GetLaptopDetailByIdAsync(int laptopDetailId);
         Task<PowerBankDetail> GetPowerBankDetailByIdAsync(int powerBankId);

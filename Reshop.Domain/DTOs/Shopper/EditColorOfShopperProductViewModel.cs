@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Reshop.Domain.DTOs.Shopper
 {
-    public class EditProductOfShopperViewModel
+    public class EditColorOfShopperProductViewModel
     {
         public string ShopperProductColorId { get; set; }
 
