@@ -7,10 +7,6 @@
     @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ShopperPage); }
 }
 
-@section Css{
-    <link href="~/css/select.css" rel="stylesheet" />
-}
-
 <section class="general-detail mb-3">
     <div class="row">
         <!-- img part -->
@@ -126,8 +122,6 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script src="~/js/select.js"></script>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 

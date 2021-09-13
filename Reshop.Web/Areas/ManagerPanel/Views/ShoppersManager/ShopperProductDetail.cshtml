@@ -107,7 +107,7 @@
                 <div class="title">
                     <h3>@color.Item2</h3>
                 </div>
-                <button type="button" class="collapsible" onclick="ColorsDetailData(this,'colorDetail@(color.Item1)', '@Url.Action("ShopperProductColorDetail","ShoppersManager",new{shopperProductId = ViewBag.ShopperProductId,colorId = color.Item1},Context.Request.Scheme)')"></button>
+                <button type="button" class="collapsible" onclick="ColorCollapsibleOfManager(this,'colorDetail@(color.Item1)', '@Url.Action("ShopperProductColorDetail","ShoppersManager",new{shopperProductId = ViewBag.ShopperProductId,colorId = color.Item1},Context.Request.Scheme)')"></button>
                 <div class="content" id="colorDetail@(color.Item1)">
 
                 </div>

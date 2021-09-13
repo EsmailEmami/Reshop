@@ -352,10 +352,14 @@ namespace Reshop.Infrastructure.Repository.Shopper
             await _context.StoresAddress.FindAsync(storeAddressId);
 
         public async Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductColorId) =>
-            await _context.ShopperProductDiscounts.LastAsync(c => c.ShopperProductColorId == shopperProductColorId);
+            await _context.ShopperProductDiscounts.Where(c => c.ShopperProductColorId == shopperProductColorId)
+                .OrderByDescending(c => c.EndDate).FirstOrDefaultAsync();
 
         public async Task AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount) =>
             await _context.ShopperProductDiscounts.AddAsync(shopperProductDiscount);
+
+        public void UpdateShopperProductDiscount(ShopperProductDiscount shopperProductDiscount) =>
+            _context.ShopperProductDiscounts.Update(shopperProductDiscount);
 
         public async Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId) =>
             await _context.ShopperProductDiscounts.AnyAsync(c =>

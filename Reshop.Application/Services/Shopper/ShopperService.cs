@@ -187,6 +187,20 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
+        public async Task<ResultTypes> EditShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount)
+        {
+            try
+            {
+                _shopperRepository.UpdateShopperProductDiscount(shopperProductDiscount);
+                await _shopperRepository.SaveChangesAsync();
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<ShopperProductDiscount> GetLastShopperProductColorDiscountAsync(string shopperProductColorId) =>
             await _shopperRepository.GetLastShopperProductDiscountAsync(shopperProductColorId);
 

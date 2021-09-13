@@ -188,7 +188,7 @@ table tr th {
         position: absolute;
         color: #2c2b2b;
         left: 13px;
-        top: 11px;
+        top: 4px;
         font-size: 25px;
         font-weight: bold;
     }
@@ -404,7 +404,7 @@ ul.pagination-custom {
         height: 100%;
         background: #fff;
         background-size: contain;
-        border-radius: 8px;
+        border-radius: 4px;
     }
 
 .mini-pic-slider {
@@ -1067,8 +1067,8 @@ ul.pagination-custom {
     .colors .item .content {
         padding: 0 10px;
         position: relative;
-        /* max-height: 0; */
-        overflow: hidden;
+         max-height: 0; 
+        overflow-y: scroll;
         transition: max-height 0.2s ease-out;
     }
 
@@ -1097,6 +1097,7 @@ ul.pagination-custom {
                     color: #222;
                     text-decoration: none;
                     text-align: center;
+                    cursor: pointer;
                 }
 
                 .colors .item .content .content-header li.active {
@@ -1226,7 +1227,7 @@ ul.pagination-custom {
         color: #495057;
         font-size: 14px;
         padding: 0 5px;
-        right: 25px;
+        right: 15px;
     }
 
     .form-field input:focus ~ label i,

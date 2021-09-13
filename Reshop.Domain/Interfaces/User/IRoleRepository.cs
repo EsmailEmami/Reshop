@@ -39,7 +39,7 @@ namespace Reshop.Domain.Interfaces.User
         void RemoveRolePermission(RolePermission rolePermission);
         IAsyncEnumerable<int> GetPermissionsIdOfRole(string roleId);
         int GetPermissionIdByName(string permissionName);
-        IAsyncEnumerable<string> GetRolesIdOfPermission(int permissionId);
+        IEnumerable<string> GetRolesIdOfPermission(int permissionId);
 
         #endregion
 

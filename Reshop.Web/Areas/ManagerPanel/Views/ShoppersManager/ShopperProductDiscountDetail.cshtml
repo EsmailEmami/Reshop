@@ -37,23 +37,23 @@
     @if (Model.Discounts.Any() && Model.Discounts.First().Item2 >= DateTime.Now)
     {
         <div>
-            <h3><i class="far fa-tags"></i> تاریخ </h3>
-            <span>@Model.Discounts.First().Item1 تا @Model.Discounts.First().Item2</span>
+            <h3 class="ml-1"><i class="far fa-tags"></i> تاریخ:</h3>
+            <span>@Model.Discounts.First().Item1.ToShamsiDateTime() تا @Model.Discounts.First().Item2.ToShamsiDateTime() </span>
         </div>
         <div>
             <h3><i class="far fa-tags"></i> تعداد فروش: </h3>
             <span>@Model.Discounts.First().Item3</span>
         </div>
 
-        <button class="btn btn-warning text-white" onclick="ShowModal('@Url.Action("EditProductOfShopper", "AccountManager", new {productId= Model.ProductId, colorId = Model.ColorId}, Context.Request.Scheme)','ویرایش رنگ')">ویرایش</button>
+        <button class="btn btn-warning text-white" onclick="ShowModal('@Url.Action("EditShopperProductColorDiscount", "ShoppersManager", new {shopperProductId = ViewBag.ShopperProductId,colorId = Model.ColorId}, Context.Request.Scheme)','ویرایش تخفیف')">ویرایش</button>
     }
     else
     {
-        <div class="alert alert-warning m-0 ml-3 p-3">
+        <div class="alert alert-warning m-0 mr-3 p-3">
             تخفیف فعالی یافت نشد.
         </div>
 
-        <button class="btn btn-success text-white" onclick="ShowModal('@Url.Action("AddProductDiscount", "AccountManager", new {productId= Model.ProductId, colorId = Model.ColorId}, Context.Request.Scheme)','افزودن تخفیف')">افزودت تخفیف</button>
+        <button class="btn btn-success text-white" onclick="ShowModal('@Url.Action("AddShopperProductColorDiscount", "ShoppersManager", new {shopperProductId = ViewBag.ShopperProductId,colorId = Model.ColorId}, Context.Request.Scheme)', 'افزودن تخفیف')">افزودن تخفیف</button>
     }
 </div>
 

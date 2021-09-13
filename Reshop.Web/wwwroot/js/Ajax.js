@@ -234,7 +234,43 @@ function UpdateProductDetailShopper(productId, productName, sellerId) {
     window.history.replaceState(null, productName, url);
 }
 
-function ColorsDetailData(btn, where, url) {
+function ColorCollapsibleOfManager(btn, where, url) {
+
+    var res = ColorsDetailData(where, url);
+
+    if (res === true) {
+
+        var content = document.getElementById(where);
+
+        if (content.scrollHeight !== 0) {
+
+            btn.classList.toggle("active");
+
+            if (!content.style.maxHeight) {
+                if (content.scrollHeight >= 700) {
+                    content.style.maxHeight = 700 + "px";
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+
+            } else {
+                if (content.style.maxHeight != "0px") {
+                    content.style.maxHeight = "0px";
+                } else {
+                    if (content.scrollHeight >= 700) {
+                        content.style.maxHeight = 700 + "px";
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                }
+            }
+        }
+    }
+}
+
+function ColorsDetailData(where, url) {
+
+    var result = true;
 
     $.ajax({
         type: 'GET',
@@ -242,45 +278,26 @@ function ColorsDetailData(btn, where, url) {
     }).done(function (res) {
         if (res.isValid == false) {
             ShowToast(res.errorType, res.errorText);
+
+            result = false;
         } else {
             var content = document.getElementById(where);
-
             $(content).html(res);
 
-            btn.classList.toggle("active");
-
-            if (!content.style.maxHeight) {
-                if (content.scrollHeight >= 700) {
-                    content.style.maxHeight = 700 + "px";
-                    content.style.overflowY = "scroll";
-                } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
-                }
-            } else {
-                if (content.style.maxHeight != "0px") {
-                    content.style.maxHeight = "0px";
-                } else {
-                    if (content.scrollHeight >= 700) {
-                        content.style.maxHeight = 700 + "px";
-                        content.style.overflowY = "scroll";
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
-                    }
-                }
-            }
+            result = true;
         }
     });
+
+    return result;
 }
 
-function ColorsDiscountDetailData(where, productId, colorId) {
 
+function ColorsDiscountDetailData(where, url) {
     $.ajax({
         type: 'GET',
-        url: '/AccountManager/ShopperProductDiscountDetail?productId=' + productId + '&colorId=' + colorId,
-        cache: true
+        url: url
     }).done(function (res) {
         var place = document.getElementById(where);
-
         $(place).html(res);
     });
 }

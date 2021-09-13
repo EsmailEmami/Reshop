@@ -43,6 +43,7 @@ namespace Reshop.Application.Interfaces.Shopper
         #region discount
 
         Task<ResultTypes> AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
+        Task<ResultTypes> EditShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
         Task<ShopperProductDiscount> GetLastShopperProductColorDiscountAsync(string shopperProductColorId);
         Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId);
 

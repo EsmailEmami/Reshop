@@ -97,9 +97,9 @@ namespace Reshop.Infrastructure.Repository.User
             }
         }
 
-        public IAsyncEnumerable<string> GetRolesIdOfPermission(int permissionId) =>
+        public IEnumerable<string> GetRolesIdOfPermission(int permissionId) =>
             _context.RolePermissions.Where(c => c.PermissionId == permissionId)
-                .Select(c => c.RoleId) as IAsyncEnumerable<string>;
+                .Select(c => c.RoleId);
 
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();

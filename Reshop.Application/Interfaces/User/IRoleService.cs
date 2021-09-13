@@ -29,7 +29,7 @@ namespace Reshop.Application.Interfaces.User
         IAsyncEnumerable<Permission> GetPermissions();
         Task<ResultTypes> AddPermissionsToRoleAsync(string roleId, List<int> permissionsId);
         Task<ResultTypes> RemoveRolePermissionsByRoleId(string roleId);
-        IAsyncEnumerable<string> GetPermissionRolesIdByPermission(string permissionName);
+        IEnumerable<string> GetPermissionRolesIdByPermission(string permissionName);
 
         bool PermissionChecker(string userId, string permissions);
 

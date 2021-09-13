@@ -4,7 +4,9 @@
     Layout = null;
 }
 
-<form asp-action="AddColorToShopperProduct" method="post" onsubmit="return SubmitFormData(this)">
+<link href="~/css/select.css" rel="stylesheet" />
+
+<form asp-action="EditColorOfShopperProduct" method="post" onsubmit="return SubmitFormData(this)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
 
@@ -43,4 +45,6 @@
 </form>
 
 <script src="~/js/select.js"></script>
-<script src="~/js/Input.js"></script>
+<script>
+    inputJs();
+</script>

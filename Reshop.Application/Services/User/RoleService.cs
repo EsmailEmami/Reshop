@@ -257,9 +257,12 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public IAsyncEnumerable<string> GetPermissionRolesIdByPermission(string permissionName)
+        public IEnumerable<string> GetPermissionRolesIdByPermission(string permissionName)
         {
             int permissionId = _roleRepository.GetPermissionIdByName(permissionName);
+
+            if (permissionId == 0)
+                return null;
 
             return _roleRepository.GetRolesIdOfPermission(permissionId);
         }
@@ -269,8 +272,10 @@ namespace Reshop.Application.Services.User
             string[] permission = permissions.Split(",");
 
 
-            var userRoles = _roleRepository.GetRolesIdOfUser(userId) as IEnumerable<string>;
-            if (userRoles is null) return false;
+            var userRoles = _roleRepository.GetRolesIdOfUser(userId);
+
+            if (userRoles == null) 
+                return false;
 
 
             List<string> permissionsRolesId = new List<string>();
@@ -282,17 +287,18 @@ namespace Reshop.Application.Services.User
 
                 if (permissionId != 0)
                 {
-                    var roles = (IEnumerable<string>)_roleRepository.GetRolesIdOfPermission(permissionId);
+                    var roles = _roleRepository.GetRolesIdOfPermission(permissionId);
 
-                    foreach (var role in roles)
+                    if (roles != null)
                     {
-                        permissionsRolesId.Add(role);
+                        foreach (var role in roles)
+                        {
+                            permissionsRolesId.Add(role);
+                        }
                     }
                 }
             }
-
             return permissionsRolesId.Any(c => userRoles.Contains(c));
-
         }
     }
 }
