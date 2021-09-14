@@ -1,20 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Attribute;
+using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Application.Convertors;
-using Reshop.Application.Enums;
-using Reshop.Application.Security.Attribute;
-using Reshop.Domain.Entities.Permission;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
-    [AutoValidateAntiforgeryToken]
     public class RoleManagerController : Controller
     {
         #region constructor
@@ -31,14 +28,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
         [HttpGet]
-        [Permission("RoleManager")]
         public IActionResult Index()
         {
             return View(_roleService.GetRoles());
         }
 
         [HttpGet]
-        [Permission("AddRole,EditRole")]
+        [NoDirectAccess]
         public async Task<IActionResult> AddOrEditRole(string roleId = "")
         {
             if (roleId == "")
@@ -46,7 +42,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 var model = new AddOrEditRoleViewModel()
                 {
                     RoleId = "",
-                    Permissions = _roleService.GetPermissions() as IEnumerable<Permission>
+                    Permissions = _roleService.GetPermissions()
                 };
 
                 return View(model);
@@ -60,17 +56,19 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [NoDirectAccess]
         public async Task<IActionResult> AddOrEditRole(AddOrEditRoleViewModel model)
         {
-            model.Permissions = _roleService.GetPermissions() as IEnumerable<Permission>;
-            if (!ModelState.IsValid) return View(model);
+            model.Permissions = _roleService.GetPermissions();
+
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditRole", model) });
 
             if (string.IsNullOrEmpty(model.RoleId))
             {
                 var role = new Role()
                 {
-                    RoleTitle = Fixer.FixedText(model.RoleTitle),
+                    RoleTitle = model.RoleTitle.FixedText(),
                 };
 
                 var addRole = await _roleService.AddRoleAsync(role);
@@ -83,16 +81,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         if (addRolePermission == ResultTypes.Failed)
                         {
                             ModelState.AddModelError("", "هنگام افزودن دسترسی ها به مشکل خوردیم.");
-                            return View(model);
+                            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditRole", model) });
                         }
                     }
 
-                    return RedirectToAction("Index");
+                    return Json(new { isValid = true, returnUrl = "current" });
                 }
 
 
                 ModelState.AddModelError("", "هنگام افزودن مقام به مشکل خوردیم");
-                return View(model);
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditRole", model) });
             }
             else
             {
@@ -107,7 +105,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (editRole == ResultTypes.Failed)
                 {
                     ModelState.AddModelError("", "هنگام ویرایش مقام به مشکل خوردیم");
-                    return View(model);
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditRole", model) });
                 }
 
 
@@ -115,7 +113,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (removeRole == ResultTypes.Failed)
                 {
                     ModelState.AddModelError("", "هنگام ویرایش دسترسی ها به مشکل برخوردیم");
-                    return View(model);
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditRole", model) });
                 }
 
 
@@ -125,17 +123,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     if (addRolePermission == ResultTypes.Failed)
                     {
                         ModelState.AddModelError("", "هنگام ویرایش دسترسی ها به مشکل برخوردیم");
-                        return View(model);
+                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditRole", model) });
                     }
                 }
 
-                return RedirectToAction("Index");
+                return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" });
             }
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Permission("AddRole,EditRole")]
         public async Task<IActionResult> RemoveRole(string roleId)
         {
             if (!await _roleService.IsRoleExistAsync(roleId)) return NotFound();

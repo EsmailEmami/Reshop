@@ -133,7 +133,7 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [NoDirectAccess]
         public async Task<IActionResult> NewAddress(Address model)
         {
@@ -197,7 +197,7 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [NoDirectAccess]
         public async Task<IActionResult> EditAddress(Address model)
         {
@@ -270,7 +270,7 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [NoDirectAccess]
         public async Task<IActionResult> EditUserInformation(EditUserViewModel model)
         {

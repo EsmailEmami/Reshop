@@ -11,7 +11,6 @@ using ZarinpalSandbox;
 namespace Reshop.Web.Controllers.User
 {
     [Authorize]
-    [AutoValidateAntiforgeryToken]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
@@ -26,7 +25,6 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToCart(string shopperProductColorId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -52,7 +50,6 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrRemoveProduct(string orderDetailId, string actionType)
         {
             if (!await _cartService.IsOrderDetailExistAsync(orderDetailId))
@@ -80,7 +77,6 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveOrderDetail(string orderDetailId)
         {
             var result = await _cartService.RemoveOrderDetailAsync(orderDetailId);
@@ -113,7 +109,6 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Address(string addressId)
         {
             if (addressId == null)

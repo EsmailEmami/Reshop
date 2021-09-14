@@ -25,7 +25,6 @@ using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.User
 {
-    [AutoValidateAntiforgeryToken]
     public class AccountController : Controller
     {
         #region constructor
@@ -63,7 +62,6 @@ namespace Reshop.Web.Controllers.User
 
         [Route("Register")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(IFormCollection form, RegisterViewModel model, string inviteCode = null)
         {
             #region recaptcha
@@ -144,7 +142,6 @@ namespace Reshop.Web.Controllers.User
 
         [Route("Login")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(IFormCollection form, LoginViewModel model, string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
@@ -221,7 +218,6 @@ namespace Reshop.Web.Controllers.User
         [Route("Logout")]
         [Authorize]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -248,7 +244,6 @@ namespace Reshop.Web.Controllers.User
 
         [Route("NewShopper")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddShopper(AddShopperViewModel model)
         {
             // this is states when page reload states is not null

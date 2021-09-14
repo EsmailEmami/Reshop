@@ -123,7 +123,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddShopperProduct(AddOrEditShopperProductViewModel model)
         {
             // data for selectProduct
@@ -214,7 +213,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditShopperProduct(AddOrEditShopperProductViewModel model, int lastProductId)
         {
             // data for select Product
@@ -303,7 +301,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddColorToShopperProduct(AddColorToShopperProductViewModel model)
         {
             ViewBag.Colors = _shopperService.GetColorsIdAndName();
@@ -387,7 +384,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         [NoDirectAccess]
         public async Task<IActionResult> EditColorOfShopperProduct(EditColorOfShopperProductViewModel model)
         {
@@ -523,7 +520,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [NoDirectAccess]
         public async Task<IActionResult> AddShopperProductColorDiscount(AddOrEditShopperProductDiscountViewModel model)
         {
@@ -611,7 +607,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [NoDirectAccess]
         public async Task<IActionResult> EditShopperProductColorDiscount(AddOrEditShopperProductDiscountViewModel model)
         {
@@ -690,7 +685,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [NoDirectAccess]
         public async Task<IActionResult> AddOrEditStoreTitle(StoreTitle model)
         {
@@ -708,7 +702,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    return Json(new { isValid = true, returnUrl = "current" });         
+                    return Json(new { isValid = true, returnUrl = "current" });
                 }
 
                 ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام افزودن عنوان به مشکل برخوردیم.");
@@ -723,7 +717,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش عنوان به مشکل برخوردیم.");
                     return Json(new
                     {
-                        isValid = false, 
+                        isValid = false,
                         html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditStoreTitle", model)
                     });
                 }
@@ -735,7 +729,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (result == ResultTypes.Successful)
                 {
-                    return Json(new { isValid = true, returnUrl = "current" });           
+                    return Json(new { isValid = true, returnUrl = "current" });
                 }
 
                 ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش عنوان به مشکل برخوردیم.");
@@ -747,26 +741,23 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
         }
 
-
-        #endregion
-
-
-
-
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteStoreTitle(int storeTitleId)
         {
-            await _shopperService.DeleteStoreTitleAsync(storeTitleId);
+            var res = await _shopperService.DeleteStoreTitleAsync(storeTitleId);
 
+            if (res != ResultTypes.Successful)
+            {
+                return BadRequest();
+            }
 
             return RedirectToAction(nameof(ManageStoreTitles));
         }
 
+        #endregion
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         [NoDirectAccess]
         public async Task<IActionResult> UnAvailableShopperProduct(string shopperProductId)
         {

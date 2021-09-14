@@ -1,11 +1,11 @@
 ﻿@model AddOrEditRoleViewModel
 
 @{
-    ViewData["Title"] = "افزودن مقام جدید";
+    Layout = null;
 }
 
 
-<form asp-action="AddOrEditRole" method="post">
+<form asp-action="AddOrEditRole" method="post" onsubmit="return SubmitFormData(this)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-sm-12 col-md-6">
@@ -18,9 +18,7 @@
             </div>
 
             <div class="form-field">
-                <button type="submit" class="btn btn-success">
-                    @((Model.RoleId == "") ? "افزودن" : "ویرایش")
-                </button>
+                <button type="submit" class="btn btn-success">ثبت</button>
             </div>
 
         </div>
@@ -28,25 +26,47 @@
         <div class="col-sm-12 col-md-6">
             <h4 class="text-center">دسترسی های نقش</h4>
 
-            <ul>
+            <ul style="list-style: none">
                 @foreach (var permission in Model.Permissions.Where(c => c.ParentId == null))
                 {
                     <li>
-                        <input type="checkbox" name="SelectedPermissions" value="@permission.PermissionId" @(Model.RoleId != "" && Model.SelectedPermissions.Any(c => c == permission.PermissionId) ? "checked" : "") /> @permission.PermissionTitle
+                        <div class="form-check m-0">
+                            <label>
+                                @permission.PermissionTitle
+                                <input type="checkbox" name="SelectedPermissions"
+                                       value="@permission.PermissionId" @(Model.RoleId != "" && Model.SelectedPermissions.Any(c => c == permission.PermissionId) ? "checked" : "") />
+                                <span></span>
+                            </label>
+                        </div>
                         @if (Model.Permissions.Any(c => c.ParentId == permission.ParentId))
                         {
-                            <ul>
+                            <ul style="list-style: none">
                                 @foreach (var sub in Model.Permissions.Where(c => c.ParentId == permission.PermissionId))
                                 {
                                     <li>
-                                        <input type="checkbox" name="SelectedPermissions" value="@sub.PermissionId" @(Model.RoleId != "" && Model.SelectedPermissions.Any(c => c == sub.PermissionId) ? "checked" : "") /> @sub.PermissionTitle
+                                        <div class="form-check m-0">
+                                            <label>
+                                                @sub.PermissionTitle
+                                                <input type="checkbox" name="SelectedPermissions"
+                                                       value="@sub.PermissionId" @(Model.RoleId != "" && Model.SelectedPermissions.Any(c => c == sub.PermissionId) ? "checked" : "")/>
+                                                <span></span>
+                                            </label>
+                                        </div>
+
                                         @if (Model.Permissions.Any(c => c.ParentId == sub.ParentId))
                                         {
-                                            <ul>
+                                            <ul style="list-style: none">
                                                 @foreach (var sub2 in Model.Permissions.Where(c => c.ParentId == sub.PermissionId))
                                                 {
                                                     <li>
-                                                        <input type="checkbox" name="SelectedPermissions" value="@sub2.PermissionId" @(Model.RoleId != "" && Model.SelectedPermissions.Any(c => c == sub2.PermissionId) ? "checked" : "") /> @sub2.PermissionTitle
+                                                        <div class="form-check m-0">
+                                                            <label>
+                                                                @sub2.PermissionTitle
+                                                                <input type="checkbox" name="SelectedPermissions"
+                                                                       value="@sub2.PermissionId" @(Model.RoleId != "" && Model.SelectedPermissions.Any(c => c == sub2.PermissionId) ? "checked" : "")/>
+                                                                <span></span>
+                                                            </label>
+                                                        </div>
                                                     </li>
                                                 }
                                             </ul>
@@ -62,6 +82,4 @@
     </div>
 </form>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script src="~/js/Input.js"></script>

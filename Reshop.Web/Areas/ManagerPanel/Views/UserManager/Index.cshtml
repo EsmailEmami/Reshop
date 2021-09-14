@@ -4,10 +4,13 @@
     ViewData["Title"] = "Index";
     int rowCount = 1;
 }
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.UserPage); }
+}
 
-<p>
-    <a asp-action="AddOrEditUser" class="btn btn-success text-white"><i class="fal fa-user-plus"></i> کاربر جدید</a>
-</p>
+
+<a asp-action="AddOrEditUser" class="btn btn-success text-white"><i class="fal fa-user-plus"></i> کاربر جدید</a>
 
 <div class="table-responsive">
     <table class="table table-bordered table-striped">

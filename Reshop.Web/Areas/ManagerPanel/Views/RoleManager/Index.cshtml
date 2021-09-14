@@ -1,58 +1,75 @@
-﻿@model IAsyncEnumerable<Role>
+﻿@model IEnumerable<Role>
 
 @{
     ViewData["Title"] = "مدیریت مقام ها";
     int rowCount = 1;
 }
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.UserPage); }
+}
 
-<p>
-    <a asp-action="AddOrEditRole" class="btn btn-success text-white">
-        <i class="fal fa-layer-plus"></i> افزودن مقام جدید
-    </a>
-</p>
+<div class="display-6 text-center">
+    مدیریت مقام ها
+</div>
+
+<a onclick="ShowModal('@Url.Action("AddOrEditRole", "RoleManager",null, Context.Request.Scheme)', 'افزودن مقام')"
+   class="btn btn-success text-white">
+    <i class="fal fa-layer-plus"></i> افزودن مقام جدید
+</a>
 
 @if (Model == null)
 {
     <div class="alert alert-warning mt-2">
-        متاسفانه مقامی پیدا نشد!
+        متاسفانه مقامی یافت نشد!
     </div>
 }
 else
 {
     <table class="table table-bordered table-striped">
         <thead>
-        <tr>
-            <th>#</th>
-            <th>
-           نام مقام
-            </th>
-            <th></th>
-        </tr>
+            <tr>
+                <th>#</th>
+                <th>
+                    نام مقام
+                </th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
-        @await foreach (var item in Model)
-        {
-            <tr>
-                <td>@rowCount</td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RoleTitle)
-                </td>
-                <td>
-                    <a asp-action="AddOrEditRole" asp-route-roleId="@item.RoleId" class="btn btn-warning text-white">
-                        <i class="fal fa-marker"></i> ویرایش
-                    </a>
-                    <form asp-action="RemoveRole" asp-route-roleId="@item.RoleId" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger text-white">
-                            <i class="fal fa-trash-alt"></i> حذف
-                        </button>
-                    </form>
-                </td>
-            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@rowCount</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RoleTitle)
+                    </td>
+                    <td>
+                        <a onclick="ShowModal('@Url.Action("AddOrEditRole", "RoleManager",new {roleId = item.RoleId}, Context.Request.Scheme)', 'افزودن مقام')"
+                           class="btn btn-warning text-white">
+                            <i class="fal fa-marker"></i> ویرایش
+                        </a>
+                        <form asp-action="RemoveRole" asp-route-roleId="@item.RoleId" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger text-white me-2">
+                                <i class="fal fa-trash-alt"></i> حذف
+                            </button>
+                        </form>
+                    </td>
+                </tr>
 
 
-            rowCount++;
-        }
+                rowCount++;
+            }
         </tbody>
     </table>
 
+}
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

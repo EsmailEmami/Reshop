@@ -25,7 +25,7 @@ namespace Reshop.Infrastructure.Repository.User
 
         #region role
 
-        public IAsyncEnumerable<Role> GetRoles() => _context.Roles;
+        public IEnumerable<Role> GetRoles() => _context.Roles;
 
         public async Task<Role> GetRoleByIdAsync(string roleId) => await _context.Roles.FindAsync(roleId);
 
@@ -70,7 +70,7 @@ namespace Reshop.Infrastructure.Repository.User
 
         public void RemoveUserRole(UserRole userRole) => _context.UserRoles.Remove(userRole);
 
-        public IAsyncEnumerable<Permission> GetPermissions() => _context.Permissions;
+        public IEnumerable<Permission> GetPermissions() => _context.Permissions;
 
         public async Task AddRolePermissionAsync(RolePermission rolePermission) =>
             await _context.RolePermissions.AddAsync(rolePermission);
@@ -81,9 +81,9 @@ namespace Reshop.Infrastructure.Repository.User
         public void RemoveRolePermission(RolePermission rolePermission) =>
             _context.RolePermissions.Remove(rolePermission);
 
-        public IAsyncEnumerable<int> GetPermissionsIdOfRole(string roleId) =>
+        public IEnumerable<int> GetPermissionsIdOfRole(string roleId) =>
             _context.RolePermissions.Where(c => c.RoleId == roleId)
-                .Select(c => c.PermissionId) as IAsyncEnumerable<int>;
+                .Select(c => c.PermissionId);
 
         public int GetPermissionIdByName(string permissionName)
         {

@@ -9,7 +9,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
     [Authorize]
-    [AutoValidateAntiforgeryToken]
+    
     public class CityManagerController : Controller
     {
         #region constructor
@@ -48,7 +48,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditCity(City model)
         {
             if (!ModelState.IsValid) return View(model);

@@ -13,8 +13,6 @@ using Reshop.Application.Enums;
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
-    [Authorize]
-    [AutoValidateAntiforgeryToken]
     public class UserManagerController : Controller
     {
         #region constructor
@@ -58,7 +56,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditUser(AddOrEditUserForAdminViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -165,7 +163,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region remove
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> RemoveUser(string userId)
         {
             if (!await _userService.IsUserExistAsync(userId)) return NotFound();

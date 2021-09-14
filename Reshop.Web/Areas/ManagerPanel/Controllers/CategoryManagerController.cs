@@ -13,8 +13,6 @@ using Reshop.Application.Convertors;
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
-    [Authorize]
-    [AutoValidateAntiforgeryToken]
     public class CategoryManagerController : Controller
     {
         #region constructor
@@ -61,7 +59,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrEditCategory(AddOrEditCategoryViewModel model)
         {
             model.ChildCategories = _categoryService.GetChildCategories();
@@ -116,7 +113,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveCategory(int categoryId)
         {
             if (!await _categoryService.IsCategoryExistAsync(categoryId)) return NotFound();

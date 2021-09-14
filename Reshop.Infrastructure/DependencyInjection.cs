@@ -1,4 +1,4 @@
-﻿ using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
-using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.Category;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
@@ -113,6 +112,11 @@ namespace Reshop.Infrastructure
             services.Configure<GoogleReCaptchaKey>(configuration.GetSection("GoogleRecaptcha"));
 
             #endregion
+
+            //services.AddMvc(options =>
+            //{
+            //    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            //});
 
             return services;
         }

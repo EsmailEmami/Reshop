@@ -30,7 +30,7 @@
                         <a onclick="ShowModal('@Url.Action("AddOrEditStoreTitle", "ShoppersManager",new {storeTitleId = item.StoreTitleId}, Context.Request.Scheme)', 'ویرایش عنوان')"
                            class="btn btn-warning text-white">ویرایش</a>
                         <form asp-action="DeleteStoreTitle" asp-route-storeTitleId="@item.StoreTitleId" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-danger text-white">حذف</button>
+                            <button type="submit" class="btn btn-danger text-white me-2" onclick="return confirm('ایا از حذف عنوان مطمئن هستید؟')">حذف</button>
                         </form>
                     </td>
                 </tr>

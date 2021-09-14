@@ -24,7 +24,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
     [Area("ManagerPanel")]
     [Authorize]
-    [AutoValidateAntiforgeryToken]
+    
     public class ProductManagerController : Controller
     {
         #region constructor
@@ -161,7 +161,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditMobile(AddOrEditMobileProductViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -449,7 +449,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditLaptop(AddOrEditLaptopProductViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -707,7 +707,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditTablet(AddOrEditTabletViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -987,7 +987,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditMobileCover(AddOrEditMobileCoverViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1181,7 +1181,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditHeadPhone(AddOrEditHandsfreeAndHeadPhoneViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1324,7 +1324,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditHandsfree(AddOrEditHandsfreeAndHeadPhoneViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1472,7 +1472,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditSpeaker(AddOrEditSpeakerViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1677,7 +1677,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditPowerBank(AddOrEditPowerBankViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1873,7 +1873,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditWristWatch(AddOrEdirWristWatchViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2038,7 +2038,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditSmartWatch(AddOrEditSmartWatchViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2265,7 +2265,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditFlashMemory(AddOrEditFlashMemoryViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2463,7 +2463,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditMemoryCard(AddOrEditMemoryCardViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2642,7 +2642,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditAUX(AddOrEditAUXViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2789,7 +2789,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region Remove
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> DeleteProduct(int productId)
         {
             await _productService.RemoveProductAccessAsync(productId);

@@ -26,7 +26,7 @@ namespace Reshop.Application.Services.User
 
         #endregion
 
-        public IAsyncEnumerable<Role> GetRoles() => _roleRepository.GetRoles();
+        public IEnumerable<Role> GetRoles() => _roleRepository.GetRoles();
 
         public async Task<AddOrEditRoleViewModel> GetRoleDataAsync(string roleId)
         {
@@ -41,8 +41,8 @@ namespace Reshop.Application.Services.User
             {
                 RoleId = role.RoleId,
                 RoleTitle = role.RoleTitle,
-                Permissions = permissions as IEnumerable<Permission>,
-                SelectedPermissions = selectedPermissions as IEnumerable<int>
+                Permissions = permissions,
+                SelectedPermissions = selectedPermissions
             };
         }
 
@@ -207,7 +207,7 @@ namespace Reshop.Application.Services.User
         }
 
 
-        public IAsyncEnumerable<Permission> GetPermissions()
+        public IEnumerable<Permission> GetPermissions()
             =>
                 _roleRepository.GetPermissions();
 

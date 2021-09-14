@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.Product
 {
-    [AutoValidateAntiforgeryToken]
+    
     public class ProductController : Controller
     {
         #region constructor
@@ -117,7 +117,7 @@ namespace Reshop.Web.Controllers.Product
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddToFavoriteProduct(string shopperProductColorId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

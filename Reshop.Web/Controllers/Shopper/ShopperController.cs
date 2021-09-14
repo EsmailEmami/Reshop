@@ -160,7 +160,7 @@ namespace Reshop.Web.Controllers.Shopper
 
         [HttpPost]
         [NoDirectAccess]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddProductOfShopper(AddColorToShopperProductViewModel model)
         {
             ViewData["Colors"] = _shopperService.GetColors();
@@ -236,7 +236,7 @@ namespace Reshop.Web.Controllers.Shopper
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [NoDirectAccess]
         public async Task<IActionResult> EditProductOfShopper(EditColorOfShopperProductViewModel model)
         {
@@ -326,7 +326,7 @@ namespace Reshop.Web.Controllers.Shopper
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         [NoDirectAccess]
         public async Task<IActionResult> AddProductDiscount(AddOrEditShopperProductDiscountViewModel model)
         {
@@ -377,7 +377,7 @@ namespace Reshop.Web.Controllers.Shopper
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> UnAvailableProduct(int productId)
         {
             if (productId == 0)

@@ -87,6 +87,11 @@ table tr th {
     white-space: nowrap;
 }
 
+
+table tr td {
+    vertical-align: middle;
+}
+
 .table-responsive::-webkit-scrollbar {
     height: 5px;
 }
@@ -1436,7 +1441,7 @@ ul.pagination-custom {
         /* Style the checkmark/indicator */
 
         .form-check label span::after {
-            left: 6px;
+            left: 5px;
             top: 2px;
             width: 5px;
             height: 9px;

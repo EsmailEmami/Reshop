@@ -9,7 +9,7 @@ namespace Reshop.Application.Interfaces.User
 {
     public interface IRoleService
     {
-        IAsyncEnumerable<Role> GetRoles();
+        IEnumerable<Role> GetRoles();
         Task<AddOrEditRoleViewModel> GetRoleDataAsync(string roleId);
         Task<ResultTypes> AddRoleAsync(Role role);
         Task<ResultTypes> EditRoleAsync(Role role);
@@ -26,7 +26,7 @@ namespace Reshop.Application.Interfaces.User
 
         #region Permission
 
-        IAsyncEnumerable<Permission> GetPermissions();
+        IEnumerable<Permission> GetPermissions();
         Task<ResultTypes> AddPermissionsToRoleAsync(string roleId, List<int> permissionsId);
         Task<ResultTypes> RemoveRolePermissionsByRoleId(string roleId);
         IEnumerable<string> GetPermissionRolesIdByPermission(string permissionName);

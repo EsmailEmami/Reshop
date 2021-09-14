@@ -31,10 +31,10 @@
 
             <ul>
                 <li>
-                    <a href="#"><i class="far fa-user"></i> کاربران</a>
+                    <a  asp-area="ManagerPanel"  asp-controller="UserManager" asp-action="Index"><i class="far fa-user"></i> کاربران</a>
                 </li>
                 <li>
-                    <a href="#"><i class="far fa-shield-check"></i> مقام</a>
+                    <a  asp-area="ManagerPanel" asp-controller="RoleManager" asp-action="Index"><i class="far fa-shield-check"></i> مقام</a>
                 </li>
             </ul>
         </li>
@@ -44,7 +44,7 @@
             </span>
             <ul>
                 <li>
-                    <a asp-controller="ShoppersManager" asp-action="ManageStoreTitles"><i class="far fa-layer-group"></i> عناوین</a>
+                    <a  asp-area="ManagerPanel" asp-controller="ShoppersManager" asp-action="ManageStoreTitles"><i class="far fa-layer-group"></i> عناوین</a>
                 </li>
                 <li>
                     <a asp-area="ManagerPanel" asp-controller="ShoppersManager" asp-action="Index">

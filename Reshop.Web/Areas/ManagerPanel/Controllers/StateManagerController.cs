@@ -13,7 +13,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
     [Authorize]
-    [AutoValidateAntiforgeryToken]
+    
     public class StateManagerController : Controller
     {
         #region constructor
@@ -56,7 +56,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> AddOrEditState(AddOrEditStateViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -128,7 +128,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        
         public async Task<IActionResult> DeleteState(int stateId)
         {
             try
