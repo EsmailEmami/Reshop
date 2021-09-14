@@ -43,3 +43,7 @@
 {
     <partial name="_Modal" />
 }
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

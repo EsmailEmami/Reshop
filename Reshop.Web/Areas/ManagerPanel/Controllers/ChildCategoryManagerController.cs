@@ -7,6 +7,7 @@ using Reshop.Domain.Entities.Category;
 using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -46,10 +47,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 var childCategory = await _categoryService.GetChildCategoryDataAsync(childCategoryId);
 
-                if (childCategory is  null)
-                {
-                    return NotFound();
-                }
+                if (childCategory is null)
+                    return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
 
                 return View(childCategory);
             }
@@ -60,7 +60,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             model.Categories = _categoryService.GetCategories();
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditChildCategory", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
 
             if (model.ChildCategoryId == 0)
             {
@@ -69,39 +69,53 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ChildCategoryTitle = model.ChildCategoryTitle,
                 };
 
-                await _categoryService.AddChildCategoryAsync(childCategory);
+                var res = await _categoryService.AddChildCategoryAsync(childCategory);
+
+                if (res != ResultTypes.Successful)
+                {
+                    ModelState.AddModelError("", "متاسفاه هنگام افزودن زیر گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                }
+
 
                 if (model.SelectedCategories != null)
                 {
-
                     await _categoryService.AddCategoryToChildCategoryAsync(childCategory.ChildCategoryId, model.SelectedCategories as List<int>);
-
                 }
             }
             else
             {
                 var childCategory = await _categoryService.GetChildCategoryByIdAsync(model.ChildCategoryId);
 
-                if (childCategory == null) return NotFound();
+                if (childCategory == null)
+                {
+                    ModelState.AddModelError("", "متاسفاه هنگام ویرایش زیر گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                }
 
                 // update category
                 childCategory.ChildCategoryTitle = model.ChildCategoryTitle;
 
-                await _categoryService.UpdateChildCategoryAsync(childCategory);
+                var res = await _categoryService.EditChildCategoryAsync(childCategory);
+
+                if (res != ResultTypes.Successful)
+                {
+                    ModelState.AddModelError("", "متاسفاه هنگام ویرایش زیر گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                }
 
                 // remove all child categories
                 await _categoryService.RemoveChildCategoryToCategoryByChildCategoryIdAsync(childCategory.ChildCategoryId);
 
 
                 // add selected child categories
-
                 if (model.SelectedCategories != null)
                 {
                     await _categoryService.AddCategoryToChildCategoryAsync(childCategory.ChildCategoryId, model.SelectedCategories as List<int>);
                 }
             }
 
-            return Json(new { isValid = true });
+            return Json(new { isValid = true, returnUrl = "current" });
         }
 
         [HttpPost]

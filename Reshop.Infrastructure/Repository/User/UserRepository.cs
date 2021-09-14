@@ -62,10 +62,10 @@ namespace Reshop.Infrastructure.Repository.User
 
         public IAsyncEnumerable<Domain.Entities.User.User> GetUsers() => _context.Users;
 
-        public IAsyncEnumerable<UserInformationViewModel> GetUsersInformation()
+        public IEnumerable<UserInformationViewModel> GetUsersInformation()
             =>
-                _context.Users.Select(c => new UserInformationViewModel(c.UserId, c.FullName, c.PhoneNumber))
-                    as IAsyncEnumerable<UserInformationViewModel>;
+                _context.Users
+                    .Select(c => new UserInformationViewModel(c.UserId, c.FullName, c.PhoneNumber));
 
         public async Task<Domain.Entities.User.User> GetUserByActiveCodeAsync(string activeCode)
             =>

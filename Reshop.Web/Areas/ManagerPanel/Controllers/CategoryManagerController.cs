@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Category;
 using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.DataProtection;
-using Reshop.Application.Convertors;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -49,9 +47,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 var category = await _categoryService.GetCategoryDataAsync(categoryId);
 
                 if (category is null)
-                {
-                    return NotFound();
-                }
+                    return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
 
                 return View(category);
@@ -64,39 +60,55 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             model.ChildCategories = _categoryService.GetChildCategories();
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditCategory", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
 
 
 
-            if (model.CategoryId ==0)
+            if (model.CategoryId == 0)
             {
                 var category = new Category()
                 {
                     CategoryTitle = model.CategoryTitle,
                 };
 
-                await _categoryService.AddCategoryAsync(category);
+                var res = await _categoryService.AddCategoryAsync(category);
 
-                if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
+                if (res == ResultTypes.Successful)
                 {
-                    await _categoryService.AddChildCategoryToCategoryAsync(category.CategoryId, model.SelectedChildCategories as List<int>);
+                    if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
+                    {
+                        await _categoryService.AddChildCategoryToCategoryAsync(category.CategoryId, model.SelectedChildCategories as List<int>);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "متاسفاه هنگام افزودن گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
                 }
             }
             else
             {
-           
-
-  
-
 
                 var category = await _categoryService.GetCategoryByIdAsync(model.CategoryId);
 
-                if (category == null) return NotFound();
+                if (category == null)
+                {
+                    ModelState.AddModelError("", "متاسفاه هنگام ویرایش گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                }
+
 
                 // update category
                 category.CategoryTitle = model.CategoryTitle;
 
-                await _categoryService.UpdateCategoryAsync(category);
+                var res = await _categoryService.EditCategoryAsync(category);
+
+                if (res != ResultTypes.Successful)
+                {
+                    ModelState.AddModelError("", "متاسفاه هنگام ویرایش گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                }
+
 
                 // remove all child categories
                 await _categoryService.RemoveChildCategoryToCategoryByCategoryIdAsync(category.CategoryId);
@@ -109,7 +121,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
             }
 
-            return Json(new { isValid = true });
+            return Json(new { isValid = true, returnUrl = "current" });
         }
 
         [HttpPost]

@@ -1,7 +1,7 @@
-﻿@model IAsyncEnumerable<UserInformationViewModel>
+﻿@model IEnumerable<UserInformationViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "مدیریت کاربران";
     int rowCount = 1;
 }
 @section RightMenu
@@ -10,10 +10,11 @@
 }
 
 
-<a asp-action="AddOrEditUser" class="btn btn-success text-white"><i class="fal fa-user-plus"></i> کاربر جدید</a>
+<a onclick="ShowModal('@Url.Action("AddOrEditUser", "UserManager",null, Context.Request.Scheme)', 'افزودن کاربر')"
+   class="btn btn-success text-white"><i class="fal fa-user-plus"></i> کاربر جدید</a>
 
 <div class="table-responsive">
-    <table class="table table-bordered table-striped">
+    <table class="table responsive table-bordered table-striped table-hover">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -23,17 +24,18 @@
             </tr>
         </thead>
         <tbody>
-            @await foreach (var item in Model)
+            @foreach (var item in Model)
             {
                 <tr>
-                    <td scope="row">@rowCount</td>
+                    <td>@rowCount</td>
                     <td>@item.FullName</td>
                     <td>@item.PhoneNumber</td>
                     <td>
-                        <a asp-action="AddOrEditUser" asp-route-userId="@item.UserId" class="btn btn-warning text-white"><i class="fal fa-user-edit"></i> ویرایش</a>
+                        <a onclick="ShowModal('@Url.Action("AddOrEditUser", "UserManager",new {userId = item.UserId}, Context.Request.Scheme)', 'ویرایش کاربر')"
+                           class="btn btn-warning text-white"><i class="fal fa-user-edit"></i> ویرایش</a>
                         <a asp-action="UserDetail" asp-route-userId="@item.UserId" class="btn btn-info text-white"><i class="fal fa-file-user"></i> جزئیات</a>
                         <form asp-action="RemoveUser" asp-route-userId="@item.UserId" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-danger text-white"><i class="fal fa-user-minus"></i> حذف</button>
+                            <button type="submit" class="btn btn-danger text-white me-2"><i class="fal fa-user-minus"></i> حذف</button>
                         </form>
 
                     </td>
@@ -45,3 +47,13 @@
         </tbody>
     </table>
 </div>
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

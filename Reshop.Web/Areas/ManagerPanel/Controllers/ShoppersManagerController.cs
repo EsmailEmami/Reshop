@@ -689,7 +689,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         public async Task<IActionResult> AddOrEditStoreTitle(StoreTitle model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditStoreTitle", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
 
             if (model.StoreTitleId == 0)
             {
@@ -706,7 +706,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
 
                 ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام افزودن عنوان به مشکل برخوردیم.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditStoreTitle", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
             }
             else
             {
@@ -715,11 +715,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (storeTitle == null)
                 {
                     ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش عنوان به مشکل برخوردیم.");
-                    return Json(new
-                    {
-                        isValid = false,
-                        html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditStoreTitle", model)
-                    });
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
                 }
 
 
@@ -733,11 +729,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
 
                 ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش عنوان به مشکل برخوردیم.");
-                return Json(new
-                {
-                    isValid = false,
-                    html = RenderViewToString.RenderRazorViewToString(this, "AddOrEditStoreTitle", model)
-                });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
             }
         }
 

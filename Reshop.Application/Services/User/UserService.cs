@@ -70,7 +70,7 @@ namespace Reshop.Application.Services.User
             return _userRepository.GetUsers();
         }
 
-        public IAsyncEnumerable<UserInformationViewModel> GetUsersInformation()
+        public IEnumerable<UserInformationViewModel> GetUsersInformation()
             =>
                 _userRepository.GetUsersInformation();
 

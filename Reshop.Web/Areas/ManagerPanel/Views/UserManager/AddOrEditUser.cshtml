@@ -1,20 +1,19 @@
 ﻿@model AddOrEditUserForAdminViewModel
 
 @{
-    ViewData["Title"] = "AddOrEditUser";
+    Layout = null;
 }
 
-
-<form asp-action="AddOrEditUser" method="post">
+<form asp-action="AddOrEditUser" method="post" onsubmit="return SubmitFormData(this)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
 
-        <div class="col-sm-12 col-md-9">
+        <div class="col-sm-12 col-lg-9">
             <div class="row">
                 <input type="hidden" asp-for="UserId" />
 
 
-                <div class="col-sm-12 col-md-6">
+                <div class="col-sm-12 col-lg-6">
                     <div class="form-field">
                         <input asp-for="FullName">
                         <label><i class="far fa-user"></i> نام و نام خانوادگی</label>
@@ -24,7 +23,7 @@
 
 
 
-                <div class="col-sm-12 col-md-6">
+                <div class="col-sm-12 col-lg-6">
                     <div class="form-field">
                         <input asp-for="Email">
                         <label><i class="far fa-envelope"></i> ایمیل</label>
@@ -33,7 +32,7 @@
                 </div>
 
 
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-lg-4">
                     <div class="form-field">
                         <input asp-for="PhoneNumber">
                         <label><i class="far fa-phone"></i> شماره تلفن </label>
@@ -41,7 +40,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-lg-4">
                     <div class="form-field">
                         <input asp-for="NationalCode">
                         <label><i class="fal fa-address-card"></i> کد ملی</label>
@@ -49,7 +48,7 @@
                     </div>
                 </div>
 
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-lg-4">
                     <div class="form-field">
                         <input asp-for="PostalCode">
                         <label><i class="far fa-tag"></i> کد پستی </label>
@@ -57,14 +56,14 @@
                     </div>
                 </div>
 
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-lg-4">
                     <div class="form-field">
                         <input asp-for="Score">
                         <label><i class="far fa-tag"></i> امتیاز </label>
                         <span asp-validation-for="Score" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-sm-12 col-md-8">
+                <div class="col-sm-12 col-lg-8">
                     <div class="form-field">
                         <input asp-for="AccountBalance">
                         <label><i class="far fa-tag"></i> موجودی حساب </label>
@@ -72,18 +71,27 @@
                     </div>
                 </div>
 
-                <div class="col-sm-12 col-md-4">
-                    <div class="form-check">
-                        <input type="checkbox" asp-for="IsBlocked">
-                        <label>ایا کاربر مسدود است.</label>
+                <div class="col-sm-12 col-lg-4">
+
+                    <div class="form-check m-0">
+                        <label>
+                            ایا کاربر مسدود است.
+                            <input type="checkbox" asp-for="IsBlocked" checked />
+                            <span></span>
+                        </label>
                     </div>
                 </div>
-                
-                <div class="col-sm-12 col-md-4">
-                    <div class="form-check">
-                        <input type="checkbox" asp-for="IsPhoneNumberActive">
-                        <label>ایا شماره تلفن فعال است.</label>
+
+                <div class="col-sm-12 col-lg-4">
+
+                    <div class="form-check m-0">
+                        <label>
+                            شماره تلفن فعال است.
+                            <input type="checkbox" asp-for="IsPhoneNumberActive" checked />
+                            <span></span>
+                        </label>
                     </div>
+
                 </div>
 
                 <div class="col-sm-12">
@@ -95,14 +103,24 @@
 
 
         </div>
-        <div class="col-sm-12 col-md-3">
+        <div class="col-sm-12 col-lg-3">
+            <h3 class="text-center">
+                مقام ها
+            </h3>
+
+
+
             @if (Model.Roles.Any())
             {
                 @foreach (var item in Model.Roles)
                 {
-                    <div class="form-check">
-                        <input type="checkbox" name="SelectedRoles" value="@item.RoleId" @((!string.IsNullOrEmpty(Model.UserId) && Model.SelectedRoles.Any(c => c == item.RoleId) ? "checked" : "")) />
-                        <label>@item.RoleTitle</label>
+                    <div class="form-check m-0">
+                        <label>
+                            @item.RoleTitle
+                            <input type="checkbox" name="SelectedRoles"
+                                   value="@item.RoleId" @((!string.IsNullOrEmpty(Model.UserId) && Model.SelectedRoles.Any(c => c == item.RoleId) ? "checked" : ""))/>
+                            <span></span>
+                        </label>
                     </div>
                 }
             }
@@ -117,8 +135,6 @@
     </div>
 </form>
 
-
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<script>
+    inputJs();
+</script>

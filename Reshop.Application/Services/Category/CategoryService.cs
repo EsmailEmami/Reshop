@@ -1,9 +1,11 @@
-﻿using Reshop.Application.Interfaces.Category;
+﻿using System;
+using Reshop.Application.Interfaces.Category;
 using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Interfaces.Category;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Application.Enums;
 
 namespace Reshop.Application.Services.Category
 {
@@ -44,10 +46,19 @@ namespace Reshop.Application.Services.Category
             return await _categoryRepository.GetChildCategoryByIdAsync(childCategoryId);
         }
 
-        public async Task UpdateChildCategoryAsync(ChildCategory childCategory)
+        public async Task<ResultTypes> EditChildCategoryAsync(ChildCategory childCategory)
         {
-            _categoryRepository.EditChildCategory(childCategory);
-            await _categoryRepository.SaveChangesAsync();
+            try
+            {
+                _categoryRepository.EditChildCategory(childCategory);
+                await _categoryRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
 
         public async Task<bool> IsCategoryExistAsync(int categoryId)
@@ -161,16 +172,34 @@ namespace Reshop.Application.Services.Category
             };
         }
 
-        public async Task AddCategoryAsync(Domain.Entities.Category.Category category)
+        public async Task<ResultTypes> AddCategoryAsync(Domain.Entities.Category.Category category)
         {
-            await _categoryRepository.AddCategoryAsync(category);
-            await _categoryRepository.SaveChangesAsync();
+            try
+            {
+                await _categoryRepository.AddCategoryAsync(category);
+                await _categoryRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
 
-        public async Task AddChildCategoryAsync(ChildCategory childCategory)
+        public async Task<ResultTypes> AddChildCategoryAsync(ChildCategory childCategory)
         {
-            await _categoryRepository.AddChildCategoryAsync(childCategory);
-            await _categoryRepository.SaveChangesAsync();
+            try
+            {
+                await _categoryRepository.AddChildCategoryAsync(childCategory);
+                await _categoryRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
 
         public async Task AddChildCategoryToCategoryAsync(int categoryId, List<int> childCategoriesId)
@@ -220,10 +249,19 @@ namespace Reshop.Application.Services.Category
             };
         }
 
-        public async Task UpdateCategoryAsync(Domain.Entities.Category.Category category)
+        public async Task<ResultTypes> EditCategoryAsync(Domain.Entities.Category.Category category)
         {
-            _categoryRepository.EditCategory(category);
-            await _categoryRepository.SaveChangesAsync();
+            try
+            {
+                _categoryRepository.EditCategory(category);
+                await _categoryRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
 
@@ -22,14 +23,14 @@ namespace Reshop.Application.Interfaces.Category
         Task<AddOrEditChildCategoryViewModel> GetChildCategoryDataAsync(int childCategoryId);
 
         // insert
-        Task AddCategoryAsync(Domain.Entities.Category.Category category);
-        Task AddChildCategoryAsync(ChildCategory childCategory);
+        Task<ResultTypes> AddCategoryAsync(Domain.Entities.Category.Category category);
+        Task<ResultTypes> AddChildCategoryAsync(ChildCategory childCategory);
         Task AddChildCategoryToCategoryAsync(int categoryId, List<int> childCategoriesId);
         Task AddCategoryToChildCategoryAsync(int childCategoryId, List<int> categoriesId);
 
         // update 
-        Task UpdateCategoryAsync(Domain.Entities.Category.Category category);
-        Task UpdateChildCategoryAsync(ChildCategory childCategory);
+        Task<ResultTypes> EditCategoryAsync(Domain.Entities.Category.Category category);
+        Task<ResultTypes> EditChildCategoryAsync(ChildCategory childCategory);
 
         // validations 
         Task<bool> IsCategoryExistAsync(int categoryId);

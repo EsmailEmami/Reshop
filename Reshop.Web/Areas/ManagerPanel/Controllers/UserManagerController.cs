@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
 using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Application.Enums;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -34,8 +33,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return View(_userService.GetUsersInformation());
         }
 
-        #region add or edit
-
         [HttpGet]
         public async Task<IActionResult> AddOrEditUser(string userId = "")
         {
@@ -43,23 +40,26 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 var model = new AddOrEditUserForAdminViewModel()
                 {
-                    Roles = _roleService.GetRoles() as IEnumerable<Role>
+                    Roles = _roleService.GetRoles()
                 };
                 return View(model);
             }
             else
             {
-                if (!await _userService.IsUserExistAsync(userId)) return NotFound();
+                if (!await _userService.IsUserExistAsync(userId))
+                    return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
                 return View(await _userService.GetUserDataForAdminAsync(userId));
             }
         }
 
         [HttpPost]
-        
         public async Task<IActionResult> AddOrEditUser(AddOrEditUserForAdminViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            model.Roles = _roleService.GetRoles();
+
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
 
             if (string.IsNullOrEmpty(model.UserId))
             {
@@ -101,14 +101,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 else
                 {
                     ModelState.AddModelError("", "عنگام ثبت کاربر مشکلی غیر منتظره به وجود آمده است.");
-                    return View(model);
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
                 }
             }
             else
             {
                 var user = await _userService.GetUserByIdAsync(model.UserId);
 
-                if (user == null) return NotFound();
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "هنگام ویراش کاربر مشکلی غیر منتظره پیش آمده است! لطفا دوباره تلاش کنید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                }
 
 
                 user.FullName = model.FullName;
@@ -129,10 +133,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     // remove user roles
                     var removeUserRoles = await _roleService.RemoveAllUserRolesByUserIdAsync(user.UserId);
 
-                    if (removeUserRoles is not ResultTypes.Successful)
+                    if (removeUserRoles != ResultTypes.Successful)
                     {
-                        ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش مقام ها به مشکلی غیر منتطره برخودیم. لطفا دوباره تلاش کنید.");
-                        return View(model);
+                        ModelState.AddModelError("", "هنگام ویراش مقام کاربر مشکلی غیر منتظره پیش آمده است! لطفا دوباره تلاش کنید.");
+                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
                     }
 
                     if (model.SelectedRoles.Any())
@@ -150,20 +154,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "عنگام ثبت کاربر مشکلی غیر منتظره به وجود آمده است.");
-                    return View(model);
+                    ModelState.AddModelError("", "هنگام ویراش کاربر مشکلی غیر منتظره پیش آمده است! لطفا دوباره تلاش کنید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
                 }
             }
 
-            return RedirectToAction("Index");
+            return Json(new { isValid = true, returnUrl = "current" });
         }
-
-        #endregion
 
         #region remove
 
         [HttpPost]
-        
+
         public async Task<IActionResult> RemoveUser(string userId)
         {
             if (!await _userService.IsUserExistAsync(userId)) return NotFound();

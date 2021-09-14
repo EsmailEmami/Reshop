@@ -3,11 +3,9 @@
 @{
     Layout = null;
 }
-
-
 <form asp-action="AddOrEditCategory" method="post" onsubmit="return SubmitFormData(this)">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-sm-12 col-lg-8">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="CategoryId" />
 
@@ -24,25 +22,35 @@
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-sm-12 col-lg-4">
+            <h3 class="text-center">
+                زیر گروه ها
+            </h3>
+
             @if (Model.ChildCategories.Any())
             {
                 @foreach (var item in Model.ChildCategories)
                 {
-                    <div class="form-check">
-                        <input type="checkbox" name="SelectedChildCategories" value="@item.ChildCategoryId" @((Model.CategoryId != 0 && Model.SelectedChildCategories.Any(c => c == item.ChildCategoryId) ? "checked" : "")) />
-                        <label>@item.ChildCategoryTitle</label>
+                    <div class="form-check m-0">
+                        <label>
+                            @item.ChildCategoryTitle
+                            <input type="checkbox" name="SelectedChildCategories"
+                                   value="@item.ChildCategoryId" @((Model.CategoryId != 0 && Model.SelectedChildCategories.Any(c => c == item.ChildCategoryId) ? "checked" : "")) />
+                            <span></span>
+                        </label>
                     </div>
                 }
             }
             else
             {
                 <div class="alert alert-warning">
-                    وب سایت شما هیچ زیر گروهی برای نمایش ندارد.
+                    زیر گروهی یافت نشد.
                 </div>
             }
         </div>
     </div>
 </form>
 
-<script src="~/js/Input.js"></script>
+<script>
+    inputJs();
+</script>
