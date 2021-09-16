@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Reshop.Infrastructure.Repository.User
 {
-    public class StateRepository : IStateRepository
+    public class OriginRepository : IOriginRepository
     {
         #region constructor
 
         private readonly ReshopDbContext _context;
 
-        public StateRepository(ReshopDbContext context)
+        public OriginRepository(ReshopDbContext context)
         {
             _context = context;
         }

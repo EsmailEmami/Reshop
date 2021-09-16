@@ -8,13 +8,13 @@ using Reshop.Domain.DTOs.User;
 
 namespace Reshop.Application.Services.User
 {
-    public class StateService : IStateService
+    public class OriginService : IOriginService
     {
         #region constructor
 
-        private readonly IStateRepository _stateRepository;
+        private readonly IOriginRepository _stateRepository;
 
-        public StateService(IStateRepository stateRepository)
+        public OriginService(IOriginRepository stateRepository)
         {
             _stateRepository = stateRepository;
         }

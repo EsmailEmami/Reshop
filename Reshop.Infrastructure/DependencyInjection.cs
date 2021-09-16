@@ -49,7 +49,7 @@ namespace Reshop.Infrastructure
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IShopperService, ShopperService>();
             services.AddScoped<IRoleService, RoleService>();
-            services.AddScoped<IStateService, StateService>();
+            services.AddScoped<IOriginService, OriginService>();
 
             //repository
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -58,7 +58,7 @@ namespace Reshop.Infrastructure
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<IShopperRepository, ShopperRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<IStateRepository, StateRepository>();
+            services.AddScoped<IOriginRepository, OriginRepository>();
 
 
             services.AddSingleton<IMessageSender, MessageSender>();

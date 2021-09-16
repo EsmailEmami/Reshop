@@ -13,10 +13,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
     {
         #region constructor
 
-        private readonly IStateService _stateService;
+        private readonly IOriginService _stateService;
         private readonly IProductService _productService;
 
-        public OriginManagerController(IStateService stateService, IProductService productService)
+        public OriginManagerController(IOriginService stateService, IProductService productService)
         {
             _stateService = stateService;
             _productService = productService;

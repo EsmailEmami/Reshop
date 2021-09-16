@@ -12,9 +12,9 @@ namespace Reshop.Web.API.Controllers
     [ApiController]
     public class StateController : ControllerBase
     {
-        private readonly IStateService _stateService;
+        private readonly IOriginService _stateService;
 
-        public StateController(IStateService stateService)
+        public StateController(IOriginService stateService)
         {
             _stateService = stateService;
         }

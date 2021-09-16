@@ -29,11 +29,11 @@ namespace Reshop.Web.Controllers.User
         private readonly IUserService _userService;
         private readonly ICartService _cartService;
         private readonly IProductService _productService;
-        private readonly IStateService _stateService;
+        private readonly IOriginService _stateService;
         private readonly IShopperService _shopperService;
         private readonly IDataProtector _dataProtector;
 
-        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService, IStateService stateService, IShopperService shopperService, IDataProtectionProvider dataProtectionProvider)
+        public AccountManagerController(IUserService userService, ICartService cartService, IProductService productService, IOriginService stateService, IShopperService shopperService, IDataProtectionProvider dataProtectionProvider)
         {
             _userService = userService;
             _cartService = cartService;

@@ -7,7 +7,7 @@ using Reshop.Domain.Entities.User;
 
 namespace Reshop.Domain.Interfaces.User
 {
-    public interface IStateRepository
+    public interface IOriginRepository
     {
         #region state
 

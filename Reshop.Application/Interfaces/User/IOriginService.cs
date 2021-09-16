@@ -6,7 +6,7 @@ using Reshop.Domain.Entities.User;
 
 namespace Reshop.Application.Interfaces.User
 {
-    public interface IStateService
+    public interface IOriginService
     {
         #region state
 

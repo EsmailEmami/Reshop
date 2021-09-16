@@ -35,9 +35,9 @@ namespace Reshop.Web.Controllers.User
         private readonly IOptions<GoogleReCaptchaKey> _captchaKey;
         private readonly IShopperService _shopperService;
         private readonly IRoleService _roleService;
-        private readonly IStateService _stateService;
+        private readonly IOriginService _stateService;
 
-        public AccountController(IUserService userService, IMessageSender messageSender, IOptions<GoogleReCaptchaKey> captchaKey, IShopperService shopperService, IRoleService roleService, IStateService stateService)
+        public AccountController(IUserService userService, IMessageSender messageSender, IOptions<GoogleReCaptchaKey> captchaKey, IShopperService shopperService, IRoleService roleService, IOriginService stateService)
         {
             _userService = userService;
             _messageSender = messageSender;
