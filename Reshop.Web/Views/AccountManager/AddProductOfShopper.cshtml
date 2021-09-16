@@ -39,7 +39,7 @@
                 {
                     @foreach (var item in colors)
                     {
-                        @:<option value="@item.ColorId" @((Model.ColorId != 0 && item.ColorId == Model.ColorId) ? "selected" : "" )>@item.ColorName</option>
+                        @:<option value="@item.ColorId" @(Model.ColorId != 0 && item.ColorId == Model.ColorId ? "selected" : "" )>@item.ColorName</option>
                     }
                 }
             </select>

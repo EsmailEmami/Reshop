@@ -42,6 +42,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     Roles = _roleService.GetRoles()
                 };
+
                 return View(model);
             }
             else

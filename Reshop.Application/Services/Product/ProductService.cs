@@ -1018,6 +1018,12 @@ namespace Reshop.Application.Services.Product
         public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
             _productRepository.GetColorsOfProductDataChart(productId);
 
+        public async Task<Brand> GetBrandByIdAsync(int brandId) =>
+            await _productRepository.GetBrandByIdAsync(brandId);
+
+        public IEnumerable<Tuple<int, string>> GetBrandsForShow() =>
+            _productRepository.GetBrandsForShow();
+
         public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
             _productRepository.GetBrandOfficialProducts(brandId);
 

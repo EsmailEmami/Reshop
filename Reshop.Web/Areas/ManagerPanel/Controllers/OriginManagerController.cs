@@ -1,0 +1,213 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
+using Reshop.Application.Interfaces.Product;
+using Reshop.Application.Interfaces.User;
+using Reshop.Domain.Entities.User;
+using System.Threading.Tasks;
+
+namespace Reshop.Web.Areas.ManagerPanel.Controllers
+{
+    [Area("ManagerPanel")]
+    public class OriginManagerController : Controller
+    {
+        #region constructor
+
+        private readonly IStateService _stateService;
+        private readonly IProductService _productService;
+
+        public OriginManagerController(IStateService stateService, IProductService productService)
+        {
+            _stateService = stateService;
+            _productService = productService;
+        }
+
+        #endregion
+
+
+        [HttpGet]
+        public IActionResult ManageStates()
+        {
+            return View(_stateService.GetStates());
+        }
+
+        [HttpGet]
+        public IActionResult ManageCities()
+        {
+            return View(_stateService.GetCities());
+        }
+
+        #region add or edit state
+
+        [HttpGet]
+        public async Task<IActionResult> AddOrEditState(int stateId = 0)
+        {
+            if (stateId == 0)
+            {
+                return View(new State());
+            }
+            else
+            {
+                var state = await _stateService.GetStateByIdAsync(stateId);
+                if (state == null)
+                    return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+                return View(state);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddOrEditState(State model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+
+            if (model.StateId == 0)
+            {
+                var state = new State()
+                {
+                    StateName = model.StateName,
+                };
+
+                var result = await _stateService.AddStateAsync(state);
+
+                if (result == ResultTypes.Successful)
+                {
+                    return Json(new { isValid = true, returnUrl = "current" });
+                }
+
+                ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ثبت استان جدید با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+            else
+            {
+                var state = await _stateService.GetStateByIdAsync(model.StateId);
+                if (state == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش استان با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                }
+
+                state.StateName = model.StateName;
+
+                var result = await _stateService.EditStateAsync(state);
+                if (result == ResultTypes.Successful)
+                {
+                    return Json(new { isValid = true, returnUrl = "current" });
+                }
+
+                ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش استان با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+        }
+
+        #endregion
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteState(int stateId)
+        {
+            try
+            {
+                var result = await _stateService.RemoveStateAsync(stateId);
+                if (result == ResultTypes.Successful)
+                    return RedirectToAction(nameof(ManageStates));
+
+
+                return BadRequest();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        #region add or edit city
+
+        [HttpGet]
+        public async Task<IActionResult> AddOrEditCity(int cityId = 0)
+        {
+            ViewBag.States = _stateService.GetStates();
+
+            if (cityId == 0)
+            {
+                return View(new City());
+            }
+            else
+            {
+                var city = await _stateService.GetCityByIdAsync(cityId);
+                if (city == null)
+                    return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+                return View(city);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddOrEditCity(City model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+
+            if (model.CityId == 0)
+            {
+                var city = new City()
+                {
+                    CityName = model.CityName,
+                    StateId = model.StateId
+                };
+
+
+                var result = await _stateService.AddCityAsync(city);
+
+                if (result == ResultTypes.Successful)
+                    return Json(new { isValid = true, returnUrl = "current" });
+
+                ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ثبت شهر جدید با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
+                return View(model);
+            }
+            else
+            {
+                var city = await _stateService.GetCityByIdAsync(model.CityId);
+                if (city == null)
+                {
+                    ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش شهر با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                }
+
+                city.CityName = model.CityName;
+                city.StateId = model.StateId;
+
+                var result = await _stateService.EditCityAsync(city);
+
+                if (result == ResultTypes.Successful)
+                {
+                    return Json(new { isValid = true, returnUrl = "current" });
+                }
+
+                ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش استان با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+        }
+
+
+        #endregion
+
+        public async Task<IActionResult> DeleteCity(int cityId)
+        {
+            try
+            {
+                var result = await _stateService.RemoveCityAsync(cityId);
+                if (result == ResultTypes.Successful)
+                    return RedirectToAction(nameof(ManageCities));
+
+
+                return BadRequest();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+    }
+}

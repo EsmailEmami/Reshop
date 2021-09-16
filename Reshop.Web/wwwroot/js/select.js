@@ -144,10 +144,22 @@ function MultiSelectDropdown() {
                         div.appendChild(c);
                     });
                 }
-                if (0 == el.selectedOptions.length) div.appendChild(newEl('span', {
+
+                var placeholder = "انتخاب کنید";
+
+                if (el.hasAttribute('placeholder')) {
+                    placeholder = el.attributes['placeholder'].value;
+                }
+
+
+                if (0 === el.selectedOptions.length) {
+                    div.appendChild(newEl('span', {
                     class: 'placeholder',
-                    text: "عناوین فروشنده"
-                }));
+                    text: placeholder
+                    }));
+                }
+
+
             };
             div.refresh();
         }

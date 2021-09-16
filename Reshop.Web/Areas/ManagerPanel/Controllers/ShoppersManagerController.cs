@@ -12,6 +12,7 @@ using System;
 using System.Globalization;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -698,6 +699,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     StoreTitleName = model.StoreTitleName
                 };
 
+
                 var result = await _shopperService.AddStoreTitleAsync(storeTitle);
 
                 if (result == ResultTypes.Successful)
@@ -717,7 +719,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش عنوان به مشکل برخوردیم.");
                     return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
                 }
-
 
                 storeTitle.StoreTitleName = model.StoreTitleName;
 

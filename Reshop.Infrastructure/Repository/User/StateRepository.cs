@@ -21,7 +21,8 @@ namespace Reshop.Infrastructure.Repository.User
         #endregion
 
         #region state
-        public IAsyncEnumerable<State> GetStates() => _context.States;
+        public IEnumerable<State> GetStates() =>
+            _context.States;
 
         public async Task AddStateAsync(State state) => await _context.States.AddAsync(state);
 
@@ -41,7 +42,7 @@ namespace Reshop.Infrastructure.Repository.User
 
         #region city
 
-        public IAsyncEnumerable<City> GetCities() => _context.Cities;
+        public IEnumerable<City> GetCities() => _context.Cities;
 
         public async Task AddCityAsync(City city) => await _context.Cities.AddAsync(city);
 
@@ -59,39 +60,12 @@ namespace Reshop.Infrastructure.Repository.User
 
         #endregion
 
-        #region stateCity
-
-        public async Task AddStateCityAsync(StateCity stateCity)
+     
+        public IEnumerable<City> GetCitiesOfState(int stateId)
             =>
-                await _context.StateCities.AddAsync(stateCity);
+                _context.Cities.Where(c=> c.StateId == stateId);
 
-        public void RemoveStateCity(StateCity stateCity)
-            =>
-                _context.StateCities.Remove(stateCity);
-
-        public void UpdateStateCity(StateCity stateCity)
-            =>
-                _context.StateCities.Update(stateCity);
-
-        public IAsyncEnumerable<City> GetCitiesOfState(int stateId)
-            =>
-                _context.StateCities.Where(c => c.StateId == stateId)
-                    .Select(c => c.City) as IAsyncEnumerable<City>;
-
-        public IAsyncEnumerable<StateCity> GetStateCitiesByStateId(int stateId)
-            =>
-                _context.StateCities.Where(c => c.StateId == stateId) as IAsyncEnumerable<StateCity>;
-
-        public IAsyncEnumerable<StateCity> GetStateCitiesByCityId(int cityId)
-            =>
-                _context.StateCities.Where(c => c.CityId == cityId) as IAsyncEnumerable<StateCity>;
-
-        public IAsyncEnumerable<int> GetCitiesIdOfState(int stateId)
-            =>
-                _context.StateCities.Where(c => c.StateId == stateId)
-                    .Select(c => c.CityId) as IAsyncEnumerable<int>;
-
-        #endregion
+    
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }

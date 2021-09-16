@@ -4,6 +4,11 @@
     ViewData["Title"] = "مدیریت کاربران";
     int rowCount = 1;
 }
+
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+
 @section RightMenu
 {
     @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.UserPage); }
@@ -56,4 +61,6 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script src="~/js/select.js"></script>
 }

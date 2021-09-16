@@ -1,0 +1,74 @@
+﻿@model IEnumerable<State>
+
+@{
+    ViewData["Title"] = "مدیریت استان";
+}
+
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.OriginPage); }
+}
+
+<div class="display-6 text-center">
+    مدیریت استان ها
+</div>
+
+
+<a onclick="ShowModal('@Url.Action("AddOrEditState", "OriginManager" ,null, Context.Request.Scheme)', 'افزودن استان')"
+   class="btn btn-success text-white"><i class="fal fa-user-plus"></i> استان جدید</a>
+
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table responsive table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        نام استان
+                    </th>
+                    <th></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.StateName
+                        </td>
+                        <td>
+                            <a onclick="ShowModal('@Url.Action("AddOrEditState", "OriginManager" ,new {stateId = item.StateId}, Context.Request.Scheme)', 'افزودن استان')"
+                               class="btn btn-warning text-white">
+                                ویرایش
+                            </a>
+
+                            <form asp-action="DeleteState" asp-route-stateId="@item.StateId" method="post"
+                                  class="d-inline">
+                                <button type="submit" class="btn btn-danger text-white me-2">حذف</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        استانی یافت نشد.
+    </div>
+}
+
+
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

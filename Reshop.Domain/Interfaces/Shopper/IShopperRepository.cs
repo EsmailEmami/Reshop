@@ -52,7 +52,6 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         #endregion
 
-
         #region store title
 
         IEnumerable<StoreTitle> GetStoreTitles();

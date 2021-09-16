@@ -194,6 +194,8 @@ namespace Reshop.Domain.Interfaces.Product
 
         #region brand
 
+        Task<Brand> GetBrandByIdAsync(int brandId);
+        IEnumerable<Tuple<int, string>> GetBrandsForShow();
         IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId);
         IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId);
 

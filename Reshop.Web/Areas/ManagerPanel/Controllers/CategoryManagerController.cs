@@ -122,7 +122,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
 
             return Json(new { isValid = true, returnUrl = "current" });
-        }
+        } 
 
         [HttpPost]
         public async Task<IActionResult> RemoveCategory(int categoryId)

@@ -10,11 +10,10 @@ namespace Reshop.Application.Interfaces.User
     {
         #region state
 
-        IAsyncEnumerable<State> GetStates();
+        IEnumerable<State> GetStates();
         Task<ResultTypes> AddStateAsync(State state);
         Task<ResultTypes> RemoveStateAsync(int stateId);
         Task<ResultTypes> EditStateAsync(State state);
-        Task<AddOrEditStateViewModel> GetStateDataForEditAsync(int stateId);
         Task<State> GetStateByIdAsync(int stateId);
         string GetStateNameById(int stateId);
 
@@ -22,20 +21,13 @@ namespace Reshop.Application.Interfaces.User
 
         #region city
 
-        IAsyncEnumerable<City> GetCities();
+        IEnumerable<City> GetCities();
         Task<ResultTypes> AddCityAsync(City city);
         Task<ResultTypes> RemoveCityAsync(int cityId);
         Task<ResultTypes> EditCityAsync(City city);
         Task<City> GetCityByIdAsync(int cityId);
-        IAsyncEnumerable<City> GetCitiesOfState(int stateId);
+        IEnumerable<City> GetCitiesOfState(int stateId);
         string GetCityNameById(int cityId);
-
-        #endregion
-
-        #region state city
-
-        Task RemoveCitiesOfStateAsync(int stateId);
-        Task AddStateCityAsync(StateCity stateCity);
 
         #endregion
     }

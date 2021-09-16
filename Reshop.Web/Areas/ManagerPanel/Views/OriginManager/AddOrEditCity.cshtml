@@ -1,0 +1,53 @@
+﻿@model City
+
+@{
+    Layout = null;
+}
+
+<form asp-action="AddOrEditCity" method="post" onsubmit="return SubmitFormData(this)">
+    <div class="row">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="CityId" />
+        <div class="col-12">
+            <div class="form-field">
+                <input asp-for="CityName">
+                <label><i class="far fa-list-alt"></i> نام شهر</label>
+                <span asp-validation-for="CityName" class="text-danger"></span>
+            </div>
+        </div>
+
+        @{
+            var states = ViewBag.States as IEnumerable<State>;
+        }
+
+        <div class="col-12">
+            <select asp-for="StateId">
+                <option>استان</option>
+
+                @if (states != null)
+                {
+                    foreach (var state in states)
+                    {
+                        @:<option value="@state.StateId" @(Model.StateId == state.StateId ? "selected" : "")>@state.StateName</option>
+                    }
+                }
+
+            </select>
+        </div>
+
+
+        <div class="form-field">
+            <button type="submit" class="btn btn-success">
+                ثبت
+            </button>
+        </div>
+
+    </div>
+</form>
+
+
+<script>
+    inputJs();
+    callSelect();
+</script>

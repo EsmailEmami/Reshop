@@ -7,11 +7,7 @@
 <form asp-action="AddOrEditUser" method="post" onsubmit="return SubmitFormData(this)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
-
-        <div class="col-sm-12 col-lg-9">
-            <div class="row">
-                <input type="hidden" asp-for="UserId" />
-
+        <input type="hidden" asp-for="UserId" />
 
                 <div class="col-sm-12 col-lg-6">
                     <div class="form-field">
@@ -70,10 +66,28 @@
                         <span asp-validation-for="Score" class="text-danger"></span>
                     </div>
                 </div>
+                
+                <div class="col-sm-12">
+     
+                    @if (Model.Roles.Any())
+                    {
+                        <select multiple asp-for="SelectedRoles" placeholder="انتخاب مقام ها">
+                            @foreach (var item in Model.Roles)
+                            {
+                                @: <option value="@item.RoleId" @(!string.IsNullOrEmpty(Model.UserId) && Model.SelectedRoles.Any(c => c == item.RoleId) ? "selected" : "")>@item.RoleTitle</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            مقامی برای نمایش یافت نشد.
+                        </div>
+                    }
+                </div>
 
-                <div class="col-sm-12 col-lg-4">
-
-                    <div class="form-check m-0">
+                <div class="col-sm-12 col-lg-6">
+                    <div class="form-check">
                         <label>
                             ایا کاربر مسدود است.
                             <input type="checkbox" asp-for="IsBlocked" checked />
@@ -82,9 +96,9 @@
                     </div>
                 </div>
 
-                <div class="col-sm-12 col-lg-4">
+                <div class="col-sm-12 col-lg-6">
 
-                    <div class="form-check m-0">
+                    <div class="form-check">
                         <label>
                             شماره تلفن فعال است.
                             <input type="checkbox" asp-for="IsPhoneNumberActive" checked />
@@ -96,45 +110,14 @@
 
                 <div class="col-sm-12">
                     <div class="form-field">
-                        <button type="submit" class="btn  btn-success mt-2">ثبت نام</button>
+                        <button type="submit" class="btn  btn-success mt-2">ثبت</button>
                     </div>
                 </div>
-            </div>
-
-
-        </div>
-        <div class="col-sm-12 col-lg-3">
-            <h3 class="text-center">
-                مقام ها
-            </h3>
-
-
-
-            @if (Model.Roles.Any())
-            {
-                @foreach (var item in Model.Roles)
-                {
-                    <div class="form-check m-0">
-                        <label>
-                            @item.RoleTitle
-                            <input type="checkbox" name="SelectedRoles"
-                                   value="@item.RoleId" @((!string.IsNullOrEmpty(Model.UserId) && Model.SelectedRoles.Any(c => c == item.RoleId) ? "checked" : ""))/>
-                            <span></span>
-                        </label>
-                    </div>
-                }
-            }
-            else
-            {
-                <div class="alert alert-warning">
-                    مقامی برای نمایش یافت نشد.
-                </div>
-            }
-        </div>
-
+  
     </div>
 </form>
 
 <script>
     inputJs();
+    callSelect();
 </script>

@@ -889,6 +889,13 @@ namespace Reshop.Infrastructure.Repository.Product
                 .SelectMany(c => c.Brands)
                 .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
 
+        public async Task<Brand> GetBrandByIdAsync(int brandId) =>
+            await _context.Brands.FindAsync(brandId);
+
+        public IEnumerable<Tuple<int, string>> GetBrandsForShow() =>
+            _context.Brands
+                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
+
         public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
             _context.Brands.Where(c => c.BrandId == brandId)
                 .SelectMany(c => c.OfficialBrandProducts)

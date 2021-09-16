@@ -11,7 +11,7 @@ namespace Reshop.Domain.Interfaces.User
     {
         #region state
 
-        IAsyncEnumerable<State> GetStates();
+        IEnumerable<State> GetStates();
         Task AddStateAsync(State state);
         void RemoveState(State state);
         void UpdateState(State state);
@@ -22,7 +22,7 @@ namespace Reshop.Domain.Interfaces.User
 
         #region city
 
-        IAsyncEnumerable<City> GetCities();
+        IEnumerable<City> GetCities();
         Task AddCityAsync(City city);
         void RemoveCity(City city);
         void UpdateCity(City city);
@@ -31,17 +31,7 @@ namespace Reshop.Domain.Interfaces.User
 
         #endregion
 
-        #region StateCity
-
-        Task AddStateCityAsync(StateCity stateCity);
-        void RemoveStateCity(StateCity stateCity);
-        void UpdateStateCity(StateCity stateCity);
-        IAsyncEnumerable<City> GetCitiesOfState(int stateId);
-        IAsyncEnumerable<StateCity> GetStateCitiesByStateId(int stateId);
-        IAsyncEnumerable<StateCity> GetStateCitiesByCityId(int cityId);
-        IAsyncEnumerable<int> GetCitiesIdOfState(int stateId);
-
-        #endregion
+        IEnumerable<City> GetCitiesOfState(int stateId);
 
         Task SaveChangesAsync();
     }

@@ -70,7 +70,6 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<UserInvite> UserInvites { get; set; }
         public virtual DbSet<State> States { get; set; }
         public virtual DbSet<City> Cities { get; set; }
-        public virtual DbSet<StateCity> StateCities { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
 
@@ -110,9 +109,6 @@ namespace Reshop.Infrastructure.Context
 
             modelBuilder.Entity<ProductGallery>()
                 .HasKey(c => new { c.ProductId, c.ImageName });
-
-            modelBuilder.Entity<StateCity>()
-                .HasKey(c => new { c.StateId, c.CityId });
 
             modelBuilder.Entity<RolePermission>()
                 .HasKey(c => new { c.RoleId, c.PermissionId });
