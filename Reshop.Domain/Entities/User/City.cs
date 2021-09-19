@@ -19,7 +19,7 @@ namespace Reshop.Domain.Entities.User
 
         #region Relations
 
-        public ICollection<State> State { get; set; }
+        public virtual State State { get; set; }
 
         #endregion
     }

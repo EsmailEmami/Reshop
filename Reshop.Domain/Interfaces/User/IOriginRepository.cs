@@ -11,23 +11,27 @@ namespace Reshop.Domain.Interfaces.User
     {
         #region state
 
-        IEnumerable<State> GetStates();
+        IEnumerable<Tuple<int, string>> GetStates();
+        IEnumerable<Tuple<int, string>> GetStatesWithPagination(int skip, int take, string filter);
         Task AddStateAsync(State state);
         void RemoveState(State state);
         void UpdateState(State state);
         Task<State> GetStateByIdAsync(int stateId);
         string GetStateNameById(int stateId);
+        Task<int> GetStatesCountAsync();
 
         #endregion
 
         #region city
 
         IEnumerable<City> GetCities();
+        IEnumerable<Tuple<int, string>> GetCitiesWithPagination(int skip, int take, string filter = "", List<int> states = null);
         Task AddCityAsync(City city);
         void RemoveCity(City city);
         void UpdateCity(City city);
         Task<City> GetCityByIdAsync(int cityId);
         string GetCityNameById(int cityId);
+        Task<int> GetCitiesCountAsync();
 
         #endregion
 

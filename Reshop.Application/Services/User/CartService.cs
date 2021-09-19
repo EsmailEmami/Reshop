@@ -133,7 +133,8 @@ namespace Reshop.Application.Services.User
                             ProductDiscountPrice = 0,
                             CreateDate = DateTime.Now,
                             TrackingCode = "RSD-" + NameGenerator.GenerateNumber(),
-                            Sum = 0
+                            Sum = 0,
+                            ShopperProductColorId = shopperProductColorId,
                         };
 
 

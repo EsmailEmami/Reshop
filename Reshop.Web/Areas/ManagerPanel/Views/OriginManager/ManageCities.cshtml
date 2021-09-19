@@ -1,6 +1,4 @@
-﻿@model IEnumerable<City>
-
-@{
+﻿@{
     ViewData["Title"] = "مدیریت شهر";
 }
 
@@ -20,49 +18,9 @@
 <a onclick="ShowModal('@Url.Action("AddOrEditCity", "OriginManager" ,null, Context.Request.Scheme)', 'افزودن شهر')"
    class="btn btn-success text-white"><i class="fal fa-user-plus"></i> شهر جدید</a>
 
-
-@if (Model.Any())
-{
-    <div class="table-responsive">
-        <table class="table responsive table-bordered table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>
-                        نام شهر
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CityName)
-                        </td>
-                        <td>
-                            <a onclick="ShowModal('@Url.Action("AddOrEditCity", "OriginManager" ,new {cityId = item.CityId}, Context.Request.Scheme)', 'افزودن شهر')"
-                               class="btn btn-warning text-white">
-                                ویرایش
-                            </a>
-
-                            <form asp-action="DeleteCity" asp-route-cityId="@item.CityId" method="post"
-                                  class="d-inline">
-                                <button type="submit" class="btn btn-danger text-white">حذف</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
-else
-{
-    <div class="alert alert-warning">
-        شهری یافت نشد.
-    </div>
-}
+<section class="table-list" id="tableList">
+    @await Component.InvokeAsync("CitiesListComponent")
+</section>
 
 @section AfterMainOptions
 {

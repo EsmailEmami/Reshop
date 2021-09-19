@@ -1,4 +1,5 @@
-﻿using Reshop.Application.Enums;
+﻿using System;
+using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
@@ -22,8 +23,23 @@ namespace Reshop.Application.Services.User
         #endregion
 
 
-        public IEnumerable<State> GetStates() =>
+        public IEnumerable<Tuple<int,string>> GetStates() =>
             _stateRepository.GetStates();
+
+        public async Task<Tuple<IEnumerable<Tuple<int, string>>, int, int>> GetStatesWithPaginationAsync(int pageId = 1, int take = 18, string filter = "")
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int statesCount = await _stateRepository.GetStatesCountAsync();
+
+            var states = _stateRepository.GetStatesWithPagination(skip, take, filter);
+
+
+            int totalPages = (int)Math.Ceiling(1.0 * statesCount / take);
+
+
+            return new Tuple<IEnumerable<Tuple<int, string>>, int, int>(states, pageId, totalPages);
+        }
 
         public async Task<ResultTypes> AddStateAsync(State state)
         {
@@ -81,6 +97,21 @@ namespace Reshop.Application.Services.User
                 _stateRepository.GetStateNameById(stateId);
 
         public IEnumerable<City> GetCities() => _stateRepository.GetCities();
+
+        public async Task<Tuple<IEnumerable<Tuple<int, string>>, int, int>> GetCitiesWithPaginationAsync(int pageId = 1, int take = 18, string filter = "", List<int> states = null)
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int citiesCount = await _stateRepository.GetCitiesCountAsync();
+
+            var cities = _stateRepository.GetCitiesWithPagination(skip, take, filter, states);
+
+
+            int totalPages = (int)Math.Ceiling(1.0 * citiesCount / take);
+
+
+            return new Tuple<IEnumerable<Tuple<int, string>>, int, int>(cities, pageId, totalPages);
+        }
 
         public async Task<ResultTypes> AddCityAsync(City city)
         {

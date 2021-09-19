@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.Product
 {
-    
+
     public class ProductController : Controller
     {
         #region constructor
@@ -32,21 +32,18 @@ namespace Reshop.Web.Controllers.Product
         }
 
         [HttpGet]
-        [Route("Product/{productId}/{productName}")]
-        [Route("Product/{productId}/{productName}/{sellerId}")]
-        public async Task<IActionResult> ProductDetail(int productId, string productName, string sellerId)
+        [Route("Product/{productName}/{sellerId}")]
+        public async Task<IActionResult> ProductDetail(string productName, string sellerId)
         {
-            if (productId == 0 || sellerId == null)
+            if (sellerId == null)
             {
                 return BadRequest();
             }
 
-            var product = await _productService.GetProductDetailAsync(productId, sellerId);
+            var product = await _productService.GetProductDetailAsync(sellerId);
 
             if (product == null)
                 return NotFound();
-
-            ViewData["ProductName"] = productName;
 
             return View(product);
         }
@@ -54,18 +51,18 @@ namespace Reshop.Web.Controllers.Product
         // change seller 
         [HttpGet]
         [NoDirectAccess]
-        public async Task<IActionResult> ChangeProductShopper(int productId, string seller)
+        public async Task<IActionResult> ChangeProductShopper(string seller)
         {
-            if (productId is 0 && string.IsNullOrEmpty(seller))
+            if (string.IsNullOrEmpty(seller))
                 return BadRequest();
 
 
-            var product = await _productService.EditProductDetailShopperAsync(productId, seller);
+            var product = await _productService.EditProductDetailShopperAsync(seller);
 
             if (product == null)
                 return NotFound();
 
-            return View();
+            return View(product);
         }
 
         [HttpGet]
@@ -83,7 +80,7 @@ namespace Reshop.Web.Controllers.Product
 
 
             return RedirectToAction("ProductDetail", "Product",
-                new { productId = product.Item1, productName = product.Item2, seller = product.Item3 });
+                new { productName = product.Item1.Replace(" ", "-"), seller = product.Item2 });
         }
 
         [HttpGet]
@@ -117,12 +114,12 @@ namespace Reshop.Web.Controllers.Product
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddToFavoriteProduct(string shopperProductColorId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var result = await _productService.AddFavoriteProductAsync(userId,shopperProductColorId);
+            var result = await _productService.AddFavoriteProductAsync(userId, shopperProductColorId);
 
             return result switch
             {

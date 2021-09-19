@@ -1,0 +1,142 @@
+﻿@model Tuple<IEnumerable<Tuple<int, string>>, int, int>
+
+@{
+    int counter;
+
+
+    if (Model.Item2 == 1)
+    {
+        counter = 1;
+    }
+    else
+    {
+        int skip = (Model.Item2 - 1) * Convert.ToInt32(ViewBag.TakeCount);
+
+        counter = skip + 1;
+    }
+}
+
+<link href="~/css/select.css" rel="stylesheet" />
+<div class="filter">
+    <input type="hidden" id="pageId" value="@Model.Item2" />
+
+    @if (ViewBag.SearchText != null)
+    {
+        <div class="filter-input">
+            <input type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
+            <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
+        </div>
+    }
+    else
+    {
+        <div class="filter-input">
+            <input type="text" placeholder="دنبال کالا بگرد..." id="filter">
+            <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
+        </div>
+    }
+</div>
+
+
+
+
+@if (Model.Item1.Any())
+{
+    <div class="table-responsive">
+        <table class="table responsive table-hover table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">نام استان</th>
+                    <th scope="col">درخواست ها</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Item1)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @counter
+                        </td>
+
+                        <td>
+                       @item.Item2
+                        </td>
+
+                        <td>
+                            <a onclick="ShowModal('@Url.Action("AddOrEditState", "OriginManager" ,new {stateId=item.Item1}, Context.Request.Scheme)', 'افزودن استان' )"
+                               class="btn btn-warning text-white">
+                                ویرایش
+                            </a>
+
+                            <form asp-area="ManagerPanel" asp-controller="OriginManager" asp-action="DeleteState" asp-route-stateId="@item.Item1" method="post"
+                                  class="d-inline">
+                                <button type="submit" class="btn btn-danger text-white me-2">حذف</button>
+                            </form>
+                        </td>
+                    
+                    </tr>
+
+                    counter++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+    @if (Model.Item3 > 1)
+    {
+        <ul class="pagination-custom">
+            <li class="@(Model.Item2<=1?"disabled":"")" onclick="paginationRequest('@(Model.Item2 - 1)')">
+                <i class="far fa-angle-right"></i>
+            </li>
+
+            @for (var i = 1; i <= Model.Item3; i++)
+            {
+                <li class="@(Model.Item2 == i? "active":"")" onclick="paginationRequest('@i')">
+                    @i
+                </li>
+            }
+
+            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="paginationRequest('@(Model.Item2+1)')">
+                <i class="far fa-angle-left"></i>
+            </li>
+
+        </ul>
+    }
+
+
+    <script>
+        function pagination(pageId) {
+            $('#pageIdRequest').val(pageId);
+            changeList();
+        }
+
+        function changeList() {
+            let pageId = $('#pageId').val();
+            let filter = $('#filter').val();
+
+            $.ajax({
+                type: 'GET',
+                url: '/ManagerPanel/OriginManager/StatesList/?pageId=' + pageId + '&filter=' + filter
+            }).done(function (res) {
+                $("#tableList").html(res);
+            });
+        }
+
+    </script>
+
+
+}
+else
+{
+    <div class="alert alert-warning">
+     استانی یافت نشد.
+    </div>
+}
+
+<script src="~/js/select.js"></script>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.User;
@@ -10,7 +11,8 @@ namespace Reshop.Application.Interfaces.User
     {
         #region state
 
-        IEnumerable<State> GetStates();
+        IEnumerable<Tuple<int,string>> GetStates();
+        Task<Tuple<IEnumerable<Tuple<int, string>>, int, int>> GetStatesWithPaginationAsync(int pageId = 1, int take = 18, string filter = "");
         Task<ResultTypes> AddStateAsync(State state);
         Task<ResultTypes> RemoveStateAsync(int stateId);
         Task<ResultTypes> EditStateAsync(State state);
@@ -22,6 +24,7 @@ namespace Reshop.Application.Interfaces.User
         #region city
 
         IEnumerable<City> GetCities();
+        Task<Tuple<IEnumerable<Tuple<int, string>>, int, int>> GetCitiesWithPaginationAsync(int pageId = 1, int take = 18, string filter = "", List<int> states = null);
         Task<ResultTypes> AddCityAsync(City city);
         Task<ResultTypes> RemoveCityAsync(int cityId);
         Task<ResultTypes> EditCityAsync(City city);

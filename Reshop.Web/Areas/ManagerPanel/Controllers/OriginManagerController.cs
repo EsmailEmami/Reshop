@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.Entities.User;
 using System.Threading.Tasks;
+using Reshop.Application.Attribute;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -28,14 +31,37 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpGet]
         public IActionResult ManageStates()
         {
-            return View(_stateService.GetStates());
+            return View();
+        }
+
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult StatesList(int pageId, string filter)
+        {
+            return ViewComponent("StatesListComponent", new { pageId, filter });
         }
 
         [HttpGet]
         public IActionResult ManageCities()
         {
-            return View(_stateService.GetCities());
+            return View();
         }
+
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult CitiesList(int pageId, string filter, int[] states = null)
+        {
+            List<int> statesList = null;
+
+            if (states != null)
+            {
+                statesList = states.ToList();
+            }
+
+            return ViewComponent("CitiesListComponent", new { pageId, filter, statesList });
+        }
+
+
 
         #region add or edit state
 

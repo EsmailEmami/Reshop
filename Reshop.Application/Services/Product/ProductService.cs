@@ -260,15 +260,18 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<ProductDetailViewModel> GetProductDetailAsync(int productId, string shopperProductColorId)
+        public async Task<ProductDetailViewModel> GetProductDetailAsync(string shopperProductColorId)
         {
             var product = await _productRepository.GetProductDataForDetailAsync(shopperProductColorId);
 
-            var childCategories = _productRepository.GetProductChildCategories(productId);
-            var comments = _productRepository.GetProductComments(productId);
-            var productGalleries = _productRepository.GetProductImages(productId);
-            var shoppers = _productRepository.GetProductShoppers(productId, product.SelectedColor);
-            var colors = _productRepository.GetProductColorsWithDetail(productId);
+            if (product == null)
+                return null;
+
+            var childCategories = _productRepository.GetProductChildCategories(product.ProductId);
+            var comments = _productRepository.GetProductComments(product.ProductId);
+            var productGalleries = _productRepository.GetProductImages(product.ProductId);
+            var shoppers = _productRepository.GetProductShoppers(product.ProductId, product.SelectedColor);
+            var colors = _productRepository.GetProductColorsWithDetail(product.ProductId);
 
 
             return new ProductDetailViewModel()
@@ -282,10 +285,25 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId) =>
-            await _productRepository.EditProductDetailShopperAsync(productId, shopperProductColorId);
+        public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId)
+        {
+            var product = await _productRepository.EditProductDetailShopperAsync(shopperProductColorId);
+            int productId =await _productRepository.GetProductIdOfShopperProductColorIdAsync(shopperProductColorId);
 
-        public async Task<Tuple<int, string, string>> GetProductRedirectionByShortKeyAsync(string key)
+            if (product == null || productId == 0)
+                return null;
+
+            var shoppers = _productRepository.GetProductShoppers(productId, product.SelectedColor);
+            var colors = _productRepository.GetProductColorsWithDetail(productId);
+
+
+            product.Shoppers = shoppers;
+            product.Colors = colors;
+
+            return product;
+        }
+
+        public async Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key)
             =>
                 await _productRepository.GetProductRedirectionByShortKeyAsync(key);
 

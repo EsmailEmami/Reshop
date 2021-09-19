@@ -172,7 +172,7 @@ function MultiSelectDropdown() {
             });
 
 
-            var filteredItem = list.querySelectorAll('div[style="display: block;"]')
+            var filteredItem = list.querySelectorAll('div[style="display: block;"]');
 
 
             var notFound = list.querySelector("h3");

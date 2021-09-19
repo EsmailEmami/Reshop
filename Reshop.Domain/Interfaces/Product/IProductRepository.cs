@@ -31,14 +31,16 @@ namespace Reshop.Domain.Interfaces.Product
 
 
 
-        Task<Tuple<int, string, string>> GetProductRedirectionByShortKeyAsync(string key);
+        Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key);
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId);
         Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId);
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId);
         IEnumerable<Tuple<int, string, string, string>> GetProductColorsWithDetail(int productId);
         Task<Entities.Product.Product> GetProductByIdAsync(int productId);
         IEnumerable<Tuple<int, string>> GetProductColors(int productId);
-        Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId);
+        Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId);
+
+        Task<int> GetProductIdOfShopperProductColorIdAsync(string shopperProductColorId);
 
         #region shopper product
 

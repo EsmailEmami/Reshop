@@ -228,9 +228,9 @@ function SetCartAddress(form, returnUrl) {
     }
 }
 
-function UpdateProductDetailShopper(productId, productName, sellerId) {
-    $("#changeShopper").load('/Product/ChangeProductShopper/?productId=' + productId + '&seller=' + sellerId);
-    let url = window.location.origin + "/Product/" + productId + '/' + productName + '/' + sellerId;
+function UpdateProductDetailShopper(productName, sellerId) {
+    $("#changeShopper").load('/Product/ChangeProductShopper?seller=' + sellerId);
+    let url = window.location.origin + "/Product/" + productName + '/' + sellerId;
     window.history.replaceState(null, productName, url);
 }
 

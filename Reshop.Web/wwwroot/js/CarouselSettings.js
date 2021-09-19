@@ -49,7 +49,7 @@ $("#mini-pic-slider").owlCarousel({
     nav: false,
     dots: false,
     items: 4,
-    stagePadding: 50,
+    stagePadding: 0,
     responsive: {
         0: {
             items: 4

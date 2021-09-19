@@ -364,9 +364,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ChildCategoryId == childCategoryId)
                 .Select(c => c.Product.OfficialBrandProduct.Brand.BrandName).Distinct();
 
-        public async Task<Tuple<int, string, string>> GetProductRedirectionByShortKeyAsync(string key)
+        public async Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key)
             => await _context.ShopperProductColors.Where(c => c.ShortKey == key)
-                .Select(c => new Tuple<int, string, string>(c.ShopperProduct.ProductId, c.ShopperProduct.Product.ProductTitle, c.ShopperProductColorId))
+                .Select(c => new Tuple<string, string>(c.ShopperProduct.Product.ProductTitle, c.ShopperProductColorId))
                 .SingleOrDefaultAsync();
 
         public async Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId) =>
@@ -396,20 +396,26 @@ namespace Reshop.Infrastructure.Repository.Product
             _context.ShopperProducts.Where(c => c.ProductId == productId)
                 .SelectMany(c => c.ShopperProductColors)
                 .Where(c => c.ColorId == colorId)
-                .Select(c => new Tuple<string, string, string>(c.ShopperProductColorId, c.ShopperProduct.Shopper.StoreName, c.ShopperProduct.Warranty));
+                .Select(c => new Tuple<string, string, string>(
+                    c.ShopperProductColorId, 
+                    c.ShopperProduct.Shopper.StoreName, 
+                    c.ShopperProduct.Warranty));
 
         public IEnumerable<Tuple<int, string, string, string>> GetProductColorsWithDetail(int productId) =>
             _context.ShopperProducts
-                .Where(c => c.ProductId == productId)
+                .Where(c =>c.IsActive && c.ProductId == productId)
                 .SelectMany(c => c.ShopperProductColors)
+                .Where(c=> c.IsActive)
                 .Select(c => c.Color).Distinct()
                 .Select(c => new Tuple<int, string, string, string>(
                     c.ColorId,
                     c.ColorName,
                     c.ColorCode,
-                    _context.Products.Where(c => c.ProductId == productId)
-                        .SelectMany(c => c.ShopperProducts)
+                    _context.Products.Where(p => p.ProductId == productId && p.IsActive)
+                        .SelectMany(p => p.ShopperProducts)
+                        .Where(co=> co.IsActive)
                         .SelectMany(a => a.ShopperProductColors)
+                        .Where(co=> co.IsActive && co.ColorId == c.ColorId)
                         .OrderByDescending(o => o.SaleCount)
                         .First().ShopperProductColorId
                     ));
@@ -423,7 +429,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.Color).Distinct()
                 .Select(c => new Tuple<int, string>(c.ColorId, c.ColorName));
 
-        public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(int productId, string shopperProductColorId) =>
+        public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId) =>
             await _context.ShopperProductColors
                 .Where(c => c.ShopperProductColorId == shopperProductColorId)
                 .Select(c => new EditProductDetailShopperViewModel()
@@ -431,9 +437,16 @@ namespace Reshop.Infrastructure.Repository.Product
                     SelectedShopper = c.ShopperProductColorId,
                     SelectedColor = c.ColorId,
                     Price = c.Price,
-                    Shoppers = GetProductShoppers(productId, c.ColorId),
-                    Colors = GetProductColorsWithDetail(productId)
+                    ProductTitle = c.ShopperProduct.Product.ProductTitle,
+                    LastDiscount = c.Discounts.OrderByDescending(c => c.EndDate)
+                        .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate)).FirstOrDefault(),
                 }).SingleOrDefaultAsync();
+
+        public Task<int> GetProductIdOfShopperProductColorIdAsync(string shopperProductColorId) =>
+            _context.ShopperProductColors
+                .Where(c => c.ShopperProductColorId == shopperProductColorId)
+                .Select(c => c.ShopperProduct.ProductId)
+                .FirstOrDefaultAsync();
 
         public IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null)
         {
@@ -585,7 +598,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Include(c => c.Product)
                         .ThenInclude(c => c.FlashMemoryDetail).FirstAsync(),
 
-                  
+
                     "tablet" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
                     .Include(c => c.Product)
                     .ThenInclude(c => c.TabletDetail).FirstAsync(),

@@ -46,7 +46,13 @@ namespace Reshop.Web.Controllers.User
         public IActionResult ShowCart()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return View(_cartService.GetUserOpenOrderForShowCart(userId));
+
+            var model = _cartService.GetUserOpenOrderForShowCart(userId);
+
+            if (model == null)
+                return BadRequest();
+
+            return View(model);
         }
 
         [HttpPost]
