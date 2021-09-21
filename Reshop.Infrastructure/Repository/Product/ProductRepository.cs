@@ -397,15 +397,15 @@ namespace Reshop.Infrastructure.Repository.Product
                 .SelectMany(c => c.ShopperProductColors)
                 .Where(c => c.ColorId == colorId)
                 .Select(c => new Tuple<string, string, string>(
-                    c.ShopperProductColorId, 
-                    c.ShopperProduct.Shopper.StoreName, 
+                    c.ShopperProductColorId,
+                    c.ShopperProduct.Shopper.StoreName,
                     c.ShopperProduct.Warranty));
 
         public IEnumerable<Tuple<int, string, string, string>> GetProductColorsWithDetail(int productId) =>
             _context.ShopperProducts
-                .Where(c =>c.IsActive && c.ProductId == productId)
+                .Where(c => c.IsActive && c.ProductId == productId)
                 .SelectMany(c => c.ShopperProductColors)
-                .Where(c=> c.IsActive)
+                .Where(c => c.IsActive)
                 .Select(c => c.Color).Distinct()
                 .Select(c => new Tuple<int, string, string, string>(
                     c.ColorId,
@@ -413,9 +413,9 @@ namespace Reshop.Infrastructure.Repository.Product
                     c.ColorCode,
                     _context.Products.Where(p => p.ProductId == productId && p.IsActive)
                         .SelectMany(p => p.ShopperProducts)
-                        .Where(co=> co.IsActive)
+                        .Where(co => co.IsActive)
                         .SelectMany(a => a.ShopperProductColors)
-                        .Where(co=> co.IsActive && co.ColorId == c.ColorId)
+                        .Where(co => co.IsActive && co.ColorId == c.ColorId)
                         .OrderByDescending(o => o.SaleCount)
                         .First().ShopperProductColorId
                     ));
@@ -909,6 +909,20 @@ namespace Reshop.Infrastructure.Repository.Product
             _context.Brands
                 .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
 
+        public IEnumerable<Tuple<int, string, bool>> GetBrandsForShow(int skip, int take, string filter)
+        {
+            IQueryable<Brand> brands = _context.Brands;
+
+            if (filter != null)
+            {
+                brands = brands.Where(c => c.BrandName.Contains(filter));
+            }
+
+            brands = brands.Skip(skip).Take(take);
+
+            return brands.Select(c => new Tuple<int, string, bool>(c.BrandId, c.BrandName, c.IsActive));
+        }
+
         public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
             _context.Brands.Where(c => c.BrandId == brandId)
                 .SelectMany(c => c.OfficialBrandProducts)
@@ -919,6 +933,32 @@ namespace Reshop.Infrastructure.Repository.Product
                 .SelectMany(c => c.Products)
                 .Select(c => new Tuple<int, string>(c.ProductId, c.ProductTitle));
 
+        public async Task<int> GetBrandsCountAsync() =>
+            await _context.Brands.CountAsync();
+
+        public async Task AddBrandAsync(Brand brand) =>
+            await _context.Brands.AddAsync(brand);
+
+        public void UpdateBrand(Brand brand) =>
+            _context.Brands.Update(brand);
+
+        public IEnumerable<OfficialBrandProduct> GetRealOfficialProductsOfBrand(int brandId) =>
+            _context.Brands.Where(c => c.BrandId == brandId)
+                .SelectMany(c => c.OfficialBrandProducts);
+
+        public IEnumerable<Domain.Entities.Product.Product> GetRealProductsOfOfficialProduct(int officialProductId) =>
+            _context.OfficialBrandProducts
+                .Where(c => c.OfficialBrandProductId == officialProductId)
+                .SelectMany(c => c.Products);
+
+        public async Task AddOfficialBrandProductAsync(OfficialBrandProduct officialBrandProduct) =>
+            await _context.OfficialBrandProducts.AddAsync(officialBrandProduct);
+
+        public void UpdateOfficialBrandProduct(OfficialBrandProduct officialBrandProduct) =>
+            _context.OfficialBrandProducts.Update(officialBrandProduct);
+
+        public async Task<bool> IsBrandExistAsync(int brandId) =>
+            await _context.Brands.AnyAsync(c => c.BrandId == brandId);
 
         public IEnumerable<Domain.Entities.Product.Product> GetTypeMobileProducts()
         {

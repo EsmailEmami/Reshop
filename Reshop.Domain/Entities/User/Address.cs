@@ -27,9 +27,6 @@ namespace Reshop.Domain.Entities.User
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
-        [ForeignKey("State")]
-        public int StateId { get; set; }
-
         [ForeignKey("City")]
         public int CityId { get; set; }
 

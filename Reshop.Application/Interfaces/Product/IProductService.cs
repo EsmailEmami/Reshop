@@ -141,8 +141,14 @@ namespace Reshop.Application.Interfaces.Product
 
         Task<Brand> GetBrandByIdAsync(int brandId);
         IEnumerable<Tuple<int, string>> GetBrandsForShow();
+        Task<ResultTypes> AddBrandAsync(Brand brand);
+        Task<ResultTypes> EditBrandAsync(Brand brand);
+        Task<ResultTypes> UnAvailableBrand(int brandId);
+        Task<ResultTypes> AvailableBrand(AvailableBrandViewModel model);
+        Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetBrandsForShowAsync(int pageId = 1, int take = 30, string filter = "");
         IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId);
         IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId);
+        Task<bool> IsBrandExistAsync(int brandId);
 
         #endregion
 

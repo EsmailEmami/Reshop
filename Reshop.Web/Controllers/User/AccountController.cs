@@ -377,7 +377,6 @@ namespace Reshop.Web.Controllers.User
                     var storeAddress = new StoreAddress()
                     {
                         ShopperId = shopper.ShopperId,
-                        StateId = model.StateId,
                         CityId = model.CityId,
                         Plaque = model.Plaque,
                         PostalCode = model.PostalCode,

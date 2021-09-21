@@ -2,6 +2,7 @@
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
+using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Product;
@@ -13,7 +14,6 @@ using Reshop.Domain.Interfaces.Shopper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reshop.Domain.DTOs.Chart;
 
 namespace Reshop.Application.Services.Product
 {
@@ -288,7 +288,7 @@ namespace Reshop.Application.Services.Product
         public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId)
         {
             var product = await _productRepository.EditProductDetailShopperAsync(shopperProductColorId);
-            int productId =await _productRepository.GetProductIdOfShopperProductColorIdAsync(shopperProductColorId);
+            int productId = await _productRepository.GetProductIdOfShopperProductColorIdAsync(shopperProductColorId);
 
             if (product == null || productId == 0)
                 return null;
@@ -1042,11 +1042,140 @@ namespace Reshop.Application.Services.Product
         public IEnumerable<Tuple<int, string>> GetBrandsForShow() =>
             _productRepository.GetBrandsForShow();
 
+        public async Task<ResultTypes> AddBrandAsync(Brand brand)
+        {
+            try
+            {
+                await _productRepository.AddBrandAsync(brand);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditBrandAsync(Brand brand)
+        {
+            try
+            {
+                _productRepository.UpdateBrand(brand);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> UnAvailableBrand(int brandId)
+        {
+            try
+            {
+                var brand = await _productRepository.GetBrandByIdAsync(brandId);
+
+                if (brand == null)
+                    return ResultTypes.Failed;
+
+                // UnAvailable Brand 
+                brand.IsActive = false;
+
+                var officialProducts = _productRepository.GetRealOfficialProductsOfBrand(brandId);
+
+                foreach (var officialBrandProduct in officialProducts)
+                {
+                    // UnAvailable OfficialBrandProduct
+                    officialBrandProduct.IsActive = false;
+
+                    var products = _productRepository.GetRealProductsOfOfficialProduct(officialBrandProduct.OfficialBrandProductId);
+
+                    // UnAvailable Products
+                    foreach (var product in products)
+                    {
+                        product.IsActive = false;
+                    }
+                }
+
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> AvailableBrand(AvailableBrandViewModel model)
+        {
+            try
+            {
+                var brand = await _productRepository.GetBrandByIdAsync(model.BrandId);
+
+                if (brand == null)
+                    return ResultTypes.Failed;
+
+                // Available Brand 
+                brand.IsActive = true;
+
+                if (model.AvailableOfficialBrandProducts)
+                {
+                    var officialProducts = _productRepository.GetRealOfficialProductsOfBrand(brand.BrandId);
+
+                    foreach (var officialBrandProduct in officialProducts)
+                    {
+                        // Available OfficialBrandProduct
+                        officialBrandProduct.IsActive = true;
+
+                        if (model.AvailableProducts)
+                        {
+                            var products = _productRepository.GetRealProductsOfOfficialProduct(officialBrandProduct.OfficialBrandProductId);
+
+                            // Available Products
+                            foreach (var product in products)
+                            {
+                                product.IsActive = true;
+                            }
+                        }
+                    }
+                }
+
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetBrandsForShowAsync(int pageId = 1, int take = 30, string filter = "")
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int brandsCount = await _productRepository.GetBrandsCountAsync();
+
+            var brands = _productRepository.GetBrandsForShow(skip, take, filter);
+
+
+            int totalPages = (int)Math.Ceiling(1.0 * brandsCount / take);
+
+            return new Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>(brands, pageId, totalPages);
+        }
+
         public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
             _productRepository.GetBrandOfficialProducts(brandId);
 
         public IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId) =>
             _productRepository.GetProductsOfOfficialProduct(officialProductId);
+
+        public async Task<bool> IsBrandExistAsync(int brandId) =>
+            await _productRepository.IsBrandExistAsync(brandId);
 
         public IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId) =>
             _productRepository.GetBrandsOfStoreTitle(storeTitleId);

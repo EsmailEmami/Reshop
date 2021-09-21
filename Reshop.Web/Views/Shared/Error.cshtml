@@ -1,1 +1,19 @@
-﻿<h5>error badbakh</h5>
+﻿@model int
+@{
+    ViewData["Title"] = "ارور";
+}
+
+
+@switch (Model)
+{
+    case 404:
+    {
+        <h5>error 404</h5>
+        break;
+    }
+    default:
+    {
+        <h5>error</h5>
+        break;
+    }
+}

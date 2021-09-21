@@ -22,6 +22,8 @@ namespace Reshop.Domain.Entities.Product
         [ForeignKey("Brand")]
         public int BrandId { get; set; }
 
+        public bool IsActive { get; set; }
+
         #region Relations
 
         public virtual Brand Brand { get; set; }

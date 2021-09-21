@@ -17,11 +17,26 @@
                 <i class="far fa-home"></i> <span>داشبورد</span>
             </a>
         </li>
-        <li class="@(Model == RightMenuActivePage.ProductPage? "active":"")">
-            <a asp-area="ManagerPanel" asp-controller="ProductManager" asp-action="Index">
+        <li class="dropdown @(Model == RightMenuActivePage.ProductPage? "active":"")">
+            <span class="name">
                 <i class="fas fa-inventory"></i>
-                <span>کالاها</span>
-            </a>
+                <span>کالا</span>
+            </span>
+            
+            <ul>
+                <li>
+                    <a asp-area="ManagerPanel" asp-controller="ProductManager" asp-action="Index">
+                        <i class="fas fa-inventory"></i>
+                        <span>کالاها</span>
+                    </a> </li>
+                <li>
+                    <a asp-area="ManagerPanel" asp-controller="BrandManager" asp-action="Index">
+                        <i class="fas fa-inventory"></i>
+                        <span>برندها</span>
+                    </a></li>
+            </ul>
+            
+   
         </li>
         <li class="dropdown @(Model == RightMenuActivePage.UserPage? "active":"")">
             <span class="name">

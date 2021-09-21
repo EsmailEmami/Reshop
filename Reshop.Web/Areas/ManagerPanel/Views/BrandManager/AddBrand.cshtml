@@ -1,0 +1,67 @@
+﻿@model Brand
+
+@{
+    Layout = null;
+}
+<form asp-action="AddBrand" method="post" onsubmit="return SubmitFormData(this)">
+    <div class="row">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="BrandId" />
+
+        <div class="col-sm-12">
+            <div class="form-field">
+                <input asp-for="BrandName">
+                <label><i class="far fa-list-alt"></i> نام گروه</label>
+                <span asp-validation-for="BrandName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+
+            @{
+                var storeTitles = ViewBag.StoreTitles as IEnumerable<StoreTitle>;
+            }
+
+            @if (storeTitles != null)
+            {
+                <select asp-for="StoreTitleId">
+                    <option value="">انتخاب عنوان</option>
+
+                    @foreach (var item in storeTitles)
+                    {
+                        @: <option value="@item.StoreTitleId" @(Model.StoreTitleId == item.StoreTitleId ? "selected" : "")>@item.StoreTitleName</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    عنوانی برای نمایش یافت نشد.
+                </div>
+            }
+        </div>
+        
+        <div class="col-sm-12">
+            <div class="form-check">
+                <label>
+                    این برند فعال است
+                    <input type="checkbox" checked asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-field">
+            <button type="submit" class="btn btn-success">
+                ثبت
+            </button>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    inputJs();
+    callSelect();
+</script>

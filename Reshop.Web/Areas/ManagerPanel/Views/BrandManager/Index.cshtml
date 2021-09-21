@@ -1,7 +1,39 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "مدیریت برند ها";
 }
 
-<h1>Index</h1>
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ProductPage); }
+}
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
 
+
+<div class="display-6 text-center">
+    مدیریت برند
+</div>
+
+
+<a class="btn btn-success text-white"
+   onclick="ShowModal('@Url.Action("AddBrand", "BrandManager", null, Context.Request.Scheme)', 'برند جدید')">
+    <i class="fal fa-layer-plus"></i> افزودن برند جدید
+</a>
+
+<section class="table-list" id="tableList">
+    @await Component.InvokeAsync("BrandsListComponent")
+</section>
+
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+
+}
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/js/select.js"></script>
+}

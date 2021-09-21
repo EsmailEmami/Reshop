@@ -1,0 +1,149 @@
+﻿@model Tuple<IEnumerable<Tuple<int, string,bool>>, int, int>
+
+@{
+    int counter;
+
+
+    if (Model.Item2 == 1)
+    {
+        counter = 1;
+    }
+    else
+    {
+        int skip = (Model.Item2 - 1) * Convert.ToInt32(ViewBag.TakeCount);
+
+        counter = skip + 1;
+    }
+}
+
+<div class="filter">
+    <input type="hidden" name="pageId" id="pageId" value="@Model.Item2" />
+
+    @if (ViewBag.SearchText != null)
+    {
+        <div class="filter-input">
+            <input type="text" placeholder="دنبال برند بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
+            <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
+        </div>
+    }
+    else
+    {
+        <div class="filter-input">
+            <input type="text" placeholder="دنبال برند بگرد..." id="filter">
+            <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
+        </div>
+    }
+
+</div>
+
+
+
+@if (Model.Item1.Any())
+{
+    <div class="table-responsive">
+        <table class="table responsive table-hover table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">نام برند</th>
+                    <th scope="col">دستورات</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Item1)
+                {
+                    <tr>
+                        <td>
+                            @counter
+                        </td>
+                        <td>@item.Item2</td>
+                        <td>
+                            <a  class="btn btn-info text-white">
+                                جزئیات
+                            </a>
+                            <a onclick="ShowModal('@Url.Action("EditBrand", "BrandManager", new {brandId = item.Item1}, Context.Request.Scheme)', 'ویرایش برند')"
+                               class="btn btn-warning text-white">
+                                ویرایش
+                            </a>
+                         
+                            @if (item.Item3)
+                            {
+                                <form asp-action="UnAvailableBrand" asp-route-brandId="@item.Item1" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-danger text-white">
+                                        غیر فعال کردن
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a onclick="ShowModal('@Url.Action("AvailableBrand", "BrandManager", new {brandId = item.Item1}, Context.Request.Scheme)', 'فعال کردن برند')"
+                                   class="btn btn-success text-white">
+                                    فعال کردن
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                    counter++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+    @if (Model.Item3 > 1)
+    {
+        <ul class="pagination-custom">
+            <li class="@(Model.Item2<=1?"disabled":"")" onclick="pagination('@(Model.Item2 - 1)')">
+                <i class="far fa-angle-right"></i>
+            </li>
+
+            @for (var i = 1; i <= Model.Item3; i++)
+            {
+                <li class="@(Model.Item2 == i? "active":"")" onclick="pagination('@i')">
+                    @i
+                </li>
+            }
+
+            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="pagination('@(Model.Item2+1)')">
+                <i class="far fa-angle-left"></i>
+            </li>
+
+        </ul>
+    }
+
+
+
+
+
+    <script>
+        function pagination(pageId) {
+            $('#pageId').val(pageId);
+            changeList();
+        }
+
+        function changeList() {
+            var pageId = $('#pageId').val();
+            var filter = $('#filter').val();
+
+
+
+            $.ajax({
+                type: 'GET',
+                url: '/ManagerPanel/BrandManager/BrandsList/?pageId=' + pageId + '&filter=' + filter,
+                processData: false,
+                contentType: false
+            }).done(function (res) {
+                $("#tableList").html(res);
+            });
+        }
+
+    </script>
+}
+else
+{
+    <div class="alert alert-warning">
+        کالایی یافت نشد
+    </div>
+}

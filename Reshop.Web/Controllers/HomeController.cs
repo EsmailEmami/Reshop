@@ -16,9 +16,11 @@ namespace Reshop.Web.Controllers
             _cartService = cartService;
         }
 
-        public IActionResult Error()
+        [Route("Error")]
+        [Route("Error/{statusCode}")]
+        public IActionResult Error(int statusCode = 0)
         {
-            return View();
+            return View(statusCode);
         }
 
         [Route("AboutUs")]

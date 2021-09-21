@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
-using Reshop.Domain.DTOs.Product;
 
 namespace Reshop.Web.Components.Product
 {

@@ -198,8 +198,17 @@ namespace Reshop.Domain.Interfaces.Product
 
         Task<Brand> GetBrandByIdAsync(int brandId);
         IEnumerable<Tuple<int, string>> GetBrandsForShow();
+        IEnumerable<Tuple<int, string, bool>> GetBrandsForShow(int skip, int take, string filter);
         IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId);
         IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId);
+        Task<int> GetBrandsCountAsync();
+        Task AddBrandAsync(Brand brand);
+        void UpdateBrand(Brand brand);
+        IEnumerable<OfficialBrandProduct> GetRealOfficialProductsOfBrand(int brandId);
+        IEnumerable<Entities.Product.Product> GetRealProductsOfOfficialProduct(int officialProductId);
+        Task AddOfficialBrandProductAsync(OfficialBrandProduct officialBrandProduct);
+        void UpdateOfficialBrandProduct(OfficialBrandProduct officialBrandProduct);
+        Task<bool> IsBrandExistAsync(int brandId);
 
         #endregion
 

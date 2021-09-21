@@ -19,21 +19,6 @@ namespace Reshop.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("CityState", b =>
-                {
-                    b.Property<int>("CitiesCityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StateId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CitiesCityId", "StateId");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("CityState");
-                });
-
             modelBuilder.Entity("Reshop.Domain.Entities.Category.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -132,6 +117,9 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<int>("StoreTitleId")
                         .HasColumnType("int");
 
@@ -194,6 +182,9 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("OfficialBrandProductName")
                         .IsRequired()
@@ -2137,7 +2128,7 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<string>("ShopperId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("StateId")
+                    b.Property<int?>("StateId")
                         .HasColumnType("int");
 
                     b.HasKey("StoreAddressId");
@@ -2202,7 +2193,7 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("StateId")
+                    b.Property<int?>("StateId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -2235,6 +2226,8 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("CityId");
+
+                    b.HasIndex("StateId");
 
                     b.ToTable("Cities");
                 });
@@ -2654,21 +2647,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("WalletTypes");
                 });
 
-            modelBuilder.Entity("CityState", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.User.City", null)
-                        .WithMany()
-                        .HasForeignKey("CitiesCityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.State", null)
-                        .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Reshop.Domain.Entities.Category.ChildCategoryToCategory", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.Category.Category", "Category")
@@ -3001,9 +2979,7 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.HasOne("Reshop.Domain.Entities.User.State", "State")
                         .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StateId");
 
                     b.Navigation("City");
 
@@ -3022,9 +2998,7 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.HasOne("Reshop.Domain.Entities.User.State", "State")
                         .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StateId");
 
                     b.HasOne("Reshop.Domain.Entities.User.User", "User")
                         .WithMany("Addresses")
@@ -3035,6 +3009,17 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("State");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.City", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.User.State", "State")
+                        .WithMany("Cities")
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Comment", b =>
@@ -3274,6 +3259,11 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("RolePermissions");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.State", b =>
+                {
+                    b.Navigation("Cities");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.User", b =>

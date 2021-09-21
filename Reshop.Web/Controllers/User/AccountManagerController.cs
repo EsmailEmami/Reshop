@@ -127,7 +127,7 @@ namespace Reshop.Web.Controllers.User
         [NoDirectAccess]
         public IActionResult NewAddress()
         {
-            ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
+            ViewBag.States = _stateService.GetStates();
 
             return View(new Address());
         }
@@ -137,8 +137,8 @@ namespace Reshop.Web.Controllers.User
         [NoDirectAccess]
         public async Task<IActionResult> NewAddress(Address model)
         {
-            ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
-            ViewBag.Cities = _stateService.GetCitiesOfState(model.StateId) as IEnumerable<City>;
+            ViewBag.States = _stateService.GetStates() ;
+            ViewBag.Cities = _stateService.GetCitiesOfState(model.City.StateId);
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "NewAddress", model) });
 
@@ -149,7 +149,6 @@ namespace Reshop.Web.Controllers.User
                 UserId = userId,
                 FullName = model.FullName,
                 PhoneNumber = model.PhoneNumber,
-                StateId = model.StateId,
                 CityId = model.CityId,
                 Plaque = model.Plaque,
                 PostalCode = model.PostalCode,
@@ -190,8 +189,8 @@ namespace Reshop.Web.Controllers.User
 
             address.UserId = _dataProtector.Protect(address.UserId);
 
-            ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
-            ViewBag.Cities = _stateService.GetCitiesOfState(address.StateId) as IEnumerable<City>;
+            ViewBag.States = _stateService.GetStates();
+            ViewBag.Cities = _stateService.GetCitiesOfState(address.City.StateId) as IEnumerable<City>;
 
             return View(address);
         }
@@ -202,7 +201,7 @@ namespace Reshop.Web.Controllers.User
         public async Task<IActionResult> EditAddress(Address model)
         {
             ViewBag.States = _stateService.GetStates() as IEnumerable<State>;
-            ViewBag.Cities = _stateService.GetCitiesOfState(model.StateId) as IEnumerable<City>;
+            ViewBag.Cities = _stateService.GetCitiesOfState(model.City.StateId) as IEnumerable<City>;
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditAddress", model) });
 
@@ -230,7 +229,6 @@ namespace Reshop.Web.Controllers.User
 
 
             address.FullName = model.FullName;
-            address.StateId = model.StateId;
             address.CityId = model.CityId;
             address.Plaque = model.Plaque;
             address.PhoneNumber = model.PhoneNumber;

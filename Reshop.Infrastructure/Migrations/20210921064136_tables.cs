@@ -14,7 +14,7 @@ namespace Reshop.Infrastructure.Migrations
                     AUXDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CableMaterial = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    CableLenght = table.Column<double>(type: "float", maxLength: 20, nullable: false)
+                    CableLenght = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,19 +46,6 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Brands",
-                columns: table => new
-                {
-                    BrandId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    BrandName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Brands", x => x.BrandId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -85,16 +72,17 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cities",
+                name: "Colors",
                 columns: table => new
                 {
-                    CityId = table.Column<int>(type: "int", nullable: false)
+                    ColorId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CityName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                    ColorName = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    ColorCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cities", x => x.CityId);
+                    table.PrimaryKey("PK_Colors", x => x.ColorId);
                 });
 
             migrationBuilder.CreateTable(
@@ -382,24 +370,6 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Shoppers",
-                columns: table => new
-                {
-                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    StoreName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RegisterShopper = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OnNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    BackNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    BusinessLicenseImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IsFinally = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Shoppers", x => x.ShopperId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SmartWatchDetails",
                 columns: table => new
                 {
@@ -574,6 +544,30 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    UserAvatar = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    InviteCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    InviteCount = table.Column<int>(type: "int", nullable: false),
+                    Score = table.Column<int>(type: "int", nullable: false),
+                    ActiveCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    NationalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    AccountBalance = table.Column<decimal>(type: "Money", nullable: false),
+                    RegisteredDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsPhoneNumberActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsBlocked = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WalletTypes",
                 columns: table => new
                 {
@@ -591,33 +585,35 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     WristWatchDetailId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IsSupportGPS = table.Column<bool>(type: "bit", nullable: false),
-                    IsTouchScreen = table.Column<bool>(type: "bit", nullable: false),
-                    WatchForm = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                    Lenght = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Width = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Height = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Weight = table.Column<int>(type: "int", maxLength: 20, nullable: false),
+                    SuitableFor = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Application = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    DisplayForm = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    MaterialStrap = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    TypeOfLock = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    TouchDisplay = table.Column<bool>(type: "bit", nullable: false),
+                    DisplaySize = table.Column<double>(type: "float", maxLength: 8, nullable: false),
+                    Resolution = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    PixelDensity = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
+                    DisplayType = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    GPS = table.Column<bool>(type: "bit", nullable: false),
+                    Compatibility = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Prossesor = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Resists = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Sensors = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Connection = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Features = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BatteryMaterial = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    BatteryCapacity = table.Column<int>(type: "int", maxLength: 5, nullable: false),
+                    BattryChargingS = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
+                    MoreInformation = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WristWatchDetails", x => x.WristWatchDetailId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OfficialBrandProducts",
-                columns: table => new
-                {
-                    OfficialBrandProductId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OfficialBrandProductName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OfficialBrandProducts", x => x.OfficialBrandProductId);
-                    table.ForeignKey(
-                        name: "FK_OfficialBrandProducts_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "BrandId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -669,55 +665,19 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "Cities",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    UserAvatar = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    InviteCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    InviteCount = table.Column<int>(type: "int", nullable: false),
-                    Score = table.Column<int>(type: "int", nullable: false),
-                    ActiveCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    NationalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    AccountBalance = table.Column<decimal>(type: "Money", nullable: false),
-                    RegisteredDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsPhoneNumberActive = table.Column<bool>(type: "bit", nullable: false),
-                    IsBlocked = table.Column<bool>(type: "bit", nullable: false),
-                    IsUserShopper = table.Column<bool>(type: "bit", nullable: false),
-                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
-                    table.ForeignKey(
-                        name: "FK_Users_Shoppers_ShopperId",
-                        column: x => x.ShopperId,
-                        principalTable: "Shoppers",
-                        principalColumn: "ShopperId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StateCities",
-                columns: table => new
-                {
-                    StateId = table.Column<int>(type: "int", nullable: false),
                     CityId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CityName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StateCities", x => new { x.StateId, x.CityId });
+                    table.PrimaryKey("PK_Cities", x => x.CityId);
                     table.ForeignKey(
-                        name: "FK_StateCities_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
-                        principalColumn: "CityId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StateCities_States_StateId",
+                        name: "FK_Cities_States_StateId",
                         column: x => x.StateId,
                         principalTable: "States",
                         principalColumn: "StateId",
@@ -725,59 +685,20 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StoresAddress",
+                name: "Brands",
                 columns: table => new
                 {
-                    StoreAddressId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    StateId = table.Column<int>(type: "int", nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: false),
-                    Plaque = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    AddressText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    LandlinePhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false)
+                    BrandId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreTitleId = table.Column<int>(type: "int", nullable: false),
+                    BrandName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StoresAddress", x => x.StoreAddressId);
+                    table.PrimaryKey("PK_Brands", x => x.BrandId);
                     table.ForeignKey(
-                        name: "FK_StoresAddress_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
-                        principalColumn: "CityId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StoresAddress_Shoppers_ShopperId",
-                        column: x => x.ShopperId,
-                        principalTable: "Shoppers",
-                        principalColumn: "ShopperId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_StoresAddress_States_StateId",
-                        column: x => x.StateId,
-                        principalTable: "States",
-                        principalColumn: "StateId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ShopperStoreTitles",
-                columns: table => new
-                {
-                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    StoreTitleId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ShopperStoreTitles", x => new { x.ShopperId, x.StoreTitleId });
-                    table.ForeignKey(
-                        name: "FK_ShopperStoreTitles_Shoppers_ShopperId",
-                        column: x => x.ShopperId,
-                        principalTable: "Shoppers",
-                        principalColumn: "ShopperId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ShopperStoreTitles_StoreTitles_StoreTitleId",
+                        name: "FK_Brands_StoreTitles_StoreTitleId",
                         column: x => x.StoreTitleId,
                         principalTable: "StoreTitles",
                         principalColumn: "StoreTitleId",
@@ -785,159 +706,24 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "Shoppers",
                 columns: table => new
                 {
-                    ProductId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    ShortKey = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
-                    ProductType = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false),
-                    OfficialBrandProductId = table.Column<int>(type: "int", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Access = table.Column<bool>(type: "bit", nullable: false),
-                    MobileDetailId = table.Column<int>(type: "int", nullable: true),
-                    LaptopDetailId = table.Column<int>(type: "int", nullable: true),
-                    MobileCoverDetailId = table.Column<int>(type: "int", nullable: true),
-                    TabletDetailId = table.Column<int>(type: "int", nullable: true),
-                    SpeakerDetailId = table.Column<int>(type: "int", nullable: true),
-                    PowerBankDetailId = table.Column<int>(type: "int", nullable: true),
-                    WristWatchDetailId = table.Column<int>(type: "int", nullable: true),
-                    SmartWatchDetailId = table.Column<int>(type: "int", nullable: true),
-                    HandsfreeAndHeadPhoneDetailId = table.Column<int>(type: "int", nullable: true),
-                    FlashMemoryDetailId = table.Column<int>(type: "int", nullable: true),
-                    BatteryChargerDetailId = table.Column<int>(type: "int", nullable: true),
-                    MemoryCardDetailId = table.Column<int>(type: "int", nullable: true),
-                    AuxDetailId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.ProductId);
-                    table.ForeignKey(
-                        name: "FK_Products_AuxDetails_AuxDetailId",
-                        column: x => x.AuxDetailId,
-                        principalTable: "AuxDetails",
-                        principalColumn: "AUXDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_BatteryChargerDetails_BatteryChargerDetailId",
-                        column: x => x.BatteryChargerDetailId,
-                        principalTable: "BatteryChargerDetails",
-                        principalColumn: "BatteryChargerDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_Brands_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "BrandId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Products_FlashMemoryDetails_FlashMemoryDetailId",
-                        column: x => x.FlashMemoryDetailId,
-                        principalTable: "FlashMemoryDetails",
-                        principalColumn: "FlashDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_HandsfreeAndHeadPhoneDetails_HandsfreeAndHeadPhoneDetailId",
-                        column: x => x.HandsfreeAndHeadPhoneDetailId,
-                        principalTable: "HandsfreeAndHeadPhoneDetails",
-                        principalColumn: "HeadPhoneDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_LaptopDetails_LaptopDetailId",
-                        column: x => x.LaptopDetailId,
-                        principalTable: "LaptopDetails",
-                        principalColumn: "LaptopDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_MemoryCardDetails_MemoryCardDetailId",
-                        column: x => x.MemoryCardDetailId,
-                        principalTable: "MemoryCardDetails",
-                        principalColumn: "MemoryCardDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_MobileCoverDetails_MobileCoverDetailId",
-                        column: x => x.MobileCoverDetailId,
-                        principalTable: "MobileCoverDetails",
-                        principalColumn: "MobileCoverDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_MobileDetails_MobileDetailId",
-                        column: x => x.MobileDetailId,
-                        principalTable: "MobileDetails",
-                        principalColumn: "MobileDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_OfficialBrandProducts_OfficialBrandProductId",
-                        column: x => x.OfficialBrandProductId,
-                        principalTable: "OfficialBrandProducts",
-                        principalColumn: "OfficialBrandProductId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_PowerBankDetails_PowerBankDetailId",
-                        column: x => x.PowerBankDetailId,
-                        principalTable: "PowerBankDetails",
-                        principalColumn: "PowerBankId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_SmartWatchDetails_SmartWatchDetailId",
-                        column: x => x.SmartWatchDetailId,
-                        principalTable: "SmartWatchDetails",
-                        principalColumn: "SmartWatchDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_SpeakerDetails_SpeakerDetailId",
-                        column: x => x.SpeakerDetailId,
-                        principalTable: "SpeakerDetails",
-                        principalColumn: "SpeakerDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_TabletDetails_TabletDetailId",
-                        column: x => x.TabletDetailId,
-                        principalTable: "TabletDetails",
-                        principalColumn: "TabletDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Products_WristWatchDetails_WristWatchDetailId",
-                        column: x => x.WristWatchDetailId,
-                        principalTable: "WristWatchDetails",
-                        principalColumn: "WristWatchDetailId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Addresses",
-                columns: table => new
-                {
-                    AddressId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    StateId = table.Column<int>(type: "int", nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: false),
-                    Plaque = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    AddressText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false)
+                    StoreName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegisterShopper = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OnNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    BackNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    BusinessLicenseImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Addresses", x => x.AddressId);
+                    table.PrimaryKey("PK_Shoppers", x => x.ShopperId);
                     table.ForeignKey(
-                        name: "FK_Addresses_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
-                        principalColumn: "CityId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Addresses_States_StateId",
-                        column: x => x.StateId,
-                        principalTable: "States",
-                        principalColumn: "StateId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Addresses_Users_UserId",
+                        name: "FK_Shoppers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -1041,6 +827,272 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    AddressId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    Plaque = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    AddressText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.AddressId);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "StateId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OfficialBrandProducts",
+                columns: table => new
+                {
+                    OfficialBrandProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OfficialBrandProductName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    BrandId = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OfficialBrandProducts", x => x.OfficialBrandProductId);
+                    table.ForeignKey(
+                        name: "FK_OfficialBrandProducts_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "BrandId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShopperStoreTitles",
+                columns: table => new
+                {
+                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StoreTitleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopperStoreTitles", x => new { x.ShopperId, x.StoreTitleId });
+                    table.ForeignKey(
+                        name: "FK_ShopperStoreTitles_Shoppers_ShopperId",
+                        column: x => x.ShopperId,
+                        principalTable: "Shoppers",
+                        principalColumn: "ShopperId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShopperStoreTitles_StoreTitles_StoreTitleId",
+                        column: x => x.StoreTitleId,
+                        principalTable: "StoreTitles",
+                        principalColumn: "StoreTitleId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StoresAddress",
+                columns: table => new
+                {
+                    StoreAddressId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    Plaque = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    AddressText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    LandlinePhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    StateId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StoresAddress", x => x.StoreAddressId);
+                    table.ForeignKey(
+                        name: "FK_StoresAddress_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StoresAddress_Shoppers_ShopperId",
+                        column: x => x.ShopperId,
+                        principalTable: "Shoppers",
+                        principalColumn: "ShopperId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_StoresAddress_States_StateId",
+                        column: x => x.StateId,
+                        principalTable: "States",
+                        principalColumn: "StateId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    AddressId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TrackingCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OrderDiscount = table.Column<decimal>(type: "Money", nullable: false),
+                    ShippingCost = table.Column<decimal>(type: "Money", nullable: false),
+                    Sum = table.Column<decimal>(type: "Money", nullable: false),
+                    IsPayed = table.Column<bool>(type: "bit", nullable: false),
+                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsReceived = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "AddressId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    ProductType = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    OfficialBrandProductId = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    MobileDetailId = table.Column<int>(type: "int", nullable: true),
+                    LaptopDetailId = table.Column<int>(type: "int", nullable: true),
+                    MobileCoverDetailId = table.Column<int>(type: "int", nullable: true),
+                    TabletDetailId = table.Column<int>(type: "int", nullable: true),
+                    SpeakerDetailId = table.Column<int>(type: "int", nullable: true),
+                    PowerBankDetailId = table.Column<int>(type: "int", nullable: true),
+                    WristWatchDetailId = table.Column<int>(type: "int", nullable: true),
+                    SmartWatchDetailId = table.Column<int>(type: "int", nullable: true),
+                    HandsfreeAndHeadPhoneDetailId = table.Column<int>(type: "int", nullable: true),
+                    FlashMemoryDetailId = table.Column<int>(type: "int", nullable: true),
+                    BatteryChargerDetailId = table.Column<int>(type: "int", nullable: true),
+                    MemoryCardDetailId = table.Column<int>(type: "int", nullable: true),
+                    AuxDetailId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.ProductId);
+                    table.ForeignKey(
+                        name: "FK_Products_AuxDetails_AuxDetailId",
+                        column: x => x.AuxDetailId,
+                        principalTable: "AuxDetails",
+                        principalColumn: "AUXDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_BatteryChargerDetails_BatteryChargerDetailId",
+                        column: x => x.BatteryChargerDetailId,
+                        principalTable: "BatteryChargerDetails",
+                        principalColumn: "BatteryChargerDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_FlashMemoryDetails_FlashMemoryDetailId",
+                        column: x => x.FlashMemoryDetailId,
+                        principalTable: "FlashMemoryDetails",
+                        principalColumn: "FlashDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_HandsfreeAndHeadPhoneDetails_HandsfreeAndHeadPhoneDetailId",
+                        column: x => x.HandsfreeAndHeadPhoneDetailId,
+                        principalTable: "HandsfreeAndHeadPhoneDetails",
+                        principalColumn: "HeadPhoneDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_LaptopDetails_LaptopDetailId",
+                        column: x => x.LaptopDetailId,
+                        principalTable: "LaptopDetails",
+                        principalColumn: "LaptopDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_MemoryCardDetails_MemoryCardDetailId",
+                        column: x => x.MemoryCardDetailId,
+                        principalTable: "MemoryCardDetails",
+                        principalColumn: "MemoryCardDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_MobileCoverDetails_MobileCoverDetailId",
+                        column: x => x.MobileCoverDetailId,
+                        principalTable: "MobileCoverDetails",
+                        principalColumn: "MobileCoverDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_MobileDetails_MobileDetailId",
+                        column: x => x.MobileDetailId,
+                        principalTable: "MobileDetails",
+                        principalColumn: "MobileDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_OfficialBrandProducts_OfficialBrandProductId",
+                        column: x => x.OfficialBrandProductId,
+                        principalTable: "OfficialBrandProducts",
+                        principalColumn: "OfficialBrandProductId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Products_PowerBankDetails_PowerBankDetailId",
+                        column: x => x.PowerBankDetailId,
+                        principalTable: "PowerBankDetails",
+                        principalColumn: "PowerBankId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_SmartWatchDetails_SmartWatchDetailId",
+                        column: x => x.SmartWatchDetailId,
+                        principalTable: "SmartWatchDetails",
+                        principalColumn: "SmartWatchDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_SpeakerDetails_SpeakerDetailId",
+                        column: x => x.SpeakerDetailId,
+                        principalTable: "SpeakerDetails",
+                        principalColumn: "SpeakerDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_TabletDetails_TabletDetailId",
+                        column: x => x.TabletDetailId,
+                        principalTable: "TabletDetails",
+                        principalColumn: "TabletDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_WristWatchDetails_WristWatchDetailId",
+                        column: x => x.WristWatchDetailId,
+                        principalTable: "WristWatchDetails",
+                        principalColumn: "WristWatchDetailId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -1071,80 +1123,16 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EditShopperProducts",
-                columns: table => new
-                {
-                    EditShopperProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ShopperUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Warranty = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Price = table.Column<decimal>(type: "Money", nullable: false),
-                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsSuccess = table.Column<bool>(type: "bit", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EditShopperProducts", x => x.EditShopperProductId);
-                    table.ForeignKey(
-                        name: "FK_EditShopperProducts_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EditShopperProducts_Shoppers_ShopperId",
-                        column: x => x.ShopperId,
-                        principalTable: "Shoppers",
-                        principalColumn: "ShopperId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_EditShopperProducts_Users_ShopperUserId",
-                        column: x => x.ShopperUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FavoriteProducts",
-                columns: table => new
-                {
-                    FavoriteProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ShopperUserId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FavoriteProducts", x => x.FavoriteProductId);
-                    table.ForeignKey(
-                        name: "FK_FavoriteProducts_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FavoriteProducts_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProductGalleries",
                 columns: table => new
                 {
-                    ProductGalleryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    ImageName = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false)
+                    ImageName = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    OrderBy = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductGalleries", x => x.ProductGalleryId);
+                    table.PrimaryKey("PK_ProductGalleries", x => new { x.ProductId, x.ImageName });
                     table.ForeignKey(
                         name: "FK_ProductGalleries_Products_ProductId",
                         column: x => x.ProductId,
@@ -1208,24 +1196,59 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ShopperProducts",
+                name: "ShopperProductRequests",
                 columns: table => new
                 {
+                    ShopperProductRequestId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    ShopperUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ViewCount = table.Column<int>(type: "int", nullable: false),
-                    SaleCount = table.Column<int>(type: "int", nullable: false),
+                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RequestUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RequestType = table.Column<bool>(type: "bit", nullable: false),
                     Warranty = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Price = table.Column<decimal>(type: "Money", nullable: false),
-                    DiscountPercent = table.Column<byte>(type: "tinyint", nullable: false),
-                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
-                    IsFinally = table.Column<bool>(type: "bit", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSuccess = table.Column<bool>(type: "bit", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShopperProducts", x => new { x.ShopperUserId, x.ProductId });
+                    table.PrimaryKey("PK_ShopperProductRequests", x => x.ShopperProductRequestId);
+                    table.ForeignKey(
+                        name: "FK_ShopperProductRequests_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShopperProductRequests_Shoppers_ShopperId",
+                        column: x => x.ShopperId,
+                        principalTable: "Shoppers",
+                        principalColumn: "ShopperId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ShopperProductRequests_Users_RequestUserId",
+                        column: x => x.RequestUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShopperProducts",
+                columns: table => new
+                {
+                    ShopperProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Warranty = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IsFinally = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopperProducts", x => x.ShopperProductId);
                     table.ForeignKey(
                         name: "FK_ShopperProducts_Products_ProductId",
                         column: x => x.ProductId,
@@ -1237,73 +1260,6 @@ namespace Reshop.Infrastructure.Migrations
                         column: x => x.ShopperId,
                         principalTable: "Shoppers",
                         principalColumn: "ShopperId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ShopperProducts_Users_ShopperUserId",
-                        column: x => x.ShopperUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    AddressId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    TrackingCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrderDiscount = table.Column<decimal>(type: "Money", nullable: false),
-                    ShippingCost = table.Column<decimal>(type: "Money", nullable: false),
-                    Sum = table.Column<decimal>(type: "Money", nullable: false),
-                    IsPayed = table.Column<bool>(type: "bit", nullable: false),
-                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsReceived = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
-                    table.ForeignKey(
-                        name: "FK_Orders_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Addresses",
-                        principalColumn: "AddressId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Orders_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CommentAnswers",
-                columns: table => new
-                {
-                    CommentAnswerId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CommentId = table.Column<int>(type: "int", nullable: false),
-                    AnswerText = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CommentAnswers", x => x.CommentAnswerId);
-                    table.ForeignKey(
-                        name: "FK_CommentAnswers_Comments_CommentId",
-                        column: x => x.CommentId,
-                        principalTable: "Comments",
-                        principalColumn: "CommentId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CommentAnswers_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1336,15 +1292,112 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ShopperProductColorRequests",
+                columns: table => new
+                {
+                    ShopperProductColorRequestId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ShopperProductId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RequestUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ColorId = table.Column<int>(type: "int", nullable: false),
+                    RequestType = table.Column<bool>(type: "bit", nullable: false),
+                    Price = table.Column<decimal>(type: "Money", nullable: false),
+                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsSuccess = table.Column<bool>(type: "bit", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopperProductColorRequests", x => x.ShopperProductColorRequestId);
+                    table.ForeignKey(
+                        name: "FK_ShopperProductColorRequests_Colors_ColorId",
+                        column: x => x.ColorId,
+                        principalTable: "Colors",
+                        principalColumn: "ColorId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShopperProductColorRequests_ShopperProducts_ShopperProductId",
+                        column: x => x.ShopperProductId,
+                        principalTable: "ShopperProducts",
+                        principalColumn: "ShopperProductId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ShopperProductColorRequests_Users_RequestUserId",
+                        column: x => x.RequestUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShopperProductColors",
+                columns: table => new
+                {
+                    ShopperProductColorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ShopperProductId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ColorId = table.Column<int>(type: "int", nullable: false),
+                    ShortKey = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    Price = table.Column<decimal>(type: "Money", nullable: false),
+                    QuantityInStock = table.Column<int>(type: "int", nullable: false),
+                    ViewCount = table.Column<int>(type: "int", nullable: false),
+                    SaleCount = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsFinally = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopperProductColors", x => x.ShopperProductColorId);
+                    table.ForeignKey(
+                        name: "FK_ShopperProductColors_Colors_ColorId",
+                        column: x => x.ColorId,
+                        principalTable: "Colors",
+                        principalColumn: "ColorId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShopperProductColors_ShopperProducts_ShopperProductId",
+                        column: x => x.ShopperProductId,
+                        principalTable: "ShopperProducts",
+                        principalColumn: "ShopperProductId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FavoriteProducts",
+                columns: table => new
+                {
+                    FavoriteProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ShopperProductColorId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FavoriteProducts", x => x.FavoriteProductId);
+                    table.ForeignKey(
+                        name: "FK_FavoriteProducts_ShopperProductColors_ShopperProductColorId",
+                        column: x => x.ShopperProductColorId,
+                        principalTable: "ShopperProductColors",
+                        principalColumn: "ShopperProductColorId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FavoriteProducts_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderDetails",
                 columns: table => new
                 {
                     OrderDetailId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     OrderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ShopperUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ShopperProductColorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Price = table.Column<decimal>(type: "Money", nullable: false),
-                    ProductDiscount = table.Column<decimal>(type: "Money", nullable: false),
+                    ProductDiscountPrice = table.Column<decimal>(type: "Money", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TrackingCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Count = table.Column<int>(type: "int", nullable: false),
@@ -1360,16 +1413,31 @@ namespace Reshop.Infrastructure.Migrations
                         principalColumn: "OrderId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_OrderDetails_ShopperProductColors_ShopperProductColorId",
+                        column: x => x.ShopperProductColorId,
+                        principalTable: "ShopperProductColors",
+                        principalColumn: "ShopperProductColorId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShopperProductDiscounts",
+                columns: table => new
+                {
+                    ShopperProductDiscountId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ShopperProductColorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DiscountPercent = table.Column<byte>(type: "tinyint", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShopperProductDiscounts", x => x.ShopperProductDiscountId);
                     table.ForeignKey(
-                        name: "FK_OrderDetails_Users_ShopperUserId",
-                        column: x => x.ShopperUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
+                        name: "FK_ShopperProductDiscounts_ShopperProductColors_ShopperProductColorId",
+                        column: x => x.ShopperProductColorId,
+                        principalTable: "ShopperProductColors",
+                        principalColumn: "ShopperProductColorId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1389,19 +1457,19 @@ namespace Reshop.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Brands_StoreTitleId",
+                table: "Brands",
+                column: "StoreTitleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ChildCategoryToCategories_ChildCategoryId",
                 table: "ChildCategoryToCategories",
                 column: "ChildCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommentAnswers_CommentId",
-                table: "CommentAnswers",
-                column: "CommentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CommentAnswers_UserId",
-                table: "CommentAnswers",
-                column: "UserId");
+                name: "IX_Cities_StateId",
+                table: "Cities",
+                column: "StateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_ProductId",
@@ -1414,24 +1482,9 @@ namespace Reshop.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EditShopperProducts_ProductId",
-                table: "EditShopperProducts",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EditShopperProducts_ShopperId",
-                table: "EditShopperProducts",
-                column: "ShopperId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EditShopperProducts_ShopperUserId",
-                table: "EditShopperProducts",
-                column: "ShopperUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FavoriteProducts_ProductId",
+                name: "IX_FavoriteProducts_ShopperProductColorId",
                 table: "FavoriteProducts",
-                column: "ProductId");
+                column: "ShopperProductColorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FavoriteProducts_UserId",
@@ -1449,14 +1502,9 @@ namespace Reshop.Infrastructure.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_ProductId",
+                name: "IX_OrderDetails_ShopperProductColorId",
                 table: "OrderDetails",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_ShopperUserId",
-                table: "OrderDetails",
-                column: "ShopperUserId");
+                column: "ShopperProductColorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_AddressId",
@@ -1474,11 +1522,6 @@ namespace Reshop.Infrastructure.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductGalleries_ProductId",
-                table: "ProductGalleries",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_AuxDetailId",
                 table: "Products",
                 column: "AuxDetailId");
@@ -1487,11 +1530,6 @@ namespace Reshop.Infrastructure.Migrations
                 name: "IX_Products_BatteryChargerDetailId",
                 table: "Products",
                 column: "BatteryChargerDetailId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_BrandId",
-                table: "Products",
-                column: "BrandId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_FlashMemoryDetailId",
@@ -1584,6 +1622,51 @@ namespace Reshop.Infrastructure.Migrations
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ShopperProductColorRequests_ColorId",
+                table: "ShopperProductColorRequests",
+                column: "ColorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopperProductColorRequests_RequestUserId",
+                table: "ShopperProductColorRequests",
+                column: "RequestUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopperProductColorRequests_ShopperProductId",
+                table: "ShopperProductColorRequests",
+                column: "ShopperProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopperProductColors_ColorId",
+                table: "ShopperProductColors",
+                column: "ColorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopperProductColors_ShopperProductId",
+                table: "ShopperProductColors",
+                column: "ShopperProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopperProductDiscounts_ShopperProductColorId",
+                table: "ShopperProductDiscounts",
+                column: "ShopperProductColorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopperProductRequests_ProductId",
+                table: "ShopperProductRequests",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopperProductRequests_RequestUserId",
+                table: "ShopperProductRequests",
+                column: "RequestUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShopperProductRequests_ShopperId",
+                table: "ShopperProductRequests",
+                column: "ShopperId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ShopperProducts_ProductId",
                 table: "ShopperProducts",
                 column: "ProductId");
@@ -1594,14 +1677,14 @@ namespace Reshop.Infrastructure.Migrations
                 column: "ShopperId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Shoppers_UserId",
+                table: "Shoppers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ShopperStoreTitles_StoreTitleId",
                 table: "ShopperStoreTitles",
                 column: "StoreTitleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StateCities_CityId",
-                table: "StateCities",
-                column: "CityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StoresAddress_CityId",
@@ -1634,11 +1717,6 @@ namespace Reshop.Infrastructure.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_ShopperId",
-                table: "Users",
-                column: "ShopperId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Wallets_UserId",
                 table: "Wallets",
                 column: "UserId");
@@ -1655,10 +1733,7 @@ namespace Reshop.Infrastructure.Migrations
                 name: "ChildCategoryToCategories");
 
             migrationBuilder.DropTable(
-                name: "CommentAnswers");
-
-            migrationBuilder.DropTable(
-                name: "EditShopperProducts");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "FavoriteProducts");
@@ -1679,13 +1754,16 @@ namespace Reshop.Infrastructure.Migrations
                 name: "RolePermissions");
 
             migrationBuilder.DropTable(
-                name: "ShopperProducts");
+                name: "ShopperProductColorRequests");
+
+            migrationBuilder.DropTable(
+                name: "ShopperProductDiscounts");
+
+            migrationBuilder.DropTable(
+                name: "ShopperProductRequests");
 
             migrationBuilder.DropTable(
                 name: "ShopperStoreTitles");
-
-            migrationBuilder.DropTable(
-                name: "StateCities");
 
             migrationBuilder.DropTable(
                 name: "StoresAddress");
@@ -1706,9 +1784,6 @@ namespace Reshop.Infrastructure.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Comments");
-
-            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
@@ -1721,7 +1796,7 @@ namespace Reshop.Infrastructure.Migrations
                 name: "Permissions");
 
             migrationBuilder.DropTable(
-                name: "StoreTitles");
+                name: "ShopperProductColors");
 
             migrationBuilder.DropTable(
                 name: "Discounts");
@@ -1736,16 +1811,22 @@ namespace Reshop.Infrastructure.Migrations
                 name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Colors");
+
+            migrationBuilder.DropTable(
+                name: "ShopperProducts");
 
             migrationBuilder.DropTable(
                 name: "Cities");
 
             migrationBuilder.DropTable(
-                name: "States");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Shoppers");
+
+            migrationBuilder.DropTable(
+                name: "States");
 
             migrationBuilder.DropTable(
                 name: "AuxDetails");
@@ -1790,10 +1871,13 @@ namespace Reshop.Infrastructure.Migrations
                 name: "WristWatchDetails");
 
             migrationBuilder.DropTable(
-                name: "Shoppers");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Brands");
+
+            migrationBuilder.DropTable(
+                name: "StoreTitles");
         }
     }
 }

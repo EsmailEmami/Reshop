@@ -16,9 +16,6 @@ namespace Reshop.Domain.Entities.Shopper
         [ForeignKey("Shopper")]
         public string ShopperId { get; set; }
 
-        [ForeignKey("State")]
-        public int StateId { get; set; }
-
         [ForeignKey("City")]
         public int CityId { get; set; }
 

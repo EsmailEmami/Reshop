@@ -50,11 +50,11 @@
                     IEnumerable<City> cities = ViewBag.Cities as IEnumerable<City>;
                 }
 
-                <select onchange="GetCitiesOfState(this.value)" asp-for="StateId">
+                <select onchange="GetCitiesOfState(this.value)">
                     <option value="0">استان</option>
                     @foreach (var state in states)
                     {
-                        @:<option value="@state.StateId" @((Model.StateId != 0 && state.StateId == Model.StateId) ? "selected" : "" )>@state.StateName</option>
+                        @:<option value="@state.StateId" @((Model.City.StateId != 0 && state.StateId == Model.City.StateId) ? "selected" : "" )>@state.StateName</option>
                     }
                 </select>
             </div>
