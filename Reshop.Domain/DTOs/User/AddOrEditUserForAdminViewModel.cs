@@ -42,10 +42,6 @@ namespace Reshop.Domain.DTOs.User
         [MaxLength(10, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string PostalCode { get; set; } = "-";
 
-        [Display(Name = "وضعیت شماره تلفن")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public bool IsPhoneNumberActive { get; set; }
-
         [Display(Name = "وضعیت مسدودیت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsBlocked { get; set; }

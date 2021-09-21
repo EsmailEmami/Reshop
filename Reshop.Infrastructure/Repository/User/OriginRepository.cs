@@ -59,6 +59,10 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task<int> GetStatesCountAsync() =>
             await _context.States.CountAsync();
 
+        public async Task<int> GetStateIdOfCityAsync(int cityId) =>
+            await _context.Cities.Where(c => c.CityId == cityId)
+                .Select(c => c.StateId).SingleOrDefaultAsync();
+
         #endregion
 
         #region city

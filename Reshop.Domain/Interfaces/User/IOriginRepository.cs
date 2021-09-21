@@ -19,7 +19,7 @@ namespace Reshop.Domain.Interfaces.User
         Task<State> GetStateByIdAsync(int stateId);
         string GetStateNameById(int stateId);
         Task<int> GetStatesCountAsync();
-
+        Task<int> GetStateIdOfCityAsync(int cityId);
         #endregion
 
         #region city

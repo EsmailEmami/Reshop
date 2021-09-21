@@ -67,10 +67,6 @@ namespace Reshop.Infrastructure.Repository.User
                 _context.Users
                     .Select(c => new UserInformationViewModel(c.UserId, c.FullName, c.PhoneNumber));
 
-        public async Task<Domain.Entities.User.User> GetUserByActiveCodeAsync(string activeCode)
-            =>
-                await _context.Users.SingleOrDefaultAsync(c => c.ActiveCode == activeCode);
-
         public async Task<Domain.Entities.User.User> GetUserByInviteCodeAsync(string inviteCode)
             =>
                 await _context.Users.SingleOrDefaultAsync(c => c.InviteCode == inviteCode);

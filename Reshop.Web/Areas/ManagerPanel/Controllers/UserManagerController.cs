@@ -66,7 +66,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 var user = new User
                 {
-                    ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
                     FullName = model.FullName,
                     RegisteredDate = DateTime.Now,
                     UserAvatar = "userAvatar.jpg",
@@ -76,7 +75,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     InviteCount = 0,
                     Score = 0,
                     NationalCode = model.NationalCode,
-                    IsPhoneNumberActive = model.IsPhoneNumberActive,
                     IsBlocked = model.IsBlocked,
                     AccountBalance = model.AccountBalance,
                 };
@@ -122,7 +120,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 user.InviteCount = 0;
                 user.Score = 0;
                 user.NationalCode = model.NationalCode;
-                user.IsPhoneNumberActive = model.IsPhoneNumberActive;
                 user.IsBlocked = model.IsBlocked;
                 user.AccountBalance = model.AccountBalance;
 

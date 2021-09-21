@@ -4,8 +4,8 @@
 }
 
 <div class="row">
-    <div class="col-sm-12 col-md-4 col-lg-3">
-        <partial name="AccountManager/_MenuAccount" model="AccountMenuActivePage.Question_v_Comment" />
+<div class="col-sm-12 col-md-4 col-lg-3">
+    <partial name="Account/_MenuAccount" model="AccountMenuActivePage.Question_v_Comment"/>
     </div>
 
     <div class="col-sm-12 col-md-8 col-lg-9">
@@ -13,8 +13,8 @@
             <div class="col-12">
                 <div class="profile-nav box-shadow">
                     <ul>
-                        <li><a asp-action="Questions">سوالات</a> </li>
-                        <li class="active"><a asp-action="Comments">نظرات</a> </li>
+                        <li class="active"><a asp-action="Dashboard">سوالات</a> </li>
+                        <li><a asp-action="Comments">نظرات</a> </li>
                     </ul>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                     @if (!Model.Any())
                     {
                         <div class="alert alert-warning text-muted m-0">
-                            @User.FindFirstValue(ClaimTypes.Name) عزیز شما تا حالا نظری مطرح نکرده اید.
+                            @User.FindFirstValue(ClaimTypes.Name) عزیز شما تا حالا سوالی مطرح نکرده اید.
                         </div>
                     }
                     else

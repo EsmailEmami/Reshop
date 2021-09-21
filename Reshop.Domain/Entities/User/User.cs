@@ -47,10 +47,6 @@ namespace Reshop.Domain.Entities.User
         [Display(Name = "امتیاز")]
         public int Score { get; set; }
 
-        [Display(Name = "کد فعال سازی")]
-        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string ActiveCode { get; set; }
-
         [Display(Name = "کد ملی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(10, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
@@ -64,10 +60,6 @@ namespace Reshop.Domain.Entities.User
         [Display(Name = "تاریخ ثبت نام")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public DateTime RegisteredDate { get; set; }
-
-        [Display(Name = "وضعیت شماره تلفن")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public bool IsPhoneNumberActive { get; set; }
 
         [Display(Name = "وضعیت مسدودیت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]

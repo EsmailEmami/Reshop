@@ -5,14 +5,14 @@
 <div class="row">
 
     <div class="col-sm-12 col-md-4 col-lg-3">
-        <partial name="AccountManager/_MenuAccount" model="AccountMenuActivePage.FavoriteProducts" />
+        <partial name="Account/_MenuAccount" model="AccountMenuActivePage.FavoriteProducts" />
     </div>
 
     <div class="col-sm-12 col-md-8 col-lg-9">
         <div class="row">
             <div class="col-12">
                 <div class="profile-nav box-shadow">
-                    <form asp-controller="AccountManager" asp-action="FavoriteProducts" method="get" id="filterFavoriteProduct">
+                    <form asp-controller="Account" asp-action="FavoriteProducts" method="get" id="filterFavoriteProduct">
                         <input type="hidden" name="pageId" id="pageId" />
 
                         @{

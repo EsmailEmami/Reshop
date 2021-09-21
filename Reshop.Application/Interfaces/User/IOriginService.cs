@@ -11,13 +11,14 @@ namespace Reshop.Application.Interfaces.User
     {
         #region state
 
-        IEnumerable<Tuple<int,string>> GetStates();
+        IEnumerable<Tuple<int, string>> GetStates();
         Task<Tuple<IEnumerable<Tuple<int, string>>, int, int>> GetStatesWithPaginationAsync(int pageId = 1, int take = 18, string filter = "");
         Task<ResultTypes> AddStateAsync(State state);
         Task<ResultTypes> RemoveStateAsync(int stateId);
         Task<ResultTypes> EditStateAsync(State state);
         Task<State> GetStateByIdAsync(int stateId);
         string GetStateNameById(int stateId);
+        Task<int> GetStateIdOfCityAsync(int cityId);
 
         #endregion
 

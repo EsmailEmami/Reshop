@@ -96,6 +96,9 @@ namespace Reshop.Application.Services.User
             =>
                 _stateRepository.GetStateNameById(stateId);
 
+        public async Task<int> GetStateIdOfCityAsync(int cityId) =>
+            await _stateRepository.GetStateIdOfCityAsync(cityId);
+
         public IEnumerable<City> GetCities() => _stateRepository.GetCities();
 
         public async Task<Tuple<IEnumerable<Tuple<int, string>>, int, int>> GetCitiesWithPaginationAsync(int pageId = 1, int take = 18, string filter = "", List<int> states = null)

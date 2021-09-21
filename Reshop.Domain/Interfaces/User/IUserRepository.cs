@@ -13,7 +13,6 @@ namespace Reshop.Domain.Interfaces.User
 
         IAsyncEnumerable<Entities.User.User> GetUsers();
         IEnumerable<UserInformationViewModel> GetUsersInformation();
-        Task<Entities.User.User> GetUserByActiveCodeAsync(string activeCode);
         Task<Entities.User.User> GetUserByInviteCodeAsync(string inviteCode);
         Task<Entities.User.User> GetUserByIdAsync(string userId);
         Task<Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber);

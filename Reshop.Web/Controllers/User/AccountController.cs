@@ -1,27 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Generator;
+using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
-using Reshop.Application.Security;
-using Reshop.Application.Security.GoogleRecaptcha;
-using Reshop.Application.Senders;
 using Reshop.Application.Validations.Google;
-using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.DTOs.User;
-using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Reshop.Application.Security.GoogleRecaptcha;
 
 namespace Reshop.Web.Controllers.User
 {
@@ -30,21 +28,23 @@ namespace Reshop.Web.Controllers.User
         #region constructor
 
         private readonly IUserService _userService;
-
-        private readonly IMessageSender _messageSender;
-        private readonly IOptions<GoogleReCaptchaKey> _captchaKey;
+        private readonly ICartService _cartService;
+        private readonly IProductService _productService;
+        private readonly IOriginService _originService;
         private readonly IShopperService _shopperService;
-        private readonly IRoleService _roleService;
-        private readonly IOriginService _stateService;
+        private readonly IOptions<GoogleReCaptchaKey> _captchaKey;
+        private readonly IDataProtector _dataProtector;
 
-        public AccountController(IUserService userService, IMessageSender messageSender, IOptions<GoogleReCaptchaKey> captchaKey, IShopperService shopperService, IRoleService roleService, IOriginService stateService)
+        public AccountController(IUserService userService, ICartService cartService, IProductService productService, IOriginService stateService, IShopperService shopperService, IOptions<GoogleReCaptchaKey> captchaKey, IDataProtectionProvider dataProtectionProvider)
         {
             _userService = userService;
-            _messageSender = messageSender;
-            _captchaKey = captchaKey;
+            _cartService = cartService;
+            _productService = productService;
+            _originService = stateService;
             _shopperService = shopperService;
-            _roleService = roleService;
-            _stateService = stateService;
+            _captchaKey = captchaKey;
+            _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Controllers.User.AccountController",
+                new string[] { "AccountController" });
         }
 
 
@@ -84,7 +84,6 @@ namespace Reshop.Web.Controllers.User
 
             var user = new Domain.Entities.User.User
             {
-                ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
                 FullName = model.FullName,
                 RegisteredDate = DateTime.Now,
                 UserAvatar = "userAvatar.jpg",
@@ -93,7 +92,6 @@ namespace Reshop.Web.Controllers.User
                 InviteCount = 0,
                 Score = 0,
                 NationalCode = "-",
-                IsPhoneNumberActive = false,
                 Email = "-",
                 IsBlocked = false,
             };
@@ -173,12 +171,6 @@ namespace Reshop.Web.Controllers.User
 
             if (user != null)
             {
-                if (!user.IsPhoneNumberActive)
-                {
-                    ModelState.AddModelError("", "حساب کاربری شما فعال نمیباشد.لطفا جهت فعال سازی حساب کاربری خود بر روی لینک زیر کلیک کنید.");
-                    return View(model);
-                }
-
                 // settings of user data for login
                 var claims = new List<Claim>()
                 {
@@ -226,194 +218,314 @@ namespace Reshop.Web.Controllers.User
 
         #endregion
 
-        #region Shopper
+        #region dashboard
 
-        [Route("NewShopper")]
         [HttpGet]
-        public IActionResult AddShopper()
+        public async Task<IActionResult> Dashboard()
         {
-            var model = new AddShopperViewModel()
-            {
-                States = _stateService.GetStates() as IEnumerable<State>,
-                StoreTitles = _shopperService.GetStoreTitles(),
-            };
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            var user = await _userService.GetUserByIdAsync(userId);
 
-            return View(model);
+            if (user is null)
+                return NotFound();
+
+            return View(user);
         }
 
-        [Route("NewShopper")]
-        [HttpPost]
-        public async Task<IActionResult> AddShopper(AddShopperViewModel model)
+        #endregion
+
+        #region edit user data
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> EditUserInformation()
         {
-            // this is states when page reload states is not null
-            model.States = _stateService.GetStates() as IEnumerable<State>;
-            model.StoreTitles = _shopperService.GetStoreTitles();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (!ModelState.IsValid)
-                return View(model);
+            var user = await _userService.GetUserDataForEditAsync(userId);
 
-
-
-            //// check images is not script
-
-            #region imgValication
-
-            if (!model.OnNationalCardImageName.IsImage() ||
-              !model.BackNationalCardImageName.IsImage() ||
-              !model.BusinessLicenseImageName.IsImage())
+            if (user is null)
             {
-                ModelState.AddModelError("", "فروشنده عزیز لطفا تصاویر خود را درست وارد کنید.");
-                return View(model);
+                return NotFound();
             }
 
-            #endregion
+            user.UserId = _dataProtector.Protect(user.UserId);
+
+            return View(user);
+        }
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> EditUserInformation(EditUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditUserInformation", model) });
+
 
             try
             {
-                #region user
-
-                var user = new Domain.Entities.User.User
-                {
-                    FullName = model.FullName,
-                    ActiveCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
-                    RegisteredDate = DateTime.Now,
-                    UserAvatar = "userAvatar.jpg",
-                    PhoneNumber = model.PhoneNumber,
-                    InviteCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),
-                    InviteCount = 0,
-                    Score = 0,
-                    NationalCode = model.NationalCode,
-                    Email = model.Email,
-                    IsPhoneNumberActive = true,
-                    IsBlocked = false
-                };
-
-                var addUser = await _userService.AddUserAsync(user);
-
-                if (addUser == ResultTypes.Successful)
-                {
-                    var addUserToRoleResult = await _roleService.AddUserToRoleAsync(user.UserId, "Shopper");
-
-                    if (addUserToRoleResult != ResultTypes.Successful)
-                    {
-                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت مقام شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                        return View(model);
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
-                    return View(model);
-                }
-
-
-                #endregion
-
-
-                var shopper = new Domain.Entities.Shopper.Shopper()
-                {
-                    StoreName = model.StoreName,
-                    BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate(),
-                    RegisterShopper = DateTime.Now,
-                    IsActive = false,
-                    User = user,
-                    UserId = user.UserId
-                };
-
-                #region shopper cards
-
-                if (model.OnNationalCardImageName.Length > 0)
-                {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "shoppersCardImages");
-                    string imageName = await ImageConvertor.CreateNewImage(model.OnNationalCardImageName, path);
-                    shopper.OnNationalCardImageName = imageName;
-                }
-
-                if (model.BackNationalCardImageName.Length > 0)
-                {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "shoppersCardImages");
-                    string imageName = await ImageConvertor.CreateNewImage(model.BackNationalCardImageName, path);
-                    shopper.BackNationalCardImageName = imageName;
-                }
-
-                if (model.BusinessLicenseImageName.Length > 0)
-                {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "shoppersCardImages");
-                    string imageName = await ImageConvertor.CreateNewImage(model.BusinessLicenseImageName, path);
-                    shopper.BusinessLicenseImageName = imageName;
-                }
-
-                #endregion
-
-                var addShopper = await _shopperService.AddShopperAsync(shopper);
-
-                if (addShopper == ResultTypes.Successful)
-                {
-
-                    #region shopper storeTitle
-
-                    var addStoreTitle = await _shopperService.AddShopperStoreTitleAsync(shopper.ShopperId, model.SelectedStoreTitles as List<int>);
-
-                    if (addStoreTitle != ResultTypes.Successful)
-                    {
-                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت عناوین شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                        return View(model);
-                    }
-
-                    #endregion
-
-                    #region store address
-
-                    var storeAddress = new StoreAddress()
-                    {
-                        ShopperId = shopper.ShopperId,
-                        CityId = model.CityId,
-                        Plaque = model.Plaque,
-                        PostalCode = model.PostalCode,
-                        AddressText = model.AddressText,
-                        LandlinePhoneNumber = model.LandlinePhoneNumber
-                    };
-
-                    var addStoreAddress = await _shopperService.AddStoreAddressAsync(storeAddress);
-
-                    if (addStoreAddress == ResultTypes.Successful)
-                    {
-                        shopper.StoresAddress.Add(storeAddress);
-
-                        await _shopperService.EditShopperAsync(shopper);
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نشانی فروشگاه شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
-                        return View(model);
-                    }
-
-                    #endregion
-
-                    return Redirect("/");
-                }
-
-
-                ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت نام شما به مشکلی غیر منتظره برخورد کردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return View(model);
+                model.UserId = _dataProtector.Unprotect(model.UserId);
             }
             catch
             {
-                ModelState.AddModelError("", "فروشنده عزیز متاسفانه هنگام ثبت عناوین شما به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return View(model);
+                ModelState.AddModelError("", "هنگام ویرایش اطلاعات به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+
+            var user = await _userService.GetUserByIdAsync(model.UserId);
+
+            if (user is null)
+            {
+                ModelState.AddModelError("", "هنگام ویرایش اطلاعات به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+
+            user.FullName = model.FullName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.NationalCode = model.NationalCode;
+            user.Email = model.Email;
+
+            var result = await _userService.EditUserAsync(user);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "هنگام ویرایش اطلاعات به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
             }
         }
 
         #endregion
+
+        #region address
+
+        [HttpGet]
+        public IActionResult Address()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var addresses = _userService.GetUserAddresses(userId);
+
+            return View(addresses);
+        }
+
+        #endregion
+
+        #region new address
+
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult NewAddress()
+        {
+            ViewBag.States = _originService.GetStates();
+
+            return View(new Address());
+        }
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> NewAddress(Address model, int selectedState)
+        {
+            ViewBag.States = _originService.GetStates();
+            ViewBag.Cities = _originService.GetCitiesOfState(selectedState);
+
+
+
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var city = await _originService.GetCityByIdAsync(model.CityId);
+
+
+            // error while is problem from city
+            if (city == null)
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+            else if (city.StateId != selectedState)
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+
+
+            var address = new Address()
+            {
+                UserId = userId,
+                FullName = model.FullName,
+                PhoneNumber = model.PhoneNumber,
+                CityId = model.CityId,
+                Plaque = model.Plaque,
+                PostalCode = model.PostalCode,
+                AddressText = model.AddressText
+            };
+
+            var result = await _userService.AddUserAddressAsync(address);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+        }
+
+        #endregion
+
+        #region edit address
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> EditAddress(string addressId)
+        {
+            if (string.IsNullOrEmpty(addressId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var address = await _userService.GetAddressByIdAsync(addressId);
+
+            if (address is null)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            address.UserId = _dataProtector.Protect(address.UserId);
+
+            var stateId = await _originService.GetStateIdOfCityAsync(address.CityId);
+
+            if (stateId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+
+            ViewBag.States = _originService.GetStates();
+            ViewBag.Cities = _originService.GetCitiesOfState(stateId);
+
+            return View(address);
+        }
+
+        [HttpPost]
+
+        [NoDirectAccess]
+        public async Task<IActionResult> EditAddress(Address model, int selectedState)
+        {
+            ViewBag.States = _originService.GetStates();
+            ViewBag.Cities = _originService.GetCitiesOfState(selectedState);
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditAddress", model) });
+
+
+            try
+            {
+                model.UserId = _dataProtector.Unprotect(model.UserId);
+            }
+            catch
+            {
+                ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+
+            var address = await _userService.GetAddressByIdAsync(model.AddressId);
+
+            if (address is null)
+            {
+                ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+
+            if (address.UserId != userId)
+            {
+                ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+
+
+            address.FullName = model.FullName;
+            address.CityId = model.CityId;
+            address.Plaque = model.Plaque;
+            address.PhoneNumber = model.PhoneNumber;
+            address.PostalCode = model.PostalCode;
+            address.AddressText = model.AddressText;
+
+
+            var result = await _userService.EditUserAddressAsync(address);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+        }
+
+        #endregion
+
+        #region order
+
+        [HttpGet]
+        public IActionResult UnFinallyOrders()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return View(_cartService.GetNotReceivedOrders(userId));
+        }
+
+        [HttpGet]
+        public IActionResult FinallyOrders()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return View(_cartService.GetReceivedOrders(userId));
+        }
+
+        #endregion
+
+        #region question and comment
+
+        [HttpGet]
+        public IActionResult Questions()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return View(_userService.GetUserQuestionsForShow(userId));
+        }
+
+        [HttpGet]
+        public IActionResult Comments()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return View(_userService.GetUserCommentsForShow(userId));
+        }
+
+        #endregion
+
+        #region favorite products
+
+        [HttpGet]
+        public async Task<IActionResult> FavoriteProducts(string type = "all", string sortBy = "news", int pageId = 1)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            ViewBag.SortBy = sortBy.ToLower();
+            ViewBag.Type = type.ToLower();
+
+            return View(await _productService.GetUserFavoriteProductsWithPagination(userId, type, sortBy, pageId, 18));
+        }
+
+        #endregion
+
     }
 }
