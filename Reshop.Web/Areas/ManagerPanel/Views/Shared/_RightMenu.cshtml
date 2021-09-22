@@ -22,21 +22,29 @@
                 <i class="fas fa-inventory"></i>
                 <span>کالا</span>
             </span>
-            
+
             <ul>
                 <li>
                     <a asp-area="ManagerPanel" asp-controller="ProductManager" asp-action="Index">
                         <i class="fas fa-inventory"></i>
                         <span>کالاها</span>
-                    </a> </li>
+                    </a>
+                </li>
                 <li>
                     <a asp-area="ManagerPanel" asp-controller="BrandManager" asp-action="Index">
                         <i class="fas fa-inventory"></i>
                         <span>برندها</span>
-                    </a></li>
+                    </a>
+                </li>
+                <li>
+                    <a asp-area="ManagerPanel" asp-controller="OfficialProductManager" asp-action="Index">
+                        <i class="fas fa-inventory"></i>
+                        <span>نام های اختصاصی کالا</span>
+                    </a>
+                </li>
             </ul>
-            
-   
+
+
         </li>
         <li class="dropdown @(Model == RightMenuActivePage.UserPage? "active":"")">
             <span class="name">
@@ -46,10 +54,10 @@
 
             <ul>
                 <li>
-                    <a  asp-area="ManagerPanel"  asp-controller="UserManager" asp-action="Index"><i class="far fa-user"></i> کاربران</a>
+                    <a asp-area="ManagerPanel" asp-controller="UserManager" asp-action="Index"><i class="far fa-user"></i> کاربران</a>
                 </li>
                 <li>
-                    <a  asp-area="ManagerPanel" asp-controller="RoleManager" asp-action="Index"><i class="far fa-shield-check"></i> مقام</a>
+                    <a asp-area="ManagerPanel" asp-controller="RoleManager" asp-action="Index"><i class="far fa-shield-check"></i> مقام</a>
                 </li>
             </ul>
         </li>
@@ -59,7 +67,7 @@
             </span>
             <ul>
                 <li>
-                    <a  asp-area="ManagerPanel" asp-controller="ShoppersManager" asp-action="ManageStoreTitles"><i class="far fa-layer-group"></i> عناوین</a>
+                    <a asp-area="ManagerPanel" asp-controller="ShoppersManager" asp-action="ManageStoreTitles"><i class="far fa-layer-group"></i> عناوین</a>
                 </li>
                 <li>
                     <a asp-area="ManagerPanel" asp-controller="ShoppersManager" asp-action="Index">

@@ -323,6 +323,8 @@ namespace Reshop.Web.Controllers.User
         {
             ViewBag.States = _originService.GetStates();
 
+            ViewData["selectedState"] = 0;
+
             return View(new Address());
         }
 
@@ -333,7 +335,7 @@ namespace Reshop.Web.Controllers.User
             ViewBag.States = _originService.GetStates();
             ViewBag.Cities = _originService.GetCitiesOfState(selectedState);
 
-
+            ViewData["selectedState"] = selectedState;
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
@@ -403,7 +405,7 @@ namespace Reshop.Web.Controllers.User
             if (stateId == 0)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
-
+            ViewData["selectedState"] = stateId;
             ViewBag.States = _originService.GetStates();
             ViewBag.Cities = _originService.GetCitiesOfState(stateId);
 
@@ -411,12 +413,13 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-
         [NoDirectAccess]
         public async Task<IActionResult> EditAddress(Address model, int selectedState)
         {
             ViewBag.States = _originService.GetStates();
             ViewBag.Cities = _originService.GetCitiesOfState(selectedState);
+
+            ViewData["selectedState"] = selectedState;
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditAddress", model) });
 

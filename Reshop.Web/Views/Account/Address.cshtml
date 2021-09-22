@@ -5,13 +5,15 @@
 
     int addressCounter = 1;
 }
-
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
 
 <div class="row">
 
     <div class="col-sm-12 col-md-4 col-lg-3">
 
-        <partial name="Account/_MenuAccount" model="AccountMenuActivePage.Information"/>
+        <partial name="Account/_MenuAccount" model="AccountMenuActivePage.Information" />
 
     </div>
 
@@ -35,18 +37,21 @@
 
 
 
-                    @if (Model == null)
+                    @if (!Model.Any())
                     {
                         <div class="basket-empty">
                             <img src="/icons/Address.svg" alt="Address" />
-                            <h1>ادرسی یافت نشد!</h1>
+                            <h1>
+                                آدرسی یافت نشد! برای افزودن آدرس جدید بر روی     <a onclick="ShowModal('@Url.Action("NewAddress", "Account", null, Context.Request.Scheme)','آدرس جدید')">
+                                    آدرس جدید
+                                </a> کلیک کنید.
+                            </h1>
                         </div>
                     }
-
                     else
                     {
                         <a class="btn btn-success text-white"
-                           onclick="ShowModal('@Url.Action("NewAddress", "AccountManager", null, Context.Request.Scheme)','آدرس جدید')">
+                           onclick="ShowModal('@Url.Action("NewAddress", "Account", null, Context.Request.Scheme)','آدرس جدید')">
                             افزودن ادرس  جدید
                         </a>
 
@@ -59,7 +64,7 @@
                                             <h5>ادرس شماره @addressCounter</h5>
                                             <span>
                                                 <a style="margin-left: 10px;"> <i class="far fa-map-marker-check"></i></a>
-                                                <a onclick="ShowModal('@Url.Action("EditAddress", "AccountManager", new {addressId =address.AddressId}, Context.Request.Scheme)','ویرایش آدرس')"><i class="far fa-edit"></i></a>
+                                                <a onclick="ShowModal('@Url.Action("EditAddress", "Account", new {addressId =address.AddressId}, Context.Request.Scheme)','ویرایش آدرس')"><i class="far fa-edit"></i></a>
                                             </span>
                                         </div>
 
@@ -86,4 +91,7 @@
 
 @section Scripts{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script src="~/js/select.js"></script>
 }

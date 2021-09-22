@@ -61,17 +61,6 @@ function readURL(input, imgId) {
     }
 }
 
-$(function () {
-    let modal = document.getElementById('modal');
-    $(".close").click(function () {
-        modal.style.display = 'none';
-    });
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            ShowToast('warning', 'برای خروج بر روی ضربدر کلیک کنید.');
-        }
-    }
-});
 
 $(function () {
     let modal = document.getElementById('modal');

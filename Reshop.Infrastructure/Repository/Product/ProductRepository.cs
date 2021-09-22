@@ -923,6 +923,20 @@ namespace Reshop.Infrastructure.Repository.Product
             return brands.Select(c => new Tuple<int, string, bool>(c.BrandId, c.BrandName, c.IsActive));
         }
 
+        public IEnumerable<Tuple<int, string, bool>> GetOfficialBrandProductsForShow(int skip, int take, string filter = "")
+        {
+            IQueryable<OfficialBrandProduct> officialBrandProducts = _context.OfficialBrandProducts;
+
+            if (filter != null)
+            {
+                officialBrandProducts = officialBrandProducts.Where(c => c.OfficialBrandProductName.Contains(filter));
+            }
+
+            officialBrandProducts = officialBrandProducts.Skip(skip).Take(take);
+
+            return officialBrandProducts.Select(c => new Tuple<int, string, bool>(c.OfficialBrandProductId, $"{c.OfficialBrandProductName} ({c.Brand.BrandName})", c.IsActive));
+        }
+
         public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
             _context.Brands.Where(c => c.BrandId == brandId)
                 .SelectMany(c => c.OfficialBrandProducts)
@@ -936,11 +950,17 @@ namespace Reshop.Infrastructure.Repository.Product
         public async Task<int> GetBrandsCountAsync() =>
             await _context.Brands.CountAsync();
 
+        public async Task<int> GetOfficialBrandProductsCountAsync() =>
+            await _context.OfficialBrandProducts.CountAsync();
+
         public async Task AddBrandAsync(Brand brand) =>
             await _context.Brands.AddAsync(brand);
 
         public void UpdateBrand(Brand brand) =>
             _context.Brands.Update(brand);
+
+        public async Task<OfficialBrandProduct> GetOfficialBrandProductByIdAsync(int officialBrandProductId) =>
+            await _context.OfficialBrandProducts.FindAsync(officialBrandProductId);
 
         public IEnumerable<OfficialBrandProduct> GetRealOfficialProductsOfBrand(int brandId) =>
             _context.Brands.Where(c => c.BrandId == brandId)
@@ -959,6 +979,9 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<bool> IsBrandExistAsync(int brandId) =>
             await _context.Brands.AnyAsync(c => c.BrandId == brandId);
+
+        public async Task<bool> IsOfficialBrandProductExistAsync(int officialBrandProductId) =>
+            await _context.OfficialBrandProducts.AnyAsync(c => c.OfficialBrandProductId == officialBrandProductId);
 
         public IEnumerable<Domain.Entities.Product.Product> GetTypeMobileProducts()
         {

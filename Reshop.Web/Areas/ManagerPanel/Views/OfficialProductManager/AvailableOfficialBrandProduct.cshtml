@@ -1,0 +1,30 @@
+﻿@model AvailableOfficialBrandProductViewModel
+@{
+    Layout = null;
+}
+
+<form asp-action="AvailableOfficialBrandProduct" method="post" onsubmit="return SubmitFormData(this)">
+    <div class="row">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="OfficialBrandProductId" />
+
+
+        <div class="col-sm-12">
+            <div class="form-check">
+                <label>
+                    فعال کردن کالا ها
+                    <input type="checkbox" asp-for="AvailableProducts" />
+                    <span></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-field">
+            <button type="submit" class="btn btn-success">
+                ثبت
+            </button>
+        </div>
+
+    </div>
+</form>

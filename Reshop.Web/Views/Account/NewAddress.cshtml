@@ -1,6 +1,8 @@
 ﻿@model Address
 @{
     Layout = null;
+
+    int selectedState = (int)ViewData["selectedState"];
 }
 
 <form asp-action="NewAddress" method="post" onsubmit="return SubmitFormData(this)">
@@ -46,15 +48,17 @@
             <div class="form-field">
 
                 @{
-                    IEnumerable<State> states = ViewBag.States as IEnumerable<State>;
-                    IEnumerable<City> cities = ViewBag.Cities as IEnumerable<City>;
+                    var states = ViewBag.States as IEnumerable<Tuple<int, string>>;
                 }
 
-                <select onchange="GetCitiesOfState(this.value)">
+                <select onchange="GetCitiesOfState(this.value)" name="selectedState">
                     <option value="0">استان</option>
-                    @foreach (var state in states)
+                    @if (states != null)
                     {
-                        @:<option value="@state.StateId" @((Model.City.StateId != 0 && state.StateId == Model.City.StateId) ? "selected" : "" )>@state.StateName</option>
+                        @foreach (var state in states)
+                        {
+                            @:<option value="@state.Item1" @((selectedState != 0 && state.Item1 == selectedState) ? "selected" : "" )>@state.Item2</option>
+                        }
                     }
                 </select>
             </div>
@@ -62,14 +66,7 @@
         <div class="col-sm-12 col-md-6 col-lg-4">
             <div class="form-field">
                 <select id="city" asp-for="CityId">
-                    <option value="0">شهر</option>
-                    @if (cities != null)
-                    {
-                        @foreach (var city in cities)
-                        {
-                            @:<option value="@city.CityId" @((Model.CityId != 0 && city.CityId == Model.CityId) ? "selected" : "" )>@city.CityName</option>
-                        }
-                    }
+                    <option value="0">لطفا استان را انتخاب کنید</option>
                 </select>
             </div>
         </div>
@@ -87,4 +84,7 @@
     <button type="submit" class="btn btn-success">ثبت</button>
 </form>
 
-<script src="~/js/Input.js"></script>
+<script>
+    inputJs();
+    callSelect();
+</script>

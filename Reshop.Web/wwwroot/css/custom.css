@@ -302,7 +302,7 @@ table {
         position: absolute;
         color: #2c2b2b;
         left: 13px;
-        top: 11px;
+        top: 4px;
         font-size: 25px;
         font-weight: bold;
     }
@@ -1097,40 +1097,40 @@ header .top-menu {
         display: block;
     }
 
-.product-details-option-color label > input {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-        margin: 0;
-    }
+        .product-details-option-color label > input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            margin: 0;
+        }
 
-.product-details-option-color label > input:checked ~ .checkmark {
-        border: 3px solid #00bfd6;
-        box-shadow: 0 0 4px#00e4ff;
-    }
+            .product-details-option-color label > input:checked ~ .checkmark {
+                border: 3px solid #00bfd6;
+                box-shadow: 0 0 4px#00e4ff;
+            }
 
-.product-details-option-color label > .checkmark {
-        position: absolute;
-        top: 3px;
-        right: 0;
-        height: 32px;
-        width: 32px;
-        border: 1px solid #d8d8d8;
-        border-radius: 50%;
-    }
+        .product-details-option-color label > .checkmark {
+            position: absolute;
+            top: 3px;
+            right: 0;
+            height: 32px;
+            width: 32px;
+            border: 1px solid #d8d8d8;
+            border-radius: 50%;
+        }
 
-.product-details-option-color label > .checkmark .color {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        margin: auto;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-    }
+            .product-details-option-color label > .checkmark .color {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                margin: auto;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+            }
 
 
 .seler-section {
@@ -1920,7 +1920,8 @@ header .top-menu {
         text-align: center;
     }
 
-.form-field {
+.form-field,
+.image-field {
     padding: 0;
     margin-bottom: 1.5rem;
     position: relative;
@@ -1945,18 +1946,19 @@ header .top-menu {
 
     .form-field textarea {
         min-height: 38px;
+        height: auto;
     }
 
     .form-field label {
         position: absolute;
         top: .58rem;
-        right: 25px;
+        right: 15px;
         margin: 0;
         padding: 0;
         font-size: 14px;
         color: #6d6d6d;
         pointer-events: none;
-        transition: 0.3s;
+        transition: all ease 0.3s;
         border-radius: 25px;
     }
 
@@ -1976,7 +1978,7 @@ header .top-menu {
             color: #FC5400;
             font-size: 14px;
             padding: 0 5px;
-            right: 25px;
+            right: 15px;
         }
 
     .form-field input.active ~ label,
@@ -1986,7 +1988,7 @@ header .top-menu {
         color: #495057;
         font-size: 14px;
         padding: 0 5px;
-        right: 25px;
+        right: 15px;
     }
 
     .form-field input:focus ~ label i,
@@ -2068,6 +2070,177 @@ header .top-menu {
         border-color: #FC5400;
         outline: none;
         box-shadow: 0 0 5px #FC5400;
+    }
+
+.radio label {
+    position: relative;
+    padding-right: 27px;
+    margin: 0;
+    cursor: pointer;
+    font-size: 13px;
+    color: #3f3f3f;
+    font-weight: bold;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    .radio label > input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+        .radio label > input:checked ~ span {
+            background: #FC5400;
+        }
+
+    .radio label > span {
+        position: absolute;
+        top: 3px;
+        right: 0;
+        height: 30px;
+        width: 30px;
+        background-color: #eee;
+        border-radius: 50%;
+    }
+
+        .radio label > span::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            margin: auto;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+.form-check {
+    padding: 0;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+    .form-check label {
+        display: block;
+        position: relative;
+        padding-right: 23px;
+        cursor: pointer;
+        font-size: 13px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        font-weight: bold;
+        color: #222;
+    }
+
+        .form-check label input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+
+        /* Create a custom checkbox */
+
+        .form-check label span {
+            position: absolute;
+            top: 1px;
+            right: 0;
+            height: 18px;
+            width: 18px;
+            background-color: #eee;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+
+        /* On mouse-over, add a grey background color */
+
+        .form-check label:hover input ~ span {
+            background-color: #e8e8e8;
+        }
+
+
+        /* When the checkbox is checked, add a blue background */
+
+        .form-check label input:checked ~ span {
+            background-color: #FC5400;
+            border-color: #e9ecef;
+        }
+
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+
+        .form-check label span::after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+
+        /* Show the checkmark when checked */
+
+        .form-check label input:checked ~ span::after {
+            display: block;
+        }
+
+
+        /* Style the checkmark/indicator */
+
+        .form-check label span::after {
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 9px;
+            border: solid #fff;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate( 45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate( 45deg);
+        }
+
+.image-field {
+    border: 2px solid #ced4da;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 360px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+    .image-field .image-area {
+        padding: 5px;
+        position: relative;
+        height: 270px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+        .image-field .image-area img {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+
+.file-field {
+    border-top: 2px solid #ced4da;
+    padding: 2px;
+    height: 38px;
+    padding: 6px 8px;
+}
+
+    .file-field input {
+        line-height: 17px;
     }
 
 .register-shopper-area .submit-shopper-btn {

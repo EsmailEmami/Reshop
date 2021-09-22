@@ -1154,6 +1154,39 @@ namespace Reshop.Application.Services.Product
             }
         }
 
+        public async Task<OfficialBrandProduct> GetOfficialBrandProductByIdAsync(int officialBrandProductId) =>
+            await _productRepository.GetOfficialBrandProductByIdAsync(officialBrandProductId);
+
+        public async Task<ResultTypes> AddOfficialBrandProductAsync(OfficialBrandProduct officialBrandProduct)
+        {
+            try
+            {
+                await _productRepository.AddOfficialBrandProductAsync(officialBrandProduct);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditOfficialBrandProductAsync(OfficialBrandProduct officialBrandProduct)
+        {
+            try
+            {
+                _productRepository.UpdateOfficialBrandProduct(officialBrandProduct);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetBrandsForShowAsync(int pageId = 1, int take = 30, string filter = "")
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
@@ -1168,6 +1201,19 @@ namespace Reshop.Application.Services.Product
             return new Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>(brands, pageId, totalPages);
         }
 
+        public async Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetOfficialBrandProductsForShowAsync(int pageId = 1, int take = 30, string filter = "")
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int officialBrandProductsCount = await _productRepository.GetOfficialBrandProductsCountAsync();
+
+            var officialBrandProducts = _productRepository.GetOfficialBrandProductsForShow(skip, take, filter);
+
+            int totalPages = (int)Math.Ceiling(1.0 * officialBrandProductsCount / take);
+
+            return new Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>(officialBrandProducts, pageId, totalPages);
+        }
+
         public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
             _productRepository.GetBrandOfficialProducts(brandId);
 
@@ -1176,6 +1222,74 @@ namespace Reshop.Application.Services.Product
 
         public async Task<bool> IsBrandExistAsync(int brandId) =>
             await _productRepository.IsBrandExistAsync(brandId);
+
+        public async Task<bool> IsOfficialBrandProductExistAsync(int officialBrandProductId) =>
+            await _productRepository.IsOfficialBrandProductExistAsync(officialBrandProductId);
+
+        public async Task<ResultTypes> AvailableOfficialBrandProductAsync(int officialBrandProductId, bool availableProducts)
+        {
+            try
+            {
+                var officialBrandProduct = await _productRepository.GetOfficialBrandProductByIdAsync(officialBrandProductId);
+
+                if (officialBrandProduct == null)
+                    return ResultTypes.Failed;
+
+                // Available Brand 
+                officialBrandProduct.IsActive = true;
+
+                if (availableProducts)
+                {
+                    var products = _productRepository.GetRealProductsOfOfficialProduct(officialBrandProduct.OfficialBrandProductId);
+
+                    // Available Products
+                    foreach (var product in products)
+                    {
+                        product.IsActive = true;
+                    }
+                }
+
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> UnAvailableOfficialBrandProductAsync(int officialBrandProductId)
+        {
+            try
+            {
+                var officialBrandProduct = await _productRepository.GetOfficialBrandProductByIdAsync(officialBrandProductId);
+
+                if (officialBrandProduct == null)
+                    return ResultTypes.Failed;
+
+                // un Available Brand 
+                officialBrandProduct.IsActive = false;
+
+
+                var products = _productRepository.GetRealProductsOfOfficialProduct(officialBrandProduct.OfficialBrandProductId);
+
+                // un Available Products
+                foreach (var product in products)
+                {
+                    product.IsActive = false;
+                }
+
+
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
 
         public IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId) =>
             _productRepository.GetBrandsOfStoreTitle(storeTitleId);

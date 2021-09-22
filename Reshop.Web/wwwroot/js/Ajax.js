@@ -77,6 +77,18 @@ function ShowModal(url, title) {
     });
 }
 
+$(function () {
+    let modal = document.getElementById('modal');
+    $(".close").click(function () {
+        modal.style.display = 'none';
+    });
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            ShowToast('warning', 'برای خروج بر روی ضربدر کلیک کنید.');
+        }
+    }
+});
+
 // this function is for add select option
 function addSelectList(select, selectDropdown, itemValue, itemText) {
 
@@ -290,7 +302,6 @@ function ColorsDetailData(where, url) {
 
     return result;
 }
-
 
 function ColorsDiscountDetailData(where, url) {
     $.ajax({

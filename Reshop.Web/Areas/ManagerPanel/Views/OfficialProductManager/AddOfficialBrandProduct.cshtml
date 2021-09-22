@@ -1,0 +1,66 @@
+﻿@model OfficialBrandProduct
+@{
+    Layout = null;
+}
+<form asp-action="AddOfficialBrandProduct" method="post" onsubmit="return SubmitFormData(this)">
+    <div class="row">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="OfficialBrandProductId" />
+
+        <div class="col-sm-12">
+            <div class="form-field">
+                <input asp-for="OfficialBrandProductName">
+                <label><i class="far fa-list-alt"></i> نام گروه</label>
+                <span asp-validation-for="OfficialBrandProductName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+
+            @{
+                var brands = ViewBag.Brands as IEnumerable<Tuple<int, string>>;
+            }
+
+            @if (brands != null)
+            {
+                <select asp-for="BrandId">
+                    <option value="">انتخاب برند</option>
+
+                    @foreach (var item in brands)
+                    {
+                        @: <option value="@item.Item1" @(Model.BrandId == item.Item1 ? "selected" : "")>@item.Item2</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    برندی برای نمایش یافت نشد.
+                </div>
+            }
+        </div>
+
+        <div class="col-sm-12">
+            <div class="form-check">
+                <label>
+                    این نام اختصاصی کالا فعال است
+                    <input type="checkbox" checked asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-field">
+            <button type="submit" class="btn btn-success">
+                ثبت
+            </button>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    inputJs();
+    callSelect();
+</script>

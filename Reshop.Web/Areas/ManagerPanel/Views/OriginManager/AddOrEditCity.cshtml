@@ -18,7 +18,7 @@
         </div>
 
         @{
-            var states = ViewBag.States as IEnumerable<State>;
+            var states = ViewBag.States as IEnumerable<Tuple<int, string>>;
         }
 
         <div class="col-12">
@@ -29,7 +29,7 @@
                 {
                     foreach (var state in states)
                     {
-                        @:<option value="@state.StateId" @(Model.StateId == state.StateId ? "selected" : "")>@state.StateName</option>
+                        @:<option value="@state.Item1" @(Model.StateId == state.Item1 ? "selected" : "")>@state.Item2</option>
                     }
                 }
 

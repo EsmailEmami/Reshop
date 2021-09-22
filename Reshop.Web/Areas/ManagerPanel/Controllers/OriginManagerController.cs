@@ -172,6 +172,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrEditCity(City model)
         {
+            ViewBag.States = _stateService.GetStates();
+
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
 
