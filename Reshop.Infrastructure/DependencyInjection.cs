@@ -50,6 +50,8 @@ namespace Reshop.Infrastructure
             services.AddScoped<IShopperService, ShopperService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IOriginService, OriginService>();
+            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IColorService, ColorService>();
 
             //repository
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -59,7 +61,8 @@ namespace Reshop.Infrastructure
             services.AddScoped<IShopperRepository, ShopperRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IOriginRepository, OriginRepository>();
-
+            services.AddScoped<IBrandRepository, BrandRepository>();
+            services.AddScoped<IColorRepository, ColorRepository>();
 
             services.AddSingleton<IMessageSender, MessageSender>();
 
