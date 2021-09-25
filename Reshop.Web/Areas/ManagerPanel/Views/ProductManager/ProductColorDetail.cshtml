@@ -1,4 +1,4 @@
-﻿@model ShopperProductColorDetailViewModel
+﻿@model ProductColorDetailViewModel
 
 @{
     Layout = null;
@@ -9,10 +9,10 @@
 
 <ul class="content-header">
     <li class="active">
-        <a onclick="ColorsDetailData('colorDetail@(Model.ColorId)', '@Url.Action("ShopperProductColorDetail","ShoppersManager",new{shopperProductId = ViewBag.ShopperProductId,colorId = Model.ColorId},Context.Request.Scheme)')">رنگ</a>
+        <a onclick="ColorsDetailData('colorDetail@(Model.ColorId)', '@Url.Action("ProductColorDetail","ProductManager",new{productId = Model.ProductId,colorId = Model.ColorId},Context.Request.Scheme)')">رنگ</a>
     </li>
     <li>
-        <a onclick="ColorsDiscountDetailData('colorDetail@(Model.ColorId)','@Url.Action("ShopperProductDiscountDetail","ShoppersManager",new{shopperProductId = ViewBag.ShopperProductId,colorId = Model.ColorId},Context.Request.Scheme)')">تخفیف</a>
+        <a onclick="ColorsDiscountDetailData('colorDetail@(Model.ColorId)','@Url.Action("ShopperProductDiscountDetail","ShoppersManager",new{shopperProductId = "1212121",colorId = Model.ColorId},Context.Request.Scheme)')">تخفیف</a>
     </li>
 </ul>
 
@@ -24,35 +24,17 @@
     </div>
     <div>
         <h3><i class="far fa-tags"></i> تعداد فروش کل: </h3>
-        <span>@Model.SellCount</span>
+        <span>@Model.SellCount.NumSplitter()</span>
     </div>
     <div>
         <h3><i class="far fa-tags"></i> تعداد فروش ماه اخیر: </h3>
-        <span>@Model.LastMonthSellCount</span>
+        <span>@Model.LastMonthSellCount.NumSplitter()</span>
     </div>
     <div>
         <h3><i class="far fa-tags"></i> تعداد مرجوعی کل: </h3>
-        <span>@Model.ReturnedCount</span>
+        <span>@Model.ReturnedCount.NumSplitter()</span>
     </div>
 
-    <div>
-        <h3><i class="far fa-tags"></i> درامد کل: </h3>
-        <span>@Model.Income.NumSplitter() <span class="toman">تومان</span> </span>
-    </div>
-</div>
-
-<div class="action">
-
-    <div>
-        <h3><i class="far fa-tags"></i> قیمت: </h3>
-        <span>@Model.Price.NumSplitter() <span class="toman">تومان</span> </span>
-    </div>
-    <div>
-        <h3><i class="far fa-tags"></i> تعداد موجودی: </h3>
-        <span>@Model.QuantityInStock</span>
-    </div>
-
-    <button class="btn btn-warning text-white" onclick="ShowModal('@Url.Action("EditColorOfShopperProduct", "ShoppersManager", new {shopperProductId= ViewBag.ShopperProductId, colorId = Model.ColorId}, Context.Request.Scheme)', 'ویرایش رنگ')">ویرایش</button>
 </div>
 
 <!-- chart -->

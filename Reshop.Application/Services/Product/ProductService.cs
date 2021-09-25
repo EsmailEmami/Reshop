@@ -14,6 +14,7 @@ using Reshop.Domain.Interfaces.Shopper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.Interfaces.User;
 
 namespace Reshop.Application.Services.Product
 {
@@ -23,11 +24,13 @@ namespace Reshop.Application.Services.Product
 
         private readonly IProductRepository _productRepository;
         private readonly IShopperRepository _shopperRepository;
+        private readonly ICartRepository _cartRepository;
 
-        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository)
+        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository)
         {
             _productRepository = productRepository;
             _shopperRepository = shopperRepository;
+            _cartRepository = cartRepository;
         }
 
         #endregion
@@ -124,6 +127,39 @@ namespace Reshop.Application.Services.Product
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
             return new Tuple<IEnumerable<ProductViewModel>, int, int>(products, pageId, totalPages);
+        }
+
+        public async Task<ProductColorDetailViewModel> GetProductColorDetailAsync(int productId, int colorId)
+        {
+            var color = await _productRepository.GetColorByIdAsync(colorId);
+            int lastMonthSellCount = await _cartRepository.GetSellCountOfProductColorFromDateAsync(productId, colorId,DateTime.Now.AddDays(-30));
+            int sellCount = await _cartRepository.GetSellCountOfProductColorFromDateAsync(productId, colorId);
+
+            return new ProductColorDetailViewModel()
+            {
+                ProductId = productId,
+                ColorId = color.Item1,
+                ColorName = color.Item2,
+                LastMonthSellCount = lastMonthSellCount,
+                SellCount = sellCount,
+                ReturnedCount = 10,
+            };
+        }
+
+        public async Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync()
+        {
+            int allProductsCount = await _productRepository.GetProductsCountWithTypeAsync();
+            int activeProductsCount = await _productRepository.GetProductsCountWithTypeAsync("active");
+            int nonActiveProductsCount = await _productRepository.GetProductsCountWithTypeAsync("non-active");
+            int sellsCount = await _cartRepository.GetSellsCountFromDateAsync(DateTime.Now.AddDays(-30));
+
+            var model = new ProductsGeneralDataForAdmin(
+                allProductsCount,
+                sellsCount,
+                activeProductsCount,
+                nonActiveProductsCount);
+
+            return model;
         }
 
         public async Task<int> GetProductsCountWithTypeAsync(string type = "all")
@@ -1026,6 +1062,9 @@ namespace Reshop.Application.Services.Product
 
         public IEnumerable<Question> GetProductQuestions(int productId) =>
             _productRepository.GetProductQuestions(productId);
+
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart() =>
+            _productRepository.GetLastThirtyDayProductsDataChart();
 
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId) =>
             _productRepository.GetLastThirtyDayProductDataChart(productId);

@@ -6,7 +6,6 @@ using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.API.Controllers
 {
-    [Permission("Shopper")]
     [Route("api/[controller]")]
     [ApiController]
     public class ShopperController : ControllerBase

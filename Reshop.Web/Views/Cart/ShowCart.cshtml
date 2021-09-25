@@ -91,7 +91,7 @@ else
 
                                 }
 
-                                @CartCalculator.CalculateDiscount(item.ProductPrice, discount, item.ProductsCount).ToToman()
+                                @CartCalculator.CalculateDiscount(item.ProductPrice, discount, item.ProductsCount).NumSplitter()
                                 <span class="toman">تومان</span>
                             </h3>
                         </div>
@@ -119,7 +119,7 @@ else
 
                     <h5>مبلغ کل(@Model.Select(c => c.ProductsCount).Sum()):</h5>
                     <p>
-                        @productsFullPrice.ToToman()
+                        @productsFullPrice.NumSplitter()
                         <span class="toman">تومان</span>
                     </p>
                 </section>
@@ -135,7 +135,7 @@ else
                     <section>
                         <h5>سود شما:</h5>
                         <p>
-                            @productsDiscount.ToToman()
+                            @productsDiscount.NumSplitter()
                             <span class="toman">تومان</span>
                             @CartCalculator.CalculatePercentOfTwoPrice(productsFullPrice, productsDiscount) %
                         </p>
@@ -145,7 +145,7 @@ else
             <section class="payment-price">
                 <h5>مبلغ قابل پرداخت</h5>
                 <p>
-                    @((productsFullPrice - productsDiscount).ToToman())
+                    @((productsFullPrice - productsDiscount).NumSplitter())
                     <span class="toman">تومان</span>
                 </p>
             </section>

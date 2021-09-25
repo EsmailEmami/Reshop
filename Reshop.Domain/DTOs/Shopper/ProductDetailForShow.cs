@@ -14,6 +14,7 @@ namespace Reshop.Domain.DTOs.Shopper
         public IEnumerable<string> ProductImages { get; set; }
         public string BrandName { get; set; }
         public int ShoppersCount { get; set; }
+        public double ProductScore { get; set; }
 
         //colors
         public IEnumerable<Tuple<int, string>> Colors { get; set; }

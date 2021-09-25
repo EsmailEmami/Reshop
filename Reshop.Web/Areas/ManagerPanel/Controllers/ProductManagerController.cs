@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Shopper;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -24,16 +25,17 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
     [Area("ManagerPanel")]
     [Authorize]
-    
     public class ProductManagerController : Controller
     {
         #region constructor
 
         private readonly IProductService _productService;
+        private readonly IShopperService _shopperService;
 
-        public ProductManagerController(IProductService productService)
+        public ProductManagerController(IProductService productService, IShopperService shopperService)
         {
             _productService = productService;
+            _shopperService = shopperService;
         }
 
         #endregion
@@ -41,8 +43,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            ViewData["ProductsCount"] = await _productService.GetProductsCountWithTypeAsync();
-            return View();
+            var model = await _productService.GetProductsGeneralDataForAdminAsync();
+            return View(model);
         }
 
         [HttpGet]
@@ -67,9 +69,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return View(product);
         }
 
-        public IActionResult GetProductColorDetail(int productId, int colorId)
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> ProductColorDetail(int productId, int colorId)
         {
-            return View();
+            var data = await _productService.GetProductColorDetailAsync(productId, colorId);
+            
+            if (data == null)
+                return NotFound();
+
+            return View(data);
         }
 
         [HttpGet]
@@ -161,7 +170,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditMobile(AddOrEditMobileProductViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -449,7 +458,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditLaptop(AddOrEditLaptopProductViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -707,7 +716,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditTablet(AddOrEditTabletViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -987,7 +996,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditMobileCover(AddOrEditMobileCoverViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1181,7 +1190,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditHeadPhone(AddOrEditHandsfreeAndHeadPhoneViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1324,7 +1333,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditHandsfree(AddOrEditHandsfreeAndHeadPhoneViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1472,7 +1481,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditSpeaker(AddOrEditSpeakerViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1677,7 +1686,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditPowerBank(AddOrEditPowerBankViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -1873,7 +1882,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditWristWatch(AddOrEdirWristWatchViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2038,7 +2047,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditSmartWatch(AddOrEditSmartWatchViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2265,7 +2274,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditFlashMemory(AddOrEditFlashMemoryViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2463,7 +2472,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddOrEditMemoryCard(AddOrEditMemoryCardViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2622,9 +2631,14 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #region AUX 
 
+
         [HttpGet]
         public async Task<IActionResult> AddOrEditAUX(int productId = 0)
         {
+            // data for select Product
+            ViewBag.StoreTitles = _shopperService.GetStoreTitles();
+
+
             if (productId == 0)
             {
                 return View(new AddOrEditAUXViewModel());
@@ -2637,14 +2651,22 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     return NotFound();
                 }
 
+                ViewBag.Brands = _productService.GetBrandsOfStoreTitle(product.SelectedStoreTitle);
+                ViewBag.OfficialProducts = _productService.GetBrandOfficialProducts(product.SelectedBrand);
+
                 return View(product);
             }
         }
 
         [HttpPost]
-        
         public async Task<IActionResult> AddOrEditAUX(AddOrEditAUXViewModel model)
         {
+            // data for select Product
+            ViewBag.StoreTitles = _shopperService.GetStoreTitles();
+            ViewBag.Brands = _productService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            ViewBag.OfficialProducts = _productService.GetBrandOfficialProducts(model.SelectedBrand);
+
+
             if (!ModelState.IsValid) return View(model);
 
             // in this section we check that all images are ok
@@ -2789,7 +2811,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region Remove
 
         [HttpPost]
-        
+
         public async Task<IActionResult> DeleteProduct(int productId)
         {
             await _productService.RemoveProductAccessAsync(productId);

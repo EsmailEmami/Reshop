@@ -141,7 +141,7 @@ function GetCitiesOfState(stateId) {
 
     var select = document.getElementById('city');
     // dropDown 
-    var selectDropDown = document.getElementById('city-select');
+    var selectDropDown = document.getElementById('city_select');
     // dropDown Options
     var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
 
@@ -322,10 +322,20 @@ function GetBrandsOfStoreTitle(storeTitleId) {
     GetProductsOfOfficialProduct('');
 
     var select = document.getElementById('brand');
-    // dropDown 
-    var selectDropDown = document.getElementById('brand-select');
+    if (select == null) {
+        return null;
+    }
+
+    var selectDropDown = document.getElementById('brand_select');
+    if (selectDropDown == null) {
+        return null;
+    }
+
     // dropDown Options
     var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
+    if (selectDropDownList == null) {
+        return null;
+    }
 
     if (storeTitleId != '') {
         $.ajax({
@@ -362,10 +372,22 @@ function GetOfficialProductsOfBrand(brandId) {
     GetProductsOfOfficialProduct('');
 
     var select = document.getElementById('officialProduct');
+    if (select == null) {
+        return null;
+    }
+
     // dropDown 
-    var selectDropDown = document.getElementById('officialProduct-select');
+    var selectDropDown = document.getElementById('officialProduct_select');
+    if (selectDropDown == null) {
+        return null;
+    }
+
     // dropDown Options
     var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
+    if (selectDropDownList == null) {
+        return null;
+    }
+
 
     if (brandId !== '') {
         $.ajax({
@@ -400,10 +422,23 @@ function GetOfficialProductsOfBrand(brandId) {
 function GetProductsOfOfficialProduct(officialProductId) {
 
     var select = document.getElementById('product');
+
+    if (select == null) {
+        return null;
+    }
+
     // dropDown 
-    var selectDropDown = document.getElementById('product-select');
+    var selectDropDown = document.getElementById('product_select');
+
+    if (selectDropDown == null) {
+        return null;
+    }
     // dropDown Options
     var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
+
+    if (selectDropDownList == null) {
+        return null;
+    }
 
     if (officialProductId !== '') {
         $.ajax({

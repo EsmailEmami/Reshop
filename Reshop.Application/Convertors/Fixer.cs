@@ -10,7 +10,12 @@ namespace Reshop.Application.Convertors
             return text.Trim().ToLower();
         }
 
-        public static string ToToman(this decimal value)
+        public static string NumSplitter(this decimal value)
+        {
+            return value.ToString("#,0");
+        }
+
+        public static string NumSplitter(this int value)
         {
             return value.ToString("#,0");
         }

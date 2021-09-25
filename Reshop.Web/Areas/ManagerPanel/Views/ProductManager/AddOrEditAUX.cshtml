@@ -20,7 +20,7 @@
     <h3 class="title-header">مشخصات کالا</h3>
     <div class="row">
 
-        <div class="col-sm-12 col-md-6 col-lg-4">
+        <div class="col-sm-12 col-md-6">
             <div class="form-field">
                 <input type="text" asp-for="ProductTitle" />
                 <label><i class="far fa-box-open"></i> نام کالا</label>
@@ -28,21 +28,60 @@
             </div>
         </div>
 
-        <div class="col-sm-12 col-md-6 col-lg-4">
-            <select select-search="true">
-                <option value="">برند</option>
-                <option value="1">سامسونگ</option>
-                <option value="2">هواوی</option>
-            </select>
-        </div>
-        <div class="col-sm-12 col-md-6 col-lg-4">
-            <select select-search="true" asp-for="OfficialBrandProductId">
-                <option value="">نام رسمی کالا</option>
-                <option value="1">سامسونگ</option>
-                <option value="2">هواوی</option>
-            </select>
-        </div>
+        @{
+            var storeTitles = ViewBag.StoreTitles as IEnumerable<StoreTitle>;
+            IEnumerable<Tuple<int, string>> brands = ViewBag.Brands as IEnumerable<Tuple<int, string>>;
+            IEnumerable<Tuple<int, string>> officialProducts = ViewBag.OfficialProducts as IEnumerable<Tuple<int, string>>;
+        }
 
+        @*store titles *@
+        <div class="col-sm-12 col-md-6">
+            <select onchange="GetBrandsOfStoreTitle(this.value)" asp-for="SelectedStoreTitle">
+                <option value="">عنوان کالا</option>
+
+                @if (storeTitles != null)
+                {
+                    @foreach (var item in storeTitles)
+                    {
+                        @:<option value="@item.StoreTitleId" @(Model.SelectedStoreTitle == item.StoreTitleId ? "selected" : "")>@item.StoreTitleName</option>
+                    }
+                }
+            </select>
+        </div>
+        @* this is for brand *@
+        <div class="col-sm-12 col-md-6">
+            <select id="brand" onchange="GetOfficialProductsOfBrand(this.value)" asp-for="SelectedBrand">
+                @if (brands != null)
+                {
+                    <option value=""> لطفا برند را انتخاب کنید</option>
+                    @foreach (var item in brands)
+                    {
+                        @:<option value="@item.Item1" @(Model.SelectedBrand == item.Item1 ? "selected" : "")>@item.Item2</option>
+                    }
+                }
+                else
+                {
+                    <option value="">لطفا عنوان کالا را انتخاب کنید</option>
+                }
+            </select>
+        </div>
+        @* this is for official product *@
+        <div class="col-sm-12 col-lg-6">
+            <select id="officialProduct" asp-for="OfficialBrandProductId">
+                @if (officialProducts != null)
+                {
+                    <option value="">لطفا نام اختصاصی کالا را انتخاب کنید</option>
+                    @foreach (var item in officialProducts)
+                    {
+                        @:<option value="@item.Item1" @(Model.OfficialBrandProductId == item.Item1 ? "selected" : "")>@item.Item2</option>
+                    }
+                }
+                else
+                {
+                    <option value="">لطفا برند را انتخاب کنید</option>
+                }
+            </select>
+        </div>
         <div class="col-sm-12 ">
             <div class="form-field">
                 <textarea asp-for="Description"></textarea>

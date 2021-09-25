@@ -84,7 +84,7 @@ namespace Reshop.Infrastructure.Repository.User
                     ProductsCount = o.Count,
                     ProductPrice = o.ShopperProductColor.Price,
                     ColorName = o.ShopperProductColor.Color.ColorName,
-                    Discount = o.ShopperProductColor.Discounts.OrderByDescending(c=> c.EndDate).Select(d=> new Tuple<byte,DateTime>(d.DiscountPercent,d.EndDate)).FirstOrDefault(),
+                    Discount = o.ShopperProductColor.Discounts.OrderByDescending(c => c.EndDate).Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate)).FirstOrDefault(),
                     ProductTitle = o.ShopperProductColor.ShopperProduct.Product.ProductTitle,
                     ProductImg = o.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName,
                     Warranty = o.ShopperProductColor.ShopperProduct.Warranty,
@@ -153,6 +153,24 @@ namespace Reshop.Infrastructure.Repository.User
 
         public string GetOpenOrderAddressId(string userId) =>
             _context.Orders.Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived).Select(c => c.AddressId).SingleOrDefault();
+
+        public async Task<int> GetSellsCountFromDateAsync(DateTime dateTime) =>
+            await _context.OrderDetails.Where(c =>
+                c.Order.IsPayed &&
+                c.Order.PayDate >= dateTime).CountAsync();
+
+        public async Task<int> GetSellCountOfProductColorFromDateAsync(int productId, int colorId, DateTime dateTime) =>
+             await _context.OrderDetails.Where(c =>
+                    c.ShopperProductColor.ShopperProduct.ProductId == productId &&
+                    c.ShopperProductColor.ColorId == colorId &&
+                    c.Order.IsPayed &&
+                    c.Order.PayDate >= dateTime).CountAsync();
+
+        public async Task<int> GetSellCountOfProductColorFromDateAsync(int productId, int colorId) =>
+            await _context.OrderDetails.Where(c =>
+                c.ShopperProductColor.ShopperProduct.ProductId == productId &&
+                c.ShopperProductColor.ColorId == colorId &&
+                c.Order.IsPayed).CountAsync();
 
         public async Task SaveChangesAsync()
         {

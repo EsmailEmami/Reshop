@@ -11,7 +11,6 @@ namespace Reshop.Domain.DTOs.Product
     public class AddOrEditAUXViewModel
     {
         // product 
-
         public int ProductId { get; set; }
 
         [Display(Name = "نام کالا")]
@@ -23,13 +22,16 @@ namespace Reshop.Domain.DTOs.Product
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public string Description { get; set; }
 
-        [Display(Name = "نام محصول واقعی از برند")]
+        [Display(Name = "نام اختصاصی برند")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public int OfficialBrandProductId { get; set; }
 
         [Display(Name = "وضعیت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsActive { get; set; }
+
+        public int SelectedStoreTitle { get; set; }
+        public int SelectedBrand { get; set; }
 
         // --------------------------------------------------------------------------- ITEMS
 

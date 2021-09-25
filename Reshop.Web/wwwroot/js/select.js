@@ -215,7 +215,7 @@ function SelectDropdown() {
 
         // add id to div while select had id
         if (el.hasAttribute('id')) {
-            div.setAttribute('id', el.attributes['id'].value + '-select');
+            div.setAttribute('id', el.attributes['id'].value + '_select');
         }
 
         if (el.hasAttribute('isDone')) {

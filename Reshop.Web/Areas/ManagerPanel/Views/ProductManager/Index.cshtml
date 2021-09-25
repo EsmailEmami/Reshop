@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ProductsGeneralDataForAdmin
+@{
     ViewData["Title"] = "مدیریت کالاها";
 }
 @section RightMenu
@@ -11,25 +12,36 @@
         <div class="card-data">
             <div class="header">
                 <h3>تعداد کالاها</h3>
-
                 <i class="fas fa-map-signs"></i>
-
             </div>
             <div class="content">
-                @ViewData["ProductsCount"]
+                @Model.ProductsCount.NumSplitter()
             </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-6 col-xl-3">
         <div class="card-data">
             <div class="header">
-                <h3>تعداد کالاها</h3>
+                <h3>تعداد کالاهای فعال</h3>
 
                 <i class="fas fa-map-signs"></i>
 
             </div>
             <div class="content">
-                12,000,000 <span>تومان</span>
+                @Model.ActiveProductsCount.NumSplitter()
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-xl-3">
+        <div class="card-data">
+            <div class="header">
+                <h3>تعداد کالاهای غیر فعال</h3>
+
+                <i class="fas fa-map-signs"></i>
+
+            </div>
+            <div class="content">
+                @Model.NonActiveProductsCount.NumSplitter()
             </div>
         </div>
     </div>
@@ -42,20 +54,7 @@
 
             </div>
             <div class="content">
-                12,000,000 <span>تومان</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-6 col-xl-3">
-        <div class="card-data">
-            <div class="header">
-                <h3>تعداد فروش 30 روز اخیر</h3>
-
-                <i class="fas fa-map-signs"></i>
-
-            </div>
-            <div class="content">
-                12,000,000 <span>تومان</span>
+                @Model.LastThirtyDaySellsCount.NumSplitter()
             </div>
         </div>
     </div>
@@ -93,74 +92,70 @@
 
 @section Scripts{
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
     <script>
-        google.charts.load('current', {
-            'packages': ['corechart']
-        });
+        google.charts.load('current',
+            {
+                'packages': ['corechart']
+            });
         google.charts.setOnLoadCallback(drawLineChart);
 
         function drawLineChart() {
+         
+            $.ajax({
+                type: 'GET',
+                url: '/api/Product/GetLastThirtyDayProductsDataChart',
+            }).done(function(res) {
 
+                var data = new google.visualization.DataTable();
 
-            var data = new google.visualization.DataTable();
+                data.addColumn('string', 'تاریخ');
+                data.addColumn('number', 'بازدید');
+                data.addColumn('number', 'فروش');
 
+                $.each(res,
+                    function(index, value) {
+                        data.addRow([value.date, value.viewCount, value.sellCount]);
+                    });
 
-
-            data.addColumn('string', 'تاریخ');
-            data.addColumn('number', 'بازدید');
-            data.addColumn('number', 'فروش');
-            data.addColumn('number', 'مرجوعی');
-
-            data.addRow(['2000', 2050, 4000, 364]);
-            data.addRow(['2001', 4794, 6879, 9699]);
-            data.addRow(['2002', 2794, 4806, 532]);
-            data.addRow(['2003', 4974, 3798, 6493]);
-            data.addRow(['2004', 8648, 9758, 468]);
-            data.addRow(['2005', 2050, 4000, 305]);
-
-
-            var options = {
-                width: '100%',
-                height: '100%',
-                isStacked: 'relative',
-                fontName: 'Sahel, sans-serif',
-                color: '#4d4d4d',
-                fontSize: 17,
-                height: 400,
-                curveType: 'function',
-                colors: ['#FC5400', '#3366cc', '#f95d6a', '#58508d'],
-                pointSize: 3,
-                chartArea: {
-                    right: 0,
-                    top: 20,
-                    left: 100,
-                    width: '95%',
-                },
-
-
-                hAxis: {
-                    direction: 1,
-                    slantedText: true,
-                    slantedTextAngle: 50,
-                },
-
-                vAxis: {
-                    format: 'short',
-                    title: 'تعداد',
-                    titleTextStyle: {
-                        color: '#333',
+                var options = {
+                    width: '100%',
+                    height: '100%',
+                    isStacked: 'relative',
+                    fontName: 'Sahel, sans-serif',
+                    color: '#4d4d4d',
+                    fontSize: 17,
+                    height: 400,
+                    curveType: 'function',
+                    colors: ['#FC5400', '#3366cc', '#f95d6a', '#58508d'],
+                    pointSize: 3,
+                    chartArea: {
+                        right: 0,
+                        top: 20,
+                        left: 100,
+                        width: '95%',
                     },
-                    minValue: 0,
-                    scaleType: 'Linear',
-                },
-                legend: {
-                    position: 'bottom'
-                }
-            };
-
-            var chart = new google.visualization.LineChart(document.getElementById('productsLineChart'));
-
-            chart.draw(data, options);
+                    hAxis: {
+                        direction: 1,
+                        slantedText: true,
+                        slantedTextAngle: 50,
+                    },
+                    vAxis: {
+                        format: 'short',
+                        title: 'تعداد',
+                        titleTextStyle: {
+                            color: '#333',
+                        },
+                        minValue: 0,
+                        scaleType: 'Linear',
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                };
+                var chart = new google.visualization.LineChart(document.getElementById('productsLineChart'));
+                chart.draw(data, options);
+            });
         }
 
         window.onresize = drawLineChart;

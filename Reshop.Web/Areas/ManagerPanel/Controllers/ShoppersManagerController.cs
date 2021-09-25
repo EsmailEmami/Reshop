@@ -385,7 +385,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-
         [NoDirectAccess]
         public async Task<IActionResult> EditColorOfShopperProduct(EditColorOfShopperProductViewModel model)
         {

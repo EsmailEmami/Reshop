@@ -26,6 +26,8 @@ namespace Reshop.Application.Interfaces.Product
 
         // this is for list of shopper products
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
+        Task<ProductColorDetailViewModel> GetProductColorDetailAsync(int productId, int colorId);
+        Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync();
 
         Task<int> GetProductsCountWithTypeAsync(string type = "all");
         // get by id 
@@ -130,6 +132,7 @@ namespace Reshop.Application.Interfaces.Product
 
         #region chart
 
+        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart();
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId);
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId);
         // colorName , view , sell , returned

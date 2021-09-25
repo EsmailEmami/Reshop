@@ -37,7 +37,8 @@ namespace Reshop.Domain.Interfaces.Product
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId);
         IEnumerable<Tuple<int, string, string, string>> GetProductColorsWithDetail(int productId);
         Task<Entities.Product.Product> GetProductByIdAsync(int productId);
-        IEnumerable<Tuple<int, string>> GetProductColors(int productId);
+        IEnumerable<Tuple<int, string>>  GetProductColors(int productId);
+        Task<Tuple<int, string>> GetColorByIdAsync(int colorId);
         Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId);
 
         Task<int> GetProductIdOfShopperProductColorIdAsync(string shopperProductColorId);
@@ -51,7 +52,8 @@ namespace Reshop.Domain.Interfaces.Product
         #endregion
 
 
-        Task<int> GetProductsCountWithTypeAsync(string type);
+
+        Task<int> GetProductsCountWithTypeAsync(string type = "all");
         Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId, string type);
         Task<int> GetCategoryProductsCountWithTypeAsync(int categoryId, string type = "");
         Task<int> GetChildCategoryProductsCountWithTypeAsync(int childCategoryId, string type = "");
@@ -181,6 +183,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         #region Chart
 
+        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart();
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId);
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId);
         // colorName , view , sell , returned

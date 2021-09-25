@@ -36,6 +36,21 @@ namespace Reshop.Web.API.Controllers
             return new ObjectResult(res);
         }
 
+        [HttpGet("GetLastThirtyDayProductsDataChart")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public IActionResult GetLastThirtyDayProductsDataChart()
+        {
+            var res = _productService.GetLastThirtyDayProductsDataChart();
+
+            if (res is null)
+            {
+                return NotFound();
+            }
+
+            return new ObjectResult(res);
+        }
+
+
         [HttpGet("GetColorsOfProductData/{productId}")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetColorsOfProductDataChart(int productId)

@@ -46,7 +46,7 @@
                                         <li><a href=""><i class="fal fa-clock"></i> @item.PayDate.ToShamsiDateTime()</a></li>
                                         <li><a href=""><i class="fal fa-barcode-read"></i> @item.TrackingCode</a></li>
                                     </ul>
-                                    <p>@item.Sum.ToToman() <span class="toman">تومان</span></p>
+                                    <p>@item.Sum.NumSplitter() <span class="toman">تومان</span></p>
                                 </div>
                                 <div class="show-order-pics">
                                     @foreach (var pic in item.ProPics)

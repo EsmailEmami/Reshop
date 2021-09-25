@@ -388,8 +388,9 @@ namespace Reshop.Infrastructure.Repository.Product
                     ProductId = c.ProductId,
                     ProductName = c.ProductTitle,
                     ProductImages = c.ProductGalleries.OrderBy(i => i.OrderBy).Select(i => i.ImageName).ToList(),
-                    BrandName = c.OfficialBrandProduct.Brand.BrandName,
+                    BrandName = $"{c.OfficialBrandProduct.OfficialBrandProductName} ({c.OfficialBrandProduct.Brand.BrandName})",
                     ShoppersCount = c.ShopperProducts.Count,
+                    ProductScore = 4.4
                 }).SingleOrDefaultAsync();
 
         public IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId) =>
@@ -428,6 +429,11 @@ namespace Reshop.Infrastructure.Repository.Product
                 .SelectMany(c => c.ShopperProductColors)
                 .Select(c => c.Color).Distinct()
                 .Select(c => new Tuple<int, string>(c.ColorId, c.ColorName));
+
+        public async Task<Tuple<int, string>> GetColorByIdAsync(int colorId) =>
+            await _context.Colors.Where(c => c.ColorId == colorId)
+                .Select(c => new Tuple<int, string>(c.ColorId, c.ColorName))
+                .SingleOrDefaultAsync();
 
         public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId) =>
             await _context.ShopperProductColors
@@ -517,15 +523,15 @@ namespace Reshop.Infrastructure.Repository.Product
             });
         }
 
-        public async Task<int> GetProductsCountWithTypeAsync(string type)
+        public async Task<int> GetProductsCountWithTypeAsync(string type = "all")
         {
-            if (type == "all")
+            return type switch
             {
-                return await _context.Products.CountAsync();
-            }
-
-            return await _context.Products.Where(c => c.ProductType == type).CountAsync();
-
+                "all" => await _context.Products.CountAsync(),
+                "active" => await _context.Products.Where(c => c.IsActive).CountAsync(),
+                "non-active" => await _context.Products.Where(c => !c.IsActive).CountAsync(),
+                _ => await _context.Products.Where(c => c.ProductType == type).CountAsync()
+            };
         }
 
         public async Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId, string type)
@@ -858,6 +864,18 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<FavoriteProduct> GetFavoriteProductAsync(string userId, string shopperProductColorId) =>
             await _context.FavoriteProducts.SingleOrDefaultAsync(c => c.UserId == userId && c.ShopperProductColorId == shopperProductColorId);
+
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart() =>
+            _context.OrderDetails
+                .Where(c => c.Order.IsPayed &&
+                            c.Order.PayDate >= DateTime.Now.AddDays(-30))
+                .OrderBy(c => c.Order.PayDate)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Order.PayDate.Value.ToShamsiDate(),
+                    ViewCount = 10,
+                    SellCount = c.Count,
+                });
 
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId) =>
             _context.OrderDetails.Where(c =>
@@ -1496,7 +1514,8 @@ namespace Reshop.Infrastructure.Repository.Product
                     Description = c.Description,
                     OfficialBrandProductId = c.OfficialBrandProductId,
                     IsActive = c.IsActive,
-
+                    SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                    SelectedBrand = c.OfficialBrandProduct.BrandId,
                     //img
                     SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                     SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,

@@ -25,11 +25,11 @@
     </div>
     <div>
         <h3><i class="far fa-tags"></i> مقدار سرمایه تخفیف داده شده: </h3>
-        <span>@Model.DiscountedAmount.ToToman() <span class="toman">تومان</span> </span>
+        <span>@Model.DiscountedAmount.NumSplitter() <span class="toman">تومان</span> </span>
     </div>
     <div>
         <h3><i class="far fa-tags"></i> درامد کل: </h3>
-        <span>@Model.Income.ToToman() <span class="toman">تومان</span> </span>
+        <span>@Model.Income.NumSplitter() <span class="toman">تومان</span> </span>
     </div>
 </div>
 
@@ -85,7 +85,7 @@
                     <th scope="row">@counter</th>
                     <td>@item.Item1.ToShamsiDateTime() تا @item.Item2.ToShamsiDateTime()</td>
                     <td>@item.Item3</td>
-                    <td>@item.Item4.ToToman() <span class="toman">تومان</span> </td>
+                    <td>@item.Item4.NumSplitter() <span class="toman">تومان</span> </td>
                 </tr>
 
                 counter++;
