@@ -15,12 +15,13 @@ namespace Reshop.Web.API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IBrandService _brandService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IBrandService brandService)
         {
             _productService = productService;
+            _brandService = brandService;
         }
-
 
         [HttpGet("GetLastThirtyDayProductData/{productId}")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
@@ -85,7 +86,7 @@ namespace Reshop.Web.API.Controllers
         [HttpGet("GetBrandsOfStoreTitle/{storeTitleId}")]
         public IActionResult GetBrandsOfStoreTitle(int storeTitleId)
         {
-            var res = _productService.GetBrandsOfStoreTitle(storeTitleId);
+            var res = _brandService.GetBrandsOfStoreTitle(storeTitleId);
 
             if (res == null)
                 return NotFound();
@@ -96,7 +97,7 @@ namespace Reshop.Web.API.Controllers
         [HttpGet("GetBrandOfficialProducts/{brandId}")]
         public IActionResult GetBrandOfficialProducts(int brandId)
         {
-            var res = _productService.GetBrandOfficialProducts(brandId);
+            var res = _brandService.GetBrandOfficialProducts(brandId);
 
             if (res == null)
                 return NotFound();
@@ -107,7 +108,7 @@ namespace Reshop.Web.API.Controllers
         [HttpGet("GetProductsOfOfficialProduct/{officialProductId}")]
         public IActionResult GetProductsOfOfficialProduct(int officialProductId)
         {
-            var res = _productService.GetProductsOfOfficialProduct(officialProductId);
+            var res = _brandService.GetProductsOfOfficialProduct(officialProductId);
 
             if (res == null)
                 return NotFound();

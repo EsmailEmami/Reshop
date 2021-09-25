@@ -10,7 +10,7 @@ namespace Reshop.Domain.Attribute
         #region Public / Protected Properties
 
         public double FileSize { get; set; } = 1.5;
-        public string ErrorMessage { get; set; }
+        public new string ErrorMessage { get; set; }
 
         #endregion
 

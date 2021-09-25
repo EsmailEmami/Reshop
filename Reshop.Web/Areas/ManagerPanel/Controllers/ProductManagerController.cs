@@ -20,22 +20,20 @@ using Reshop.Application.Interfaces.Shopper;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
-    // in this part we just do full edit or add or delete or information
-    // JUST FULL :)
-
     [Area("ManagerPanel")]
-    [Authorize]
     public class ProductManagerController : Controller
     {
         #region constructor
 
         private readonly IProductService _productService;
         private readonly IShopperService _shopperService;
+        private readonly IBrandService _brandService;
 
-        public ProductManagerController(IProductService productService, IShopperService shopperService)
+        public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService)
         {
             _productService = productService;
             _shopperService = shopperService;
+            _brandService = brandService;
         }
 
         #endregion
@@ -1167,295 +1165,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return View(product);
             }
         }
-
-        #endregion
-
-        #region headphone and handsfree
-
-        [HttpGet]
-        public async Task<IActionResult> AddOrEditHeadPhone(int productId = 0)
-        {
-            if (productId == 0)
-            {
-                return View();
-            }
-            else
-            {
-                var product = await _productService.GetTypeHandsfreeAndHeadPhoneProductDataAsync(productId, "");
-                if (product == null)
-                    return NotFound();
-
-                return View(product);
-            }
-        }
-
-        [HttpPost]
-
-        public async Task<IActionResult> AddOrEditHeadPhone(AddOrEditHandsfreeAndHeadPhoneViewModel model)
-        {
-            if (!ModelState.IsValid) return View(model);
-
-            var userFirstName = User.FindFirstValue(ClaimTypes.Actor);
-
-            if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
-            {
-                ModelState.AddModelError("", $"{userFirstName} عزیز تعداد تصاویر انتخابی برای محصول بیش از حد مجاز است.");
-
-                return View(model);
-            }
-
-            if (model.ProductId == 0)
-            {
-                var product = new Product()
-                {
-                    ProductTitle = model.ProductTitle,
-                    Description = model.Description,
-                    ProductType = ProductTypes.HeadPhone.ToString(),
-
-                };
-
-                var hansAndHeadPhoneDetail = new HandsfreeAndHeadPhoneDetail()
-                {
-                    ConnectionType = model.ConnectionType,
-                    PhoneType = model.PhoneType,
-                    WorkSuggestion = model.WorkSuggestion,
-                    Connector = model.Connector,
-                    IsSupportBattery = model.IsSupportBattery,
-                    Features = model.Features
-                };
-
-
-                var result = await _productService.AddHandsfreeAndHeadPhoneDetailAsync(product, hansAndHeadPhoneDetail);
-
-                if (result == ResultTypes.Successful)
-                {
-                    if (model.SelectedImages != null)
-                    {
-                        foreach (var image in model.SelectedImages)
-                        {
-                            if (image.Length > 0)
-                            {
-                                var imgName = NameGenerator.GenerateUniqCodeWithDash();
-
-                                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    "images",
-                                    imgName + Path.GetExtension(image.FileName));
-
-
-                                await using var stream = new FileStream(filePath, FileMode.Create);
-                                await image.CopyToAsync(stream);
-
-                                var productGallery = new ProductGallery()
-                                {
-                                    ProductId = product.ProductId,
-                                    ImageName = imgName + Path.GetExtension(image.FileName)
-                                };
-
-                                await _productService.AddProductGalleryAsync(productGallery);
-                            }
-                        }
-                    }
-
-
-
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است. لطفا دوباره تلاش کنید!");
-
-                    return View(model);
-                }
-            }
-            else
-            {
-                var product = await _productService.GetProductByIdAsync(model.ProductId);
-
-                if (product?.MobileCoverDetailId == null)
-                    return NotFound();
-
-
-                var handsfreeAndHeadPhoneDetail = await _productService.GetHandsfreeAndHeadPhoneDetailByIdAsync(product.MobileCoverDetailId.Value);
-
-                if (handsfreeAndHeadPhoneDetail == null)
-                    return NotFound();
-
-
-
-                //  update product
-                product.ProductTitle = model.ProductTitle;
-                product.Description = model.Description;
-
-
-                // update mobile cover detail
-                handsfreeAndHeadPhoneDetail.ConnectionType = model.ConnectionType;
-                handsfreeAndHeadPhoneDetail.PhoneType = model.PhoneType;
-                handsfreeAndHeadPhoneDetail.WorkSuggestion = model.WorkSuggestion;
-                handsfreeAndHeadPhoneDetail.Connector = model.Connector;
-                handsfreeAndHeadPhoneDetail.IsSupportBattery = model.IsSupportBattery;
-                handsfreeAndHeadPhoneDetail.Features = model.Features;
-
-
-
-                var result = await _productService.EditHandsfreeAndHeadPhoneDetailAsync(product, handsfreeAndHeadPhoneDetail);
-
-                if (result == ResultTypes.Successful)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است. لطفا دوباره تلاش کنید!");
-
-                    return View(model);
-                }
-
-            }
-        }
-
-
-        [HttpGet]
-        public async Task<IActionResult> AddOrEditHandsfree(int productId = 0)
-        {
-            if (productId == 0)
-            {
-                return View();
-            }
-            else
-            {
-                var product = await _productService.GetTypeHandsfreeAndHeadPhoneProductDataAsync(productId, "");
-                if (product == null)
-                    return NotFound();
-
-                return View(product);
-            }
-        }
-
-        [HttpPost]
-
-        public async Task<IActionResult> AddOrEditHandsfree(AddOrEditHandsfreeAndHeadPhoneViewModel model)
-        {
-            if (!ModelState.IsValid) return View(model);
-
-            var userFirstName = User.FindFirstValue(ClaimTypes.Actor);
-
-            if (model.SelectedImages != null && model.SelectedImages.Count() > 6)
-            {
-                ModelState.AddModelError("", $"{userFirstName} عزیز تعداد تصاویر انتخابی برای محصول بیش از حد مجاز است.");
-
-                return View(model);
-            }
-
-            if (model.ProductId == 0)
-            {
-                var product = new Product()
-                {
-                    ProductTitle = model.ProductTitle,
-                    Description = model.Description,
-                    ProductType = ProductTypes.Handsfree.ToString(),
-
-                };
-
-                var hansAndHeadPhoneDetail = new HandsfreeAndHeadPhoneDetail()
-                {
-                    ConnectionType = model.ConnectionType,
-                    PhoneType = model.PhoneType,
-                    WorkSuggestion = model.WorkSuggestion,
-                    Connector = model.Connector,
-                    IsSupportBattery = model.IsSupportBattery,
-                    Features = model.Features
-                };
-
-
-                var result = await _productService.AddHandsfreeAndHeadPhoneDetailAsync(product, hansAndHeadPhoneDetail);
-
-                if (result == ResultTypes.Successful)
-                {
-                    if (model.SelectedImages != null)
-                    {
-                        foreach (var image in model.SelectedImages)
-                        {
-                            if (image.Length > 0)
-                            {
-                                var imgName = NameGenerator.GenerateUniqCodeWithDash();
-
-                                string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    "images",
-                                    imgName + Path.GetExtension(image.FileName));
-
-
-                                await using var stream = new FileStream(filePath, FileMode.Create);
-                                await image.CopyToAsync(stream);
-
-                                var productGallery = new ProductGallery()
-                                {
-                                    ProductId = product.ProductId,
-                                    ImageName = imgName + Path.GetExtension(image.FileName)
-                                };
-
-                                await _productService.AddProductGalleryAsync(productGallery);
-                            }
-                        }
-                    }
-
-
-
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است. لطفا دوباره تلاش کنید!");
-
-                    return View(model);
-                }
-            }
-            else
-            {
-                var product = await _productService.GetProductByIdAsync(model.ProductId);
-
-                if (product?.MobileCoverDetailId == null)
-                    return NotFound();
-
-
-                var handsfreeAndHeadPhoneDetail = await _productService.GetHandsfreeAndHeadPhoneDetailByIdAsync(product.MobileCoverDetailId.Value);
-
-                if (handsfreeAndHeadPhoneDetail == null)
-                    return NotFound();
-
-
-
-                //  update product
-                product.ProductTitle = model.ProductTitle;
-                product.Description = model.Description;
-
-                // update mobile cover detail
-                handsfreeAndHeadPhoneDetail.ConnectionType = model.ConnectionType;
-                handsfreeAndHeadPhoneDetail.PhoneType = model.PhoneType;
-                handsfreeAndHeadPhoneDetail.WorkSuggestion = model.WorkSuggestion;
-                handsfreeAndHeadPhoneDetail.Connector = model.Connector;
-                handsfreeAndHeadPhoneDetail.IsSupportBattery = model.IsSupportBattery;
-                handsfreeAndHeadPhoneDetail.Features = model.Features;
-
-
-
-                var result = await _productService.EditHandsfreeAndHeadPhoneDetailAsync(product, handsfreeAndHeadPhoneDetail);
-
-                if (result == ResultTypes.Successful)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    ModelState.AddModelError("", $"{userFirstName} عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است. لطفا دوباره تلاش کنید!");
-
-                    return View(model);
-                }
-
-            }
-        }
-
 
         #endregion
 
@@ -2651,8 +2360,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     return NotFound();
                 }
 
-                ViewBag.Brands = _productService.GetBrandsOfStoreTitle(product.SelectedStoreTitle);
-                ViewBag.OfficialProducts = _productService.GetBrandOfficialProducts(product.SelectedBrand);
+                ViewBag.Brands = _brandService.GetBrandsOfStoreTitle(product.SelectedStoreTitle);
+                ViewBag.OfficialProducts = _brandService.GetBrandOfficialProducts(product.SelectedBrand);
 
                 return View(product);
             }
@@ -2663,8 +2372,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             // data for select Product
             ViewBag.StoreTitles = _shopperService.GetStoreTitles();
-            ViewBag.Brands = _productService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
-            ViewBag.OfficialProducts = _productService.GetBrandOfficialProducts(model.SelectedBrand);
+            ViewBag.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            ViewBag.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
 
 
             if (!ModelState.IsValid) return View(model);

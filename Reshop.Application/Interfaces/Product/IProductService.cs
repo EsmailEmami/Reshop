@@ -50,7 +50,6 @@ namespace Reshop.Application.Interfaces.Product
         Task<WristWatchDetail> GetWristWatchByIdAsync(int wristWatchId);
         Task<MemoryCardDetail> GetMemoryCardByIdAsync(int memoryCardId);
         Task<AUXDetail> GetAUXByIdAsync(int auxId);
-        Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeAndHeadPhoneDetailId);
         Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName);
         Task<ProductTypes> GetProductTypeByIdAsync(int productId);
 
@@ -67,7 +66,6 @@ namespace Reshop.Application.Interfaces.Product
         Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId);
         Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId);
         Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId);
-        Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperId);
         Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId);
         Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId);
         Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId);
@@ -81,7 +79,6 @@ namespace Reshop.Application.Interfaces.Product
         Task<ResultTypes> AddPowerBankAsync(Domain.Entities.Product.Product product, PowerBankDetail powerBank);
         Task<ResultTypes> AddMobileCoverAsync(Domain.Entities.Product.Product product, MobileCoverDetail mobileCoverDetail);
         Task<ResultTypes> AddTabletAsync(Domain.Entities.Product.Product product, TabletDetail tabletDetail);
-        Task<ResultTypes> AddHandsfreeAndHeadPhoneDetailAsync(Domain.Entities.Product.Product product, HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail);
         Task<ResultTypes> AddSpeakerAsync(Domain.Entities.Product.Product product, SpeakerDetail speakerDetail);
         Task<ResultTypes> AddFlashMemoryAsync(Domain.Entities.Product.Product product, FlashMemoryDetail flashMemoryDetail);
         Task<ResultTypes> AddSmartWatchAsync(Domain.Entities.Product.Product product, SmartWatchDetail smartWatchDetail);
@@ -101,7 +98,6 @@ namespace Reshop.Application.Interfaces.Product
         Task<ResultTypes> EditPowerBankAsync(Domain.Entities.Product.Product product, PowerBankDetail powerBank);
         Task<ResultTypes> EditMobileCoverAsync(Domain.Entities.Product.Product product, MobileCoverDetail mobileCoverDetail);
         Task<ResultTypes> EditTabletAsync(Domain.Entities.Product.Product product, TabletDetail tabletDetail);
-        Task<ResultTypes> EditHandsfreeAndHeadPhoneDetailAsync(Domain.Entities.Product.Product product, HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail);
         Task<ResultTypes> EditFlashMemoryAsync(Domain.Entities.Product.Product product, FlashMemoryDetail flashMemoryDetail);
         Task<ResultTypes> EditSpeakerAsync(Domain.Entities.Product.Product product, SpeakerDetail speakerDetail);
         Task<ResultTypes> EditSmartWatchAsync(Domain.Entities.Product.Product product, SmartWatchDetail smartWatchDetail);
@@ -140,32 +136,6 @@ namespace Reshop.Application.Interfaces.Product
 
         #endregion
 
-        #region brand
 
-        Task<Brand> GetBrandByIdAsync(int brandId);
-        IEnumerable<Tuple<int, string>> GetBrandsForShow();
-        Task<ResultTypes> AddBrandAsync(Brand brand);
-        Task<ResultTypes> EditBrandAsync(Brand brand);
-        Task<ResultTypes> UnAvailableBrand(int brandId);
-        Task<ResultTypes> AvailableBrand(AvailableBrandViewModel model);
-        Task<OfficialBrandProduct> GetOfficialBrandProductByIdAsync(int officialBrandProductId);
-        Task<ResultTypes> AddOfficialBrandProductAsync(OfficialBrandProduct officialBrandProduct);
-        Task<ResultTypes> EditOfficialBrandProductAsync(OfficialBrandProduct officialBrandProduct);
-        Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetBrandsForShowAsync(int pageId = 1, int take = 30, string filter = "");
-        Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetOfficialBrandProductsForShowAsync(int pageId = 1, int take = 30, string filter = "");
-        IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId);
-        IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId);
-        Task<bool> IsBrandExistAsync(int brandId);
-        Task<bool> IsOfficialBrandProductExistAsync(int officialBrandProductId);
-        Task<ResultTypes> AvailableOfficialBrandProductAsync(int officialBrandProductId, bool availableProducts);
-        Task<ResultTypes> UnAvailableOfficialBrandProductAsync(int officialBrandProductId);
-
-        #endregion
-
-        #region store title
-
-        IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId);
-
-        #endregion
     }
 }

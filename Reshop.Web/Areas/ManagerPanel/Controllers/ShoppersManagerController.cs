@@ -22,11 +22,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IShopperService _shopperService;
         private readonly IProductService _productService;
         private readonly IDataProtector _dataProtector;
+        private readonly IBrandService _brandService;
 
-        public ShoppersManager(IShopperService shopperService, IProductService productService, IDataProtectionProvider dataProtectionProvider)
+        public ShoppersManager(IShopperService shopperService, IProductService productService, IDataProtectionProvider dataProtectionProvider, IBrandService brandService)
         {
             _shopperService = shopperService;
             _productService = productService;
+            _brandService = brandService;
             _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Areas.ManagerPanel.Controllers.ShoppersManager",
                 new string[] { "ShoppersManager" });
         }
@@ -128,9 +130,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             // data for selectProduct
             ViewBag.StoreTitles = _shopperService.GetShopperStoreTitles(model.ShopperId);
-            ViewBag.Brands = _productService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
-            ViewBag.OfficialProducts = _productService.GetBrandOfficialProducts(model.SelectedBrand);
-            ViewBag.Products = _productService.GetProductsOfOfficialProduct(model.SelectedOfficialProduct);
+            ViewBag.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            ViewBag.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
+            ViewBag.Products = _brandService.GetProductsOfOfficialProduct(model.SelectedOfficialProduct);
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperProduct", model) });
@@ -204,9 +206,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             // data for select Product
             ViewBag.StoreTitles = _shopperService.GetShopperStoreTitles(model.ShopperId);
-            ViewBag.Brands = _productService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
-            ViewBag.OfficialProducts = _productService.GetBrandOfficialProducts(model.SelectedBrand);
-            ViewBag.Products = _productService.GetProductsOfOfficialProduct(model.SelectedOfficialProduct);
+            ViewBag.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            ViewBag.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
+            ViewBag.Products = _brandService.GetProductsOfOfficialProduct(model.SelectedOfficialProduct);
             ViewBag.CurrentProductId = model.ProductId;
 
             return View(model);
@@ -218,9 +220,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             // data for select Product
             ViewBag.StoreTitles = _shopperService.GetShopperStoreTitles(model.ShopperId);
-            ViewBag.Brands = _productService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
-            ViewBag.OfficialProducts = _productService.GetBrandOfficialProducts(model.SelectedBrand);
-            ViewBag.Products = _productService.GetProductsOfOfficialProduct(model.SelectedOfficialProduct);
+            ViewBag.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            ViewBag.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
+            ViewBag.Products = _brandService.GetProductsOfOfficialProduct(model.SelectedOfficialProduct);
             ViewBag.CurrentProductId = lastProductId;
 
             if (!ModelState.IsValid)

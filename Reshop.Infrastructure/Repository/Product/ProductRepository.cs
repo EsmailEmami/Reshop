@@ -133,7 +133,6 @@ namespace Reshop.Infrastructure.Repository.Product
             });
         }
 
-
         public IEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string sortBy,
             int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0,
             List<string> brands = null)
@@ -306,7 +305,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         Price = c.Price,
                         Brand = new Tuple<int, string>(c.ShopperProduct.Product.OfficialBrandProduct.BrandId,
                             c.ShopperProduct.Product.OfficialBrandProduct.Brand.BrandName),
-                        LastDiscount = c.Discounts.OrderByDescending(c => c.EndDate)
+                        LastDiscount = c.Discounts.OrderByDescending(e => e.EndDate)
                             .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate)).FirstOrDefault(),
                     }).SingleOrDefaultAsync();
 
@@ -351,19 +350,7 @@ namespace Reshop.Infrastructure.Repository.Product
             return model;
         }
 
-
-        public IEnumerable<string> GetBrandsOfCategory(int categoryId) =>
-                _context.ChildCategoryToCategories
-                    .Where(c => c.CategoryId == categoryId)
-                    .Select(c => c.ChildCategory)
-                    .SelectMany(c => c.ProductToChildCategories)
-                    .Select(c => c.Product.OfficialBrandProduct.Brand.BrandName).Distinct();
-
-        public IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId) =>
-            _context.ProductToChildCategories
-                .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.Product.OfficialBrandProduct.Brand.BrandName).Distinct();
-
+        
         public async Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key)
             => await _context.ShopperProductColors.Where(c => c.ShortKey == key)
                 .Select(c => new Tuple<string, string>(c.ShopperProduct.Product.ProductTitle, c.ShopperProductColorId))
@@ -578,101 +565,6 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ProductType == type).CountAsync();
         }
 
-        public async Task<ShopperProduct> GetProductWithTypeAsync(int productId, string type, string shopperId = "")
-        {
-            if (string.IsNullOrEmpty(shopperId))
-            {
-                return type switch
-                {
-                    "mobile" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.MobileDetail).FirstAsync(),
-
-                    "mobilecover" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.MobileCoverDetail).FirstAsync(),
-
-                    "laptop" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.LaptopDetailId).FirstAsync(),
-
-                    "speaker" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.SpeakerDetail).FirstAsync(),
-
-                    "flashmemory" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.FlashMemoryDetail).FirstAsync(),
-
-
-                    "tablet" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
-                    .Include(c => c.Product)
-                    .ThenInclude(c => c.TabletDetail).FirstAsync(),
-
-                    "wristwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.WristWatchDetail).FirstAsync(),
-
-                    "smartwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.SmartWatchDetail).FirstAsync(),
-
-                    "powerbank" => await _context.ShopperProducts.Where(c => c.ProductId == productId).OrderByDescending(c => c.ShopperProductColors.Max(c => c.SaleCount))
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.PowerBankDetail).FirstAsync(),
-
-                    _ => null,
-                };
-            }
-            else
-            {
-                return type switch
-                {
-                    "mobile" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.MobileDetail).FirstAsync(),
-
-                    "mobilecover" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.MobileCoverDetail).FirstAsync(),
-
-                    "laptop" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.LaptopDetailId).FirstAsync(),
-
-                    "speaker" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.SpeakerDetail).FirstAsync(),
-
-                    "flashmemory" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.FlashMemoryDetail).FirstAsync(),
-
-                    "handsfree" or "headphone" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.HandsfreeAndHeadPhoneDetail).FirstAsync(),
-
-                    "tablet" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                    .Include(c => c.Product)
-                    .ThenInclude(c => c.TabletDetail).FirstAsync(),
-
-                    "wristwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.WristWatchDetail).FirstAsync(),
-
-                    "smartwatch" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.SmartWatchDetail).FirstAsync(),
-
-                    "powerbank" => await _context.ShopperProducts.Where(c => c.ProductId == productId && c.ShopperId == shopperId)
-                        .Include(c => c.Product)
-                        .ThenInclude(c => c.PowerBankDetail).FirstAsync(),
-
-                    _ => null
-                };
-            }
-        }
-
         public async Task<ShopperProduct> GetShopperProductAsync(string shopperId, int productId) =>
             await _context.ShopperProducts
                 .Where(c => c.ShopperId == shopperId && c.ProductId == productId).SingleOrDefaultAsync();
@@ -748,18 +640,10 @@ namespace Reshop.Infrastructure.Repository.Product
             =>
                 await _context.AuxDetails.FindAsync(auxId);
 
-        public async Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeOrHeadPhoneDetailId)
-            =>
-                await _context.HandsfreeAndHeadPhoneDetails.FindAsync(handsfreeOrHeadPhoneDetailId);
-
         public IEnumerable<ProductGallery> GetProductImages(int productId)
         {
             return _context.ProductGalleries.Where(c => c.ProductId == productId);
         }
-
-        public void RemoveMobileCoverDetail(MobileCoverDetail mobileCoverDetail)
-            =>
-                _context.Remove(mobileCoverDetail);
 
         public IEnumerable<ChildCategory> GetProductChildCategories(int productId)
         {
@@ -914,104 +798,6 @@ namespace Reshop.Infrastructure.Repository.Product
                     _context.OrderDetails
                         .Where(o => o.ShopperProductColorId == c.ShopperProductColorId)
                         .Sum(s => s.Count), 10));
-
-        public IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId) =>
-            _context.StoreTitles.Where(c => c.StoreTitleId == storeTitleId)
-                .SelectMany(c => c.Brands)
-                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
-
-        public async Task<Brand> GetBrandByIdAsync(int brandId) =>
-            await _context.Brands.FindAsync(brandId);
-
-        public IEnumerable<Tuple<int, string>> GetBrandsForShow() =>
-            _context.Brands
-                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
-
-        public IEnumerable<Tuple<int, string, bool>> GetBrandsForShow(int skip, int take, string filter)
-        {
-            IQueryable<Brand> brands = _context.Brands;
-
-            if (filter != null)
-            {
-                brands = brands.Where(c => c.BrandName.Contains(filter));
-            }
-
-            brands = brands.Skip(skip).Take(take);
-
-            return brands.Select(c => new Tuple<int, string, bool>(c.BrandId, c.BrandName, c.IsActive));
-        }
-
-        public IEnumerable<Tuple<int, string, bool>> GetOfficialBrandProductsForShow(int skip, int take, string filter = "")
-        {
-            IQueryable<OfficialBrandProduct> officialBrandProducts = _context.OfficialBrandProducts;
-
-            if (filter != null)
-            {
-                officialBrandProducts = officialBrandProducts.Where(c => c.OfficialBrandProductName.Contains(filter));
-            }
-
-            officialBrandProducts = officialBrandProducts.Skip(skip).Take(take);
-
-            return officialBrandProducts.Select(c => new Tuple<int, string, bool>(c.OfficialBrandProductId, $"{c.OfficialBrandProductName} ({c.Brand.BrandName})", c.IsActive));
-        }
-
-        public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
-            _context.Brands.Where(c => c.BrandId == brandId)
-                .SelectMany(c => c.OfficialBrandProducts)
-                .Select(c => new Tuple<int, string>(c.OfficialBrandProductId, c.OfficialBrandProductName));
-
-        public IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId) =>
-            _context.OfficialBrandProducts.Where(c => c.OfficialBrandProductId == officialProductId)
-                .SelectMany(c => c.Products)
-                .Select(c => new Tuple<int, string>(c.ProductId, c.ProductTitle));
-
-        public async Task<int> GetBrandsCountAsync() =>
-            await _context.Brands.CountAsync();
-
-        public async Task<int> GetOfficialBrandProductsCountAsync() =>
-            await _context.OfficialBrandProducts.CountAsync();
-
-        public async Task AddBrandAsync(Brand brand) =>
-            await _context.Brands.AddAsync(brand);
-
-        public void UpdateBrand(Brand brand) =>
-            _context.Brands.Update(brand);
-
-        public async Task<OfficialBrandProduct> GetOfficialBrandProductByIdAsync(int officialBrandProductId) =>
-            await _context.OfficialBrandProducts.FindAsync(officialBrandProductId);
-
-        public IEnumerable<OfficialBrandProduct> GetRealOfficialProductsOfBrand(int brandId) =>
-            _context.Brands.Where(c => c.BrandId == brandId)
-                .SelectMany(c => c.OfficialBrandProducts);
-
-        public IEnumerable<Domain.Entities.Product.Product> GetRealProductsOfOfficialProduct(int officialProductId) =>
-            _context.OfficialBrandProducts
-                .Where(c => c.OfficialBrandProductId == officialProductId)
-                .SelectMany(c => c.Products);
-
-        public async Task AddOfficialBrandProductAsync(OfficialBrandProduct officialBrandProduct) =>
-            await _context.OfficialBrandProducts.AddAsync(officialBrandProduct);
-
-        public void UpdateOfficialBrandProduct(OfficialBrandProduct officialBrandProduct) =>
-            _context.OfficialBrandProducts.Update(officialBrandProduct);
-
-        public async Task<bool> IsBrandExistAsync(int brandId) =>
-            await _context.Brands.AnyAsync(c => c.BrandId == brandId);
-
-        public async Task<bool> IsOfficialBrandProductExistAsync(int officialBrandProductId) =>
-            await _context.OfficialBrandProducts.AnyAsync(c => c.OfficialBrandProductId == officialBrandProductId);
-
-        public IEnumerable<Domain.Entities.Product.Product> GetTypeMobileProducts()
-        {
-            return _context.Products
-                .Include(c => c.MobileDetail);
-        }
-
-        public IEnumerable<Domain.Entities.Product.Product> GetTypeLaptopProducts()
-        {
-            return _context.Products
-                .Include(c => c.LaptopDetail);
-        }
 
         public async Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName)
             =>
@@ -1269,14 +1055,6 @@ namespace Reshop.Infrastructure.Repository.Product
                         SpeedDataReading = c.FlashMemoryDetail.SpeedDataReading,
                         OsCompatibility = c.FlashMemoryDetail.OsCompatibility,
                         MoreInformation = c.FlashMemoryDetail.MoreInformation,
-                    }).SingleOrDefaultAsync();
-
-        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(int productId, string shopperId) =>
-            await _context.ShopperProducts
-                .Where(c => c.ShopperId == shopperId && c.ProductId == productId)
-                    .Select(c => new AddOrEditHandsfreeAndHeadPhoneViewModel()
-                    {
-
                     }).SingleOrDefaultAsync();
 
         public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataForEditAsync(int productId) =>
@@ -1554,7 +1332,6 @@ namespace Reshop.Infrastructure.Repository.Product
             await _context.PowerBankDetails.AddAsync(powerBank);
         }
 
-
         public async Task AddProductGalley(ProductGallery productGallery)
             =>
                 await _context.ProductGalleries.AddAsync(productGallery);
@@ -1567,10 +1344,6 @@ namespace Reshop.Infrastructure.Repository.Product
         public async Task AddTabletDetailAsync(TabletDetail tabletDetail)
             =>
                 await _context.TabletDetails.AddAsync(tabletDetail);
-
-        public async Task AddHandsfreeAndHeadPhoneDetailAsync(HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail)
-            =>
-                await _context.HandsfreeAndHeadPhoneDetails.AddAsync(handsfreeAndHeadPhoneDetail);
 
         public async Task AddFlashMemoryDetailAsync(FlashMemoryDetail flashMemoryDetail)
             =>
@@ -1627,10 +1400,6 @@ namespace Reshop.Infrastructure.Repository.Product
             =>
                 _context.TabletDetails.Update(tabletDetail);
 
-        public void UpdateHandsfreeAndHeadPhoneDetail(HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail)
-            =>
-                _context.HandsfreeAndHeadPhoneDetails.Update(handsfreeAndHeadPhoneDetail);
-
         public void UpdateFlashMemoryDetail(FlashMemoryDetail flashMemoryDetail)
             =>
                 _context.FlashMemoryDetails.Update(flashMemoryDetail);
@@ -1664,36 +1433,5 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             await _context.SaveChangesAsync();
         }
-
-        public void RemoveProduct(Domain.Entities.Product.Product product)
-        {
-            _context.Products.Remove(product);
-        }
-
-        public void RemoveMobileDetail(MobileDetail mobileDetail)
-        {
-            _context.MobileDetails.Remove(mobileDetail);
-        }
-
-        public void RemoveLaptopDetail(LaptopDetail laptopDetail)
-        {
-            _context.LaptopDetails.Remove(laptopDetail);
-        }
-
-        public void RemoveRangeProducts(List<Domain.Entities.Product.Product> products)
-        {
-            _context.Products.RemoveRange(products);
-        }
-
-        public void RemoveRangeMobileDetails(List<MobileDetail> mobileDetails)
-        {
-            _context.MobileDetails.RemoveRange(mobileDetails);
-        }
-
-        public void RemoveRangeLaptopDetails(List<LaptopDetail> laptopDetails)
-        {
-            _context.LaptopDetails.RemoveRange(laptopDetails);
-        }
-
     }
 }

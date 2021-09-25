@@ -13,15 +13,14 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
     [Area("ManagerPanel")]
     public class BrandManagerController : Controller
     {
-        private readonly IProductService _productService;
         private readonly IShopperService _shopperService;
+        private readonly IBrandService _brandService;
 
-        public BrandManagerController(IProductService productService, IShopperService shopperService)
+        public BrandManagerController(IShopperService shopperService, IBrandService brandService)
         {
-            _productService = productService;
             _shopperService = shopperService;
+            _brandService = brandService;
         }
-
 
         public IActionResult Index()
         {
@@ -55,7 +54,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 IsActive = model.IsActive
             };
 
-            var addBrand = await _productService.AddBrandAsync(brand);
+            var addBrand = await _brandService.AddBrandAsync(brand);
 
             if (addBrand == ResultTypes.Successful)
             {
@@ -78,7 +77,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
 
-            var brand = await _productService.GetBrandByIdAsync(brandId);
+            var brand = await _brandService.GetBrandByIdAsync(brandId);
 
             if (brand == null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
@@ -97,13 +96,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
 
-            var brand = await _productService.GetBrandByIdAsync(model.BrandId);
+            var brand = await _brandService.GetBrandByIdAsync(model.BrandId);
 
             brand.BrandName = model.BrandName;
             brand.IsActive = model.IsActive;
             brand.StoreTitleId = model.StoreTitleId;
 
-            var editBrand = await _productService.EditBrandAsync(brand);
+            var editBrand = await _brandService.EditBrandAsync(brand);
 
 
             if (editBrand == ResultTypes.Successful)
@@ -123,7 +122,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> AvailableBrand(int brandId)
         {
-            if (!await _productService.IsBrandExistAsync(brandId))
+            if (!await _brandService.IsBrandExistAsync(brandId))
             {
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
             }
@@ -138,7 +137,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
 
-            var res = await _productService.AvailableBrand(model);
+            var res = await _brandService.AvailableBrand(model);
 
 
             if (res == ResultTypes.Successful)
@@ -154,7 +153,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> UnAvailableBrand(int brandId)
         {
-            var res = await _productService.UnAvailableBrand(brandId);
+            var res = await _brandService.UnAvailableBrand(brandId);
 
             if (res != ResultTypes.Successful)
                 return BadRequest();

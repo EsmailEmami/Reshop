@@ -127,7 +127,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     }
                 }
 
-                return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" }); return Json(new { isValid = true, returnUrl = "current" });
+                return Json(new { isValid = true, returnUrl = "current" });
             }
         }
 

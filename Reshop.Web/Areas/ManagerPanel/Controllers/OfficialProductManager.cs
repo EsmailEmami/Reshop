@@ -16,11 +16,11 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
     [Area("ManagerPanel")]
     public class OfficialProductManager : Controller
     {
-        private readonly IProductService _productService;
+        private readonly IBrandService _brandService;
 
-        public OfficialProductManager(IProductService productService)
+        public OfficialProductManager(IBrandService brandService)
         {
-            _productService = productService;
+            _brandService = brandService;
         }
 
         public IActionResult Index()
@@ -34,7 +34,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public IActionResult AddOfficialBrandProduct()
         {
-            ViewBag.Brands = _productService.GetBrandsForShow();
+            ViewBag.Brands = _brandService.GetBrandsForShow();
 
             return View(new OfficialBrandProduct());
         }
@@ -43,7 +43,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> AddOfficialBrandProduct(OfficialBrandProduct model)
         {
-            ViewBag.Brands = _productService.GetBrandsForShow();
+            ViewBag.Brands = _brandService.GetBrandsForShow();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
@@ -55,7 +55,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 IsActive = model.IsActive
             };
 
-            var addBrand = await _productService.AddOfficialBrandProductAsync(officialBrandProduct);
+            var addBrand = await _brandService.AddOfficialBrandProductAsync(officialBrandProduct);
 
             if (addBrand == ResultTypes.Successful)
             {
@@ -78,12 +78,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
 
-            var officialBrandProduct = await _productService.GetOfficialBrandProductByIdAsync(officialBrandProductId);
+            var officialBrandProduct = await _brandService.GetOfficialBrandProductByIdAsync(officialBrandProductId);
 
             if (officialBrandProduct == null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
-            ViewBag.Brands = _productService.GetBrandsForShow();
+            ViewBag.Brands = _brandService.GetBrandsForShow();
 
             return View(officialBrandProduct);
         }
@@ -92,18 +92,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> EditOfficialBrandProduct(OfficialBrandProduct model)
         {
-            ViewBag.Brands = _productService.GetBrandsForShow();
+            ViewBag.Brands = _brandService.GetBrandsForShow();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
 
-            var officialBrandProduct = await _productService.GetOfficialBrandProductByIdAsync(model.OfficialBrandProductId);
+            var officialBrandProduct = await _brandService.GetOfficialBrandProductByIdAsync(model.OfficialBrandProductId);
 
             officialBrandProduct.OfficialBrandProductName = model.OfficialBrandProductName;
             officialBrandProduct.IsActive = model.IsActive;
             officialBrandProduct.BrandId = model.BrandId;
 
-            var editBrand = await _productService.EditOfficialBrandProductAsync(officialBrandProduct);
+            var editBrand = await _brandService.EditOfficialBrandProductAsync(officialBrandProduct);
 
 
             if (editBrand == ResultTypes.Successful)
@@ -123,7 +123,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> AvailableOfficialBrandProduct(int officialBrandProductId)
         {
-            if (!await _productService.IsOfficialBrandProductExistAsync(officialBrandProductId))
+            if (!await _brandService.IsOfficialBrandProductExistAsync(officialBrandProductId))
             {
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
             }
@@ -138,7 +138,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
 
-            var res = await _productService.AvailableOfficialBrandProductAsync(model.OfficialBrandProductId, model.AvailableProducts);
+            var res = await _brandService.AvailableOfficialBrandProductAsync(model.OfficialBrandProductId, model.AvailableProducts);
 
 
             if (res == ResultTypes.Successful)
@@ -154,7 +154,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> UnAvailableOfficialBrandProduct(int officialBrandProductId)
         {
-            var res = await _productService.UnAvailableOfficialBrandProductAsync(officialBrandProductId);
+            var res = await _brandService.UnAvailableOfficialBrandProductAsync(officialBrandProductId);
 
             if (res != ResultTypes.Successful)
                 return BadRequest();

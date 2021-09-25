@@ -6,11 +6,11 @@ namespace Reshop.Web.Components.Product
 {
     public class OfficialBrandProductsComponent : ViewComponent
     {
-        private readonly IProductService _productService;
+        private readonly IBrandService _brandService;
 
-        public OfficialBrandProductsComponent(IProductService productService)
+        public OfficialBrandProductsComponent(IBrandService brandService)
         {
-            _productService = productService;
+            _brandService = brandService;
         }
 
 
@@ -18,7 +18,7 @@ namespace Reshop.Web.Components.Product
         {
             int take = 20;
 
-            var brands = await _productService.GetOfficialBrandProductsForShowAsync(pageId, take, filter);
+            var brands = await _brandService.GetOfficialBrandProductsForShowAsync(pageId, take, filter);
 
             ViewBag.SearchText = filter;
             ViewBag.TakeCount = take;

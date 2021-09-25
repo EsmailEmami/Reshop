@@ -25,12 +25,14 @@ namespace Reshop.Application.Services.Product
         private readonly IProductRepository _productRepository;
         private readonly IShopperRepository _shopperRepository;
         private readonly ICartRepository _cartRepository;
+        private readonly IBrandRepository _brandRepository;
 
-        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository)
+        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository, IBrandRepository brandRepository)
         {
             _productRepository = productRepository;
             _shopperRepository = shopperRepository;
             _cartRepository = cartRepository;
+            _brandRepository = brandRepository;
         }
 
         #endregion
@@ -81,7 +83,7 @@ namespace Reshop.Application.Services.Product
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
-            IEnumerable<string> brandsShow = _productRepository.GetBrandsOfCategory(categoryId);
+            IEnumerable<string> brandsShow = _brandRepository.GetBrandsOfCategory(categoryId);
 
 
             return new CategoryOrChildCategoryProductsForShow()
@@ -104,7 +106,7 @@ namespace Reshop.Application.Services.Product
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
-            IEnumerable<string> brandsShow = _productRepository.GetBrandsOfChildCategory(childCategoryId);
+            IEnumerable<string> brandsShow = _brandRepository.GetBrandsOfChildCategory(childCategoryId);
 
             return new CategoryOrChildCategoryProductsForShow()
             {
@@ -260,10 +262,6 @@ namespace Reshop.Application.Services.Product
         public async Task<AUXDetail> GetAUXByIdAsync(int auxId) =>
             await _productRepository.GetAUXByIdAsync(auxId);
 
-        public async Task<HandsfreeAndHeadPhoneDetail> GetHandsfreeAndHeadPhoneDetailByIdAsync(int handsfreeAndHeadPhoneDetailId)
-            =>
-                await _productRepository.GetHandsfreeAndHeadPhoneDetailByIdAsync(handsfreeAndHeadPhoneDetailId);
-
         public async Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName)
             =>
                 await _productRepository.GetProductGalleryAsync(productId, imageName);
@@ -362,10 +360,6 @@ namespace Reshop.Application.Services.Product
         public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId)
             =>
                 await _productRepository.GetTypeTabletProductDataForEditAsync(productId);
-
-        public async Task<AddOrEditHandsfreeAndHeadPhoneViewModel> GetTypeHandsfreeAndHeadPhoneProductDataAsync(int productId, string shopperId)
-            =>
-                await _productRepository.GetTypeHandsfreeAndHeadPhoneProductDataForEditAsync(productId, shopperId);
 
         public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId)
             =>
@@ -536,27 +530,6 @@ namespace Reshop.Application.Services.Product
 
                 product.TabletDetailId = tabletDetail.TabletDetailId;
                 product.TabletDetail = tabletDetail;
-
-                await _productRepository.AddProductAsync(product);
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<ResultTypes> AddHandsfreeAndHeadPhoneDetailAsync(Domain.Entities.Product.Product product, HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail)
-        {
-            try
-            {
-                await _productRepository.AddHandsfreeAndHeadPhoneDetailAsync(handsfreeAndHeadPhoneDetail);
-                await _productRepository.SaveChangesAsync();
-
-                product.HandsfreeAndHeadPhoneDetailId = handsfreeAndHeadPhoneDetail.HeadPhoneDetailId;
-                product.HandsfreeAndHeadPhoneDetail = handsfreeAndHeadPhoneDetail;
 
                 await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
@@ -813,28 +786,6 @@ namespace Reshop.Application.Services.Product
             }
         }
 
-        public async Task<ResultTypes> EditHandsfreeAndHeadPhoneDetailAsync(Domain.Entities.Product.Product product, HandsfreeAndHeadPhoneDetail handsfreeAndHeadPhoneDetail)
-        {
-            try
-            {
-                if (!await _productRepository.IsProductExistAsync(product.ProductId))
-                    return ResultTypes.Failed;
-
-
-                _productRepository.UpdateHandsfreeAndHeadPhoneDetail(handsfreeAndHeadPhoneDetail);
-                _productRepository.UpdateProduct(product);
-
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
         public async Task<ResultTypes> EditFlashMemoryAsync(Domain.Entities.Product.Product product, FlashMemoryDetail flashMemoryDetail)
         {
             try
@@ -1075,262 +1026,8 @@ namespace Reshop.Application.Services.Product
         public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
             _productRepository.GetColorsOfProductDataChart(productId);
 
-        public async Task<Brand> GetBrandByIdAsync(int brandId) =>
-            await _productRepository.GetBrandByIdAsync(brandId);
+      
 
-        public IEnumerable<Tuple<int, string>> GetBrandsForShow() =>
-            _productRepository.GetBrandsForShow();
-
-        public async Task<ResultTypes> AddBrandAsync(Brand brand)
-        {
-            try
-            {
-                await _productRepository.AddBrandAsync(brand);
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<ResultTypes> EditBrandAsync(Brand brand)
-        {
-            try
-            {
-                _productRepository.UpdateBrand(brand);
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<ResultTypes> UnAvailableBrand(int brandId)
-        {
-            try
-            {
-                var brand = await _productRepository.GetBrandByIdAsync(brandId);
-
-                if (brand == null)
-                    return ResultTypes.Failed;
-
-                // UnAvailable Brand 
-                brand.IsActive = false;
-
-                var officialProducts = _productRepository.GetRealOfficialProductsOfBrand(brandId);
-
-                foreach (var officialBrandProduct in officialProducts)
-                {
-                    // UnAvailable OfficialBrandProduct
-                    officialBrandProduct.IsActive = false;
-
-                    var products = _productRepository.GetRealProductsOfOfficialProduct(officialBrandProduct.OfficialBrandProductId);
-
-                    // UnAvailable Products
-                    foreach (var product in products)
-                    {
-                        product.IsActive = false;
-                    }
-                }
-
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<ResultTypes> AvailableBrand(AvailableBrandViewModel model)
-        {
-            try
-            {
-                var brand = await _productRepository.GetBrandByIdAsync(model.BrandId);
-
-                if (brand == null)
-                    return ResultTypes.Failed;
-
-                // Available Brand 
-                brand.IsActive = true;
-
-                if (model.AvailableOfficialBrandProducts)
-                {
-                    var officialProducts = _productRepository.GetRealOfficialProductsOfBrand(brand.BrandId);
-
-                    foreach (var officialBrandProduct in officialProducts)
-                    {
-                        // Available OfficialBrandProduct
-                        officialBrandProduct.IsActive = true;
-
-                        if (model.AvailableProducts)
-                        {
-                            var products = _productRepository.GetRealProductsOfOfficialProduct(officialBrandProduct.OfficialBrandProductId);
-
-                            // Available Products
-                            foreach (var product in products)
-                            {
-                                product.IsActive = true;
-                            }
-                        }
-                    }
-                }
-
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<OfficialBrandProduct> GetOfficialBrandProductByIdAsync(int officialBrandProductId) =>
-            await _productRepository.GetOfficialBrandProductByIdAsync(officialBrandProductId);
-
-        public async Task<ResultTypes> AddOfficialBrandProductAsync(OfficialBrandProduct officialBrandProduct)
-        {
-            try
-            {
-                await _productRepository.AddOfficialBrandProductAsync(officialBrandProduct);
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<ResultTypes> EditOfficialBrandProductAsync(OfficialBrandProduct officialBrandProduct)
-        {
-            try
-            {
-                _productRepository.UpdateOfficialBrandProduct(officialBrandProduct);
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetBrandsForShowAsync(int pageId = 1, int take = 30, string filter = "")
-        {
-            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
-
-            int brandsCount = await _productRepository.GetBrandsCountAsync();
-
-            var brands = _productRepository.GetBrandsForShow(skip, take, filter);
-
-
-            int totalPages = (int)Math.Ceiling(1.0 * brandsCount / take);
-
-            return new Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>(brands, pageId, totalPages);
-        }
-
-        public async Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetOfficialBrandProductsForShowAsync(int pageId = 1, int take = 30, string filter = "")
-        {
-            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
-
-            int officialBrandProductsCount = await _productRepository.GetOfficialBrandProductsCountAsync();
-
-            var officialBrandProducts = _productRepository.GetOfficialBrandProductsForShow(skip, take, filter);
-
-            int totalPages = (int)Math.Ceiling(1.0 * officialBrandProductsCount / take);
-
-            return new Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>(officialBrandProducts, pageId, totalPages);
-        }
-
-        public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
-            _productRepository.GetBrandOfficialProducts(brandId);
-
-        public IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId) =>
-            _productRepository.GetProductsOfOfficialProduct(officialProductId);
-
-        public async Task<bool> IsBrandExistAsync(int brandId) =>
-            await _productRepository.IsBrandExistAsync(brandId);
-
-        public async Task<bool> IsOfficialBrandProductExistAsync(int officialBrandProductId) =>
-            await _productRepository.IsOfficialBrandProductExistAsync(officialBrandProductId);
-
-        public async Task<ResultTypes> AvailableOfficialBrandProductAsync(int officialBrandProductId, bool availableProducts)
-        {
-            try
-            {
-                var officialBrandProduct = await _productRepository.GetOfficialBrandProductByIdAsync(officialBrandProductId);
-
-                if (officialBrandProduct == null)
-                    return ResultTypes.Failed;
-
-                // Available Brand 
-                officialBrandProduct.IsActive = true;
-
-                if (availableProducts)
-                {
-                    var products = _productRepository.GetRealProductsOfOfficialProduct(officialBrandProduct.OfficialBrandProductId);
-
-                    // Available Products
-                    foreach (var product in products)
-                    {
-                        product.IsActive = true;
-                    }
-                }
-
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<ResultTypes> UnAvailableOfficialBrandProductAsync(int officialBrandProductId)
-        {
-            try
-            {
-                var officialBrandProduct = await _productRepository.GetOfficialBrandProductByIdAsync(officialBrandProductId);
-
-                if (officialBrandProduct == null)
-                    return ResultTypes.Failed;
-
-                // un Available Brand 
-                officialBrandProduct.IsActive = false;
-
-
-                var products = _productRepository.GetRealProductsOfOfficialProduct(officialBrandProduct.OfficialBrandProductId);
-
-                // un Available Products
-                foreach (var product in products)
-                {
-                    product.IsActive = false;
-                }
-
-
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId) =>
-            _productRepository.GetBrandsOfStoreTitle(storeTitleId);
+        
     }
 }
