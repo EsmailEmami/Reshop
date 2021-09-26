@@ -26,6 +26,10 @@ using Reshop.Infrastructure.Repository.Product;
 using Reshop.Infrastructure.Repository.Shopper;
 using Reshop.Infrastructure.Repository.User;
 using System;
+using Reshop.Application.Interfaces.Discount;
+using Reshop.Application.Services.Discount;
+using Reshop.Domain.Interfaces.Discount;
+using Reshop.Infrastructure.Repository.Discount;
 
 namespace Reshop.Infrastructure
 {
@@ -52,6 +56,7 @@ namespace Reshop.Infrastructure
             services.AddScoped<IOriginService, OriginService>();
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IColorService, ColorService>();
+            services.AddScoped<IDiscountService, DiscountService>();
 
             //repository
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -63,6 +68,7 @@ namespace Reshop.Infrastructure
             services.AddScoped<IOriginRepository, OriginRepository>();
             services.AddScoped<IBrandRepository, BrandRepository>();
             services.AddScoped<IColorRepository, ColorRepository>();
+            services.AddScoped<IDiscountRepository, DiscountRepository>();
 
             services.AddSingleton<IMessageSender, MessageSender>();
 
@@ -115,11 +121,6 @@ namespace Reshop.Infrastructure
             services.Configure<GoogleReCaptchaKey>(configuration.GetSection("GoogleRecaptcha"));
 
             #endregion
-
-            //services.AddMvc(options =>
-            //{
-            //    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            //});
 
             return services;
         }

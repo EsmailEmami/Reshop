@@ -5,7 +5,6 @@ namespace Reshop.Web.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -106,6 +105,21 @@ namespace Reshop.Web.API.Controllers
 
             if (res == null)
                 return NotFound();
+
+            return new ObjectResult(res);
+        }
+
+        //discount
+        [HttpGet("GetLastTwentyDiscountDataOfProductColor/{productId}/{colorId}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public IActionResult GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId)
+        {
+            var res = _productService.GetLastTwentyDiscountDataOfProductColorChart(productId, colorId);
+
+            if (res is null)
+            {
+                return NotFound();
+            }
 
             return new ObjectResult(res);
         }

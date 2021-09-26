@@ -744,6 +744,23 @@ namespace Reshop.Infrastructure.Repository.Product
                     SellCount = c.Count,
                 });
 
+        public IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId) =>
+            _context.ShopperProductColors
+                .Where(c => c.ShopperProduct.ProductId == productId &&
+                            c.ColorId == colorId)
+                .SelectMany(c => c.Discounts)
+                .OrderBy(c => c.StartDate)
+                .Take(20)
+                .Select(b => new Tuple<string, int>(
+                    $"{b.StartDate.ToShamsiDateTime()} تا {b.EndDate.ToShamsiDateTime()}",
+                    _context.Orders
+                        .Where(or => or.PayDate >= b.StartDate &&
+                                     or.PayDate >= b.EndDate)
+                        .SelectMany(e => e.OrderDetails)
+                        .Count(f => f.ShopperProductColorId == b.ShopperProductColorId &&
+                                    f.ProductDiscountPrice != 0)
+                ));
+
         public async Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName)
             =>
                 await _context.ProductGalleries.SingleOrDefaultAsync(c => c.ProductId == productId && c.ImageName == imageName);

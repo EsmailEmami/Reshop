@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Reshop.Domain.DTOs.User;
-using Reshop.Domain.Entities.Shopper;
+﻿using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Reshop.Domain.Interfaces.User
 {
@@ -48,9 +46,9 @@ namespace Reshop.Domain.Interfaces.User
 
         #region Discount
 
-        Discount GetDiscountByCode(string discountCode);
-        Task<Discount> GetDiscountByCodeAsync(string discountCode);
-        void UpdateDiscount(Discount discount);
+        Entities.User.Discount GetDiscountByCode(string discountCode);
+        Task<Entities.User.Discount> GetDiscountByCodeAsync(string discountCode);
+        void UpdateDiscount(Entities.User.Discount discount);
         bool IsUserDiscountCodeExist(string userId, string discountId);
         Task AddUserDiscountCodeAsync(UserDiscountCode userDiscountCode);
 

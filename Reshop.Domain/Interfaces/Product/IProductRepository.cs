@@ -180,10 +180,11 @@ namespace Reshop.Domain.Interfaces.Product
 
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart();
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId);
-       
+        IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId);
+
         #endregion
 
-        
+
 
         Task SaveChangesAsync();
     }

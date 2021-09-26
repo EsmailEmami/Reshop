@@ -12,7 +12,7 @@
         <a onclick="ColorsDetailData('colorDetail@(Model.ColorId)', '@Url.Action("ProductColorDetail","ProductManager",new{productId = Model.ProductId,colorId = Model.ColorId},Context.Request.Scheme)')">رنگ</a>
     </li>
     <li>
-        <a onclick="ColorsDiscountDetailData('colorDetail@(Model.ColorId)','@Url.Action("ShopperProductDiscountDetail","ShoppersManager",new{shopperProductId = "1212121",colorId = Model.ColorId},Context.Request.Scheme)')">تخفیف</a>
+        <a onclick="ColorsDiscountDetailData('colorDetail@(Model.ColorId)', '@Url.Action("ProductColorDiscountsDetail","ProductManager",new{productId = Model.ProductId,colorId = Model.ColorId},Context.Request.Scheme)')">تخفیف</a>
     </li>
 </ul>
 

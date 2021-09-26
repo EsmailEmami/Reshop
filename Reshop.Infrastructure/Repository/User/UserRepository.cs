@@ -48,7 +48,7 @@ namespace Reshop.Infrastructure.Repository.User
                     PhoneNumber = c.PhoneNumber,
                     NationalCode = c.NationalCode,
                 }).SingleOrDefaultAsync();
-        
+
 
         public IEnumerable<Address> GetUserAddresses(string userId)
             =>
@@ -103,15 +103,15 @@ namespace Reshop.Infrastructure.Repository.User
 
         #region discount
 
-        public Discount GetDiscountByCode(string discountCode)
+        public Domain.Entities.User.Discount GetDiscountByCode(string discountCode)
             =>
                 _context.Discounts.SingleOrDefault(c => c.DiscountCode == discountCode);
 
-        public async Task<Discount> GetDiscountByCodeAsync(string discountCode)
+        public async Task<Domain.Entities.User.Discount> GetDiscountByCodeAsync(string discountCode)
             =>
                 await _context.Discounts.SingleOrDefaultAsync(c => c.DiscountCode == discountCode);
 
-        public void UpdateDiscount(Discount discount) => _context.Discounts.Update(discount);
+        public void UpdateDiscount(Domain.Entities.User.Discount discount) => _context.Discounts.Update(discount);
 
         public bool IsUserDiscountCodeExist(string userId, string discountId)
             =>

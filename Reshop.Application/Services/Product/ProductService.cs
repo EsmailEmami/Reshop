@@ -980,5 +980,7 @@ namespace Reshop.Application.Services.Product
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId) =>
             _productRepository.GetLastThirtyDayProductDataChart(productId);
 
-     }
+        public IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId) =>
+            _productRepository.GetLastTwentyDiscountDataOfProductColorChart(productId, colorId);
+    }
 }

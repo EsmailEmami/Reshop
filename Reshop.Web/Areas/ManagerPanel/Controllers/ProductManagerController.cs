@@ -83,6 +83,20 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        public async Task<IActionResult> ProductColorDiscountsDetail(int productId, int colorId)
+        {
+            var data = await _colorService.GetProductColorDetailAsync(productId, colorId);
+
+            if (data == null)
+                return NotFound();
+
+            return View(data);
+        }
+
+
+
+        [HttpGet]
+        [NoDirectAccess]
         public IActionResult ShoppersOfProduct(int productId, string type, int pageId, string filter)
         {
             if (productId == 0)

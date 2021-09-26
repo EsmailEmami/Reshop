@@ -505,10 +505,16 @@ namespace Reshop.Infrastructure.Repository.Shopper
             _context.ShopperProductColors
                 .Where(c => c.ShopperProductColorId == shopperProductColorId)
                 .SelectMany(c => c.Discounts)
+                .OrderBy(c=> c.StartDate)
+                .Take(20)
                 .Select(b => new Tuple<string, int>(
                     $"{b.StartDate.ToShamsiDateTime()} تا {b.EndDate.ToShamsiDateTime()}",
-                    _context.Orders.Where(or => or.PayDate >= b.StartDate && or.PayDate >= b.EndDate)
-                        .SelectMany(e => e.OrderDetails).Count(f => f.ShopperProductColorId == b.ShopperProductColorId && f.ProductDiscountPrice != 0)
+                    _context.Orders
+                        .Where(or => or.PayDate >= b.StartDate && 
+                                     or.PayDate >= b.EndDate)
+                        .SelectMany(e => e.OrderDetails)
+                        .Count(f => f.ShopperProductColorId == b.ShopperProductColorId && 
+                                    f.ProductDiscountPrice != 0)
                     ));
 
         public IEnumerable<Tuple<string, int, int, int>> GetColorsOfShopperProductDataChart(string shopperProductId) =>
