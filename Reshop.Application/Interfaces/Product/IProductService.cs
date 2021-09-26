@@ -15,21 +15,18 @@ namespace Reshop.Application.Interfaces.Product
 {
     public interface IProductService
     {
-
         IEnumerable<ProductViewModel> GetProductsWithType(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int take = 18);
 
         // product , pageId , totalPages
-        Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(string type = "all", string sortBy = "news", int pageId = 1, int take = 18);
         Task<Tuple<IEnumerable<ProductDataForAdmin>, int, int>> GetProductsWithPaginationForAdminAsync(string type = "all", int pageId = 1, int take = 18, string filter = "");
         Task<CategoryOrChildCategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
         Task<CategoryOrChildCategoryProductsForShow> GetChildCategoryProductsWithPaginationAsync(int childCategoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
 
         // this is for list of shopper products
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
-        Task<ProductColorDetailViewModel> GetProductColorDetailAsync(int productId, int colorId);
+        
         Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync();
 
-        Task<int> GetProductsCountWithTypeAsync(string type = "all");
         // get by id 
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(int productId, string shopperId);
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId);
@@ -62,11 +59,10 @@ namespace Reshop.Application.Interfaces.Product
         Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key);
         // get product types
         Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId);
-        Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId);
         Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId);
         Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId);
+        Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId);
         Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId);
-        Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId);
         Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId);
         Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId);
         Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId);
@@ -89,9 +85,6 @@ namespace Reshop.Application.Interfaces.Product
 
         // remove
         Task<ResultTypes> RemoveProductAccessAsync(int productId);
-
-        // update  Task<ResultTypes> EditProductGalleryAsync(ProductGallery productGallery);
-        Task<ResultTypes> EditProductAsync(Domain.Entities.Product.Product product);
         Task<ResultTypes> DeleteProductGalleryAsync(ProductGallery productGallery);
         Task<ResultTypes> EditMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
         Task<ResultTypes> EditLaptopAsync(Domain.Entities.Product.Product product, LaptopDetail laptopDetail);
@@ -130,10 +123,7 @@ namespace Reshop.Application.Interfaces.Product
 
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart();
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId);
-        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId);
-        // colorName , view , sell , returned
-        IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId);
-
+        
         #endregion
 
 

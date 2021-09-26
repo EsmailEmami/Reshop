@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Interfaces.Product;
 
 namespace Reshop.Web.API.Controllers
@@ -16,11 +10,13 @@ namespace Reshop.Web.API.Controllers
     {
         private readonly IProductService _productService;
         private readonly IBrandService _brandService;
+        private readonly IColorService _colorService;
 
-        public ProductController(IProductService productService, IBrandService brandService)
+        public ProductController(IProductService productService, IBrandService brandService, IColorService colorService)
         {
             _productService = productService;
             _brandService = brandService;
+            _colorService = colorService;
         }
 
         [HttpGet("GetLastThirtyDayProductData/{productId}")]
@@ -51,12 +47,11 @@ namespace Reshop.Web.API.Controllers
             return new ObjectResult(res);
         }
 
-
         [HttpGet("GetColorsOfProductData/{productId}")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetColorsOfProductDataChart(int productId)
         {
-            var res = _productService.GetColorsOfProductDataChart(productId);
+            var res = _colorService.GetColorsOfProductDataChart(productId);
 
             if (res is null)
             {
@@ -71,7 +66,7 @@ namespace Reshop.Web.API.Controllers
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetLastThirtyDayColorProductDataChart(int productId, int colorId)
         {
-            var res = _productService.GetLastThirtyDayColorProductDataChart(productId, colorId);
+            var res = _colorService.GetLastThirtyDayColorProductDataChart(productId, colorId);
 
             if (res is null)
             {
@@ -80,7 +75,6 @@ namespace Reshop.Web.API.Controllers
 
             return new ObjectResult(res);
         }
-
 
         // store title
         [HttpGet("GetBrandsOfStoreTitle/{storeTitleId}")]

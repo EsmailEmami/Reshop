@@ -389,38 +389,8 @@ namespace Reshop.Infrastructure.Repository.Product
                     c.ShopperProduct.Shopper.StoreName,
                     c.ShopperProduct.Warranty));
 
-        public IEnumerable<Tuple<int, string, string, string>> GetProductColorsWithDetail(int productId) =>
-            _context.ShopperProducts
-                .Where(c => c.IsActive && c.ProductId == productId)
-                .SelectMany(c => c.ShopperProductColors)
-                .Where(c => c.IsActive)
-                .Select(c => c.Color).Distinct()
-                .Select(c => new Tuple<int, string, string, string>(
-                    c.ColorId,
-                    c.ColorName,
-                    c.ColorCode,
-                    _context.Products.Where(p => p.ProductId == productId && p.IsActive)
-                        .SelectMany(p => p.ShopperProducts)
-                        .Where(co => co.IsActive)
-                        .SelectMany(a => a.ShopperProductColors)
-                        .Where(co => co.IsActive && co.ColorId == c.ColorId)
-                        .OrderByDescending(o => o.SaleCount)
-                        .First().ShopperProductColorId
-                    ));
-
         public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) =>
             await _context.Products.FindAsync(productId);
-
-        public IEnumerable<Tuple<int, string>> GetProductColors(int productId) =>
-            _context.ShopperProducts.Where(c => c.ProductId == productId)
-                .SelectMany(c => c.ShopperProductColors)
-                .Select(c => c.Color).Distinct()
-                .Select(c => new Tuple<int, string>(c.ColorId, c.ColorName));
-
-        public async Task<Tuple<int, string>> GetColorByIdAsync(int colorId) =>
-            await _context.Colors.Where(c => c.ColorId == colorId)
-                .Select(c => new Tuple<int, string>(c.ColorId, c.ColorName))
-                .SingleOrDefaultAsync();
 
         public async Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId) =>
             await _context.ShopperProductColors
@@ -773,31 +743,6 @@ namespace Reshop.Infrastructure.Repository.Product
                     ViewCount = 10,
                     SellCount = c.Count,
                 });
-
-        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId) =>
-            _context.OrderDetails.Where(c =>
-                    c.ShopperProductColor.ShopperProduct.ProductId == productId &&
-                    c.ShopperProductColor.ColorId == colorId &&
-                    c.Order.IsPayed &&
-                    c.Order.PayDate >= DateTime.Now.AddDays(-30))
-                .OrderBy(c => c.Order.PayDate)
-                .Select(c => new LastThirtyDayProductDataChart()
-                {
-                    Date = c.Order.PayDate.Value.ToShamsiDate(),
-                    ViewCount = 10,
-                    SellCount = c.Count,
-                });
-
-        public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
-            _context.Products.Where(c => c.ProductId == productId)
-                .SelectMany(c => c.ShopperProducts)
-                .SelectMany(c => c.ShopperProductColors)
-                .Select(c => new Tuple<string, int, int, int>(
-                    c.Color.ColorName,
-                    10,
-                    _context.OrderDetails
-                        .Where(o => o.ShopperProductColorId == c.ShopperProductColorId)
-                        .Sum(s => s.Count), 10));
 
         public async Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName)
             =>

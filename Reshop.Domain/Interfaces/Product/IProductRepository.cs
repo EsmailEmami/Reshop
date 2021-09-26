@@ -108,15 +108,6 @@ namespace Reshop.Domain.Interfaces.Product
         #endregion
 
 
-
-        #region color
-
-        IEnumerable<Tuple<int, string, string, string>> GetProductColorsWithDetail(int productId);
-        IEnumerable<Tuple<int, string>> GetProductColors(int productId);
-        Task<Tuple<int, string>> GetColorByIdAsync(int colorId);
-
-        #endregion
-
         #region product detail
 
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId);
@@ -132,10 +123,7 @@ namespace Reshop.Domain.Interfaces.Product
         
         
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId);
-      
-        
-
-        Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId);
+      Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId);
 
         Task<int> GetProductIdOfShopperProductColorIdAsync(string shopperProductColorId);
 
@@ -192,10 +180,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart();
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId);
-        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId);
-        // colorName , view , sell , returned
-        IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId);
-
+       
         #endregion
 
         

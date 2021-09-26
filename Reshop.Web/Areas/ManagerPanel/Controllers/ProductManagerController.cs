@@ -28,12 +28,14 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IProductService _productService;
         private readonly IShopperService _shopperService;
         private readonly IBrandService _brandService;
+        private readonly IColorService _colorService;
 
-        public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService)
+        public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService, IColorService colorService)
         {
             _productService = productService;
             _shopperService = shopperService;
             _brandService = brandService;
+            _colorService = colorService;
         }
 
         #endregion
@@ -71,7 +73,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> ProductColorDetail(int productId, int colorId)
         {
-            var data = await _productService.GetProductColorDetailAsync(productId, colorId);
+            var data = await _colorService.GetProductColorDetailAsync(productId, colorId);
             
             if (data == null)
                 return NotFound();
@@ -422,16 +424,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
         }
 
-        // جزعیات
-        [HttpGet]
-        public async Task<IActionResult> MobileDetail(int productId)
-        {
-            if (!await _productService.IsProductExistAsync(productId))
-                return NotFound();
-
-            return View();
-        }
-
         #endregion
 
         #region laptop
@@ -456,7 +448,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-
         public async Task<IActionResult> AddOrEditLaptop(AddOrEditLaptopProductViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -688,8 +679,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
             }
         }
-
-
 
         #endregion
 

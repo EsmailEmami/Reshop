@@ -26,13 +26,15 @@ namespace Reshop.Application.Services.Product
         private readonly IShopperRepository _shopperRepository;
         private readonly ICartRepository _cartRepository;
         private readonly IBrandRepository _brandRepository;
+        private readonly IColorRepository _colorRepository;
 
-        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository, IBrandRepository brandRepository)
+        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository, IBrandRepository brandRepository, IColorRepository colorRepository)
         {
             _productRepository = productRepository;
             _shopperRepository = shopperRepository;
             _cartRepository = cartRepository;
             _brandRepository = brandRepository;
+            _colorRepository = colorRepository;
         }
 
         #endregion
@@ -131,23 +133,6 @@ namespace Reshop.Application.Services.Product
             return new Tuple<IEnumerable<ProductViewModel>, int, int>(products, pageId, totalPages);
         }
 
-        public async Task<ProductColorDetailViewModel> GetProductColorDetailAsync(int productId, int colorId)
-        {
-            var color = await _productRepository.GetColorByIdAsync(colorId);
-            int lastMonthSellCount = await _cartRepository.GetSellCountOfProductColorFromDateAsync(productId, colorId,DateTime.Now.AddDays(-30));
-            int sellCount = await _cartRepository.GetSellCountOfProductColorFromDateAsync(productId, colorId);
-
-            return new ProductColorDetailViewModel()
-            {
-                ProductId = productId,
-                ColorId = color.Item1,
-                ColorName = color.Item2,
-                LastMonthSellCount = lastMonthSellCount,
-                SellCount = sellCount,
-                ReturnedCount = 10,
-            };
-        }
-
         public async Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync()
         {
             int allProductsCount = await _productRepository.GetProductsCountWithTypeAsync();
@@ -163,9 +148,6 @@ namespace Reshop.Application.Services.Product
 
             return model;
         }
-
-        public async Task<int> GetProductsCountWithTypeAsync(string type = "all")
-            => await _productRepository.GetProductsCountWithTypeAsync(type);
 
         public async Task<ProductDetailForShow> GetProductDetailForShopperAsync(int productId, string shopperId)
         {
@@ -185,11 +167,10 @@ namespace Reshop.Application.Services.Product
         public async Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId)
         {
             var model = await _productRepository.GetProductDetailForAdminAsync(productId);
-            model.Colors = _productRepository.GetProductColors(model.ProductId);
+            model.Colors = _colorRepository.GetProductColors(model.ProductId);
 
             return model;
         }
-
 
         public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) =>
             await _productRepository.GetProductByIdAsync(productId);
@@ -305,7 +286,7 @@ namespace Reshop.Application.Services.Product
             var comments = _productRepository.GetProductComments(product.ProductId);
             var productGalleries = _productRepository.GetProductImages(product.ProductId);
             var shoppers = _productRepository.GetProductShoppers(product.ProductId, product.SelectedColor);
-            var colors = _productRepository.GetProductColorsWithDetail(product.ProductId);
+            var colors = _colorRepository.GetProductColorsWithDetail(product.ProductId);
 
 
             return new ProductDetailViewModel()
@@ -328,7 +309,7 @@ namespace Reshop.Application.Services.Product
                 return null;
 
             var shoppers = _productRepository.GetProductShoppers(productId, product.SelectedColor);
-            var colors = _productRepository.GetProductColorsWithDetail(productId);
+            var colors = _colorRepository.GetProductColorsWithDetail(productId);
 
 
             product.Shoppers = shoppers;
@@ -345,10 +326,6 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetTypeMobileProductDataForEditAsync(productId);
 
-        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeLaptopProductDataForEditAsync(productId);
-
         public async Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId)
             =>
                 await _productRepository.GetTypePowerBankProductDataForEditAsync(productId);
@@ -357,13 +334,13 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetTypeMobileCoverProductDataForEditAsync(productId);
 
+        public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId)
+            =>
+                await _productRepository.GetTypeLaptopProductDataForEditAsync(productId);
+
         public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId)
             =>
                 await _productRepository.GetTypeTabletProductDataForEditAsync(productId);
-
-        public async Task<AddOrEditFlashMemoryViewModel> GetTypeFlashMemoryProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeFlashMemoryProductDataForEditAsync(productId);
 
         public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId)
             =>
@@ -396,22 +373,6 @@ namespace Reshop.Application.Services.Product
                 product.MobileDetail = mobileDetail;
 
                 await _productRepository.AddProductAsync(product);
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-
-        public async Task<ResultTypes> EditProductAsync(Domain.Entities.Product.Product product)
-        {
-            try
-            {
-                _productRepository.UpdateProduct(product);
                 await _productRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
@@ -940,7 +901,6 @@ namespace Reshop.Application.Services.Product
         public async Task<bool> IsShopperProductExistAsync(string shopperId, int productId) =>
             await _shopperRepository.IsShopperProductExistAsync(shopperId, productId);
 
-
         public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
@@ -1020,14 +980,5 @@ namespace Reshop.Application.Services.Product
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId) =>
             _productRepository.GetLastThirtyDayProductDataChart(productId);
 
-        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId,
-            int colorId) => _productRepository.GetLastThirtyDayColorProductDataChart(productId, colorId);
-
-        public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
-            _productRepository.GetColorsOfProductDataChart(productId);
-
-      
-
-        
-    }
+     }
 }
