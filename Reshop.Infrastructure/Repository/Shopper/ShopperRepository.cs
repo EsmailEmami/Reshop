@@ -351,20 +351,7 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task<StoreAddress> GetStoreAddressByIdAsync(string storeAddressId) =>
             await _context.StoresAddress.FindAsync(storeAddressId);
 
-        public async Task<ShopperProductDiscount> GetLastShopperProductDiscountAsync(string shopperProductColorId) =>
-            await _context.ShopperProductDiscounts.Where(c => c.ShopperProductColorId == shopperProductColorId)
-                .OrderByDescending(c => c.EndDate).FirstOrDefaultAsync();
-
-        public async Task AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount) =>
-            await _context.ShopperProductDiscounts.AddAsync(shopperProductDiscount);
-
-        public void UpdateShopperProductDiscount(ShopperProductDiscount shopperProductDiscount) =>
-            _context.ShopperProductDiscounts.Update(shopperProductDiscount);
-
-        public async Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId) =>
-            await _context.ShopperProductDiscounts.AnyAsync(c =>
-                c.ShopperProductColorId == shopperProductColorId && c.EndDate >= DateTime.Now);
-
+        
         public IEnumerable<Color> GetColors() =>
             _context.Colors;
 
@@ -413,35 +400,6 @@ namespace Reshop.Infrastructure.Repository.Shopper
                     SellCount = _context.OrderDetails.Where(o => o.ShopperProductColorId == c.ShopperProductColorId && o.Order.IsPayed).Select(s => s.Count).Sum(),
                     LastMonthSellCount = _context.OrderDetails.Where(o => o.ShopperProductColorId == c.ShopperProductColorId && o.Order.IsPayed && o.Order.PayDate >= DateTime.Now.AddDays(-30)).Select(s => s.Count).Sum(),
                     Income = _context.OrderDetails.Where(o => o.ShopperProductColorId == c.ShopperProductColorId && o.Order.IsPayed).Select(s => s.Order.Sum).Sum(),
-                }).SingleOrDefaultAsync();
-
-        public async Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(
-            string shopperProductColorId) =>
-            await _context.ShopperProductColors.Where(c => c.ShopperProductColorId == shopperProductColorId)
-                .Select(c => new ShopperProductColorDiscountDetailViewModel()
-                {
-                    ProductId = c.ShopperProduct.ProductId,
-                    ColorId = c.ColorId,
-                    DiscountsCount = c.Discounts.Count,
-                    SellCount = _context.OrderDetails.Count(d =>
-                        d.ShopperProductColorId == c.ShopperProductColorId && d.ProductDiscountPrice != 0),
-                    DiscountedAmount = _context.OrderDetails
-                        .Where(d => d.ShopperProductColorId == c.ShopperProductColorId && d.ProductDiscountPrice != 0)
-                        .Sum(s => s.ProductDiscountPrice),
-                    Income = _context.OrderDetails.Where(d =>
-                            d.ShopperProductColorId == c.ShopperProductColorId && d.ProductDiscountPrice != 0)
-                        .Sum(s => s.Sum),
-                    Discounts = c.Discounts.OrderByDescending(a => a.EndDate)
-                        .Select(b => new Tuple<DateTime, DateTime, int, decimal>
-                        (
-                            b.StartDate,
-                            b.EndDate,
-                            _context.Orders.Where(or => or.PayDate >= b.StartDate && or.PayDate >= b.EndDate)
-                                .SelectMany(e => e.OrderDetails).Count(f => f.ShopperProductColorId == c.ShopperProductColorId && f.ProductDiscountPrice != 0),
-                            _context.Orders.Where(or => or.PayDate >= b.StartDate && or.PayDate >= b.EndDate)
-                                .SelectMany(e => e.OrderDetails)
-                                .Where(f => f.ShopperProductColorId == c.ShopperProductColorId && f.ProductDiscountPrice != 0).Sum(os => os.Sum)
-))
                 }).SingleOrDefaultAsync();
 
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(string shopperProductId) =>
@@ -499,23 +457,6 @@ namespace Reshop.Infrastructure.Repository.Shopper
                     c.Order.IsPayed)
                 .GroupBy(c => c.ShopperProductColor.ShopperProduct.Shopper.StoreName)
                 .Select(c => new Tuple<string, int>(c.Key, c.Sum(s => s.Count))).Take(20);
-
-        public IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(
-            string shopperProductColorId) =>
-            _context.ShopperProductColors
-                .Where(c => c.ShopperProductColorId == shopperProductColorId)
-                .SelectMany(c => c.Discounts)
-                .OrderBy(c=> c.StartDate)
-                .Take(20)
-                .Select(b => new Tuple<string, int>(
-                    $"{b.StartDate.ToShamsiDateTime()} تا {b.EndDate.ToShamsiDateTime()}",
-                    _context.Orders
-                        .Where(or => or.PayDate >= b.StartDate && 
-                                     or.PayDate >= b.EndDate)
-                        .SelectMany(e => e.OrderDetails)
-                        .Count(f => f.ShopperProductColorId == b.ShopperProductColorId && 
-                                    f.ProductDiscountPrice != 0)
-                    ));
 
         public IEnumerable<Tuple<string, int, int, int>> GetColorsOfShopperProductDataChart(string shopperProductId) =>
             _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)

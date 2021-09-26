@@ -2,6 +2,7 @@
 using Reshop.Application.Interfaces.Shopper;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.API.Controllers
@@ -11,10 +12,12 @@ namespace Reshop.Web.API.Controllers
     public class ShopperController : ControllerBase
     {
         private readonly IShopperService _shopperService;
+        private readonly IDiscountService _discountService;
 
-        public ShopperController(IShopperService shopperService)
+        public ShopperController(IShopperService shopperService, IDiscountService discountService)
         {
             _shopperService = shopperService;
+            _discountService = discountService;
         }
 
 
@@ -198,7 +201,7 @@ namespace Reshop.Web.API.Controllers
             }
 
 
-            var res = _shopperService.GetLastTwentyDiscountDataOfShopperProductColorChart(shopperProductColorId);
+            var res = _discountService.GetLastTwentyDiscountDataOfShopperProductColorChart(shopperProductColorId);
 
             if (res is null)
             {

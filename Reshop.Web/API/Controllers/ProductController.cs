@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
 
 namespace Reshop.Web.API.Controllers
@@ -10,12 +11,14 @@ namespace Reshop.Web.API.Controllers
         private readonly IProductService _productService;
         private readonly IBrandService _brandService;
         private readonly IColorService _colorService;
+        private readonly IDiscountService _discountService;
 
-        public ProductController(IProductService productService, IBrandService brandService, IColorService colorService)
+        public ProductController(IProductService productService, IBrandService brandService, IColorService colorService, IDiscountService discountService)
         {
             _productService = productService;
             _brandService = brandService;
             _colorService = colorService;
+            _discountService = discountService;
         }
 
         [HttpGet("GetLastThirtyDayProductData/{productId}")]
@@ -114,7 +117,7 @@ namespace Reshop.Web.API.Controllers
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId)
         {
-            var res = _productService.GetLastTwentyDiscountDataOfProductColorChart(productId, colorId);
+            var res = _discountService.GetLastTwentyDiscountDataOfProductColorChart(productId, colorId);
 
             if (res is null)
             {

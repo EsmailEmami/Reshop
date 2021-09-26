@@ -14,6 +14,8 @@ using Reshop.Domain.Interfaces.Shopper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.Interfaces.Category;
+using Reshop.Domain.Interfaces.Discount;
 using Reshop.Domain.Interfaces.User;
 
 namespace Reshop.Application.Services.Product
@@ -27,14 +29,18 @@ namespace Reshop.Application.Services.Product
         private readonly ICartRepository _cartRepository;
         private readonly IBrandRepository _brandRepository;
         private readonly IColorRepository _colorRepository;
+        private readonly IDiscountRepository _discountRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository, IBrandRepository brandRepository, IColorRepository colorRepository)
+        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository, IBrandRepository brandRepository, IColorRepository colorRepository, IDiscountRepository discountRepository, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _shopperRepository = shopperRepository;
             _cartRepository = cartRepository;
             _brandRepository = brandRepository;
             _colorRepository = colorRepository;
+            _discountRepository = discountRepository;
+            _categoryRepository = categoryRepository;
         }
 
         #endregion
@@ -282,7 +288,7 @@ namespace Reshop.Application.Services.Product
             if (product == null)
                 return null;
 
-            var childCategories = _productRepository.GetProductChildCategories(product.ProductId);
+            var childCategories = _categoryRepository.GetProductChildCategories(product.ProductId);
             var comments = _productRepository.GetProductComments(product.ProductId);
             var productGalleries = _productRepository.GetProductImages(product.ProductId);
             var shoppers = _productRepository.GetProductShoppers(product.ProductId, product.SelectedColor);
@@ -979,8 +985,5 @@ namespace Reshop.Application.Services.Product
 
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId) =>
             _productRepository.GetLastThirtyDayProductDataChart(productId);
-
-        public IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId) =>
-            _productRepository.GetLastTwentyDiscountDataOfProductColorChart(productId, colorId);
     }
 }

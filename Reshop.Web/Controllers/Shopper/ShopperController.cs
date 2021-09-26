@@ -9,6 +9,7 @@ using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Generator;
+using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
@@ -31,14 +32,16 @@ namespace Reshop.Web.Controllers.Shopper
         private readonly IOriginService _originService;
         private readonly IRoleService _roleService;
         private readonly IDataProtector _dataProtector;
+        private readonly IDiscountService _discountService;
 
-        public ShopperController(IProductService productService, IShopperService shopperService, IUserService userService, IOriginService originService, IDataProtectionProvider dataProtectionProvider, IRoleService roleService)
+        public ShopperController(IProductService productService, IShopperService shopperService, IUserService userService, IOriginService originService, IDataProtectionProvider dataProtectionProvider, IRoleService roleService, IDiscountService discountService)
         {
             _productService = productService;
             _shopperService = shopperService;
             _userService = userService;
             _originService = originService;
             _roleService = roleService;
+            _discountService = discountService;
             _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Controllers.Shopper.ShopperController",
                 new string[] { "ShopperController" });
         }
@@ -328,7 +331,7 @@ namespace Reshop.Web.Controllers.Shopper
             if (shopperProductColorId is null)
                 return NotFound();
 
-            var model = await _shopperService.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
+            var model = await _discountService.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
 
             if (model is null)
                 return NotFound();
@@ -520,7 +523,7 @@ namespace Reshop.Web.Controllers.Shopper
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید." });
 
 
-            if (await _shopperService.IsActiveShopperProductColorDiscountExistsAsync(shopperProductColorId))
+            if (await _discountService.IsActiveShopperProductColorDiscountExistsAsync(shopperProductColorId))
                 return Json(new { isValid = false, errorType = "warning", errorText = "فروشنده عزیز شما یک تخفیف فعال دارید." });
 
             var model = new AddOrEditShopperProductDiscountViewModel()
@@ -571,7 +574,7 @@ namespace Reshop.Web.Controllers.Shopper
                 DiscountPercent = model.DiscountPercent,
             };
 
-            var result = await _shopperService.AddShopperProductDiscountAsync(shopperProductDiscount);
+            var result = await _discountService.AddShopperProductDiscountAsync(shopperProductDiscount);
 
             if (result == ResultTypes.Successful)
             {

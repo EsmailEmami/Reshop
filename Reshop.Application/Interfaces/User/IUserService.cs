@@ -9,8 +9,6 @@ namespace Reshop.Application.Interfaces.User
 {
     public interface IUserService
     {
-
-
         Task<AddOrEditUserForAdminViewModel> GetUserDataForAdminAsync(string userId);
 
         Task<EditUserViewModel> GetUserDataForEditAsync(string userId);

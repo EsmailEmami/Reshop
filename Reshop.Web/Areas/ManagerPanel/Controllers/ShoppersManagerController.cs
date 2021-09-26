@@ -12,6 +12,7 @@ using System;
 using System.Globalization;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Discount;
 using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
@@ -23,12 +24,14 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IProductService _productService;
         private readonly IDataProtector _dataProtector;
         private readonly IBrandService _brandService;
+        private readonly IDiscountService _discountService;
 
-        public ShoppersManager(IShopperService shopperService, IProductService productService, IDataProtectionProvider dataProtectionProvider, IBrandService brandService)
+        public ShoppersManager(IShopperService shopperService, IProductService productService, IDataProtectionProvider dataProtectionProvider, IBrandService brandService, IDiscountService discountService)
         {
             _shopperService = shopperService;
             _productService = productService;
             _brandService = brandService;
+            _discountService = discountService;
             _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Areas.ManagerPanel.Controllers.ShoppersManager",
                 new string[] { "ShoppersManager" });
         }
@@ -486,7 +489,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (shopperProductColorId is null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید." });
 
-            var model = await _shopperService.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
+            var model = await _discountService.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
 
             if (model is null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید." });
@@ -510,7 +513,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید." });
 
 
-            if (await _shopperService.IsActiveShopperProductColorDiscountExistsAsync(shopperProductColorId))
+            if (await _discountService.IsActiveShopperProductColorDiscountExistsAsync(shopperProductColorId))
                 return Json(new { isValid = false, errorType = "warning", errorText = "فروشنده عزیز شما یک تخفیف فعال دارید." });
 
             var model = new AddOrEditShopperProductDiscountViewModel()
@@ -538,7 +541,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperProductColorDiscount", model) });
             }
 
-            if (await _shopperService.IsActiveShopperProductColorDiscountExistsAsync(model.ShopperProductColorId))
+            if (await _discountService.IsActiveShopperProductColorDiscountExistsAsync(model.ShopperProductColorId))
             {
                 ModelState.AddModelError("", "فروشنده عزیز شما یک تخفیف فعال دارید.");
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperProductColorDiscount", model) });
@@ -566,7 +569,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 DiscountPercent = model.DiscountPercent,
             };
 
-            var result = await _shopperService.AddShopperProductDiscountAsync(shopperProductDiscount);
+            var result = await _discountService.AddShopperProductDiscountAsync(shopperProductDiscount);
 
             if (result == ResultTypes.Successful)
             {
@@ -591,10 +594,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید." });
 
 
-            if (!await _shopperService.IsActiveShopperProductColorDiscountExistsAsync(shopperProductColorId))
+            if (!await _discountService.IsActiveShopperProductColorDiscountExistsAsync(shopperProductColorId))
                 return Json(new { isValid = false, errorType = "warning", errorText = "فروشنده عزیز شما یک تخفیف فعال دارید." });
 
-            var discount = await _shopperService.GetLastShopperProductColorDiscountAsync(shopperProductColorId);
+            var discount = await _discountService.GetLastShopperProductColorDiscountAsync(shopperProductColorId);
 
 
             var model = new AddOrEditShopperProductDiscountViewModel()
@@ -637,13 +640,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperProductColorDiscount", model) });
             }
 
-            var discount = await _shopperService.GetLastShopperProductColorDiscountAsync(model.ShopperProductColorId);
+            var discount = await _discountService.GetLastShopperProductColorDiscountAsync(model.ShopperProductColorId);
 
             discount.StartDate = startDate;
             discount.EndDate = endDate;
             discount.DiscountPercent = model.DiscountPercent;
 
-            var result = await _shopperService.EditShopperProductDiscountAsync(discount);
+            var result = await _discountService.EditShopperProductDiscountAsync(discount);
 
             if (result == ResultTypes.Successful)
             {

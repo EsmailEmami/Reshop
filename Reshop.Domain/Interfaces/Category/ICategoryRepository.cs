@@ -23,6 +23,7 @@ namespace Reshop.Domain.Interfaces.Category
         IEnumerable<int> GetCategoriesIdOfChildCategory(int childCategoryId);
         IEnumerable<ChildCategoryToCategory> GetChildCategoryToCategoryByCategoryId(int categoryId);
         IEnumerable<ChildCategoryToCategory> GetChildCategoryToCategoryByChildCategoryId(int childCategoryId);
+        IEnumerable<ChildCategory> GetProductChildCategories(int productId);
 
         // validations 
         Task<bool> IsCategoryExistAsync(int categoryId);

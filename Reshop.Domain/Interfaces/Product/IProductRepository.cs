@@ -107,7 +107,6 @@ namespace Reshop.Domain.Interfaces.Product
 
         #endregion
 
-
         #region product detail
 
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId);
@@ -115,9 +114,6 @@ namespace Reshop.Domain.Interfaces.Product
         Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId);
 
         #endregion
-
-
-
 
         Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key);
         
@@ -150,11 +146,6 @@ namespace Reshop.Domain.Interfaces.Product
 
         #endregion
 
-        #region child category
-
-        IEnumerable<ChildCategory> GetProductChildCategories(int productId);
-
-        #endregion
 
         #region comment and quesiton
 
@@ -180,8 +171,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart();
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId);
-        IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId);
-
+        
         #endregion
 
 

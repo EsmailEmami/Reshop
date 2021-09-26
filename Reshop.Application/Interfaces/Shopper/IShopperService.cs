@@ -40,14 +40,6 @@ namespace Reshop.Application.Interfaces.Shopper
 
         #endregion
 
-        #region discount
-
-        Task<ResultTypes> AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
-        Task<ResultTypes> EditShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
-        Task<ShopperProductDiscount> GetLastShopperProductColorDiscountAsync(string shopperProductColorId);
-        Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId);
-
-        #endregion
 
         #region address
 
@@ -84,8 +76,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<bool> IsShopperProductColorExistAsync(string shopperProductId, int colorId);
 
         Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId);
-        Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId);
-        Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId);
+         Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId);
 
         #endregion
 
@@ -97,8 +88,7 @@ namespace Reshop.Application.Interfaces.Shopper
         IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(string shopperProductColorId);
         IEnumerable<Tuple<string, int>> GetBestShoppersOfProductChart(int productId);
         IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(string shopperProductColorId);
-        IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(string shopperProductColorId);
-        // colorName , view , sell , returned
+       // colorName , view , sell , returned
         Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(int productId, string shopperId);
 
         #endregion

@@ -101,26 +101,8 @@ namespace Reshop.Infrastructure.Repository.User
 
         #endregion
 
-        #region discount
-
-        public Domain.Entities.User.Discount GetDiscountByCode(string discountCode)
-            =>
-                _context.Discounts.SingleOrDefault(c => c.DiscountCode == discountCode);
-
-        public async Task<Domain.Entities.User.Discount> GetDiscountByCodeAsync(string discountCode)
-            =>
-                await _context.Discounts.SingleOrDefaultAsync(c => c.DiscountCode == discountCode);
-
-        public void UpdateDiscount(Domain.Entities.User.Discount discount) => _context.Discounts.Update(discount);
-
-        public bool IsUserDiscountCodeExist(string userId, string discountId)
-            =>
-                _context.UserDiscountCodes.Any(c => c.UserId == userId && c.DiscountId == discountId);
-
-        public async Task AddUserDiscountCodeAsync(UserDiscountCode userDiscountCode)
-            =>
-                await _context.UserDiscountCodes.AddAsync(userDiscountCode);
-
+       
+        
         public IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId) =>
             _context.Questions.Where(c => c.UserId == userId)
                 .Select(c => new ShowQuestionOrCommentViewModel()
@@ -139,7 +121,6 @@ namespace Reshop.Infrastructure.Repository.User
                     SentDate = c.CommentDate
                 });
 
-        #endregion
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 

@@ -10,6 +10,7 @@ using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.Order;
 using Reshop.Domain.Entities.User;
+using Reshop.Domain.Interfaces.Discount;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
@@ -20,17 +21,17 @@ namespace Reshop.Application.Services.User
     {
         #region constructor
 
-        private readonly IProductRepository _productRepository;
         private readonly ICartRepository _cartRepository;
         private readonly IUserRepository _userRepository;
         private readonly IShopperRepository _shopperRepository;
+        private readonly IDiscountRepository _discountRepository;
 
-        public CartService(IProductRepository productRepository, ICartRepository cartRepository, IUserRepository userRepository, IShopperRepository shopperRepository)
+        public CartService(ICartRepository cartRepository, IUserRepository userRepository, IShopperRepository shopperRepository, IDiscountRepository discountRepository)
         {
-            _productRepository = productRepository;
             _cartRepository = cartRepository;
             _userRepository = userRepository;
             _shopperRepository = shopperRepository;
+            _discountRepository = discountRepository;
         }
 
         #endregion
@@ -75,7 +76,7 @@ namespace Reshop.Application.Services.User
                     if (shopperProductColor is null)
                         return ResultTypes.Failed;
 
-                    var lastDiscount = await _shopperRepository.GetLastShopperProductDiscountAsync(shopperProductColor.ShopperProductColorId);
+                    var lastDiscount = await _discountRepository.GetLastShopperProductDiscountAsync(shopperProductColor.ShopperProductColorId);
 
                     orderDetail.Price = shopperProductColor.Price;
 
@@ -313,51 +314,6 @@ namespace Reshop.Application.Services.User
 
         public string GetOpenOrderAddressId(string userId) =>
             _cartRepository.GetOpenOrderAddressId(userId);
-
-        public async Task<DiscountUseType> UseDiscountAsync(string orderId, string discountCode)
-        {
-            var discount = await _userRepository.GetDiscountByCodeAsync(discountCode);
-
-            if (discount == null)
-                return DiscountUseType.NotFound;
-
-            if (discount.StartDate != null && discount.StartDate < DateTime.Now)
-                return DiscountUseType.Expired;
-
-            if (discount.EndDate != null && discount.EndDate >= DateTime.Now)
-                return DiscountUseType.Expired;
-
-            if (discount.UsableCount != null && discount.UsableCount < 1)
-                return DiscountUseType.Finished;
-
-            var order = await _cartRepository.GetOrderByIdAsync(orderId);
-
-            if (_userRepository.IsUserDiscountCodeExist(order.UserId, discount.DiscountId))
-                return DiscountUseType.UserUsed;
-
-            var percent = (order.Sum * discount.DiscountPercent) / 100;
-            order.Sum -= percent;
-            _cartRepository.UpdateOrder(order);
-
-            if (discount.UsableCount != null)
-            {
-                discount.UsableCount -= 1;
-            }
-
-            _userRepository.UpdateDiscount(discount);
-
-
-            var userDiscountCode = new UserDiscountCode()
-            {
-                UserId = order.UserId,
-                DiscountId = discount.DiscountId
-            };
-            await _userRepository.AddUserDiscountCodeAsync(userDiscountCode);
-
-            await _userRepository.SaveChangesAsync();
-
-            return DiscountUseType.Success;
-        }
 
     }
 }

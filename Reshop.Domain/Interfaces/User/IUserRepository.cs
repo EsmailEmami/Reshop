@@ -44,16 +44,6 @@ namespace Reshop.Domain.Interfaces.User
         Task<bool> IsUserAddressExistAsync(string addressId, string userId);
         #endregion
 
-        #region Discount
-
-        Entities.User.Discount GetDiscountByCode(string discountCode);
-        Task<Entities.User.Discount> GetDiscountByCodeAsync(string discountCode);
-        void UpdateDiscount(Entities.User.Discount discount);
-        bool IsUserDiscountCodeExist(string userId, string discountId);
-        Task AddUserDiscountCodeAsync(UserDiscountCode userDiscountCode);
-
-        #endregion
-
         #region comment and question
 
         IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId);

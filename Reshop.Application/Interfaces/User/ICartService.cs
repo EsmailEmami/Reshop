@@ -27,10 +27,6 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> RemoveOrderDetailAsync(string orderDetailId);
         string GetOpenOrderAddressId(string userId);
 
-        #region Discount
-
-        Task<DiscountUseType> UseDiscountAsync(string orderId, string discountCode);
-
-        #endregion
+        
     }
 }

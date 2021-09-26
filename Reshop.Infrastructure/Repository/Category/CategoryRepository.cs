@@ -92,6 +92,14 @@ namespace Reshop.Infrastructure.Repository.Category
             return _context.ChildCategoryToCategories.Where(c => c.ChildCategoryId == childCategoryId);
         }
 
+        public IEnumerable<ChildCategory> GetProductChildCategories(int productId)
+        {
+            return _context.ProductToChildCategories
+                .Where(c => c.ProductId == productId)
+                .Select(c => c.ChildCategory);
+        }
+
+
         public async Task<bool> IsCategoryExistAsync(int categoryId)
         {
             return await _context.Categories.AnyAsync(c => c.CategoryId == categoryId);

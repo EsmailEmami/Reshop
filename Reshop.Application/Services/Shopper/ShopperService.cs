@@ -11,6 +11,7 @@ using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.Interfaces.Discount;
 
 namespace Reshop.Application.Services.Shopper
 {
@@ -19,13 +20,12 @@ namespace Reshop.Application.Services.Shopper
         #region Constructor
 
         private readonly IShopperRepository _shopperRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IDiscountRepository _discountRepository;
 
-        public ShopperService(IShopperRepository shopperRepository, IUserRepository userRepository, IProductRepository productRepository)
+        public ShopperService(IShopperRepository shopperRepository, IProductRepository productRepository)
         {
             _shopperRepository = shopperRepository;
-            _userRepository = userRepository;
             _productRepository = productRepository;
         }
 
@@ -173,40 +173,7 @@ namespace Reshop.Application.Services.Shopper
             return new Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>(model, pageId, totalPages);
         }
 
-        public async Task<ResultTypes> AddShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount)
-        {
-            try
-            {
-                await _shopperRepository.AddShopperProductDiscountAsync(shopperProductDiscount);
-                await _shopperRepository.SaveChangesAsync();
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<ResultTypes> EditShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount)
-        {
-            try
-            {
-                _shopperRepository.UpdateShopperProductDiscount(shopperProductDiscount);
-                await _shopperRepository.SaveChangesAsync();
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task<ShopperProductDiscount> GetLastShopperProductColorDiscountAsync(string shopperProductColorId) =>
-            await _shopperRepository.GetLastShopperProductDiscountAsync(shopperProductColorId);
-
-        public async Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId) =>
-            await _shopperRepository.IsActiveShopperProductColorDiscountExistsAsync(shopperProductColorId);
-
+        
 
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _shopperRepository.IsShopperExistAsync(shopperId);
@@ -493,9 +460,6 @@ namespace Reshop.Application.Services.Shopper
         public async Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId) =>
             await _shopperRepository.GetShopperProductColorDetailAsync(shopperProductColorId);
 
-        public async Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId) =>
-            await _shopperRepository.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
-
         public async Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId) =>
             await _shopperRepository.IsAnyActiveShopperProductColorRequestAsync(shopperProductId, colorId);
 
@@ -524,10 +488,6 @@ namespace Reshop.Application.Services.Shopper
 
         public IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(string shopperProductColorId) =>
             _shopperRepository.GetBestShoppersOfColorProductChart(shopperProductColorId);
-
-        public IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(
-            string shopperProductColorId) =>
-            _shopperRepository.GetLastTwentyDiscountDataOfShopperProductColorChart(shopperProductColorId);
 
         public async Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(int productId, string shopperId)
         {
