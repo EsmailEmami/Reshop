@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.User;
 using Reshop.Application.Interfaces.Discount;
+using Reshop.Domain.DTOs.Discount;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
@@ -105,13 +106,30 @@ namespace Reshop.Application.Services.Discount
 
         public async Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId) =>
             await _discountRepository.IsActiveShopperProductColorDiscountExistsAsync(shopperProductColorId);
-       
-        public async Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId) =>
-            await _discountRepository.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
+
+        public async Task<DiscountsGeneralDataViewModel> GetShopperProductColorDiscountsGeneralDataAsync(string shopperProductColorId) =>
+            await _discountRepository.GetShopperProductColorDiscountsGeneralDataAsync(shopperProductColorId);
+
         public IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(string shopperProductColorId) =>
             _discountRepository.GetLastTwentyDiscountDataOfShopperProductColorChart(shopperProductColorId);
 
+        public async Task<Tuple<IEnumerable<DiscountsForShowViewModel>, int, int>> GetProductColorDiscountsWithPaginationAsync(int productId, int colorId, int pageId = 1, int take = 25, string filter = "")
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int count = await _discountRepository.GetProductColorDiscountsCountAsync(productId, colorId);
+
+            var data = _discountRepository.GetProductColorDiscountsWithPaginationAsync(productId, colorId, skip, take, filter);
+
+            int totalPages = (int)Math.Ceiling(1.0 * count / take);
+
+            return new Tuple<IEnumerable<DiscountsForShowViewModel>, int, int>(data, pageId, totalPages);
+        }
+
         public IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId) =>
             _discountRepository.GetLastTwentyDiscountDataOfProductColorChart(productId, colorId);
+
+        public async Task<DiscountsGeneralDataViewModel> GetProductColorDiscountsGeneralDataAsync(int productId, int colorId) =>
+            await _discountRepository.GetProductColorDiscountsGeneralDataAsync(productId, colorId);
     }
 }

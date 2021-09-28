@@ -1,4 +1,4 @@
-﻿@model ShopperProductColorDiscountDetailViewModel
+﻿@model DiscountsGeneralDataViewModel
 
 @{
     Layout = null;
@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<div class="action">
+@*<div class="action">
     @if (Model.Discounts.Any() && Model.Discounts.First().Item2 >= DateTime.Now)
     {
         <div>
@@ -55,7 +55,7 @@
 
         <button class="btn btn-success text-white" onclick="ShowModal('@Url.Action("AddShopperProductColorDiscount", "ShoppersManager", new {shopperProductId = ViewBag.ShopperProductId,colorId = Model.ColorId}, Context.Request.Scheme)', 'افزودن تخفیف')">افزودن تخفیف</button>
     }
-</div>
+</div>*@
 
 <!-- chart -->
 <div class="scrollChart">
@@ -63,7 +63,7 @@
     <div id="@columnChartId" style="overflow: hidden; width: 100%; min-width: 877px;"></div>
 </div>
 <!-- table -->
-<div class="table-responsive" style="margin-bottom: 1rem;">
+@*<div class="table-responsive" style="margin-bottom: 1rem;">
     <table class="table responsive table-hover table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
@@ -92,7 +92,7 @@
             }
         </tbody>
     </table>
-</div>
+</div>*@
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -114,7 +114,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/api/Shopper/GetLastTwentyDiscountDataOfShopperProductColor/'+ @Model.ProductId + '/'+ @Model.ColorId,
+                url: '/api/Shopper/GetLastTwentyDiscountDataOfShopperProductColor/'+ Model.ProductId + '/'+ @Model.ColorId,
             }).done(function(res) {
                 var data = new google.visualization.DataTable();
 

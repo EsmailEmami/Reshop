@@ -489,7 +489,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (shopperProductColorId is null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید." });
 
-            var model = await _discountService.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
+            var model = await _discountService.GetShopperProductColorDiscountsGeneralDataAsync(shopperProductColorId);
 
             if (model is null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید." });

@@ -29,17 +29,15 @@ namespace Reshop.Application.Services.Product
         private readonly ICartRepository _cartRepository;
         private readonly IBrandRepository _brandRepository;
         private readonly IColorRepository _colorRepository;
-        private readonly IDiscountRepository _discountRepository;
         private readonly ICategoryRepository _categoryRepository;
 
-        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository, IBrandRepository brandRepository, IColorRepository colorRepository, IDiscountRepository discountRepository, ICategoryRepository categoryRepository)
+        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository, IBrandRepository brandRepository, IColorRepository colorRepository, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _shopperRepository = shopperRepository;
             _cartRepository = cartRepository;
             _brandRepository = brandRepository;
             _colorRepository = colorRepository;
-            _discountRepository = discountRepository;
             _categoryRepository = categoryRepository;
         }
 
@@ -48,21 +46,6 @@ namespace Reshop.Application.Services.Product
         public IEnumerable<ProductViewModel> GetProductsWithType(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int take = 18)
         {
             return _productRepository.GetProductsWithPagination(Fixer.FixedToString(type), Fixer.FixedToString(sortBy), 0, take);
-        }
-
-        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetProductsWithPaginationAsync(string type = "all", string sortBy = "news", int pageId = 1, int take = 18)
-        {
-            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
-
-            int productsCount = await _productRepository.GetProductsCountWithTypeAsync(type.FixedText());
-
-            var products = _productRepository.GetProductsWithPagination(type.FixedText(), sortBy.FixedText(), skip, take);
-
-
-            int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
-
-
-            return new Tuple<IEnumerable<ProductViewModel>, int, int>(products, pageId, totalPages);
         }
 
         public async Task<Tuple<IEnumerable<ProductDataForAdmin>, int, int>> GetProductsWithPaginationForAdminAsync(string type = "all", int pageId = 1, int take = 18, string filter = "")

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.User;
+using Reshop.Domain.DTOs.Discount;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 
@@ -22,11 +23,17 @@ namespace Reshop.Application.Interfaces.Discount
         Task<ResultTypes> EditShopperProductDiscountAsync(ShopperProductDiscount shopperProductDiscount);
         Task<ShopperProductDiscount> GetLastShopperProductColorDiscountAsync(string shopperProductColorId);
         Task<bool> IsActiveShopperProductColorDiscountExistsAsync(string shopperProductColorId);
-        Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId);
+        Task<DiscountsGeneralDataViewModel> GetShopperProductColorDiscountsGeneralDataAsync(string shopperProductColorId);
         IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfShopperProductColorChart(string shopperProductColorId);
 
         #endregion
 
+        #region product
+
+        Task<Tuple<IEnumerable<DiscountsForShowViewModel>, int, int>> GetProductColorDiscountsWithPaginationAsync(int productId, int colorId,int pageId= 1,int take =25,string filter = "");
         IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId);
+        Task<DiscountsGeneralDataViewModel> GetProductColorDiscountsGeneralDataAsync(int productId, int colorId);
+
+        #endregion
     }
 }

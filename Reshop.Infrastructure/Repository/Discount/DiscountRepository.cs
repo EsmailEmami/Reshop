@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Reshop.Application.Convertors;
+using Reshop.Domain.DTOs.Discount;
+using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Discount;
 using Reshop.Infrastructure.Context;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Application.Convertors;
-using Reshop.Domain.DTOs.Shopper;
-using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Infrastructure.Repository.Discount
 {
@@ -71,9 +71,9 @@ namespace Reshop.Infrastructure.Repository.Discount
                                     f.ProductDiscountPrice != 0)
                 ));
 
-        public async Task<ShopperProductColorDiscountDetailViewModel> GetShopperProductColorDiscountDetailAsync(string shopperProductColorId) =>
+        public async Task<DiscountsGeneralDataViewModel> GetShopperProductColorDiscountsGeneralDataAsync(string shopperProductColorId) =>
             await _context.ShopperProductColors.Where(c => c.ShopperProductColorId == shopperProductColorId)
-                .Select(c => new ShopperProductColorDiscountDetailViewModel()
+                .Select(c => new DiscountsGeneralDataViewModel()
                 {
                     ProductId = c.ShopperProduct.ProductId,
                     ColorId = c.ColorId,
@@ -85,19 +85,42 @@ namespace Reshop.Infrastructure.Repository.Discount
                         .Sum(s => s.ProductDiscountPrice),
                     Income = _context.OrderDetails.Where(d =>
                             d.ShopperProductColorId == c.ShopperProductColorId && d.ProductDiscountPrice != 0)
-                        .Sum(s => s.Sum),
-                    Discounts = c.Discounts.OrderByDescending(a => a.EndDate)
-                        .Select(b => new Tuple<DateTime, DateTime, int, decimal>
-                        (
-                            b.StartDate,
-                            b.EndDate,
-                            _context.Orders.Where(or => or.PayDate >= b.StartDate && or.PayDate >= b.EndDate)
-                                .SelectMany(e => e.OrderDetails).Count(f => f.ShopperProductColorId == c.ShopperProductColorId && f.ProductDiscountPrice != 0),
-                            _context.Orders.Where(or => or.PayDate >= b.StartDate && or.PayDate >= b.EndDate)
-                                .SelectMany(e => e.OrderDetails)
-                                .Where(f => f.ShopperProductColorId == c.ShopperProductColorId && f.ProductDiscountPrice != 0).Sum(os => os.Sum)
-))
+                        .Sum(s => s.Sum)
                 }).SingleOrDefaultAsync();
+
+        public IEnumerable<DiscountsForShowViewModel> GetProductColorDiscountsWithPaginationAsync(int productId, int colorId, int skip, int take, string filter = "")
+        {
+            IQueryable<ShopperProductColor> discounts = _context.ShopperProductColors
+                .Where(c => c.ShopperProduct.ProductId == productId && c.ColorId == colorId);
+
+            if (filter != null)
+            {
+                discounts = discounts.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            return discounts.SelectMany(c => c.Discounts)
+                .OrderByDescending(c => c.StartDate)
+                .Skip(skip).Take(take)
+                .Select(c => new DiscountsForShowViewModel()
+                {
+                    StartDate = c.StartDate,
+                    EndDate = c.EndDate,
+                    DiscountedAmount = _context.OrderDetails
+                        .Where(d => d.ShopperProductColorId == c.ShopperProductColorId && d.ProductDiscountPrice != 0)
+                        .Sum(s => s.ProductDiscountPrice),
+                    SellCount = _context.Orders.Where(or => or.PayDate >= c.StartDate && or.PayDate >= c.EndDate)
+                        .SelectMany(e => e.OrderDetails).Count(f => f.ShopperProductColorId == c.ShopperProductColorId && f.ProductDiscountPrice != 0),
+                    Income = _context.Orders.Where(or => or.PayDate >= c.StartDate && or.PayDate >= c.EndDate)
+                        .SelectMany(e => e.OrderDetails)
+                        .Where(f => f.ShopperProductColorId == c.ShopperProductColorId && f.ProductDiscountPrice != 0).Sum(os => os.Sum)
+                });
+
+        }
+
+        public async Task<int> GetProductColorDiscountsCountAsync(int productId, int colorId) =>
+            await _context.ShopperProductColors
+                .Where(c => c.ShopperProduct.ProductId == productId && c.ColorId == colorId)
+                .CountAsync();
 
         public IEnumerable<Tuple<string, int>> GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId) =>
             _context.ShopperProductColors
@@ -115,6 +138,24 @@ namespace Reshop.Infrastructure.Repository.Discount
                         .Count(f => f.ShopperProductColorId == b.ShopperProductColorId &&
                                     f.ProductDiscountPrice != 0)
                 ));
+
+        public async Task<DiscountsGeneralDataViewModel> GetProductColorDiscountsGeneralDataAsync(int productId, int colorId) =>
+            await _context.ShopperProductColors
+                .Where(c => c.ShopperProduct.ProductId == productId && c.ColorId == colorId)
+                .Select(c => new DiscountsGeneralDataViewModel()
+                {
+                    ProductId = c.ShopperProduct.ProductId,
+                    ColorId = c.ColorId,
+                    DiscountsCount = c.Discounts.Count,
+                    SellCount = _context.OrderDetails.Count(d =>
+                        d.ShopperProductColorId == c.ShopperProductColorId && d.ProductDiscountPrice != 0),
+                    DiscountedAmount = _context.OrderDetails
+                        .Where(d => d.ShopperProductColorId == c.ShopperProductColorId && d.ProductDiscountPrice != 0)
+                        .Sum(s => s.ProductDiscountPrice),
+                    Income = _context.OrderDetails.Where(d =>
+                            d.ShopperProductColorId == c.ShopperProductColorId && d.ProductDiscountPrice != 0)
+                        .Sum(s => s.Sum)
+                }).SingleOrDefaultAsync();
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }

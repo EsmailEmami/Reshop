@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Shopper;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
@@ -29,13 +30,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IShopperService _shopperService;
         private readonly IBrandService _brandService;
         private readonly IColorService _colorService;
+        private readonly IDiscountService _discountService;
 
-        public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService, IColorService colorService)
+        public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService, IColorService colorService, IDiscountService discountService)
         {
             _productService = productService;
             _shopperService = shopperService;
             _brandService = brandService;
             _colorService = colorService;
+            _discountService = discountService;
         }
 
         #endregion
@@ -85,7 +88,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> ProductColorDiscountsDetail(int productId, int colorId)
         {
-            var data = await _colorService.GetProductColorDetailAsync(productId, colorId);
+            var data = await _discountService.GetProductColorDiscountsGeneralDataAsync(productId, colorId);
 
             if (data == null)
                 return NotFound();

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Reshop.Domain.DTOs.Shopper
+namespace Reshop.Domain.DTOs.Discount
 {
-    public class ShopperProductColorDiscountDetailViewModel
+    public class DiscountsGeneralDataViewModel
     {
         public int ProductId { get; set; }
         public int ColorId { get; set; }
@@ -11,9 +11,5 @@ namespace Reshop.Domain.DTOs.Shopper
         public int SellCount { get; set; }
         public decimal DiscountedAmount { get; set; }
         public decimal Income { get; set; }
-
-        // table
-        //start date, end date, sell count, income
-        public IEnumerable<Tuple<DateTime,DateTime,int,decimal>> Discounts { get; set; }
     }
 }

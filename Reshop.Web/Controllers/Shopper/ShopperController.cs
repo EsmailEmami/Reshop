@@ -331,7 +331,7 @@ namespace Reshop.Web.Controllers.Shopper
             if (shopperProductColorId is null)
                 return NotFound();
 
-            var model = await _discountService.GetShopperProductColorDiscountDetailAsync(shopperProductColorId);
+            var model = await _discountService.GetShopperProductColorDiscountsGeneralDataAsync(shopperProductColorId);
 
             if (model is null)
                 return NotFound();
