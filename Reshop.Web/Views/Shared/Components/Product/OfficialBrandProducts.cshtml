@@ -58,9 +58,11 @@
                         </td>
                         <td>@item.Item2</td>
                         <td>
-                            <a class="btn btn-info text-white">
+                            <a onclick="ShowModal('@Url.Action("OfficialBrandProductDetail", "OfficialProductManager", new {officialBrandProductId = item.Item1}, Context.Request.Scheme)', 'جزئیات نام اختصاصی @item.Item2')"
+                               class="btn btn-info text-white">
                                 جزئیات
                             </a>
+
                             <a onclick="ShowModal('@Url.Action("EditOfficialBrandProduct", "OfficialProductManager", new {officialBrandProductId = item.Item1}, Context.Request.Scheme)', 'ویرایش برند')"
                                class="btn btn-warning text-white">
                                 ویرایش
@@ -130,7 +132,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/ManagerPanel/BrandManager/BrandsList/?pageId=' + pageId + '&filter=' + filter,
+                url: '/ManagerPanel/BrandManager/OfficialBrandProductList/?pageId=' + pageId + '&filter=' + filter,
                 processData: false,
                 contentType: false
             }).done(function (res) {

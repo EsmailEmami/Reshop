@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Tuple<int, string>>
+@{
+    Layout = null;
+    int counter = 1;
+}
+
+<div class="table-responsive">
+    <table class="table responsive table-hover table-striped table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">نام اختصاصی</th>
+                <th scope="col">دستورات</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @counter
+                    </td>
+                    <td>@item.Item2</td>
+                    <td>
+                        <a onclick="ShowModal('@Url.Action("OfficialBrandProductDetail", "OfficialProductManager", new {officialBrandProductId = item.Item1}, Context.Request.Scheme)', 'جزئیات نام اختصاصی @item.Item2')"
+                           class="btn btn-info text-white">
+                            جزئیات
+                        </a>
+                    </td>
+                </tr>
+                counter++;
+            }
+        </tbody>
+    </table>
+</div>

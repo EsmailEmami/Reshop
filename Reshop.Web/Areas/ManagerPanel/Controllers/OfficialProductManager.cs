@@ -23,9 +23,33 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             _brandService = brandService;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult OfficialBrandProductList(int pageId = 1, string filter = "")
+        {
+            return ViewComponent("OfficialBrandProductsComponent", new { pageId, filter });
+        }
+
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult OfficialBrandProductDetail(int officialBrandProductId)
+        {
+            if (officialBrandProductId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var model = _brandService.GetProductsOfOfficialProduct(officialBrandProductId);
+
+            if (model == null)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+
+            return View(model);
         }
 
         #region add official product
@@ -162,7 +186,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
 
         #endregion
     }
