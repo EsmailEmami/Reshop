@@ -444,8 +444,6 @@ ul.pagination-custom {
     background: #FC5400;
     padding: 20px 20px 0 20px;
     z-index: 99;
-    overflow-y: scroll;
-    overflow-x: hidden
 }
 
 
@@ -604,7 +602,7 @@ ul.pagination-custom {
 
     .right-menu.min {
         width: 67px;
-        padding: 20px 5px;
+        padding: 20px 5px 0 5px;
     }
 
         .right-menu.min ul li {

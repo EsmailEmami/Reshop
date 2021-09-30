@@ -1,0 +1,39 @@
+﻿@model Color
+
+@{
+    Layout = null;
+}
+<form asp-action="EditColor" method="post" onsubmit="return SubmitFormData(this)">
+    <div class="row">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ColorId" />
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="ColorName">
+                <label><i class="far fa-list-alt"></i> نام رنگ</label>
+                <span asp-validation-for="ColorName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="ColorCode">
+                <label><i class="far fa-list-alt"></i> کد رنگ</label>
+                <span asp-validation-for="ColorCode" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-field">
+            <button type="submit" class="btn btn-success">
+                ثبت
+            </button>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    inputJs();
+</script>

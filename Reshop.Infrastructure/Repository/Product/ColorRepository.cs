@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Application.Convertors;
 using Reshop.Domain.DTOs.Chart;
+using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Infrastructure.Context;
 using System;
@@ -53,6 +54,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => new Tuple<int, string>(c.ColorId, c.ColorName))
                 .SingleOrDefaultAsync();
 
+        public async Task<Color> GetRealColorByIdAsync(int colorId) =>
+            await _context.Colors.FindAsync(colorId);
+
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId) =>
             _context.OrderDetails.Where(c =>
                     c.ShopperProductColor.ShopperProduct.ProductId == productId &&
@@ -67,6 +71,23 @@ namespace Reshop.Infrastructure.Repository.Product
                     SellCount = c.Count,
                 });
 
+        public async Task<int> GetColorsCountAsync() =>
+            await _context.Colors.CountAsync();
+
+        public IEnumerable<Color> GetColorsWithPagination(int skip, int take, string filter)
+        {
+            IQueryable<Color> colors = _context.Colors;
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                colors = colors.Where(c => c.ColorName.Contains(filter));
+            }
+
+            colors = colors.Skip(skip).Take(take);
+
+            return colors;
+        }
+
         public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
             _context.Products.Where(c => c.ProductId == productId)
                 .SelectMany(c => c.ShopperProducts)
@@ -77,5 +98,14 @@ namespace Reshop.Infrastructure.Repository.Product
                     _context.OrderDetails
                         .Where(o => o.ShopperProductColorId == c.ShopperProductColorId)
                         .Sum(s => s.Count), 10));
+
+        public async Task AddColorAsync(Color color) =>
+            await _context.Colors.AddAsync(color);
+
+        public void UpdateColor(Color color) =>
+            _context.Colors.Update(color);
+
+        public async Task SaveChangesAsync() =>
+            await _context.SaveChangesAsync();
     }
 }

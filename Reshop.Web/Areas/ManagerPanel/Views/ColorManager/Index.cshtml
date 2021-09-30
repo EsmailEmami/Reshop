@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "مدیریت رنگ ها";
+}
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ProductPage); }
+}
+
+<div class="display-6 text-center">
+    مدیریت رنگ ها
+</div>
+
+
+<a onclick="ShowModal('@Url.Action("AddColor", "ColorManager" ,null, Context.Request.Scheme)', 'افزودن رنگ')"
+   class="btn btn-success text-white"><i class="fal fa-user-plus"></i> رنگ جدید</a>
+
+<section class="table-list" id="tableList">
+    @await Component.InvokeAsync("ColorsListComponent")
+</section>
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

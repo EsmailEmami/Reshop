@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Product;
+using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.User;
 
@@ -23,6 +25,20 @@ namespace Reshop.Application.Services.Product
         }
 
         #endregion
+
+        public async Task<Tuple<IEnumerable<Color>, int, int>> GetColorsWithPaginationAsync(int pageId = 1, int take = 25, string filter = "")
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int count = await _colorRepository.GetColorsCountAsync();
+
+            var data = _colorRepository.GetColorsWithPagination(skip, take, filter);
+
+            int totalPages = (int)Math.Ceiling(1.0 * count / take);
+
+
+            return new Tuple<IEnumerable<Color>, int, int>(data, pageId, totalPages);
+        }
 
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId,
             int colorId) => _colorRepository.GetLastThirtyDayColorProductDataChart(productId, colorId);
@@ -46,5 +62,38 @@ namespace Reshop.Application.Services.Product
 
         public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
             _colorRepository.GetColorsOfProductDataChart(productId);
+
+        public async Task<Color> GetColorByIdAsync(int colorId) =>
+            await _colorRepository.GetRealColorByIdAsync(colorId);
+
+        public async Task<ResultTypes> AddColorAsync(Color color)
+        {
+            try
+            {
+                await _colorRepository.AddColorAsync(color);
+                await _colorRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditColorAsync(Color color)
+        {
+            try
+            {
+                _colorRepository.UpdateColor(color);
+                await _colorRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
     }
 }
