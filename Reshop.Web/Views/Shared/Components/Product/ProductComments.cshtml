@@ -1,0 +1,171 @@
+﻿@model Tuple<IEnumerable<ProductCommentsForShow>, int, int>
+@{
+    Layout = null;
+}
+<section class="comment-filter">
+
+    <input hidden="" id="type" />
+
+    @switch (ViewBag.SelectedType.ToString())
+    {
+        case "news":
+            {
+                <div class="item">
+                    <input type="radio" name="filterComment" value="news" id="news-radio" checked onclick="changeType(this.value)">
+                    <label for="news-radio">جدید ترین ها</label>
+                </div>
+                <div class="item">
+                    <input type="radio" name="filterComment" value="buyers" id="buyers-radio" onclick="changeType(this.value)">
+                    <label for="buyers-radio">خریداران</label>
+                </div>
+                <div class="item">
+                    <input type="radio" name="filterComment" value="best" id="best-radio" onclick="changeType(this.value)">
+                    <label for="best-radio">مفید ترین</label>
+                </div>
+                break;
+            }
+        case "buyers":
+            {
+                <div class="item">
+                    <input type="radio" name="filterComment" value="news" id="news-radio" onclick="changeType(this.value)">
+                    <label for="news-radio">جدید ترین ها</label>
+                </div>
+                <div class="item">
+                    <input type="radio" name="filterComment" value="buyers" id="buyers-radio" checked onclick="changeType(this.value)">
+                    <label for="buyers-radio">خریداران</label>
+                </div>
+                <div class="item">
+                    <input type="radio" name="filterComment" value="best" id="best-radio" onclick="changeType(this.value)">
+                    <label for="best-radio">مفید ترین</label>
+                </div>
+
+                break;
+            }
+        case "best":
+            {
+                <div class="item">
+                    <input type="radio" name="filterComment" value="news" id="news-radio" onclick="changeType(this.value)">
+                    <label for="news-radio">جدید ترین ها</label>
+                </div>
+                <div class="item">
+                    <input type="radio" name="filterComment" value="buyers" id="buyers-radio" onclick="changeType(this.value)">
+                    <label for="buyers-radio">خریداران</label>
+                </div>
+                <div class="item">
+                    <input type="radio" name="filterComment" value="best" id="best-radio" checked onclick="changeType(this.value)">
+                    <label for="best-radio">مفید ترین</label>
+                </div>
+                break;
+            }
+    }
+
+</section>
+
+<div class="row mt-4">
+    @if (!Model.Item1.Any())
+    {
+        <div class="alert alert-warning text-muted m-0">
+            دیدگاهی یاف نشد.
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model.Item1)
+        {
+            <div class="col-sm-12">
+                <div class="comment-area">
+
+                    <div class="ur-cm-img">
+                        <img src="/images/UserImages/@item.Image" alt="">
+                    </div>
+
+                    <div class="comment-header">
+                        <h4>@item.FullName</h4>
+                        <span>ارسال شده در تاریخ @item.CommentDate.ToShamsiDate()</span>
+                        @if (!string.IsNullOrEmpty(item.StoreName))
+                        {
+                            <span class="badge badge-light">خریدار</span>
+                        }
+
+                        <a href="#" class="badge badge-warning">گزارش</a>
+                    </div>
+                    <div class="comment-text">
+                        <h4>@item.CommentTitle</h4>
+                        <p class="text-justify">
+                            @item.CommentText
+                        </p>
+                    </div>
+
+                    <div class="comment-footer" style="direction: @((!string.IsNullOrEmpty(item.StoreName)) ? "rtl" : "ltr")">
+
+                        @if (!string.IsNullOrEmpty(item.StoreName))
+                        {
+                            <a asp-controller="Product" asp-action="ShortKeyRedirect" asp-route-key="@item.ProductShortKey"
+                               class="comment-store">
+                                <span><i class="far fa-store"></i> @item.StoreName</span>
+                                <span> - </span>
+                                <span>@item.ColorName</span>
+                            </a>
+                        }
+
+
+                        <a href="#" class="comment-like">
+                            <span>(@item.LikeCount نفر)</span>
+                            <i class="far fa-heart"></i>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>
+
+@if (Model.Item3 > 1)
+{
+    <ul class="pagination-custom">
+        <li class="@(Model.Item2<=1?"disabled":"")" onclick="pagination('@(Model.Item2 - 1)')">
+            <i class="far fa-angle-right"></i>
+        </li>
+
+        @for (var i = 1; i <= Model.Item3; i++)
+        {
+            <li class="@(Model.Item2 == i? "active":"")" onclick="pagination('@i')">
+                @i
+            </li>
+        }
+
+        <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="pagination('@(Model.Item2+1)')">
+            <i class="far fa-angle-left"></i>
+        </li>
+
+    </ul>
+}
+
+
+<script>
+        function pagination(pageId) {
+            $('#pageId').val(pageId);
+            changeList();
+        }
+
+        function changeType(inputValue) {
+            $('#type').val(inputValue);
+            changeList();
+        }
+
+        function changeList() {
+            let pageId = $('#pageId').val();
+            let type = $('#type').val();
+
+
+            $.ajax({
+            type: 'GET',
+                url: '/Product/ProductCommentsList?productId=@ViewBag.ProductId.ToString()&pageId=' + pageId + '&type='+ type,
+            }).done(function (res) {
+                $("#tableComments").html(res);
+            });
+        }
+
+</script>

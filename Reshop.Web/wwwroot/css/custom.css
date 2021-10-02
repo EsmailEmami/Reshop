@@ -1323,6 +1323,7 @@ header .top-menu {
         font-weight: bold;
         margin-bottom: 20px;
         display: inline-block;
+        color: #000000;
     }
 
     .detail-items .selector-detail {
@@ -1466,7 +1467,47 @@ header .top-menu {
     font-weight: bold;
     color: #0ca902;
 }
+.comment-filter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
 
+.comment-filter .item {
+    display: inline-block;
+    position: relative;
+    margin: 0 5px;
+}
+
+.comment-filter .item input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    visibility: hidden;
+}
+
+.comment-filter .item label {
+    display: block;
+    position: relative;
+    color: #222222;
+    font-weight: bold;
+    padding: 3px 17px;
+    font-size: 13px;
+    border-radius: 25px;
+    transition: 0.3s;
+    margin: 0;
+}
+
+.comment-filter .item input:checked ~ label {
+    background-color: #FC5400;
+    color: #fcfcfc;
+}
+
+.comment-filter .item label:hover {
+    background-color: #e8e8e8;
+    color: #2f2c2c;
+}
 .comment-area {
     border: 1px solid #dfdfdf;
     border-radius: 8px;
@@ -1550,14 +1591,14 @@ header .top-menu {
     }
 
 .comment-area .comment-text {
-    padding: 20px 0 10px 0;
+    padding: 10px 0;
     border-bottom: 1px solid #d9d9d9;
 }
 
     .comment-area .comment-text h4 {
         font-size: 18px;
         font-weight: bold;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
 
     .comment-area .comment-text p {
@@ -1565,23 +1606,41 @@ header .top-menu {
     }
 
 .comment-area .comment-footer {
-    display: block;
     width: 100%;
     padding-top: 15px;
-    text-align: end;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
-    .comment-area .comment-footer a i {
-        color: #ca0202;
-        font-size: 19px;
+    .comment-area .comment-footer .comment-store {
+        font-size: 14px;
+        font-weight: bold;
+        color: #3f3f3f;
+        text-decoration: none;
     }
 
-    .comment-area .comment-footer span {
-        font-size: 12px;
-        font-weight: bold;
-        color: #5d5b5b;
-        display: inline-block;
+    .comment-area .comment-footer .comment-like {
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        direction: rtl
     }
+
+        .comment-area .comment-footer .comment-like i {
+            color: #ca0202;
+            font-size: 19px;
+        }
+
+        .comment-area .comment-footer .comment-like span {
+            font-size: 13px;
+            font-weight: bold;
+            color: #5d5b5b;
+            display: inline-block;
+            padding-left: 5px;
+        }
 
 /* -------------------------------------- detail -------------------------------------- */
 
@@ -3725,25 +3784,25 @@ footer {
     padding: 0;
 }
 
-    footer h4,
-    h5 {
+    footer > h4,
+    footer > h5 {
         margin: 0 0 20px 0;
         font-weight: bold;
         font-size: 24px;
         color: #ebebeb;
     }
 
-    footer a,
-    p,
-    span {
+    footer > a,
+    footer > p,
+    footer > span {
         color: #ebebeb;
         transition: 0.3s;
     }
 
-    footer > a:hover {
-        color: #FC5400;
-        text-decoration: none;
-    }
+        footer > a:hover {
+            color: #FC5400;
+            text-decoration: none;
+        }
 
 .footer-part ul {
     padding-right: 20px;

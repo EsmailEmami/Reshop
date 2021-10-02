@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Domain.Entities.User
 {
@@ -21,6 +22,9 @@ namespace Reshop.Domain.Entities.User
         [ForeignKey("User")]
         public string UserId { get; set; }
 
+        [ForeignKey("ShopperProductColor")]
+        public string ShopperProductColorId { get; set; }
+
         [Display(Name = "عنوان متن")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
@@ -36,11 +40,15 @@ namespace Reshop.Domain.Entities.User
 
         public bool IsRead { get; set; }
 
+        public int LikeCount { get; set; }
+
         #region Relations
 
         public virtual Product.Product Product { get; set; }
 
         public virtual User User { get; set; }
+
+        public virtual ShopperProductColor ShopperProductColor { get; set; }
 
         #endregion
     }

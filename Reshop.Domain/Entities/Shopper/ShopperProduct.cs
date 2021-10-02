@@ -37,7 +37,7 @@ namespace Reshop.Domain.Entities.Shopper
         public virtual Shopper Shopper { get; set; }
         public virtual Product.Product Product { get; set; }
         public virtual ICollection<ShopperProductColor> ShopperProductColors { get; set; }
-
+        
         #endregion
     }
 }

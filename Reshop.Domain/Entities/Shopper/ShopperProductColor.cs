@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Reshop.Domain.Entities.Product;
+using Reshop.Domain.Entities.User;
 
 namespace Reshop.Domain.Entities.Shopper
 {
@@ -55,6 +56,8 @@ namespace Reshop.Domain.Entities.Shopper
         public virtual Color Color { get; set; }
 
         public virtual ICollection<ShopperProductDiscount> Discounts { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
 
         #endregion
     }

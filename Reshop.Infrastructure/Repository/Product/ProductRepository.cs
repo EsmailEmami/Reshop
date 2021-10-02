@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.CommentAndQuestion;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -350,7 +351,7 @@ namespace Reshop.Infrastructure.Repository.Product
             return model;
         }
 
-        
+
         public async Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key)
             => await _context.ShopperProductColors.Where(c => c.ShortKey == key)
                 .Select(c => new Tuple<string, string>(c.ShopperProduct.Product.ProductTitle, c.ShopperProductColorId))
@@ -625,6 +626,52 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             return _context.Questions.Where(c => c.ProductId == productId)
                 .Include(c => c.QuestionAnswers);
+        }
+
+        public async Task<int> GetCommentsCountOfProductWithTypeAsync(int productId, string type = "all") =>
+            type switch
+            {
+                "all" => await _context.Comments
+                    .Where(c => c.ProductId == productId)
+                    .CountAsync(),
+                "buyers" => await _context.Comments
+                    .Where(c => c.ProductId == productId && !string.IsNullOrEmpty(c.ShopperProductColorId))
+                    .CountAsync(),
+                _ => await _context.Comments
+                    .Where(c => c.ProductId == productId)
+                    .CountAsync()
+            };
+
+
+
+        public IEnumerable<ProductCommentsForShow> GetProductCommentsWithPagination(int productId, int skip = 1, int take = 30, string type = "news")
+        {
+            IQueryable<Comment> comments = _context.Comments
+                .Where(c => c.ProductId == productId);
+
+            comments = type switch
+            {
+                "news" => comments.OrderByDescending(c => c.CommentDate),
+                "buyers" => comments.Where(c => !string.IsNullOrEmpty(c.ShopperProductColorId)),
+                "best" => comments.OrderByDescending(c => c.LikeCount),
+                _ => comments.OrderByDescending(c => c.CommentDate)
+            };
+
+            comments = comments.Skip(skip).Take(take);
+
+            return comments.Select(c => new ProductCommentsForShow()
+            {
+                CommentId = c.CommentId,
+                FullName = c.User.FullName,
+                Image = c.User.UserAvatar,
+                CommentDate = c.CommentDate,
+                CommentTitle = c.CommentTitle,
+                CommentText = c.CommentText,
+                LikeCount = c.LikeCount,
+                StoreName = c.ShopperProductColor.ShopperProduct.Shopper.StoreName,
+                ColorName = c.ShopperProductColor.Color.ColorName,
+                ProductShortKey = c.ShopperProductColor.ShortKey
+            });
         }
 
         public IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24)

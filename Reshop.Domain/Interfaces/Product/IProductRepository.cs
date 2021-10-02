@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Chart;
+using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
@@ -116,10 +117,10 @@ namespace Reshop.Domain.Interfaces.Product
         #endregion
 
         Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key);
-        
-        
+
+
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId);
-      Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId);
+        Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId);
 
         Task<int> GetProductIdOfShopperProductColorIdAsync(string shopperProductColorId);
 
@@ -151,6 +152,8 @@ namespace Reshop.Domain.Interfaces.Product
 
         IEnumerable<Comment> GetProductComments(int productId);
         IEnumerable<Question> GetProductQuestions(int productId);
+        Task<int> GetCommentsCountOfProductWithTypeAsync(int productId, string type = "all");
+        IEnumerable<ProductCommentsForShow> GetProductCommentsWithPagination(int productId, int skip = 1, int take = 30, string type = "news");
 
         #endregion
 
@@ -171,7 +174,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart();
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId);
-        
+
         #endregion
 
 

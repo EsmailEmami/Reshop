@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <hr>
+            <hr />
 
             @* change *@
 
@@ -81,8 +81,8 @@
                     <div class="product-details-option-color">
                         @foreach (var color in Model.Colors)
                         {
-                           <label>
-                                <input type="radio" name="color" @(color.Item1 == Model.Product.SelectedColor? "checked":"")
+                            <label>
+                                <input type="radio" name="color" @(color.Item1 == Model.Product.SelectedColor ? "checked" : "")
                                        onclick="UpdateProductDetailShopper('@Model.Product.Title.Replace(" ", "-")','@color.Item4')">
                                 <span class="checkmark">
                                     <span class="color" style="background: @color.Item3;"></span>
@@ -115,10 +115,10 @@
 
                         @if (Model.Product.LastDiscount != null && Model.Product.LastDiscount.Item2 > DateTime.Now)
                         {
-                            discountPrice =  CartCalculator.CalculateDiscount(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0)));
+                            discountPrice = CartCalculator.CalculateDiscount(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0)));
                         }
                     }
-                    
+
 
                     @if (Model.Product.LastDiscount != null && Model.Product.LastDiscount.Item2 > DateTime.Now)
                     {
@@ -146,7 +146,7 @@
 
 
 
-            <hr>
+            <hr />
 
             <div class="feature">
                 <h5>ویژگی های محصول:</h5>
@@ -179,7 +179,7 @@
                 </ul>
             </div>
 
-            <hr>
+            <hr />
 
             <div class="detail-according text-justify" id="accordiongID">
 
@@ -203,7 +203,7 @@
                 <a data-toggle="collapse" data-target="#Review-fullpage">مشاهده ی مطالب</a>
             </div>
 
-            <hr>
+            <hr />
 
             <div class="detail-specifications">
 
@@ -218,10 +218,10 @@
                 </ul>
             </div>
 
-            <hr>
+            <hr />
 
             <div class="detail-comments">
-                <h5>نظرات کاربران:</h5>
+                <h5>امتیاز کاربران:</h5>
                 <p class="positive-comment">( این محصول <span>25 بازخورد مثبت</span> داشته است. )</p>
                 <div class="row">
                     <div class="col-sm-12 col-md-6 mb-2">
@@ -254,47 +254,11 @@
                     </div>
                 </div>
 
-                <div class="row mt-5">
+                <hr />
+                <h5 style="margin-bottom: 5px;">نظر کاربران:</h5>
 
-                    @if (!Model.Comments.Any())
-                    {
-                        <div class="alert alert-warning text-muted m-0">
-                            تا حالا نظری برای این محصول درج نشده است! شما اولین نفر باشید.
-                        </div>
-                    }
-                    else
-                    {
-                        @foreach (var item in Model.Comments)
-                        {
-                            <div class="col-sm-12">
-                                <div class="comment-area">
-
-                                    <div class="ur-cm-img">
-                                        <img src="/images/UserImages/@User.FindFirstValue(ClaimTypes.Actor)" alt="">
-                                    </div>
-
-                                    <div class="comment-header">
-                                        <h4>@item.User.FullName</h4>
-                                        <span>ارسال شده در تاریخ @item.CommentDate.ToShamsiDate()</span>
-                                        <span class="badge badge-light">خریدار</span>
-                                        <a href="#" class="badge badge-warning">گزارش</a>
-                                    </div>
-                                    <div class="comment-text">
-                                        <h4>@item.CommentTitle</h4>
-                                        <p class="text-justify">
-                                            @item.CommentText
-                                        </p>
-                                    </div>
-
-                                    <div class="comment-footer">
-                                        <span>(29 نفر)</span>
-                                        <a href="#"><i class="far fa-heart"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-
+                <div id="tableComments">
+                    @await Component.InvokeAsync("ProductCommentsComponent", new { productId = Model.Product.ProductId })
                 </div>
             </div>
 

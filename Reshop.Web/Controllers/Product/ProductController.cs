@@ -80,7 +80,7 @@ namespace Reshop.Web.Controllers.Product
 
 
             return RedirectToAction("ProductDetail", "Product",
-                new { productName = product.Item1.Replace(" ", "-"), seller = product.Item2 });
+                new { productName = product.Item1.Replace(" ", "-"), sellerId = product.Item2 });
         }
 
         [HttpGet]
@@ -96,7 +96,6 @@ namespace Reshop.Web.Controllers.Product
 
             return View("ProductsOfCategoryOrChildCategory", result);
         }
-
 
         [HttpGet]
         [Route("ChildCategory/{childCategoryId}/{childCategoryName}")]
@@ -114,7 +113,6 @@ namespace Reshop.Web.Controllers.Product
         }
 
         [HttpPost]
-
         public async Task<IActionResult> AddToFavoriteProduct(string shopperProductColorId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -131,6 +129,7 @@ namespace Reshop.Web.Controllers.Product
             };
         }
 
+        [HttpPost]
         public async Task<IActionResult> RemoveFavoriteProduct(string favoriteProductId)
         {
             var favoriteProduct = await _productService.GetFavoriteProductByIdAsync(favoriteProductId);
@@ -143,6 +142,13 @@ namespace Reshop.Web.Controllers.Product
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult ProductCommentsList(int productId, int pageId = 1, string type = "news")
+        {
+            return ViewComponent("ProductCommentsComponent", new { productId, pageId, type });
         }
     }
 }

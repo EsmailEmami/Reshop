@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Chart;
+using Reshop.Domain.DTOs.CommentAndQuestion;
 
 namespace Reshop.Application.Interfaces.Product
 {
@@ -24,7 +25,6 @@ namespace Reshop.Application.Interfaces.Product
 
         // this is for list of shopper products
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null);
-        
         Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync();
 
         // get by id 
@@ -52,7 +52,6 @@ namespace Reshop.Application.Interfaces.Product
 
         // detail of every product
         Task<ProductDetailViewModel> GetProductDetailAsync(string shopperProductColorId);
-
         Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId);
 
         // productName , sellerId
@@ -113,17 +112,20 @@ namespace Reshop.Application.Interfaces.Product
 
         #endregion
 
-        #region Question
+        #region Question & Comment
 
         IEnumerable<Question> GetProductQuestions(int productId);
 
+        Task<Tuple<IEnumerable<ProductCommentsForShow>, int, int>> GetProductCommentsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news");
+
         #endregion
+
 
         #region chart
 
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart();
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId);
-       
+
         #endregion
 
 

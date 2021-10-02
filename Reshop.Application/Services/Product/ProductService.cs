@@ -14,6 +14,7 @@ using Reshop.Domain.Interfaces.Shopper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.Interfaces.Category;
 using Reshop.Domain.Interfaces.Discount;
 using Reshop.Domain.Interfaces.User;
@@ -962,6 +963,19 @@ namespace Reshop.Application.Services.Product
 
         public IEnumerable<Question> GetProductQuestions(int productId) =>
             _productRepository.GetProductQuestions(productId);
+
+        public async Task<Tuple<IEnumerable<ProductCommentsForShow>, int, int>> GetProductCommentsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news")
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int count = await _productRepository.GetCommentsCountOfProductWithTypeAsync(productId, type.FixedText());
+
+            var data = _productRepository.GetProductCommentsWithPagination(productId, skip, take, type.FixedText());
+
+            int totalPages = (int)Math.Ceiling(1.0 * count / take);
+
+            return new Tuple<IEnumerable<ProductCommentsForShow>, int, int>(data, pageId, totalPages);
+        }
 
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart() =>
             _productRepository.GetLastThirtyDayProductsDataChart();
