@@ -2,24 +2,24 @@
 
 @foreach (var item in Model)
 {
-    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="col-sm-12 col-md-4 col-lg-3">
         <div class="product-item box-shadow">
             <div class="product-img">
-                <a asp-controller="Product" asp-action="ProductDetail" 
-                   asp-route-productName="@item.ProductTitle.Replace(" ","-")" 
+                <a asp-controller="Product" asp-action="ProductDetail"
+                   asp-route-productName="@item.ProductTitle.Replace(" ","-")"
                    asp-route-sellerId="@item.ShopperProductColorId">
                     <img src="/images/ProductImages/@item.Image" alt="@item.ProductTitle" class="img-fluid">
                 </a>
-                
+
                 <ul class="img-action-button">
                     <li>
                         <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToCart(this)">
-                        
+
                             <input type="hidden" value="@item.ShopperProductColorId" name="shopperProductColorId" />
-                            <button type="submit" ><i class="fal fa-heart"></i></button>
+                            <button type="submit"><i class="fal fa-heart"></i></button>
                         </form>
 
-                  
+
                     </li>
                     <li>
                         <a href="#" title="مقایسه"><i class="fal fa-sync-alt"></i></a>
@@ -32,17 +32,35 @@
                     </li>
                 </ul>
 
+                @{
+                    decimal discountPrice = 0;
+
+                    @if (item.LastDiscount != null && item.LastDiscount.Item2 > DateTime.Now)
+                    {
+                        discountPrice =  CartCalculator.CalculateDiscount(item.ProductPrice, Convert.ToByte(((item.LastDiscount.Item2 > DateTime.Now) ? item.LastDiscount.Item1 : 0)));
+                    }
+                }
+
+
+                @if (item.LastDiscount != null && item.LastDiscount.Item2 > DateTime.Now)
+                {
+                    <div class="discount">
+                        <span>@item.LastDiscount.Item1%</span>
+
+                        <span>@discountPrice.NumSplitter()</span>
+                    </div>
+                }
+
             </div>
             <div class="product-info">
-                <h6 class="product-title">
-                    <a asp-controller="Product" asp-action="ProductDetail" 
-                       asp-route-productName="@item.ProductTitle.Replace(" ","-")"
-                       asp-route-sellerId="@item.ShopperProductColorId">
-                        @item.ProductTitle
-                    </a>
-                </h6>
-               
-                <h5 class="pro-price">@item.ProductPrice.NumSplitter()</h5>
+
+                <a asp-controller="Product" asp-action="ProductDetail"
+                   asp-route-productName="@item.ProductTitle.Replace(" ", "-")"
+                   asp-route-sellerId="@item.ShopperProductColorId">
+                    @item.ProductTitle
+                </a>
+
+                <h5 class="pro-price">@((item.ProductPrice - discountPrice).NumSplitter()) <span class="toman">تومان</span></h5>
             </div>
         </div>
     </div>

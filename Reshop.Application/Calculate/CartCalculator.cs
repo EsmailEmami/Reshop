@@ -19,12 +19,12 @@ namespace Reshop.Application.Calculate
             }
         }
 
-
         public static byte CalculatePercentOfTwoPrice(decimal originalPrice, decimal newPrice)
         {
             int percent = Math.Abs((int)(((newPrice - originalPrice) / originalPrice) * 100));
 
             return Convert.ToByte(percent);
         }
+
     }
 }

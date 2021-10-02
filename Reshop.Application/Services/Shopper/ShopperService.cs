@@ -7,26 +7,23 @@ using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
-using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reshop.Domain.Interfaces.Discount;
 
 namespace Reshop.Application.Services.Shopper
 {
     public class ShopperService : IShopperService
     {
-        #region Constructor
+        #region constructor
 
-        private readonly IShopperRepository _shopperRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IDiscountRepository _discountRepository;
+        private readonly IShopperRepository _shopperRepository;
 
-        public ShopperService(IShopperRepository shopperRepository, IProductRepository productRepository)
+        public ShopperService(IProductRepository productRepository, IShopperRepository shopperRepository)
         {
-            _shopperRepository = shopperRepository;
             _productRepository = productRepository;
+            _shopperRepository = shopperRepository;
         }
 
         #endregion
@@ -172,8 +169,6 @@ namespace Reshop.Application.Services.Shopper
 
             return new Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>(model, pageId, totalPages);
         }
-
-        
 
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _shopperRepository.IsShopperExistAsync(shopperId);
