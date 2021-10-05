@@ -1,0 +1,200 @@
+﻿@model NewCommentViewModel
+
+<link href="~/css/nouislider.min.css" rel="stylesheet" />
+
+<form asp-action="AddComment" method="post" onsubmit="return AddComment(this)" autocomplete="off">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <input type="hidden" asp-for="ProductId" />
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-field">
+                        <input asp-for="CommentTitle">
+                        <label><i class="far fa-list-alt"></i> عنوان نظر</label>
+                        <span asp-validation-for="CommentText" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+
+                    <div class="form-field">
+                        <textarea asp-for="CommentText" style="min-height: 148px"></textarea>
+                        <label><i class="far fa-list-alt"></i> نظر</label>
+                        <span asp-validation-for="CommentText" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-12 mb-3">
+                    <span class="percent-title">میزان رضایت مندی از محصول</span>
+                    <span class="percent-num">( <span id="productSatisfaction-text"></span>% )</span>
+
+                    <input type="hidden" value="50" id="productSatisfaction-value" asp-for="ProductSatisfaction">
+
+                    <div id="productSatisfactionFilter"></div>
+
+                </div>
+
+                <div class="col-sm-12 mb-3">
+                    <span class="percent-title">امکانات و قابلیت ها</span>
+                    <span class="percent-num">( <span id="featuresAndCapabilities-text"></span>% )</span>
+
+                    <input type="hidden" value="50" id="featuresAndCapabilities-value" asp-for="FeaturesAndCapabilities">
+
+                    <div id="featuresAndCapabilitiesFilter"></div>
+
+                </div>
+
+                <div class="col-sm-12 mb-3">
+                    <span class="percent-title">کیفیت ساخت</span>
+                    <span class="percent-num">( <span id="constructionQuality-text"></span>% )</span>
+
+                    <input type="hidden" value="50" id="constructionQuality-value" asp-for="ConstructionQuality">
+
+                    <div id="constructionQualityFilter"></div>
+
+                </div>
+
+                <div class="col-sm-12 mb-3">
+                    <span class="percent-title">طراحی و ظاهر</span>
+                    <span class="percent-num">( <span id="designAndAppearance-text"></span>% )</span>
+
+                    <input type="hidden" value="50" id="designAndAppearance-value" asp-for="DesignAndAppearance">
+
+                    <div id="designAndAppearanceFilter"></div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="form-field">
+            <button type="submit" class="btn btn-success">ثبت نظر</button>
+        </div>
+
+    </div>
+</form>
+
+<script src="~/js/nouislider.min.js"></script>
+
+
+<script type="text/javascript">
+    // productSatisfaction
+    var productSatisfactionSlider = document.getElementById('productSatisfactionFilter');
+    noUiSlider.create(productSatisfactionSlider,
+        {
+            start: 50,
+            step: 1,
+            direction: 'rtl',
+            connect: 'lower',
+            range: {
+                'min': 0,
+                'max': 100
+            }
+        });
+
+    var productSatisfactionValue = document.getElementById('productSatisfaction-text');
+
+    productSatisfactionSlider.noUiSlider.on('update',
+        function (values, handle) {
+            productSatisfactionValue.innerHTML = Math.round(values[handle]);
+        });
+
+    productSatisfactionSlider.noUiSlider.on('change',
+        function (values, handle) {
+            $('#productSatisfaction-value').val(Math.round(values[handle]));
+        });
+
+
+    // featuresAndCapabilities
+    var featuresAndCapabilitiesSlider = document.getElementById('featuresAndCapabilitiesFilter');
+    noUiSlider.create(featuresAndCapabilitiesSlider,
+        {
+            start: 50,
+            step: 1,
+            direction: 'rtl',
+            connect: 'lower',
+            range: {
+                'min': 0,
+                'max': 100
+            }
+        });
+
+    var featuresAndCapabilitiesValue = document.getElementById('featuresAndCapabilities-text');
+
+    featuresAndCapabilitiesSlider.noUiSlider.on('update',
+        function (values, handle) {
+            featuresAndCapabilitiesValue.innerHTML = Math.round(values[handle]);
+        });
+
+    featuresAndCapabilitiesSlider.noUiSlider.on('change',
+        function (values, handle) {
+            $('#featuresAndCapabilities-value').val(Math.round(values[handle]));
+        });
+
+
+    // constructionQuality
+    var constructionQualitySlider = document.getElementById('constructionQualityFilter');
+    noUiSlider.create(constructionQualitySlider,
+        {
+            start: 50,
+            step: 1,
+            direction: 'rtl',
+            connect: 'lower',
+            range: {
+                'min': 0,
+                'max': 100
+            }
+        });
+
+    var constructionQualityValue = document.getElementById('constructionQuality-text');
+
+    constructionQualitySlider.noUiSlider.on('update',
+        function (values, handle) {
+            constructionQualityValue.innerHTML = Math.round(values[handle]);
+        });
+
+    constructionQualitySlider.noUiSlider.on('change',
+        function (values, handle) {
+            $('#constructionQuality-value').val(Math.round(values[handle]));
+        });
+
+    // designAndAppearance
+    var designAndAppearanceSlider = document.getElementById('designAndAppearanceFilter');
+    noUiSlider.create(designAndAppearanceSlider,
+        {
+            start: 50,
+            step: 1,
+            direction: 'rtl',
+            connect: 'lower',
+            range: {
+                'min': 0,
+                'max': 100
+            }
+        });
+
+    var designAndAppearanceValue = document.getElementById('designAndAppearance-text');
+
+    designAndAppearanceSlider.noUiSlider.on('update',
+        function (values, handle) {
+            designAndAppearanceValue.innerHTML = Math.round(values[handle]);
+        });
+
+    designAndAppearanceSlider.noUiSlider.on('change',
+        function (values, handle) {
+            $('#designAndAppearance-value').val(Math.round(values[handle]));
+        });
+
+</script>
+<script>
+    inputJs();
+</script>

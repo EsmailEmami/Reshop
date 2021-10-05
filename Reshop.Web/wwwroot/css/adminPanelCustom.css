@@ -235,7 +235,7 @@ table tr td {
 
 /* -------------------------------------- modal -------------------------------------- */
 
-/* -------------------------------------- collapsible -------------------------------------- */
+/* -------------------------------------- collapse -------------------------------------- */
 
 .collapsible:after {
     content: '\002B';
@@ -250,7 +250,7 @@ table tr td {
     content: "\2212";
 }
 
-/* -------------------------------------- collapsible -------------------------------------- */
+/* -------------------------------------- collapse -------------------------------------- */
 
 /* -------------------------------------- toast -------------------------------------- */
 
@@ -397,7 +397,9 @@ ul.pagination-custom {
 /* img box */
 
 .show-img-box {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     width: 100%;
     height: 300px;
@@ -1062,6 +1064,7 @@ ul.pagination-custom {
         border: 2px solid #a0a0a0;
         outline: none;
         height: 36px;
+        display: block;
     }
 
         .colors .item button.collapsible:hover {

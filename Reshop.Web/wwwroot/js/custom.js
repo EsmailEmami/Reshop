@@ -178,29 +178,29 @@ function ResetBrandFilterValue(btn) {
 
 }
 
-$(function () {
-    if (window.innerWidth > 767) {
-        let collapse = document.getElementsByClassName('collapse');
-        for (let i = 0; i < collapse.length; i++) {
-            collapse[i].classList.add("show");
-        }
-    }
+//$(function () {
+//    if (window.innerWidth > 767) {
+//        let collapse = document.getElementsByClassName('collapse');
+//        for (let i = 0; i < collapse.length; i++) {
+//            collapse[i].classList.add("show");
+//        }
+//    }
 
-    window.addEventListener('resize', function () {
-        let collapse = document.getElementsByClassName('collapse');
+//    window.addEventListener('resize', function () {
+//        let collapse = document.getElementsByClassName('collapse');
 
-        if (window.innerWidth > 767) {
+//        if (window.innerWidth > 767) {
 
-            for (let i = 0; i < collapse.length; i++) {
-                collapse[i].classList.add("show");
-            }
-        } else {
-            for (let i = 0; i < collapse.length; i++) {
-                collapse[i].classList.remove("show");
-            }
-        }
-    });
-});
+//            for (let i = 0; i < collapse.length; i++) {
+//                collapse[i].classList.add("show");
+//            }
+//        } else {
+//            for (let i = 0; i < collapse.length; i++) {
+//                collapse[i].classList.remove("show");
+//            }
+//        }
+//    });
+//});
 
 function SubmitForm(formId) {
     $('#' + formId).submit();

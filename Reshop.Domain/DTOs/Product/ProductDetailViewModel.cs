@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Shopper;
@@ -13,7 +14,7 @@ namespace Reshop.Domain.DTOs.Product
 
         public IEnumerable<ProductGallery> ProductGalleries { get; set; }
 
-        public IEnumerable<Comment> Comments { get; set; }
+        public CommentsAverageViewModel CommentsAverage { get; set; }
         public IEnumerable<ChildCategory> ChildCategories { get; set; }
 
         public IEnumerable<Tuple<string, string, string>> Shoppers { get; set; }
@@ -24,9 +25,11 @@ namespace Reshop.Domain.DTOs.Product
     public class ProductDataForDetailViewModel
     {
         public string ShopperProductColorId { get; set; }
+        public string ShortKey { get; set; }
         public int ProductId { get; set; }
         public Tuple<int,string> Brand { get; set; }
         public string Title { get; set; }
+        public string Description { get; set; }
         public object Detail { get; set; }
         public decimal Price { get; set; }
         public Tuple<byte,DateTime> LastDiscount { get; set; }

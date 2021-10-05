@@ -174,7 +174,7 @@ table {
 /* -------------------------------------- preload -------------------------------------- */
 
 
-/* -------------------------------------- collapsible -------------------------------------- */
+/* -------------------------------------- collapse -------------------------------------- */
 
 .collapsible:after {
     content: '\002B';
@@ -189,7 +189,7 @@ table {
     content: "\2212";
 }
 
-/* -------------------------------------- collapsible -------------------------------------- */
+/* -------------------------------------- collapse -------------------------------------- */
 
 /* -------------------------------------- shape -------------------------------------- */
 .shape-divider {
@@ -1359,7 +1359,9 @@ header .top-menu {
                 .detail-items .selector-detail ul li a {
                     position: relative;
                     text-decoration: none;
-                    color: #807f7f;
+                    color: #3f3f3f;
+                    font-weight: bold;
+                    font-size: 15px;
                 }
 
 .selector-detail li a::before {
@@ -1467,6 +1469,23 @@ header .top-menu {
     font-weight: bold;
     color: #0ca902;
 }
+
+.detail-comments .new-comment {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    text-decoration: none;
+    outline: none;
+    border: 1px solid #0ca902;
+    background: #41a219;
+    box-shadow: 0 0 3px #41b63a;
+    float: left;
+    display: inline;
+    padding: 3px 13px;
+    border-radius: 25px;
+}
+
 .comment-filter {
     display: flex;
     align-items: center;
@@ -1474,40 +1493,42 @@ header .top-menu {
     flex-direction: row;
 }
 
-.comment-filter .item {
-    display: inline-block;
-    position: relative;
-    margin: 0 5px;
-}
+    .comment-filter .item {
+        display: inline-block;
+        position: relative;
+        margin: 0 5px;
+    }
 
-.comment-filter .item input {
-    position: absolute;
-    left: 0;
-    top: 0;
-    visibility: hidden;
-}
+        .comment-filter .item input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            visibility: hidden;
+        }
 
-.comment-filter .item label {
-    display: block;
-    position: relative;
-    color: #222222;
-    font-weight: bold;
-    padding: 3px 17px;
-    font-size: 13px;
-    border-radius: 25px;
-    transition: 0.3s;
-    margin: 0;
-}
+        .comment-filter .item label {
+            display: block;
+            position: relative;
+            color: #222222;
+            font-weight: bold;
+            padding: 3px 17px;
+            font-size: 13px;
+            border-radius: 25px;
+            transition: 0.3s;
+            margin: 0;
+        }
 
-.comment-filter .item input:checked ~ label {
-    background-color: #FC5400;
-    color: #fcfcfc;
-}
+        .comment-filter .item input:checked ~ label {
+            background-color: #FC5400;
+            color: #fcfcfc;
+            box-shadow: 0 0 3px #fc5400;
+        }
 
-.comment-filter .item label:hover {
-    background-color: #e8e8e8;
-    color: #2f2c2c;
-}
+        .comment-filter .item label:hover {
+            background-color: #e8e8e8;
+            color: #2f2c2c;
+        }
+
 .comment-area {
     border: 1px solid #dfdfdf;
     border-radius: 8px;
@@ -3751,29 +3772,19 @@ ul.pagination-custom {
     line-height: 40px
 }
 
-    .pagination-custom li.disabled a {
-        pointer-events: none;
-    }
-
-.pagination-custom a {
-    text-decoration: none;
-    color: #222;
-    background: none;
+.pagination-custom li.disabled {
+    display: none;
 }
 
 .pagination-custom li.active {
     background-color: #FC5400;
     border: 2px solid #232323;
+    color: white;
 }
-
-    .pagination-custom li.active a {
-        color: white;
-    }
 
 .pagination-custom li:hover:not(.active) {
     background-color: #edebeb;
 }
-
 
 
 /* -------------------------------------- footer -------------------------------------- */
@@ -4277,11 +4288,11 @@ footer {
     }
 }
 
-@media screen and (min-width: 767px) {
-    .collapse {
+/*@media screen and (min-width: 767px) {
+    .collapsible {
         display: block;
     }
-}
+}*/
 
 @media screen and (max-width: 375px) {
     .more-detail-order {

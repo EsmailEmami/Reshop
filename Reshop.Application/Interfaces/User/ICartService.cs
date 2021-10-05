@@ -17,6 +17,7 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> MakeFinalTheOrder(Order order);
         Task<ResultTypes> AddToCart(string userId, string shopperProductColorId);
         Task<bool> IsOrderDetailExistAsync(string orderDetailId);
+        Task<string> IsUserBoughtProductAsync(string userId, int productId);
         Task IncreaseOrderDetailCountAsync(string orderDetailId);
         Task ReduceOrderDetailAsync(string orderDetailId);
         IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time);
@@ -27,6 +28,6 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> RemoveOrderDetailAsync(string orderDetailId);
         string GetOpenOrderAddressId(string userId);
 
-        
+
     }
 }

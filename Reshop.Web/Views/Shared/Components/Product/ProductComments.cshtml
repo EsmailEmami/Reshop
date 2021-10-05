@@ -4,7 +4,8 @@
 }
 <section class="comment-filter">
 
-    <input hidden="" id="type" />
+    <input hidden="" id="pageId" />
+    <input hidden="" id="type" value="@ViewBag.SelectedType.ToString()" />
 
     @switch (ViewBag.SelectedType.ToString())
     {
@@ -65,7 +66,7 @@
     @if (!Model.Item1.Any())
     {
         <div class="alert alert-warning text-muted m-0">
-            دیدگاهی یاف نشد.
+            دیدگاهی یافت نشد ...
         </div>
     }
     else

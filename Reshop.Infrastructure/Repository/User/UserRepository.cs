@@ -53,8 +53,8 @@ namespace Reshop.Infrastructure.Repository.User
         public IEnumerable<Address> GetUserAddresses(string userId)
             =>
                 _context.Addresses.Where(c => c.UserId == userId)
-                    .Include(c => c.State)
-                    .Include(c => c.City);
+                    .Include(c => c.City)
+                    .ThenInclude(c=> c.State);
 
         public async Task AddUserAsync(Domain.Entities.User.User user) => await _context.Users.AddAsync(user);
 

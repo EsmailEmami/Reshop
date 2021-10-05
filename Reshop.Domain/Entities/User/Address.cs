@@ -48,7 +48,6 @@ namespace Reshop.Domain.Entities.User
         #region Relations
 
         public virtual User User { get; set; }
-        public virtual State State { get; set; }
         public virtual City City { get; set; }
 
         #endregion

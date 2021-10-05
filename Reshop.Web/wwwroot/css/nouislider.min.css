@@ -68,7 +68,7 @@
     height: 20px;
     border-radius: 50%;
     left: -10px;
-    top: -5px;
+    top: -6px;
 }
 
 .noUi-vertical {
@@ -87,7 +87,8 @@
     background: #f1f1f1;
     border-radius: 25px;
     border: 1px solid #D3D3D3;
-    box-shadow: inset 0 1px 1px #F0F0F0, 0 3px 6px -5px #BBB
+    box-shadow: inset 0 1px 1px #F0F0F0, 0 3px 6px -5px #BBB;
+    padding: 1px;
 }
 
 .noUi-connect {

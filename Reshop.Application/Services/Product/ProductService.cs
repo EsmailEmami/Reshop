@@ -273,17 +273,16 @@ namespace Reshop.Application.Services.Product
                 return null;
 
             var childCategories = _categoryRepository.GetProductChildCategories(product.ProductId);
-            var comments = _productRepository.GetProductComments(product.ProductId);
+            var commentsAverage = await _productRepository.GetProductCommentsAverageAsync(product.ProductId);
             var productGalleries = _productRepository.GetProductImages(product.ProductId);
             var shoppers = _productRepository.GetProductShoppers(product.ProductId, product.SelectedColor);
             var colors = _colorRepository.GetProductColorsWithDetail(product.ProductId);
-
 
             return new ProductDetailViewModel()
             {
                 Product = product,
                 ChildCategories = childCategories,
-                Comments = comments,
+                CommentsAverage = commentsAverage,
                 ProductGalleries = productGalleries,
                 Shoppers = shoppers,
                 Colors = colors
@@ -975,6 +974,22 @@ namespace Reshop.Application.Services.Product
             int totalPages = (int)Math.Ceiling(1.0 * count / take);
 
             return new Tuple<IEnumerable<ProductCommentsForShow>, int, int>(data, pageId, totalPages);
+        }
+
+        public async Task<ResultTypes> AddCommentAsync(Comment comment)
+        {
+            try
+            {
+                await _productRepository.AddCommentAsync(comment);
+
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
 
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart() =>

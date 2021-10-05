@@ -2193,17 +2193,12 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int?>("StateId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("AddressId");
 
                     b.HasIndex("CityId");
-
-                    b.HasIndex("StateId");
 
                     b.HasIndex("UserId");
 
@@ -2252,13 +2247,25 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
+                    b.Property<int>("ConstructionQuality")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DesignAndAppearance")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FeaturesAndCapabilities")
+                        .HasColumnType("int");
 
                     b.Property<int>("LikeCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("OverallScore")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductSatisfaction")
                         .HasColumnType("int");
 
                     b.Property<string>("ShopperProductColorId")
@@ -2997,17 +3004,11 @@ namespace Reshop.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Reshop.Domain.Entities.User.State", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId");
-
                     b.HasOne("Reshop.Domain.Entities.User.User", "User")
                         .WithMany("Addresses")
                         .HasForeignKey("UserId");
 
                     b.Navigation("City");
-
-                    b.Navigation("State");
 
                     b.Navigation("User");
                 });

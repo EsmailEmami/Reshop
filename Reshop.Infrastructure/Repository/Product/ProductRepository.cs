@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Application.Convertors;
 using Reshop.Domain.DTOs.Chart;
+using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.DTOs.Shopper;
-using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
@@ -14,7 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Domain.DTOs.CommentAndQuestion;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -300,9 +299,11 @@ namespace Reshop.Infrastructure.Repository.Product
                     .Select(c => new ProductDataForDetailViewModel()
                     {
                         ShopperProductColorId = c.ShopperProductColorId,
+                        ShortKey = c.ShortKey,
                         SelectedColor = c.ColorId,
                         ProductId = c.ShopperProduct.ProductId,
                         Title = c.ShopperProduct.Product.ProductTitle,
+                        Description = c.ShopperProduct.Product.Description,
                         Price = c.Price,
                         Brand = new Tuple<int, string>(c.ShopperProduct.Product.OfficialBrandProduct.BrandId,
                             c.ShopperProduct.Product.OfficialBrandProduct.Brand.BrandName),
@@ -613,7 +614,8 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public IEnumerable<ProductGallery> GetProductImages(int productId)
         {
-            return _context.ProductGalleries.Where(c => c.ProductId == productId);
+            return _context.ProductGalleries.Where(c => c.ProductId == productId)
+                .OrderBy(c => c.OrderBy);
         }
 
         public IEnumerable<Comment> GetProductComments(int productId)
@@ -652,7 +654,8 @@ namespace Reshop.Infrastructure.Repository.Product
             comments = type switch
             {
                 "news" => comments.OrderByDescending(c => c.CommentDate),
-                "buyers" => comments.Where(c => !string.IsNullOrEmpty(c.ShopperProductColorId)),
+                "buyers" => comments.Where(c => !string.IsNullOrEmpty(c.ShopperProductColorId))
+                    .OrderByDescending(c => c.CommentDate),
                 "best" => comments.OrderByDescending(c => c.LikeCount),
                 _ => comments.OrderByDescending(c => c.CommentDate)
             };
@@ -673,6 +676,51 @@ namespace Reshop.Infrastructure.Repository.Product
                 ProductShortKey = c.ShopperProductColor.ShortKey
             });
         }
+
+        public async Task<CommentsAverageViewModel> GetProductCommentsAverageAsync(int productId)
+        {
+            IQueryable<CommentsAverageViewModel> commentsAverage = _context.Products
+                .Where(c => c.ProductId == productId)
+                .SelectMany(c => c.Comments)
+                .Select(c => new CommentsAverageViewModel()
+                {
+                    ProductSatisfaction = c.ProductSatisfaction,
+                    ConstructionQuality = c.ConstructionQuality,
+                    DesignAndAppearance = c.DesignAndAppearance,
+                    FeaturesAndCapabilities = c.FeaturesAndCapabilities
+                });
+
+
+            double productSatisfaction = 0.0;
+            double constructionQuality = 0.0;
+            double featuresAndCapabilities = 0.0;
+            double designAndAppearance = 0.0;
+
+
+
+            if (commentsAverage.Any())
+            {
+                productSatisfaction = await commentsAverage.AverageAsync(c => c.ProductSatisfaction);
+                constructionQuality = await commentsAverage.AverageAsync(c => c.ConstructionQuality);
+                featuresAndCapabilities = await commentsAverage.AverageAsync(c => c.FeaturesAndCapabilities);
+                designAndAppearance = await commentsAverage.AverageAsync(c => c.DesignAndAppearance);
+            }
+
+
+
+
+            return new CommentsAverageViewModel()
+            {
+                ProductSatisfaction = (int)productSatisfaction,
+                ConstructionQuality = (int)constructionQuality,
+                FeaturesAndCapabilities = (int)featuresAndCapabilities,
+                DesignAndAppearance = (int)designAndAppearance
+            };
+        }
+
+        public async Task AddCommentAsync(Comment comment) =>
+            await _context.Comments.AddAsync(comment);
+
 
         public IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24)
         {

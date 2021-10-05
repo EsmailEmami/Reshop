@@ -172,6 +172,14 @@ namespace Reshop.Infrastructure.Repository.User
                 c.ShopperProductColor.ColorId == colorId &&
                 c.Order.IsPayed).CountAsync();
 
+        public async Task<string> IsUserBoughtProductAsync(string userId, int productId) =>
+            await _context.Users.Where(c => c.UserId == userId)
+                .SelectMany(c => c.Orders)
+                .Where(c => c.IsPayed && c.IsReceived)
+                .SelectMany(c => c.OrderDetails)
+                .Where(c => c.ShopperProductColor.ShopperProduct.ProductId == productId)
+                .Select(c => c.ShopperProductColorId).FirstOrDefaultAsync();
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

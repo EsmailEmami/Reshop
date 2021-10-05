@@ -209,6 +209,9 @@ namespace Reshop.Application.Services.User
             return await _cartRepository.IsOrderDetailExistAsync(orderDetailId);
         }
 
+        public async Task<string> IsUserBoughtProductAsync(string userId, int productId) =>
+            await _cartRepository.IsUserBoughtProductAsync(userId, productId);
+
         public async Task IncreaseOrderDetailCountAsync(string orderDetailId)
         {
             var orderDetail = await _cartRepository.GetOrderDetailByIdAsync(orderDetailId);

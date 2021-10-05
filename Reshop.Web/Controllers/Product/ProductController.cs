@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
@@ -6,6 +7,11 @@ using Reshop.Application.Interfaces.User;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
+using Reshop.Domain.DTOs.CommentAndQuestion;
+using Reshop.Domain.Entities.User;
 
 namespace Reshop.Web.Controllers.Product
 {
@@ -15,12 +21,12 @@ namespace Reshop.Web.Controllers.Product
         #region constructor
 
         private readonly IProductService _productService;
-        private readonly IUserService _userService;
+        private readonly ICartService _cartService;
 
-        public ProductController(IProductService productService, IUserService userService)
+        public ProductController(IProductService productService, ICartService cartService)
         {
             _productService = productService;
-            _userService = userService;
+            _cartService = cartService;
         }
 
         #endregion
@@ -146,9 +152,59 @@ namespace Reshop.Web.Controllers.Product
 
         [HttpGet]
         [NoDirectAccess]
-        public IActionResult ProductCommentsList(int productId, int pageId = 1, string type = "news")
+        public IActionResult ProductCommentsList(int productId, int pageId, string type)
         {
             return ViewComponent("ProductCommentsComponent", new { productId, pageId, type });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddComment(NewCommentViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "_NewComment", model) });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            string isBought = await _cartService.IsUserBoughtProductAsync(userId, model.ProductId);
+
+
+            var average = (model.ProductSatisfaction +
+                           model.ConstructionQuality +
+                           model.FeaturesAndCapabilities +
+                           model.DesignAndAppearance) / 4;
+
+
+            var comment = new Comment()
+            {
+                ProductId = model.ProductId,
+                UserId = userId,
+                CommentDate = DateTime.Now,
+                CommentTitle = model.CommentTitle,
+                CommentText = model.CommentText,
+                ProductSatisfaction = model.ProductSatisfaction,
+                DesignAndAppearance = model.DesignAndAppearance,
+                ConstructionQuality = model.ConstructionQuality,
+                FeaturesAndCapabilities = model.FeaturesAndCapabilities,
+                OverallScore = average
+            };
+
+            if (!string.IsNullOrEmpty(isBought))
+            {
+                comment.ShopperProductColorId = isBought;
+            }
+
+            var res = await _productService.AddCommentAsync(comment);
+
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام افزودن بازخورد شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "_NewComment", model) });
+            }
         }
     }
 }

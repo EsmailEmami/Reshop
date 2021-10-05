@@ -6,6 +6,7 @@ using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Attribute;
 using ZarinpalSandbox;
 
 namespace Reshop.Web.Controllers.User
@@ -104,17 +105,12 @@ namespace Reshop.Web.Controllers.User
             {
                 ViewData["SelectedAddress"] = addressId;
             }
-            else
-            {
-                ViewData["SelectedAddress"] = "none";
-            }
-
-
 
             return View(_userService.GetUserAddresses(userId));
         }
 
         [HttpPost]
+        [NoDirectAccess]
         public async Task<IActionResult> Address(string addressId)
         {
             if (addressId == null)

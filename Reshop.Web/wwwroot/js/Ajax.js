@@ -211,6 +211,36 @@ function SubmitFormData(form) {
     }
 }
 
+function AddComment(form) {
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.isValid) {
+                    if (res.returnUrl !== '' && res.returnUrl.toLowerCase() === 'current') {
+                        var loc = window.location.href;
+                        ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.', loc);
+                    } else if (res.returnUrl !== '' && res.returnUrl.toLowerCase() !== 'current') {
+                        ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.', res.returnUrl);
+                    } else {
+                        ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.');
+                    }
+
+                } else
+                    $("#newComment").html(res.html);
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
 function SetCartAddress(form, returnUrl) {
     try {
         $.ajax({

@@ -1,7 +1,12 @@
 ﻿@model IEnumerable<Address>
 @{
     ViewData["Title"] = "نشانی سفارش";
-    string addressId = ViewData["SelectedAddress"].ToString();
+    string addressId = "";
+
+    if (ViewData["SelectedAddress"] != null)
+    {
+        addressId = ViewData["SelectedAddress"].ToString();
+    }
 }
 
 <div class="shopping-page">
@@ -25,10 +30,10 @@
 
     <section class="shopping-title">
         <h3>نشانی سفارش</h3>
-        <a onclick="ShowModal('@Url.Action("NewAddress", "AccountManager", null, Context.Request.Scheme)','آدرس جدید')">ثبت نشانی جدید</a>
+        <a onclick="ShowModal('@Url.Action("NewAddress", "Account", null, Context.Request.Scheme)', 'آدرس جدید')">ثبت نشانی جدید</a>
     </section>
 
-    <form asp-controller="Cart" asp-action="Address" method="post" onsubmit="return SetCartAddress(this, '@Url.Action("Payment","Cart",null,Context.Request.Scheme)');" autocomplete="off">
+    <form asp-controller="Cart" asp-action="Address" method="post" onsubmit="return SetCartAddress(this, '@Url.Action("Payment","Cart",null,Context.Request.Scheme)');">
 
         <section class="addresses">
 
@@ -54,7 +59,7 @@
                                 </label>
 
                                 <div class="items">
-                                    <a onclick="ShowModal('@Url.Action("EditAddress", "AccountManager", new {addressId =item.AddressId}, Context.Request.Scheme)','ویرایش آدرس')"><i class="far fa-edit"></i></a>
+                                    <a onclick="ShowModal('@Url.Action("EditAddress", "Account", new {addressId =item.AddressId}, Context.Request.Scheme)', 'ویرایش آدرس')"><i class="far fa-edit"></i></a>
                                     <a href="#"><i class="far fa-trash-alt"></i></a>
                                 </div>
                             </div>
@@ -65,7 +70,7 @@
                             </div>
 
                             <p class="address-text">
-                                @item.State.StateName - @item.City.CityName @item.AddressText - پلاک: @item.Plaque
+                                @item.City.State.StateName - @item.City.CityName @item.AddressText - پلاک: @item.Plaque
                             </p>
 
                             <div class="postal-code">

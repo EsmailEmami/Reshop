@@ -1,7 +1,7 @@
 ﻿@model ProductDetailViewModel
 
 @{
-    ViewData["Title"] = Model.Product.Title.Replace(" ", "-");
+    ViewData["Title"] = $"مشخصات کالای {Model.Product.Title.Replace(" ", "-")}";
 }
 
 <div class="row">
@@ -36,7 +36,7 @@
             <div class="pro-data">
 
                 <div class="ratting-star">
-                    <span>(@Model.Comments.Count() نفر)</span>
+                    <span>(1 نفر)</span>
                     <ul>
                         <li>
                             <i class="far fa-star"></i>
@@ -173,25 +173,19 @@
         <div class="detail-items box-shadow">
             <div class="selector-detail">
                 <ul>
-                    <li><a href="">نقد و بررسی</a></li>
-                    <li><a href="#information_section">مشخصات</a></li>
+                    <li><a href="#accordiong-section">نقد و بررسی</a></li>
+                    <li><a href="#information-section">مشخصات</a></li>
                     <li><a href="#comment-section">نظرات</a></li>
                 </ul>
             </div>
 
             <hr />
 
-            <div class="detail-according text-justify" id="accordiongID">
+            <div id="accordiong-section">
 
                 <h5>نقد و بررسی:</h5>
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit veniam, error odit omnis, corporis consequatur porro illum accusamus commodi officiis reiciendis reprehenderit, inventore iure aspernatur hic voluptatum facere aut voluptatibus repudiandae architecto
-                    eos. Unde minus ab in. Doloribus, minima? Corporis asperiores quis nulla, consequuntur architecto labore repudiandae accusantium sint aspernatur mollitia qui quidem molestiae consectetur, ipsam ad quod, fugiat deserunt? Quis
-                    nihil et blanditiis sint. Non tempora magni asperiores excepturi totam nesciunt porro sed quo eveniet consequuntur, itaque vero officia. Voluptatibus magni quidem doloribus doloremque pariatur perferendis, perspiciatis deleniti
-                    harum nisi exercitationem saepe quaerat quod eveniet. Doloremque magni eaque incidunt beatae ad, neque doloribus dolorem debitis inventore recusandae quam nemo officia. Harum voluptate amet exercitationem numquam corrupti?
-                    Tempora natus a modi dignissimos maxime quod, at rem maiores libero voluptates perferendis voluptatem eveniet iste repudiandae cum facilis expedita eaque. Eum perferendis saepe, laboriosam aperiam architecto enim accusantium
-                    distinctio voluptate tempora similique ipsum fuga sequi sint nihil in odit ducimus dolor, debitis quasi quia. Nihil, nisi soluta omnis explicabo natus aspernatur. Excepturi pariatur debitis repellendus dignissimos doloremque
-                    suscipit molestias, vero provident ex, incidunt quo quaerat aspernatur nobis reprehenderit veritatis dicta, magni illo. Laborum numquam laudantium, ullam a ratione minima repellendus repellat incidunt.
+                <p class="text-justify">
+                    @Model.Product.Description
                 </p>
 
 
@@ -205,7 +199,7 @@
 
             <hr />
 
-            <div class="detail-specifications">
+            <div class="detail-specifications" id="information-section">
 
                 <h5>مشخصات محصول:</h5>
 
@@ -220,42 +214,54 @@
 
             <hr />
 
-            <div class="detail-comments">
+            <div class="detail-comments" id="comment-section">
                 <h5>امتیاز کاربران:</h5>
                 <p class="positive-comment">( این محصول <span>25 بازخورد مثبت</span> داشته است. )</p>
                 <div class="row">
                     <div class="col-sm-12 col-md-6 mb-2">
                         <span class="percent-title">میزان رضایت مندی از محصول</span>
-                        <span class="percent-num">( 75% )</span>
+                        <span class="percent-num">( @Model.CommentsAverage.ProductSatisfaction% )</span>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.CommentsAverage.ProductSatisfaction" aria-valuemin="0" aria-valuemax="100" style="width: @Model.CommentsAverage.ProductSatisfaction%"></div>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 mb-2">
-                        <span class="percent-title">میزان رضایت مندی از محصول</span>
-                        <span class="percent-num">( 75% )</span>
+                        <span class="percent-title">امکانات و قابلیت ها</span>
+                        <span class="percent-num">( @Model.CommentsAverage.FeaturesAndCapabilities% )</span>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.CommentsAverage.FeaturesAndCapabilities" aria-valuemin="0" aria-valuemax="100" style="width: @Model.CommentsAverage.FeaturesAndCapabilities%"></div>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 mb-2">
-                        <span class="percent-title">میزان رضایت مندی از محصول</span>
-                        <span class="percent-num">( 75% )</span>
+                        <span class="percent-title">کیفیت ساخت</span>
+                        <span class="percent-num">( @Model.CommentsAverage.ConstructionQuality% )</span>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.CommentsAverage.ConstructionQuality" aria-valuemin="0" aria-valuemax="100" style="width: @Model.CommentsAverage.ConstructionQuality%"></div>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 mb-2">
-                        <span class="percent-title">میزان رضایت مندی از محصول</span>
-                        <span class="percent-num">( 75% )</span>
+                        <span class="percent-title">طراحی و ظاهر</span>
+                        <span class="percent-num">( @Model.CommentsAverage.DesignAndAppearance% )</span>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.CommentsAverage.DesignAndAppearance" aria-valuemin="0" aria-valuemax="100" style="width: @Model.CommentsAverage.DesignAndAppearance%"></div>
                         </div>
                     </div>
                 </div>
 
                 <hr />
                 <h5 style="margin-bottom: 5px;">نظر کاربران:</h5>
+
+                <button class="new-comment" type="button" data-toggle="collapse" data-target="#newComment" aria-expanded="false" aria-controls="newComment">
+                    بازخورد جدید
+                </button>
+
+
+                <div class="collapse mt-5 mb-3" id="newComment">
+                    @await Html.PartialAsync("_NewComment", new NewCommentViewModel()
+                    {
+                   ProductId = Model.Product.ProductId
+                    })
+                </div>
 
                 <div id="tableComments">
                     @await Component.InvokeAsync("ProductCommentsComponent", new { productId = Model.Product.ProductId })
@@ -270,4 +276,8 @@
 @section AfterMainOptions
 {
     <partial name="_toast" />
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

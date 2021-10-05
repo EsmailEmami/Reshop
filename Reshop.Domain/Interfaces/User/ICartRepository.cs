@@ -44,6 +44,7 @@ namespace Reshop.Domain.Interfaces.User
         Task<int> GetSellsCountFromDateAsync(DateTime dateTime);
         Task<int> GetSellCountOfProductColorFromDateAsync(int productId, int colorId, DateTime dateTime);
         Task<int> GetSellCountOfProductColorFromDateAsync(int productId, int colorId);
+        Task<string> IsUserBoughtProductAsync(string userId, int productId);
 
         Task SaveChangesAsync();
     }
