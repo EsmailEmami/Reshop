@@ -18,7 +18,7 @@ namespace Reshop.Web.Components.Product
         // type = news,buyers,best
         public async Task<IViewComponentResult> InvokeAsync(int productId, int pageId = 1, string type = "news")
         {
-            var comments = await _productService.GetProductCommentsWithPaginationAsync(productId, pageId, 30, type);
+            var comments = await _productService.GetProductCommentsWithPaginationAsync(productId, pageId, 1, type);
 
             ViewBag.SelectedType = type;
             ViewBag.ProductId = productId;

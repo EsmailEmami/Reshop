@@ -9,8 +9,8 @@ namespace Reshop.Domain.Interfaces.Product
     {
         #region brand
 
-        IEnumerable<string> GetBrandsOfCategory(int categoryId);
-        IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId);
+        IEnumerable<Tuple<int, string>> GetBrandsOfCategory(int categoryId);
+        IEnumerable<Tuple<int, string>> GetBrandsOfChildCategory(int childCategoryId);
         Task<Brand> GetBrandByIdAsync(int brandId);
         IEnumerable<Tuple<int, string>> GetBrandsForShow();
         IEnumerable<Tuple<int, string, bool>> GetBrandsForShow(int skip, int take, string filter);
@@ -38,7 +38,18 @@ namespace Reshop.Domain.Interfaces.Product
 
         #endregion
 
+        #region brand to childCategory
 
+        Task AddBrandToChildCategoryAsync(BrandToChildCategory brandToChildCategory);
+        void RemoveBrandToChildCategory(BrandToChildCategory brandToChildCategory);
+
+        IEnumerable<BrandToChildCategory> GetBrandToChildCategoriesByBrand(int brandId);
+        IEnumerable<BrandToChildCategory> GetBrandToChildCategoriesByChildCategory(int childCategoryId);
+
+        IEnumerable<int> GetBrandsIdOfChildCategory(int childCategoryId);
+        IEnumerable<int> GetChildCategoriesIdOfBrand(int brandId);
+
+        #endregion
 
         Task SaveChangesAsync();
     }

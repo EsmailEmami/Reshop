@@ -72,6 +72,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
+        public virtual DbSet<BrandToChildCategory> BrandToChildCategories { get; set; }
 
         #endregion
 
@@ -112,6 +113,9 @@ namespace Reshop.Infrastructure.Context
 
             modelBuilder.Entity<RolePermission>()
                 .HasKey(c => new { c.RoleId, c.PermissionId });
+
+            modelBuilder.Entity<BrandToChildCategory>()
+                .HasKey(c => new { c.BrandId, c.ChildCategoryId });
 
             modelBuilder.Entity<Order>(i =>
             {

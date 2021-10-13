@@ -23,6 +23,7 @@ namespace Reshop.Domain.Entities.Category
 
         public virtual ICollection<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
         public virtual ICollection<ProductToChildCategory> ProductToChildCategories { get; set; }
+        public virtual ICollection<BrandToChildCategory> BrandToChildCategories { get; set; }
 
         #endregion
     }

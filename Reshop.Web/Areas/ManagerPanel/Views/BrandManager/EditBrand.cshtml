@@ -1,4 +1,4 @@
-﻿@model Brand
+﻿@model AddOrEditBrandViewModel
 
 @{
     Layout = null;
@@ -17,20 +17,16 @@
             </div>
         </div>
 
-        <div class="col-sm-12">
+        <div class="col-sm-12 col-lg-6">
 
-            @{
-                var storeTitles = ViewBag.StoreTitles as IEnumerable<StoreTitle>;
-            }
-
-            @if (storeTitles != null)
+            @if (Model.StoreTitles != null)
             {
-                <select asp-for="StoreTitleId">
+                <select asp-for="SelectedStoreTitleId">
                     <option value="">انتخاب عنوان</option>
 
-                    @foreach (var item in storeTitles)
+                    @foreach (var item in Model.StoreTitles)
                     {
-                        @: <option value="@item.StoreTitleId" @(Model.StoreTitleId == item.StoreTitleId ? "selected" : "")>@item.StoreTitleName</option>
+                        @: <option value="@item.StoreTitleId" @(Model.SelectedStoreTitleId == item.StoreTitleId ? "selected" : "")>@item.StoreTitleName</option>
                     }
                 </select>
             }
@@ -40,13 +36,34 @@
                     عنوانی برای نمایش یافت نشد.
                 </div>
             }
+
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+
+            @if (Model.ChildCategories != null)
+            {
+                <select multiple asp-for="SelectedChildCategories" placeholder="انتخاب زیر گروه ها">
+                    @foreach (var item in Model.ChildCategories)
+                    {
+                        @: <option value="@item.ChildCategoryId" @(Model.SelectedChildCategories != null && Model.SelectedChildCategories.Any(c => c == item.ChildCategoryId)? "selected" : "")>@item.ChildCategoryTitle</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    زیر گروهی برای نمایش یافت نشد.
+                </div>
+            }
+
         </div>
 
         <div class="col-sm-12">
             <div class="form-check">
                 <label>
                     این برند فعال است
-                    <input type="checkbox" asp-for="IsActive">
+                    <input type="checkbox" checked asp-for="IsActive">
                     <span></span>
                 </label>
             </div>

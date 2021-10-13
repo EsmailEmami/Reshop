@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
@@ -6,6 +8,7 @@ using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Domain.Entities.Product;
 using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Category;
 using Reshop.Domain.DTOs.Product;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
@@ -15,11 +18,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
     {
         private readonly IShopperService _shopperService;
         private readonly IBrandService _brandService;
+        private readonly ICategoryService _categoryService;
 
-        public BrandManagerController(IShopperService shopperService, IBrandService brandService)
+        public BrandManagerController(IShopperService shopperService, IBrandService brandService, ICategoryService categoryService)
         {
             _shopperService = shopperService;
             _brandService = brandService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
@@ -58,16 +63,21 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public IActionResult AddBrand()
         {
-            ViewBag.StoreTitles = _shopperService.GetStoreTitles();
+            var model = new AddOrEditBrandViewModel()
+            {
+                StoreTitles = _shopperService.GetStoreTitles(),
+                ChildCategories = _categoryService.GetChildCategories()
+            };
 
-            return View(new Brand());
+            return View(model);
         }
 
         [HttpPost]
         [NoDirectAccess]
-        public async Task<IActionResult> AddBrand(Brand model)
+        public async Task<IActionResult> AddBrand(AddOrEditBrandViewModel model)
         {
-            ViewBag.StoreTitles = _shopperService.GetStoreTitles();
+            model.StoreTitles = _shopperService.GetStoreTitles();
+            model.ChildCategories = _categoryService.GetChildCategories();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
@@ -75,7 +85,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             var brand = new Brand()
             {
                 BrandName = model.BrandName,
-                StoreTitleId = model.StoreTitleId,
+                StoreTitleId = model.SelectedStoreTitleId,
                 IsActive = model.IsActive
             };
 
@@ -83,9 +93,25 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             if (addBrand == ResultTypes.Successful)
             {
-                return Json(new { isValid = true, returnUrl = "current" });
-            }
+                if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
+                {
+                    var addBrandToChildCategory = await _brandService.AddBrandToChildCategoriesByBrandAsync(brand.BrandId, model.SelectedChildCategories as List<int>);
 
+                    if (addBrandToChildCategory == ResultTypes.Successful)
+                    {
+                        return Json(new { isValid = true, returnUrl = "current" });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "هنگام افزودن برند به مشکل خوردیم");
+                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    }
+                }
+                else
+                {
+                    return Json(new { isValid = true, returnUrl = "current" });
+                }
+            }
             ModelState.AddModelError("", "هنگام افزودن برند به مشکل خوردیم");
             return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
         }
@@ -102,21 +128,20 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
 
-            var brand = await _brandService.GetBrandByIdAsync(brandId);
+            var brand = await _brandService.GetBrandDataByBrandIdAsync(brandId);
 
             if (brand == null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
-
-            ViewBag.StoreTitles = _shopperService.GetStoreTitles();
 
             return View(brand);
         }
 
         [HttpPost]
         [NoDirectAccess]
-        public async Task<IActionResult> EditBrand(Brand model)
+        public async Task<IActionResult> EditBrand(AddOrEditBrandViewModel model)
         {
-            ViewBag.StoreTitles = _shopperService.GetStoreTitles();
+            model.StoreTitles = _shopperService.GetStoreTitles();
+            model.ChildCategories = _categoryService.GetChildCategories();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
@@ -125,14 +150,34 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             brand.BrandName = model.BrandName;
             brand.IsActive = model.IsActive;
-            brand.StoreTitleId = model.StoreTitleId;
+            brand.StoreTitleId = model.SelectedStoreTitleId;
 
             var editBrand = await _brandService.EditBrandAsync(brand);
 
 
             if (editBrand == ResultTypes.Successful)
             {
-                return Json(new { isValid = true, returnUrl = "current" });
+                await _brandService.RemoveBrandToChildCategoriesByBrandAsync(model.BrandId);
+
+
+                if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
+                {
+                    var addBrandToChildCategory = await _brandService.AddBrandToChildCategoriesByBrandAsync(model.BrandId, model.SelectedChildCategories as List<int>);
+
+                    if (addBrandToChildCategory == ResultTypes.Successful)
+                    {
+                        return Json(new { isValid = true, returnUrl = "current" });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "هنگام افزودن برند به مشکل خوردیم");
+                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    }
+                }
+                else
+                {
+                    return Json(new { isValid = true, returnUrl = "current" });
+                }
             }
 
             ModelState.AddModelError("", "هنگام ویرایش برند به مشکل خوردیم");

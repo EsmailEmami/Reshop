@@ -32,7 +32,7 @@ namespace Reshop.Application.Services.Category
             return _categoryRepository.GetChildCategories();
         }
 
-        public IAsyncEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown()
+        public IEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown()
             =>
                 _categoryRepository.GetCategoriesDropdown();
 
@@ -214,7 +214,7 @@ namespace Reshop.Application.Services.Category
                 await _categoryRepository.AddChildCategoryToCategoryAsync(childCategoryToCategory);
             }
 
-            
+
             await _categoryRepository.SaveChangesAsync();
         }
 

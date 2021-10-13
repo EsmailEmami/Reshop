@@ -37,7 +37,7 @@ function AddProductToFavorites(form) {
             success: function (res) {
                 if (res.success) {
                     if (res.resultType == "Successful") {
-                        ShowToast('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
+                        ShowToast('success', 'محصول با موفقیت به علاقه مندی ها اضافه شد.');
                     } else if (res.resultType == "ProductReplaced") {
                         ShowToast('success', 'فروشنده محصول با موفقیت تغییر کرد.');
                     }

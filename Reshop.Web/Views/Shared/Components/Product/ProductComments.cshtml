@@ -4,8 +4,8 @@
 }
 <section class="comment-filter">
 
-    <input hidden="" id="pageId" />
-    <input hidden="" id="type" value="@ViewBag.SelectedType.ToString()" />
+    <input hidden value="@Model.Item2" id="pageId" />
+    <input hidden id="type" value="@ViewBag.SelectedType.ToString()" />
 
     @switch (ViewBag.SelectedType.ToString())
     {

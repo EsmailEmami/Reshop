@@ -264,8 +264,11 @@
                 </div>
 
                 <div id="tableComments">
-                    @await Component.InvokeAsync("ProductCommentsComponent", new { productId = Model.Product.ProductId })
-                </div>
+
+                        @await Component.InvokeAsync("ProductCommentsComponent", new { productId = Model.Product.ProductId })
+
+
+                 </div>
             </div>
 
         </div>

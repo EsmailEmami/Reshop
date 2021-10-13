@@ -64,9 +64,9 @@
             </div>
 
         </div>
-        <cache expires-after="@TimeSpan.FromHours(3)">
+        @*<cache expires-after="@TimeSpan.FromHours(3)">*@
             @await Component.InvokeAsync(nameof(DropDownComponent))
-        </cache>
+        @*</cache>*@
 
     </header>
     <main class="screen-width-1450 mt-3">

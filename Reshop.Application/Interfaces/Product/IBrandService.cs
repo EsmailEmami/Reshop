@@ -28,5 +28,15 @@ namespace Reshop.Application.Interfaces.Product
         Task<ResultTypes> UnAvailableOfficialBrandProductAsync(int officialBrandProductId);
         IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId);
 
+
+        #region brand to childcategory
+
+        Task<ResultTypes> AddBrandToChildCategoriesByBrandAsync(int brandId, List<int> childCategoriesId);
+        Task<ResultTypes> AddBrandToChildCategoriesByChildCategoryAsync(int childCategoryId, List<int> brandId);
+        Task RemoveBrandToChildCategoriesByBrandAsync(int brandId);
+        Task RemoveBrandToChildCategoriesByChildCategoryAsync(int childCategoryId);
+        Task<AddOrEditBrandViewModel> GetBrandDataByBrandIdAsync(int brandId);
+
+        #endregion
     }
 }

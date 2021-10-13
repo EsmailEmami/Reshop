@@ -575,6 +575,7 @@ ul.pagination-custom {
                 height: 40px;
                 line-height: 40px;
                 display: block;
+                padding-left: 20px;
             }
 
                 .right-menu ul li.dropdown ul li a {
@@ -642,7 +643,8 @@ ul.pagination-custom {
             }
 
             .right-menu.min ul li.dropdown ul {
-                width: 200px;
+                min-width: 200px;
+                width: auto;
                 display: block;
                 background: #FC5400;
                 border-radius: 8px;

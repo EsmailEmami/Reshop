@@ -1,0 +1,332 @@
+﻿@model CategoryOrChildCategoryProductsForShow
+@{
+    string categoryName = ViewData["CategoryName"].ToString();
+
+
+    ViewData["Title"] = $"کالاهای گروه {categoryName?.Replace("-", " ")}";
+}
+
+@section Css
+{
+    <link href="~/css/nouislider.min.css" rel="stylesheet" />
+}
+
+<input type="hidden" value="1" id="pageId" />
+<input type="hidden" value="news" id="sortBy" />
+<input type="hidden" value="@categoryName" id="categoryName" />
+
+<div class="top-filter box-shadow">
+    <section class="p-one">
+        <div class="search-form">
+
+            @if (ViewBag.SearchText != null)
+            {
+                <div class="form">
+                    <input type="text" id="search" value="@ViewBag.SearchText.ToString()" placeholder="عنوان مورد نظر ...">
+                    <button onclick="submitForm()"><i class="far fa-search"></i></button>
+                </div>
+            }
+            else
+            {
+                <div class="form">
+                    <input type="text" id="search" placeholder="عنوان مورد نظر ...">
+                    <button onclick="submitForm()"><i class="far fa-search"></i></button>
+                </div>
+            }
+
+        </div>
+
+    </section>
+    <section class="p-two">
+        <h3><i class="far fa-stream"></i> فیلتر بر اساس دسته بندی:</h3>
+
+
+
+        <div class="sortBy-choice">
+
+            @switch (ViewBag.SortBy.ToString())
+            {
+                case "News":
+                    {
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="News" id="news-radio" checked>
+                            <label for="news-radio">جدید ترین ها</label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="Expensive" id="expensive-radio">
+                            <label for="expensive-radio">گران</label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="Cheap" id="cheap-radio">
+                            <label for="cheap-radio">ارزان</label>
+                        </div>
+                        break;
+                    }
+                case "Expensive":
+                    {
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="News" id="news-radio">
+                            <label for="news-radio">جدید ترین ها</label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="Expensive" id="expensive-radio" checked>
+                            <label for="expensive-radio">گران</label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="Cheap" id="cheap-radio">
+                            <label for="cheap-radio">ارزان</label>
+                        </div>
+                        break;
+                    }
+                case "Cheap":
+                    {
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="News" id="news-radio">
+                            <label for="news-radio">جدید ترین ها</label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="Expensive" id="expensive-radio">
+                            <label for="expensive-radio">گران</label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="Cheap" id="cheap-radio" checked>
+                            <label for="cheap-radio">ارزان</label>
+                        </div>
+                        break;
+                    }
+                default:
+                    {
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="News" id="news-radio" checked>
+                            <label for="news-radio">جدید ترین ها</label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="Expensive" id="expensive-radio">
+                            <label for="expensive-radio">گران</label>
+                        </div>
+                        <div class="item">
+                            <input type="radio" name="sortBy" value="Cheap" id="cheap-radio">
+                            <label for="cheap-radio">ارزان</label>
+                        </div>
+                        break;
+                    }
+            }
+
+        </div>
+
+
+
+    </section>
+
+</div>
+
+
+<div class="row">
+    <div class="col-md-4 col-lg-3">
+        <div class="main-filter">
+            <section class="filter-by-price box-shadow mb-4">
+
+                <button type="button" data-toggle="collapse" data-target="#collapsePrice" aria-expanded="false" aria-controls="collapsePrice">
+                    <i class="far fa-dollar-sign"></i> فیلتر بر اساس قیمت
+                </button>
+
+                <div class="collapse" id="collapsePrice">
+                    <div class="price-range">
+                        <input type="hidden" value="@Convert.ToInt32(ViewBag.SelectedMinPrice)" id="min-value">
+                        <input type="hidden" value="@Convert.ToInt32(ViewBag.SelectedMaxPrice)" id="max-value">
+
+                        <div id="priceFilter"></div>
+
+                        <div class="min-price">از <span id="min-text"></span> تومان</div>
+                        <div class="max-price">تا <span id="max-text"></span> تومان</div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-info" onclick="submitForm()">
+                            <i class="far fa-filter"></i> اعمال فیلتر محدوده قیمت
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="filter-by-brand box-shadow mb-4">
+                <button type="button" data-toggle="collapse" data-target="#collapseBrands" aria-expanded="false" aria-controls="collapseBrands">
+                    <i class="far fa-store"></i> فیلتر بر اساس برند
+                </button>
+                <div class="collapse" id="collapseBrands">
+                    <div class="form">
+                        <input id="brand-filter" type="text" onkeyup="BrandFilter(this)" placeholder="برند مورد نظر ...">
+                        <button onclick="ResetBrandFilterValue(this)" id="brand-remove"><i class="far fa-remove"></i></button>
+                    </div>
+
+                    <div class="brands">
+
+                        @{
+                            List<int> selectedBrands = ViewBag.SelectedBrands as List<int>;
+                        }
+                        @foreach (var item in Model.Brands)
+                        {
+                            <div>
+                                <input type="checkbox" name="brands" value="@item.Item1" @(selectedBrands!.Any(c => c == item.Item1) ? "checked" : "") onclick="submitForm()">
+                                <span>@item.Item2</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="col-md-8 col-lg-9">
+        @if (!Model.Products.Any())
+        {
+            <div class="alert alert-warning text-muted">
+                متاسفانه محصولی یافت نشد.
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @await Html.PartialAsync("Product/_BoxProducts", Model.Products)
+            </div>
+        }
+
+        @if (Model.TotalPages > 1)
+        {
+            <ul class="pagination-custom">
+                <li class="@(Model.PageId <=1?"disabled":"")" onclick="pagination('@(Model.PageId - 1)')">
+                    <i class="far fa-angle-right"></i>
+                </li>
+
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="@(Model.PageId == i? "active":"")" onclick="pagination('@i')">
+                        @i
+                    </li>
+                }
+
+                <li class="@(Model.PageId +1 > Model.TotalPages?"disabled":"")" onclick="pagination('@(Model.PageId+1)')">
+                    <i class="far fa-angle-left"></i>
+                </li>
+
+            </ul>
+        }
+    </div>
+</div>
+
+@section AfterMainOptions {
+    @await Html.PartialAsync("_toast")
+}
+
+
+@section Scripts {
+    <script src="~/js/nouislider.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(function() {
+            var slider = document.getElementById('priceFilter');
+            noUiSlider.create(slider,
+                {
+                    start: [@Convert.ToInt32(ViewBag.SelectedMinPrice), @Convert.ToInt32(ViewBag.SelectedMaxPrice)],
+                    step: 1000,
+                    connect: true,
+                    direction: 'rtl',
+                    range: {
+                        'min': 0,
+                        'max': @((int) Model.ProductsMaxPrice)
+                    }
+                });
+
+            var marginMin = document.getElementById('min-text'),
+                marginMax = document.getElementById('max-text');
+
+            slider.noUiSlider.on('update',
+                function(values, handle) {
+                    var xvalue = Math.round(values[handle]);
+                    if (handle) {
+                        marginMax.innerHTML = xvalue;
+                    } else {
+                        marginMin.innerHTML = xvalue;
+                    }
+                });
+
+            slider.noUiSlider.on('change',
+                function(values, handle) {
+                    var xvalue = Math.round(values[handle]);
+                    if (handle) {
+                        // setGetParameter('max_price', xvalue);
+                        $('#max-value').val(xvalue);
+                    } else {
+                        // setGetParameter('min_price', xvalue);
+                        $('#min-value').val(xvalue);
+                    }
+                });
+
+
+            slider.noUiSlider.on('slide',
+                function(values, handle) {
+
+                    console.log(values[0]);
+                    console.log(values[1]);
+
+                    Math.round(values[handle]);
+                });
+
+
+            function updateSliderRange(min, max) {
+                slider.noUiSlider.updateOptions({
+                    range: {
+                        'min': min,
+                        'max': max
+                    }
+                });
+            }
+        });
+
+
+        $(function () {
+            let radios = $(".sortBy-choice .item input");
+
+            for (const item of radios) {
+                item.addEventListener('click',
+                    function () {
+
+                        $("#sortBy").val(item.value);
+                        submitForm();
+                    });
+            }
+
+        });
+
+        function pagination(pageId) {
+            $("#pageId").val(pageId);
+            submitForm();
+        }
+
+        function submitForm() {
+            var categoryName = document.getElementById('categoryName').value;
+            var pageId = document.getElementById('pageId').value;
+            var sortBy = document.getElementById('sortBy').value;
+            var search = document.getElementById('search').value;
+            var minPrice = document.getElementById('min-value').value;
+            var maxPrice = document.getElementById('max-value').value;
+            var brandsArray = [];
+
+
+            var officialBrandProducts = document.querySelectorAll('[name="brands"]:checked');
+
+            for (let i = 0; i < officialBrandProducts.length; i++) {
+                let input = officialBrandProducts[i];
+
+                brandsArray.push(parseInt(input.value));
+            }
+
+
+            var url = window.location.origin + "/Category/@Model.Id/" + categoryName + "?pageId=" + pageId + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&search=" + search + "&sortBy=" + sortBy + "&brands=" + brandsArray;
+
+            window.location = url;
+        }
+
+
+    </script>
+}

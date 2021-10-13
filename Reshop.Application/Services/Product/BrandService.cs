@@ -5,7 +5,9 @@ using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product;
+using Reshop.Domain.Interfaces.Category;
 using Reshop.Domain.Interfaces.Product;
+using Reshop.Domain.Interfaces.Shopper;
 
 namespace Reshop.Application.Services.Product
 {
@@ -14,10 +16,14 @@ namespace Reshop.Application.Services.Product
         #region constructor
 
         private readonly IBrandRepository _brandRepository;
+        private readonly IShopperRepository _shopperRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public BrandService(IBrandRepository brandRepository)
+        public BrandService(IBrandRepository brandRepository, IShopperRepository shopperRepository, ICategoryRepository categoryRepository)
         {
             _brandRepository = brandRepository;
+            _shopperRepository = shopperRepository;
+            _categoryRepository = categoryRepository;
         }
 
         #endregion
@@ -279,5 +285,103 @@ namespace Reshop.Application.Services.Product
 
         public IEnumerable<Tuple<int, string>> GetBrandsOfStoreTitle(int storeTitleId) =>
             _brandRepository.GetBrandsOfStoreTitle(storeTitleId);
+
+        public async Task<ResultTypes> AddBrandToChildCategoriesByBrandAsync(int brandId, List<int> childCategoriesId)
+        {
+            try
+            {
+                foreach (int item in childCategoriesId)
+                {
+                    var brandToChildCategory = new BrandToChildCategory()
+                    {
+                        ChildCategoryId = item,
+                        BrandId = brandId
+                    };
+                    await _brandRepository.AddBrandToChildCategoryAsync(brandToChildCategory);
+                }
+
+
+                await _brandRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> AddBrandToChildCategoriesByChildCategoryAsync(int childCategoryId, List<int> brandId)
+        {
+            try
+            {
+                foreach (int item in brandId)
+                {
+                    var brandToChildCategory = new BrandToChildCategory()
+                    {
+                        ChildCategoryId = childCategoryId,
+                        BrandId = item
+                    };
+                    await _brandRepository.AddBrandToChildCategoryAsync(brandToChildCategory);
+                }
+
+
+                await _brandRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task RemoveBrandToChildCategoriesByBrandAsync(int brandId)
+        {
+            var brandToChildCategories = _brandRepository.GetBrandToChildCategoriesByBrand(brandId);
+
+            if (brandToChildCategories != null)
+            {
+                foreach (var brandToChildCategory in brandToChildCategories)
+                {
+                    _brandRepository.RemoveBrandToChildCategory(brandToChildCategory);
+                }
+
+                await _brandRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveBrandToChildCategoriesByChildCategoryAsync(int childCategoryId)
+        {
+            var brandToChildCategories = _brandRepository.GetBrandToChildCategoriesByChildCategory(childCategoryId);
+
+            if (brandToChildCategories != null)
+            {
+                foreach (var brandToChildCategory in brandToChildCategories)
+                {
+                    _brandRepository.RemoveBrandToChildCategory(brandToChildCategory);
+                }
+
+                await _brandRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task<AddOrEditBrandViewModel> GetBrandDataByBrandIdAsync(int brandId)
+        {
+            var brand = await _brandRepository.GetBrandByIdAsync(brandId);
+            var selectedChildCategories = _brandRepository.GetChildCategoriesIdOfBrand(brandId);
+            var storeTitles = _shopperRepository.GetStoreTitles();
+            var childCategories = _categoryRepository.GetChildCategories();
+
+            return new AddOrEditBrandViewModel()
+            {
+                BrandId = brand.BrandId,
+                BrandName = brand.BrandName,
+                SelectedStoreTitleId = brand.StoreTitleId,
+                StoreTitles = storeTitles,
+                ChildCategories = childCategories,
+                SelectedChildCategories = selectedChildCategories
+            };
+        }
     }
 }

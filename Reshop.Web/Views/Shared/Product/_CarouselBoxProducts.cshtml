@@ -14,7 +14,7 @@
 
                     <ul class="img-action-button">
                         <li>
-                            <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToCart(this)">
+                            <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)">
 
                                 <input type="hidden" value="@item.ShopperProductColorId" name="shopperProductColorId" />
                                 <button type="submit"><i class="fal fa-heart"></i></button>

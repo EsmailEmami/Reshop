@@ -33,6 +33,7 @@ namespace Reshop.Domain.Entities.Product
 
         public virtual ICollection<OfficialBrandProduct> OfficialBrandProducts { get; set; }
         public virtual StoreTitle StoreTitle { get; set; }
+        public virtual ICollection<BrandToChildCategory> BrandToChildCategories { get; set; }
 
         #endregion
     }

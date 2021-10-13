@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Convertors;
@@ -49,16 +50,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
-        public IActionResult CitiesList(int pageId, string filter, int[] states = null)
+        public IActionResult CitiesList(int pageId, string filter, string[] states = null)
         {
-            List<int> statesList = null;
+            var selectedStates = states.ArrayToListInt();
 
-            if (states != null)
-            {
-                statesList = states.ToList();
-            }
+            if (selectedStates == null)
+                return NotFound();
 
-            return ViewComponent("CitiesListComponent", new { pageId, filter, statesList });
+
+            return ViewComponent("CitiesListComponent", new { pageId, filter, states = selectedStates });
         }
 
 

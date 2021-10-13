@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Interfaces.Category;
 using Reshop.Infrastructure.Context;
@@ -33,15 +34,30 @@ namespace Reshop.Infrastructure.Repository.Category
             return _context.ChildCategories;
         }
 
-        public IAsyncEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown()
-            =>
-                _context.Categories.Select(c => new CategoriesDropdownViewModel()
-                {
-                    CategoryId = c.CategoryId,
-                    CategoryTitle = c.CategoryTitle,
-                    ChildCategories = _context.ChildCategoryToCategories.Where(g => g.CategoryId == c.CategoryId)
-                        .Select(b => b.ChildCategory).ToList(),
-                }) as IAsyncEnumerable<CategoriesDropdownViewModel>;
+        public IEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown() =>
+            _context.Categories.Select(c => new CategoriesDropdownViewModel()
+            {
+                CategoryId = c.CategoryId,
+                CategoryTitle = c.CategoryTitle,
+                ChildCategories = c.ChildCategoryToCategories
+                    .Select(ch => ch.ChildCategory)
+                    .Where(ch => ch.ProductToChildCategories.Any())
+                    .Select(ch => new ChildCategoriesOfCategoryForDropDown()
+                    {
+                        ChildCategoryId = ch.ChildCategoryId,
+                        ChildCategoryName = ch.ChildCategoryTitle,
+                        TopBrands = ch.BrandToChildCategories
+                            .Select(b => b.Brand)
+                            .OrderByDescending(p => p.OfficialBrandProducts
+                                .SelectMany(b => b.Products).Count(b => b.IsActive && b.ShopperProducts.Any(i => i.IsActive && i.ShopperProductColors.Any(co => co.IsActive))))
+                            .Take(5)
+                            .Select(p => new Tuple<int, string, int>(
+                                p.BrandId,
+                                p.BrandName,
+                                p.OfficialBrandProducts
+                                    .SelectMany(b => b.Products).Count(b => b.IsActive && b.ShopperProducts.Any(i=>i.IsActive && i.ShopperProductColors.Any(co=> co.IsActive)))))
+                    })
+            });
 
 
         public async Task<Domain.Entities.Category.Category> GetCategoryByIdAsync(int categoryId)

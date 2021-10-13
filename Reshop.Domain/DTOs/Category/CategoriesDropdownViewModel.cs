@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Reshop.Domain.DTOs.Product;
-using Reshop.Domain.Entities.Category;
 
 namespace Reshop.Domain.DTOs.Category
 {
@@ -14,7 +9,15 @@ namespace Reshop.Domain.DTOs.Category
         public int CategoryId { get; set; }
         public string CategoryTitle { get; set; }
 
-        public IEnumerable<ChildCategory> ChildCategories { get; set; }
+        public IEnumerable<ChildCategoriesOfCategoryForDropDown> ChildCategories { get; set; }
+    }
 
+    public class ChildCategoriesOfCategoryForDropDown
+    {
+        public int ChildCategoryId { get; set; }
+        public string ChildCategoryName { get; set; }
+
+        // brandId, brand name, productsCount
+        public IEnumerable<Tuple<int, string, int>> TopBrands { get; set; }
     }
 }

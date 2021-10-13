@@ -13,7 +13,7 @@
 
                 <ul class="img-action-button">
                     <li>
-                        <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToCart(this)">
+                        <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)">
 
                             <input type="hidden" value="@item.ShopperProductColorId" name="shopperProductColorId" />
                             <button type="submit"><i class="fal fa-heart"></i></button>
@@ -26,7 +26,7 @@
                     </li>
                     <li>
                         <form asp-controller="Cart" asp-action="AddToCart" onsubmit="return  AddProductToCart(this)">
-                            <input type="hidden" value="@Html.Encode(item.ShopperProductColorId)" name="shopperProductColorId" />
+                            <input type="hidden" value="@item.ShopperProductColorId" name="shopperProductColorId" />
                             <button type="submit" class="btn btn-warning"><i class="fal fa-cart-plus"></i></button>
                         </form>
                     </li>

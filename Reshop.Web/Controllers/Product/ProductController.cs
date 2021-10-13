@@ -91,31 +91,74 @@ namespace Reshop.Web.Controllers.Product
 
         [HttpGet]
         [Route("Category/{categoryId}/{categoryName}")]
-        public async Task<IActionResult> ProductsOfCategory(int categoryId, string categoryName, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", List<string> brands = null)
+        public async Task<IActionResult> ProductsOfCategory(int categoryId, string categoryName, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
         {
-            var result = await _productService.GetCategoryProductsWithPaginationAsync(categoryId, sortBy, pageId, 24, search, minPrice, maxPrice, brands);
-            ViewData["CategoryOrChildCategoryTitleName"] = categoryName;
+            var selectedBrands = Fixer.SplitToListInt(brands);
+
+            if (selectedBrands == null)
+                return NotFound();
+
+            var result = await _productService.GetCategoryProductsWithPaginationAsync(categoryId, sortBy, pageId, 1, search, minPrice, maxPrice, selectedBrands);
+
+            ViewData["CategoryName"] = categoryName;
 
             ViewBag.SortBy = sortBy;
-            ViewBag.SelectedBrands = brands;
+            ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SearchText = search;
 
-            return View("ProductsOfCategoryOrChildCategory", result);
+            ViewBag.SelectedMinPrice = minPrice.ToDecimal();
+            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : (int)result.ProductsMaxPrice;
+
+            return View(result);
         }
 
         [HttpGet]
         [Route("ChildCategory/{childCategoryId}/{childCategoryName}")]
-        public async Task<IActionResult> ProductsOfChildCategory(int childCategoryId, string childCategoryName, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", List<string> brands = null)
+        public async Task<IActionResult> ProductsOfChildCategory(int childCategoryId, string childCategoryName, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
         {
-            var result = await _productService.GetChildCategoryProductsWithPaginationAsync(childCategoryId, sortBy, pageId, 24, search, minPrice, maxPrice, brands);
-            ViewData["CategoryOrChildCategoryTitleName"] = childCategoryName;
+            var selectedBrands = Fixer.SplitToListInt(brands);
+
+            if (selectedBrands == null)
+                return NotFound();
+
+            var result = await _productService.GetChildCategoryProductsWithPaginationAsync(childCategoryId, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
+
+
+            ViewData["ChildCategoryName"] = childCategoryName;
 
 
             ViewBag.SortBy = sortBy;
-            ViewBag.SelectedBrands = brands;
+            ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SearchText = search;
 
-            return View("ProductsOfCategoryOrChildCategory", result);
+            ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : 0;
+            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : (int)result.ProductsMaxPrice;
+
+            return View(result);
+        }
+
+        [HttpGet]
+        [Route("Brand/{brandId}/{brandName}")]
+        public async Task<IActionResult> ProductsOfBrand(int brandId, string brandName, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string officialBrandProducts = null)
+        {
+            var selectedOfficialBrandProducts = Fixer.SplitToListInt(officialBrandProducts);
+
+            if (selectedOfficialBrandProducts == null)
+                return NotFound();
+
+            var result = await _productService.GetBrandProductsWithPaginationAsync(brandId, sortBy, pageId, 24, search, minPrice, maxPrice, selectedOfficialBrandProducts);
+
+            ViewData["BrandName"] = brandName;
+
+
+            ViewBag.SortBy = sortBy;
+            ViewBag.SelectedOfficialBrandProducts = selectedOfficialBrandProducts;
+            ViewBag.SearchText = search;
+
+            ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : 0;
+            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : (int)result.ProductsMaxPrice;
+
+            return View(result);
         }
 
         [HttpPost]

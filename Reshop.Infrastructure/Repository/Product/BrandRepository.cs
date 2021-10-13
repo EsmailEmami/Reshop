@@ -22,17 +22,18 @@ namespace Reshop.Infrastructure.Repository.Product
 
         #endregion
 
-        public IEnumerable<string> GetBrandsOfCategory(int categoryId) =>
+        public IEnumerable<Tuple<int, string>> GetBrandsOfCategory(int categoryId) =>
             _context.ChildCategoryToCategories
                 .Where(c => c.CategoryId == categoryId)
                 .Select(c => c.ChildCategory)
-                .SelectMany(c => c.ProductToChildCategories)
-                .Select(c => c.Product.OfficialBrandProduct.Brand.BrandName).Distinct();
+                .SelectMany(c => c.BrandToChildCategories)
+                .Select(c => c.Brand)
+                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
 
-        public IEnumerable<string> GetBrandsOfChildCategory(int childCategoryId) =>
-            _context.ProductToChildCategories
-                .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.Product.OfficialBrandProduct.Brand.BrandName).Distinct();
+        public IEnumerable<Tuple<int, string>> GetBrandsOfChildCategory(int childCategoryId) =>
+            _context.BrandToChildCategories.Where(c => c.ChildCategoryId == childCategoryId)
+                .Select(c => c.Brand)
+                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
 
         public async Task<Brand> GetBrandByIdAsync(int brandId) =>
         await _context.Brands.FindAsync(brandId);
@@ -120,6 +121,26 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<bool> IsOfficialBrandProductExistAsync(int officialBrandProductId) =>
             await _context.OfficialBrandProducts.AnyAsync(c => c.OfficialBrandProductId == officialBrandProductId);
+
+        public async Task AddBrandToChildCategoryAsync(BrandToChildCategory brandToChildCategory) =>
+            await _context.BrandToChildCategories.AddAsync(brandToChildCategory);
+
+        public void RemoveBrandToChildCategory(BrandToChildCategory brandToChildCategory) =>
+            _context.BrandToChildCategories.Remove(brandToChildCategory);
+
+        public IEnumerable<BrandToChildCategory> GetBrandToChildCategoriesByBrand(int brandId) =>
+            _context.BrandToChildCategories.Where(c => c.BrandId == brandId);
+
+        public IEnumerable<BrandToChildCategory> GetBrandToChildCategoriesByChildCategory(int childCategoryId) =>
+            _context.BrandToChildCategories.Where(c => c.ChildCategoryId == childCategoryId);
+
+        public IEnumerable<int> GetBrandsIdOfChildCategory(int childCategoryId) =>
+            _context.BrandToChildCategories.Where(c => c.ChildCategoryId == childCategoryId)
+                .Select(c => c.BrandId);
+
+        public IEnumerable<int> GetChildCategoriesIdOfBrand(int brandId) =>
+            _context.BrandToChildCategories.Where(c => c.BrandId == brandId)
+                .Select(c => c.ChildCategoryId);
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }

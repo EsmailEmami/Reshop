@@ -12,7 +12,7 @@ namespace Reshop.Application.Interfaces.Category
         IEnumerable<Domain.Entities.Category.Category> GetCategories();
         IEnumerable<ChildCategory> GetChildCategories();
 
-        IAsyncEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown();
+        IEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown();
 
         // get by id
         Task<Domain.Entities.Category.Category> GetCategoryByIdAsync(int categoryId);
