@@ -393,8 +393,18 @@ namespace Reshop.Application.Services.Product
                 await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId);
 
         public async Task<AddOrEditAUXViewModel> GetTypeAUXProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeAUXProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypeAUXProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+            model.SelectedChildCategories = _brandRepository.GetChildCategoriesIdOfBrand(model.SelectedBrand);
+
+            return model;
+        }
+
 
         public async Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail)
         {

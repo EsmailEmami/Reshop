@@ -98,7 +98,7 @@ namespace Reshop.Web.Controllers.Product
             if (selectedBrands == null)
                 return NotFound();
 
-            var result = await _productService.GetCategoryProductsWithPaginationAsync(categoryId, sortBy, pageId, 1, search, minPrice, maxPrice, selectedBrands);
+            var result = await _productService.GetCategoryProductsWithPaginationAsync(categoryId, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
 
             ViewData["CategoryName"] = categoryName;
 

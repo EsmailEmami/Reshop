@@ -101,6 +101,17 @@ namespace Reshop.Web.API.Controllers
             return new ObjectResult(res);
         }
 
+        [HttpGet("GetChildCategoriesOfBrand/{brandId}")]
+        public IActionResult GetChildCategoriesOfBrand(int brandId)
+        {
+            var res = _brandService.GetChildCategoriesOfBrand(brandId);
+
+            if (res == null)
+                return NotFound();
+
+            return new ObjectResult(res);
+        }
+
         [HttpGet("GetProductsOfOfficialProduct/{officialProductId}")]
         public IActionResult GetProductsOfOfficialProduct(int officialProductId)
         {

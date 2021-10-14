@@ -183,7 +183,9 @@ namespace Reshop.Infrastructure.Repository.Product
 
             if (brands != null && brands.Any())
             {
-
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.Product.OfficialBrandProduct.BrandId));
             }
 
 
@@ -260,8 +262,9 @@ namespace Reshop.Infrastructure.Repository.Product
 
             if (brands != null && brands.Any())
             {
-
-
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.Product.OfficialBrandProduct.BrandId));
             }
 
             #endregion
@@ -332,8 +335,9 @@ namespace Reshop.Infrastructure.Repository.Product
 
             if (officialBrandProducts != null && officialBrandProducts.Any())
             {
-
-
+                products = products
+                    .Where(c => officialBrandProducts
+                        .Any(b => b == c.Product.OfficialBrandProductId));
             }
 
             #endregion
@@ -377,10 +381,16 @@ namespace Reshop.Infrastructure.Repository.Product
                 products = products.Where(c => c.Product.ProductTitle.Contains(filter));
             }
 
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.Product.OfficialBrandProduct.BrandId));
+            }
+
             return await products.SelectMany(c => c.ShopperProductColors)
                 .Select(c => c.Price).MaxAsync();
         }
-
 
         public async Task<decimal> GetMaxPriceOfChildCategoryProductsAsync(int childCategoryId, string filter = null, List<int> brands = null)
         {
@@ -398,6 +408,12 @@ namespace Reshop.Infrastructure.Repository.Product
                 products = products.Where(c => c.Product.ProductTitle.Contains(filter));
             }
 
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.Product.OfficialBrandProduct.BrandId));
+            }
 
             return await products.SelectMany(c => c.ShopperProductColors)
                 .Select(c => c.Price).MaxAsync();
@@ -420,6 +436,12 @@ namespace Reshop.Infrastructure.Repository.Product
                 products = products.Where(c => c.Product.ProductTitle.Contains(filter));
             }
 
+            if (officialBrandProducts != null && officialBrandProducts.Any())
+            {
+                products = products
+                    .Where(c => officialBrandProducts
+                        .Any(b => b == c.Product.OfficialBrandProductId));
+            }
 
             return await products.SelectMany(c => c.ShopperProductColors)
                 .Select(c => c.Price).MaxAsync();
@@ -707,7 +729,7 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             IQueryable<ShopperProduct> products = _context.Brands
                 .Where(c => c.BrandId == brandId)
-                .SelectMany(c=> c.OfficialBrandProducts)
+                .SelectMany(c => c.OfficialBrandProducts)
                 .SelectMany(c => c.Products)
                 .Where(c => c.IsActive &&
                             c.ShopperProducts.Any(s => s.IsActive &&

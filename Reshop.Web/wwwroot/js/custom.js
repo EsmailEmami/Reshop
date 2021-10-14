@@ -177,29 +177,18 @@ function ResetBrandFilterValue(btn) {
 
 }
 
-//$(function () {
-//    if (window.innerWidth > 767) {
-//        let collapse = document.getElementsByClassName('collapse');
-//        for (let i = 0; i < collapse.length; i++) {
-//            collapse[i].classList.add("show");
-//        }
-//    }
-
-//    window.addEventListener('resize', function () {
-//        let collapse = document.getElementsByClassName('collapse');
-
-//        if (window.innerWidth > 767) {
-
-//            for (let i = 0; i < collapse.length; i++) {
-//                collapse[i].classList.add("show");
-//            }
-//        } else {
-//            for (let i = 0; i < collapse.length; i++) {
-//                collapse[i].classList.remove("show");
-//            }
-//        }
-//    });
-//});
+function commaSep(number) {
+    number += '';
+    number = number.replace(',', ''); number = number.replace(',', ''); number = number.replace(',', '');
+    number = number.replace(',', ''); number = number.replace(',', ''); number = number.replace(',', '');
+    x = number.split('.');
+    y = x[0];
+    z = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(y))
+        y = y.replace(rgx, '$1' + ',' + '$2');
+    return y + z;
+}
 
 function SubmitForm(formId) {
     $('#' + formId).submit();

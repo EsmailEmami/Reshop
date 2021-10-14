@@ -11,6 +11,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         IEnumerable<Tuple<int, string>> GetBrandsOfCategory(int categoryId);
         IEnumerable<Tuple<int, string>> GetBrandsOfChildCategory(int childCategoryId);
+        IEnumerable<Tuple<int, string>> GetChildCategoriesOfBrand(int brandId);
         Task<Brand> GetBrandByIdAsync(int brandId);
         IEnumerable<Tuple<int, string>> GetBrandsForShow();
         IEnumerable<Tuple<int, string, bool>> GetBrandsForShow(int skip, int take, string filter);

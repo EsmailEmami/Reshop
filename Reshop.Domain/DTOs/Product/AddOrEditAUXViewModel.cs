@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Reshop.Domain.Entities.Shopper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace Reshop.Domain.DTOs.Product
 {
@@ -30,8 +28,14 @@ namespace Reshop.Domain.DTOs.Product
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsActive { get; set; }
 
+        public IEnumerable<StoreTitle> StoreTitles { get; set; }
+        public IEnumerable<Tuple<int, string>> Brands { get; set; }
+        public IEnumerable<Tuple<int, string>> OfficialProducts { get; set; }
+        public IEnumerable<Tuple<int,string>> ChildCategories { get; set; }
+
         public int SelectedStoreTitle { get; set; }
         public int SelectedBrand { get; set; }
+        public IEnumerable<int> SelectedChildCategories { get; set; }
 
         // --------------------------------------------------------------------------- ITEMS
 

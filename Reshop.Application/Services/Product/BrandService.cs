@@ -209,6 +209,9 @@ namespace Reshop.Application.Services.Product
         public IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId) =>
             _brandRepository.GetBrandOfficialProducts(brandId);
 
+        public IEnumerable<Tuple<int, string>> GetChildCategoriesOfBrand(int brandId) =>
+            _brandRepository.GetChildCategoriesOfBrand(brandId);
+
         public IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId) =>
             _brandRepository.GetProductsOfOfficialProduct(officialProductId);
 

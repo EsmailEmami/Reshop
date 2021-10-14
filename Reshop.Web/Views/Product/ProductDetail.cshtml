@@ -61,12 +61,16 @@
 
                     @foreach (var item in Model.ChildCategories)
                     {
-                        <a href="#">@item.ChildCategoryTitle</a>
+                        <a asp-controller="Product" asp-action="ProductsOfChildCategory"
+                           asp-route-childCategoryId="@item.ChildCategoryId"
+                           asp-route-childCategoryName="@item.ChildCategoryTitle.Replace(" ","-")">@item.ChildCategoryTitle</a>
                     }
-                </div>
+                </div> 
                 <div>
                     <h2><i class="far fa-building"></i> برند:</h2>
-                    <a href="#">@Model.Product.Brand.Item2</a>
+                    <a asp-controller="Product" asp-action="ProductsOfBrand"
+                       asp-route-brandId="@Model.Product.Brand.Item1"
+                       asp-route-brandName="@Model.Product.Brand.Item2.Replace(" ","-")">@Model.Product.Brand.Item2</a>
                 </div>
             </div>
 
@@ -208,6 +212,26 @@
                         <span>سلام</span>
                         <span>سلام</span>
                     </li>
+                    <li>
+                        <span>سلام</span>
+                        <span>سلام</span>
+                    </li>
+                    <li>
+                        <span>سلام</span>
+                        <span>سلام</span>
+                    </li>
+                    <li>
+                        <span>سلام</span>
+                        <span>سلام</span>
+                    </li>
+                    <li>
+                        <span>سلام</span>
+                        <span>سلام</span>
+                    </li>
+                    <li>
+                        <span>سلام</span>
+                        <span>سلام</span>
+                    </li>
 
                 </ul>
             </div>
@@ -265,10 +289,10 @@
 
                 <div id="tableComments">
 
-                        @await Component.InvokeAsync("ProductCommentsComponent", new { productId = Model.Product.ProductId })
+                    @await Component.InvokeAsync("ProductCommentsComponent", new { productId = Model.Product.ProductId })
 
 
-                 </div>
+                </div>
             </div>
 
         </div>

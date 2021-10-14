@@ -24,7 +24,7 @@
     }
 
     .multiselect-dropdown span.optext {
-        background-color: lightgray;
+        background-color: #d3d3d3;
     }
 
     .multiselect-dropdown span.placeholder {
@@ -32,6 +32,8 @@
         color: #222;
         opacity: 1;
         line-height: 27px;
+        padding-right: 2px;
+        cursor: auto;
     }
 
 .multiselect-dropdown-list-wrapper {
@@ -115,15 +117,14 @@
         margin: 0 20px 0 0;
     }
 
-    .multiselect-dropdown-list div:hover,
-    .multiselect-dropdown-list div.checked {
+    .multiselect-dropdown-list div:hover {
         background-color: #f4f4f4;
         border: 1px solid #e1e1e1;
         border-radius: 8px;
     }
 
 .multiselect-dropdown span.maxselected {
-    width: 100%;
+    width: 94%;
 }
 
 .multiselect-dropdown-all-selector {

@@ -6,6 +6,7 @@ using Reshop.Domain.Interfaces.Category;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Application.Services.Category
 {
@@ -95,6 +96,21 @@ namespace Reshop.Application.Services.Category
                 foreach (var childCategoryToCategory in childCategoryToCategories)
                 {
                     _categoryRepository.RemoveChildCategoryToCategory(childCategoryToCategory);
+                }
+
+                await _categoryRepository.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveProductToChildCategoryByProductIdAsync(int productId)
+        {
+            var productToChildCategories = _categoryRepository.GetProductToChildCategoriesByProductId(productId);
+
+            if (productToChildCategories != null)
+            {
+                foreach (var productToChildCategory in productToChildCategories)
+                {
+                    _categoryRepository.RemoveProductToChildCategory(productToChildCategory);
                 }
 
                 await _categoryRepository.SaveChangesAsync();
@@ -232,6 +248,31 @@ namespace Reshop.Application.Services.Category
 
 
             await _categoryRepository.SaveChangesAsync();
+        }
+
+        public async Task<ResultTypes> AddProductToChildCategoryByProductAsync(int productId, List<int> childCategoryIds)
+        {
+            try
+            {
+                foreach (int item in childCategoryIds)
+                {
+                    var productToChildCategory = new ProductToChildCategory()
+                    {
+                        ChildCategoryId = item,
+                        ProductId = productId
+                    };
+                    await _categoryRepository.AddProductToChildCategoryAsync(productToChildCategory);
+                }
+
+
+                await _categoryRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
 
         public async Task<AddOrEditCategoryViewModel> GetCategoryDataAsync(int categoryId)

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Domain.Interfaces.Category
 {
@@ -23,6 +24,7 @@ namespace Reshop.Domain.Interfaces.Category
         IEnumerable<int> GetCategoriesIdOfChildCategory(int childCategoryId);
         IEnumerable<ChildCategoryToCategory> GetChildCategoryToCategoryByCategoryId(int categoryId);
         IEnumerable<ChildCategoryToCategory> GetChildCategoryToCategoryByChildCategoryId(int childCategoryId);
+        IEnumerable<ProductToChildCategory> GetProductToChildCategoriesByProductId(int productId);
         IEnumerable<ChildCategory> GetProductChildCategories(int productId);
 
         // validations 
@@ -33,6 +35,7 @@ namespace Reshop.Domain.Interfaces.Category
         Task AddCategoryAsync(Entities.Category.Category category);
         Task AddChildCategoryAsync(ChildCategory childCategory);
         Task AddChildCategoryToCategoryAsync(ChildCategoryToCategory childCategoryToCategory);
+        Task AddProductToChildCategoryAsync(ProductToChildCategory productToChildCategory);
 
         // update
         void EditCategory(Entities.Category.Category category);
@@ -42,7 +45,7 @@ namespace Reshop.Domain.Interfaces.Category
         void RemoveCategory(Entities.Category.Category category);
         void RemoveChildCategory(ChildCategory childCategory);
         void RemoveChildCategoryToCategory(ChildCategoryToCategory childCategoryToCategory);
-
+        void RemoveProductToChildCategory(ProductToChildCategory productToChildCategory);
 
         Task SaveChangesAsync();
     }

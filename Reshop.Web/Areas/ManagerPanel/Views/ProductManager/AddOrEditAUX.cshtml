@@ -28,20 +28,14 @@
             </div>
         </div>
 
-        @{
-            var storeTitles = ViewBag.StoreTitles as IEnumerable<StoreTitle>;
-            IEnumerable<Tuple<int, string>> brands = ViewBag.Brands as IEnumerable<Tuple<int, string>>;
-            IEnumerable<Tuple<int, string>> officialProducts = ViewBag.OfficialProducts as IEnumerable<Tuple<int, string>>;
-        }
-
         @*store titles *@
         <div class="col-sm-12 col-md-6">
             <select onchange="GetBrandsOfStoreTitle(this.value)" asp-for="SelectedStoreTitle">
                 <option value="">عنوان کالا</option>
 
-                @if (storeTitles != null)
+                @if (Model.StoreTitles != null)
                 {
-                    @foreach (var item in storeTitles)
+                    @foreach (var item in Model.StoreTitles)
                     {
                         @:<option value="@item.StoreTitleId" @(Model.SelectedStoreTitle == item.StoreTitleId ? "selected" : "")>@item.StoreTitleName</option>
                     }
@@ -49,12 +43,12 @@
             </select>
         </div>
         @* this is for brand *@
-        <div class="col-sm-12 col-md-6">
-            <select id="brand" onchange="GetOfficialProductsOfBrand(this.value)" asp-for="SelectedBrand">
-                @if (brands != null)
+        <div class="col-sm-12 col-lg-4">
+            <select id="brand" onchange="updateSelectsOfBand(this.value)" asp-for="SelectedBrand">
+                @if (Model.Brands != null)
                 {
                     <option value=""> لطفا برند را انتخاب کنید</option>
-                    @foreach (var item in brands)
+                    @foreach (var item in Model.Brands)
                     {
                         @:<option value="@item.Item1" @(Model.SelectedBrand == item.Item1 ? "selected" : "")>@item.Item2</option>
                     }
@@ -66,12 +60,12 @@
             </select>
         </div>
         @* this is for official product *@
-        <div class="col-sm-12 col-lg-6">
+        <div class="col-sm-12 col-lg-4">
             <select id="officialProduct" asp-for="OfficialBrandProductId">
-                @if (officialProducts != null)
+                @if (Model.OfficialProducts != null)
                 {
                     <option value="">لطفا نام اختصاصی کالا را انتخاب کنید</option>
-                    @foreach (var item in officialProducts)
+                    @foreach (var item in Model.OfficialProducts)
                     {
                         @:<option value="@item.Item1" @(Model.OfficialBrandProductId == item.Item1 ? "selected" : "")>@item.Item2</option>
                     }
@@ -82,6 +76,20 @@
                 }
             </select>
         </div>
+
+        @* this is for child categories *@
+        <div class="col-sm-12 col-lg-4">
+            <select id="childCategory"  multiple asp-for="SelectedChildCategories" placeholder="انتخاب زیر گروه ها">
+                @if (Model.ChildCategories != null)
+                {
+                    @foreach (var item in Model.ChildCategories)
+                    {
+                        @:<option value="@item.Item1" @(Model.SelectedChildCategories != null && Model.SelectedChildCategories.Any(c => c == item.Item1) ? "selected" : "")>@item.Item2</option>
+                    }
+                }
+            </select>
+        </div>
+
         <div class="col-sm-12 ">
             <div class="form-field">
                 <textarea asp-for="Description"></textarea>
@@ -288,4 +296,10 @@
     <script src="~/js/select.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+    <script>
+        function updateSelectsOfBand(brandId) {
+            GetOfficialProductsOfBrand(brandId);
+            GetChildCategoriesOfBrand(brandId);
+        }
+    </script>
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Category;
+using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Infrastructure.Repository.Category
 {
@@ -55,7 +56,7 @@ namespace Reshop.Infrastructure.Repository.Category
                                 p.BrandId,
                                 p.BrandName,
                                 p.OfficialBrandProducts
-                                    .SelectMany(b => b.Products).Count(b => b.IsActive && b.ShopperProducts.Any(i=>i.IsActive && i.ShopperProductColors.Any(co=> co.IsActive)))))
+                                    .SelectMany(b => b.Products).Count(b => b.IsActive && b.ShopperProducts.Any(i => i.IsActive && i.ShopperProductColors.Any(co => co.IsActive)))))
                     })
             });
 
@@ -108,6 +109,9 @@ namespace Reshop.Infrastructure.Repository.Category
             return _context.ChildCategoryToCategories.Where(c => c.ChildCategoryId == childCategoryId);
         }
 
+        public IEnumerable<ProductToChildCategory> GetProductToChildCategoriesByProductId(int productId) =>
+            _context.ProductToChildCategories.Where(c => c.ProductId == productId);
+
         public IEnumerable<ChildCategory> GetProductChildCategories(int productId)
         {
             return _context.ProductToChildCategories
@@ -141,6 +145,9 @@ namespace Reshop.Infrastructure.Repository.Category
             await _context.ChildCategoryToCategories.AddAsync(childCategoryToCategory);
         }
 
+        public async Task AddProductToChildCategoryAsync(ProductToChildCategory productToChildCategory) =>
+            await _context.ProductToChildCategories.AddAsync(productToChildCategory);
+
         public void EditCategory(Domain.Entities.Category.Category category)
         {
             _context.Categories.Update(category);
@@ -165,6 +172,9 @@ namespace Reshop.Infrastructure.Repository.Category
         {
             _context.ChildCategoryToCategories.Remove(childCategoryToCategory);
         }
+
+        public void RemoveProductToChildCategory(ProductToChildCategory productToChildCategory) =>
+            _context.ProductToChildCategories.Remove(productToChildCategory);
 
         public async Task SaveChangesAsync()
         {

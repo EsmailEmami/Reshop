@@ -18,7 +18,6 @@ function newEl(tag, attrs) {
 
 function MultiSelectDropdown() {
 
-
     document.querySelectorAll("select[multiple]").forEach((el, k) => {
 
         var div = newEl('div', {
@@ -28,6 +27,12 @@ function MultiSelectDropdown() {
         if (el.hasAttribute('isDone')) {
             return;
         }
+
+        // add id to div while select had id
+        if (el.hasAttribute('id')) {
+            div.setAttribute('id', el.attributes['id'].value + '_select');
+        }
+
 
         // add attr to select that select is done
         el.setAttribute('isDone', '');
@@ -68,9 +73,10 @@ function MultiSelectDropdown() {
             }
 
             function selectAllBox() {
-                var op = newEl('div', {
-                    class: 'multiselect-dropdown-all-selector'
-                })
+                var op = newEl('div',
+                    {
+                        class: 'multiselect-dropdown-all-selector'
+                    });
                 var ic = newEl('input', {
                     type: 'checkbox'
                 });
@@ -80,11 +86,11 @@ function MultiSelectDropdown() {
                 }));
 
                 op.addEventListener('click', () => {
-                    op.classList.toggle('checked');
                     op.querySelector("input").checked = !op.querySelector("input").checked;
 
                     var ch = op.querySelector("input").checked;
                     list.querySelectorAll("input").forEach(i => i.checked = ch);
+
                     Array.from(el.options).map(x => x.selected = ch);
 
                     el.dispatchEvent(new Event('change'));
@@ -114,7 +120,6 @@ function MultiSelectDropdown() {
                 }));
 
                 op.addEventListener('click', () => {
-                    op.classList.toggle('checked');
                     op.querySelector("input").checked = !op.querySelector("input").checked;
                     op.optEl.selected = !!!op.optEl.selected;
                     el.dispatchEvent(new Event('change'));
@@ -129,6 +134,7 @@ function MultiSelectDropdown() {
 
             div.refresh = () => {
                 div.querySelectorAll('span.optext, span.placeholder').forEach(t => div.removeChild(t));
+
                 var sels = Array.from(el.selectedOptions);
                 if (sels.length > 3) {
                     div.appendChild(newEl('span', {
@@ -154,8 +160,8 @@ function MultiSelectDropdown() {
 
                 if (0 === el.selectedOptions.length) {
                     div.appendChild(newEl('span', {
-                    class: 'placeholder',
-                    text: placeholder
+                        class: 'placeholder',
+                        text: placeholder
                     }));
                 }
 
@@ -225,7 +231,7 @@ function SelectDropdown() {
         // add attr to select that select is done
         el.setAttribute('isDone', '');
 
-        
+
 
         el.style.display = 'none';
         el.parentNode.insertBefore(div, el.nextSibling);
@@ -302,7 +308,7 @@ function SelectDropdown() {
                 d.style.display = txt.includes(search.value.toUpperCase()) ? 'block' : 'none';
             });
 
-            var filteredItem = list.querySelectorAll('div[style="display: block;"]')
+            var filteredItem = list.querySelectorAll('div[style="display: block;"]');
 
 
             var notFound = list.querySelector("h3");

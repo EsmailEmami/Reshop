@@ -120,6 +120,39 @@ function addSelectList(select, selectDropdown, itemValue, itemText) {
     selectDropdown.appendChild(op);
 }
 
+function addMultiSelectList(select, selectDropdown, itemValue, itemText) {
+
+    // create new option for select
+    let opt = document.createElement('option');
+    opt.value = itemValue;
+    opt.innerHTML = itemText;
+    select.appendChild(opt);
+
+    // create new option for select dropDown
+    var op = newEl('div',
+        {
+            optEl: opt
+        });
+    var ic = newEl('input', {
+        type: 'checkbox',
+        checked: false
+    });
+    op.appendChild(ic);
+    op.appendChild(newEl('label', {
+        text: opt.text
+    }));
+
+    op.addEventListener('click', () => {
+        op.querySelector("input").checked = !op.querySelector("input").checked;
+        op.optEl.selected = !!!op.optEl.selected;
+        select.dispatchEvent(new Event('change'));
+    });
+    ic.addEventListener('click', (ev) => {
+        ic.checked = !ic.checked;
+    });
+
+    selectDropdown.appendChild(op);
+}
 // refresh dropdown 
 function selectRefresh(select, dropDown) {
     var optext = dropDown.querySelector('span.optext');
@@ -136,6 +169,40 @@ function selectRefresh(select, dropDown) {
     dropDown.appendChild(c);
 }
 
+function multiSelectRefresh(select, dropDown) {
+    dropDown.querySelectorAll('span.optext, span.placeholder').forEach(t => dropDown.removeChild(t));
+
+    var placeholder = "انتخاب کنید";
+
+    if (select.hasAttribute('placeholder')) {
+        placeholder = select.attributes['placeholder'].value;
+    }
+
+    dropDown.appendChild(newEl('span', {
+        class: 'placeholder',
+        text: placeholder
+    }));
+
+
+
+    var sels = Array.from(select.selectedOptions);
+    if (sels.length > 3) {
+        dropDown.appendChild(newEl('span',
+            {
+                class: ['optext', 'maxselected'],
+                text: sels.length + ' ' + 'انتخاب شده'
+            }));
+    } else {
+        sels.map(x => {
+            var c = newEl('span',
+                {
+                    class: 'optext',
+                    text: x.text
+                });
+            dropDown.appendChild(c);
+        });
+    }
+}
 
 function GetCitiesOfState(stateId) {
 
@@ -349,7 +416,7 @@ function ColorsDiscountDetailData(where, url) {
 function GetBrandsOfStoreTitle(storeTitleId) {
 
     GetOfficialProductsOfBrand('');
-    GetProductsOfOfficialProduct('');
+    GetChildCategoriesOfBrand('');
 
     var select = document.getElementById('brand');
     if (select == null) {
@@ -498,4 +565,49 @@ function GetProductsOfOfficialProduct(officialProductId) {
     addSelectList(select, selectDropDownList, '', 'لطفا نام اختصاصی کالا را انتخاب کنید');
 
     selectRefresh(select, selectDropDown);
+}
+
+function GetChildCategoriesOfBrand(brandId) {
+
+    var select = document.getElementById('childCategory');
+
+    if (select == null) {
+        return null;
+    }
+
+    // dropDown 
+    var selectDropDown = document.getElementById('childCategory_select');
+
+    if (selectDropDown == null) {
+        return null;
+    }
+
+    // dropDown Options
+    var selectDropDownList = selectDropDown.querySelector('.multiselect-dropdown-list');
+
+    if (selectDropDownList == null) {
+        return null;
+    }
+
+    if (brandId !== '') {
+        $.ajax({
+            type: "GET",
+            url: "/api/Product/GetChildCategoriesOfBrand/" + brandId,
+        }).done(function (res) {
+
+            // make empty the select
+            select.querySelectorAll('*').forEach(n => n.remove());
+            selectDropDownList.querySelectorAll('div:not([class])').forEach(n => n.remove());
+
+            $.each(res, function (index, value) {
+                addMultiSelectList(select, selectDropDownList, value.item1, value.item2);
+            });
+        });
+    } else {
+        // make empty the select
+        select.querySelectorAll('*').forEach(n => n.remove());
+        selectDropDownList.querySelectorAll('div:not([class])').forEach(n => n.remove());
+    }
+
+    multiSelectRefresh(select, selectDropDown);
 }

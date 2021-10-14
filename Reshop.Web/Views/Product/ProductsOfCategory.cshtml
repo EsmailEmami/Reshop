@@ -2,7 +2,6 @@
 @{
     string categoryName = ViewData["CategoryName"].ToString();
 
-
     ViewData["Title"] = $"کالاهای گروه {categoryName?.Replace("-", " ")}";
 }
 
@@ -242,11 +241,11 @@
 
             slider.noUiSlider.on('update',
                 function(values, handle) {
-                    var xvalue = Math.round(values[handle]);
+                    var spliter = commaSep(Math.round(values[handle]));
                     if (handle) {
-                        marginMax.innerHTML = xvalue;
+                        marginMax.innerHTML = spliter;
                     } else {
-                        marginMin.innerHTML = xvalue;
+                        marginMin.innerHTML = spliter;
                     }
                 });
 
@@ -254,33 +253,11 @@
                 function(values, handle) {
                     var xvalue = Math.round(values[handle]);
                     if (handle) {
-                        // setGetParameter('max_price', xvalue);
                         $('#max-value').val(xvalue);
                     } else {
-                        // setGetParameter('min_price', xvalue);
                         $('#min-value').val(xvalue);
                     }
                 });
-
-
-            slider.noUiSlider.on('slide',
-                function(values, handle) {
-
-                    console.log(values[0]);
-                    console.log(values[1]);
-
-                    Math.round(values[handle]);
-                });
-
-
-            function updateSliderRange(min, max) {
-                slider.noUiSlider.updateOptions({
-                    range: {
-                        'min': min,
-                        'max': max
-                    }
-                });
-            }
         });
 
 
@@ -327,6 +304,28 @@
             window.location = url;
         }
 
+        $(function () {
+            if (window.innerWidth > 767) {
+                let collapse = document.getElementsByClassName('collapse');
+                for (let i = 0; i < collapse.length; i++) {
+                    collapse[i].classList.add("show");
+                }
+            }
 
+            window.addEventListener('resize', function () {
+                let collapse = document.getElementsByClassName('collapse');
+
+                if (window.innerWidth > 767) {
+
+                    for (let i = 0; i < collapse.length; i++) {
+                        collapse[i].classList.add("show");
+                    }
+                } else {
+                    for (let i = 0; i < collapse.length; i++) {
+                        collapse[i].classList.remove("show");
+                    }
+                }
+            });
+});
     </script>
 }

@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Category;
 using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Shopper;
 
@@ -31,14 +32,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IBrandService _brandService;
         private readonly IColorService _colorService;
         private readonly IDiscountService _discountService;
+        private readonly ICategoryService _categoryService;
 
-        public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService, IColorService colorService, IDiscountService discountService)
+        public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService, IColorService colorService, IDiscountService discountService, ICategoryService categoryService)
         {
             _productService = productService;
             _shopperService = shopperService;
             _brandService = brandService;
             _colorService = colorService;
             _discountService = discountService;
+            _categoryService = categoryService;
         }
 
         #endregion
@@ -77,7 +80,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         public async Task<IActionResult> ProductColorDetail(int productId, int colorId)
         {
             var data = await _colorService.GetProductColorDetailAsync(productId, colorId);
-            
+
             if (data == null)
                 return NotFound();
 
@@ -2350,13 +2353,14 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpGet]
         public async Task<IActionResult> AddOrEditAUX(int productId = 0)
         {
-            // data for select Product
-            ViewBag.StoreTitles = _shopperService.GetStoreTitles();
-
+            var newModel = new AddOrEditAUXViewModel()
+            {
+                StoreTitles = _shopperService.GetStoreTitles()
+            };
 
             if (productId == 0)
             {
-                return View(new AddOrEditAUXViewModel());
+                return View(newModel);
             }
             else
             {
@@ -2366,9 +2370,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     return NotFound();
                 }
 
-                ViewBag.Brands = _brandService.GetBrandsOfStoreTitle(product.SelectedStoreTitle);
-                ViewBag.OfficialProducts = _brandService.GetBrandOfficialProducts(product.SelectedBrand);
-
                 return View(product);
             }
         }
@@ -2377,10 +2378,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         public async Task<IActionResult> AddOrEditAUX(AddOrEditAUXViewModel model)
         {
             // data for select Product
-            ViewBag.StoreTitles = _shopperService.GetStoreTitles();
-            ViewBag.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
-            ViewBag.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
-
+            model.StoreTitles = _shopperService.GetStoreTitles();
+            model.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandService.GetChildCategoriesOfBrand(model.SelectedBrand);
 
             if (!ModelState.IsValid) return View(model);
 
@@ -2458,6 +2459,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         model.SelectedImage5, model.SelectedImage6
                     }, product.ProductId);
 
+
+                    // add product to child category
+                    if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
+                    {
+                        await _categoryService.AddProductToChildCategoryByProductAsync(product.ProductId, model.SelectedChildCategories as List<int>);
+                    }
+
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -2508,6 +2516,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
                         model.SelectedImage5IMG, model.SelectedImage6IMG
                     });
+
+                    // edit childCategories
+                    await _categoryService.RemoveProductToChildCategoryByProductIdAsync(product.ProductId);
+
+                    if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
+                    {
+                        await _categoryService.AddProductToChildCategoryByProductAsync(product.ProductId, model.SelectedChildCategories as List<int>);
+                    }
+
 
                     return RedirectToAction(nameof(Index));
                 }

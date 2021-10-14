@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.Category;
@@ -27,6 +28,7 @@ namespace Reshop.Application.Interfaces.Category
         Task<ResultTypes> AddChildCategoryAsync(ChildCategory childCategory);
         Task AddChildCategoryToCategoryAsync(int categoryId, List<int> childCategoriesId);
         Task AddCategoryToChildCategoryAsync(int childCategoryId, List<int> categoriesId);
+        Task<ResultTypes> AddProductToChildCategoryByProductAsync(int productId, List<int> childCategoryIds);
 
         // update 
         Task<ResultTypes> EditCategoryAsync(Domain.Entities.Category.Category category);
@@ -39,6 +41,7 @@ namespace Reshop.Application.Interfaces.Category
         // remove
         Task RemoveChildCategoryToCategoryByCategoryIdAsync(int categoryId);
         Task RemoveChildCategoryToCategoryByChildCategoryIdAsync(int childCategoryId);
+        Task RemoveProductToChildCategoryByProductIdAsync(int productId);
         Task RemoveCategoryAsync(int categoryId);
         Task RemoveChildCategoryAsync(int childCategoryId);
     }

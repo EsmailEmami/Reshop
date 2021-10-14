@@ -28,12 +28,17 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.ChildCategory)
                 .SelectMany(c => c.BrandToChildCategories)
                 .Select(c => c.Brand)
-                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
+                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName)).Distinct();
 
         public IEnumerable<Tuple<int, string>> GetBrandsOfChildCategory(int childCategoryId) =>
             _context.BrandToChildCategories.Where(c => c.ChildCategoryId == childCategoryId)
                 .Select(c => c.Brand)
                 .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
+
+        public IEnumerable<Tuple<int, string>> GetChildCategoriesOfBrand(int brandId) =>
+            _context.BrandToChildCategories.Where(c => c.BrandId == brandId)
+                .Select(c => c.ChildCategory)
+                .Select(c => new Tuple<int, string>(c.ChildCategoryId, c.ChildCategoryTitle));
 
         public async Task<Brand> GetBrandByIdAsync(int brandId) =>
         await _context.Brands.FindAsync(brandId);

@@ -1478,47 +1478,32 @@ header .top-menu {
 
     .detail-specifications ul li {
         display: flex;
-        flex-wrap: wrap;
-        margin: 0;
+        margin-bottom: 7px;
         width: 100%;
-        border-bottom: 1px solid #8d8d8d;
+        justify-content: space-between;
     }
 
-        .detail-specifications ul li:last-of-type {
-            border-bottom: none;
-        }
-
         .detail-specifications ul li span {
-            font-weight: bold;
             position: relative;
             padding-left: 10px;
-            padding-right: 20px;
-            width: 100%;
-            line-height: 50px;
-            color: #3f3f3f;
+            padding-right: 24px;
+            line-height: 47px;
+            color: #4d4d4d;
+            margin: 0;
+            display: inline-block;
         }
 
             .detail-specifications ul li span:nth-child(1) {
-                flex: 0 0 30%;
-                max-width: 30%;
+                width: 22%;
                 background: #e5e5e5;
+                border-radius: 4px 24px 4px 24px;
             }
 
-                .detail-specifications ul li span:nth-child(1)::after {
-                    content: "";
-                    background: #8d8d8d;
-                    left: 0;
-                    width: 1px;
-                    position: absolute;
-                    height: 100%;
-                    visibility: visible;
-                    opacity: 1;
-                }
 
             .detail-specifications ul li span:nth-child(2) {
-                flex: 0 0 70%;
-                max-width: 70%;
-                background: #f7f7f7;
+                width: 77%;
+                background: #f2f2f2;
+                border-radius: 24px 4px 24px 4px;
             }
 
 .detail-comments .percent-title {
