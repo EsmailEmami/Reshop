@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
@@ -36,6 +37,11 @@ namespace Reshop.Domain.Interfaces.Category
         Task AddChildCategoryAsync(ChildCategory childCategory);
         Task AddChildCategoryToCategoryAsync(ChildCategoryToCategory childCategoryToCategory);
         Task AddProductToChildCategoryAsync(ProductToChildCategory productToChildCategory);
+        Task AddCategoryGalleryAsync(CategoryGallery categoryGallery);
+        void RemoveCategoryGallery(CategoryGallery categoryGallery);
+        void UpdateCategoryGallery(CategoryGallery categoryGallery);
+        Task<CategoryGallery> GetCategoryGalleryAsync(int categoryId, string imageName);
+        IEnumerable<Tuple<string, string>> GetCategoryGalleryImagesNameAndUrl(int categoryId);
 
         // update
         void EditCategory(Entities.Category.Category category);

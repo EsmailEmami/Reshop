@@ -21,6 +21,7 @@ namespace Reshop.Domain.Entities.Category
         #region Relations
 
         public virtual ICollection<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
+        public virtual ICollection<CategoryGallery> CategoryGalleries { get; set; }
 
         #endregion
     }

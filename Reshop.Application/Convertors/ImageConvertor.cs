@@ -13,10 +13,9 @@ namespace Reshop.Application.Convertors
     {
         public static void ImageResize(string inputImagePath, string outputImagePath, int newWidth)
         {
-            const long quality = 50L;
+            const long quality = 100L;
 
             Bitmap sourceBitmap = new Bitmap(inputImagePath);
-
 
 
             double dblWidthOriginal = sourceBitmap.Width;
@@ -27,86 +26,42 @@ namespace Reshop.Application.Convertors
 
             int newHeight = (int)(newWidth * relationHeightWidth);
 
-
-
-            //< create Empty Drawarea >
-
             var newDrawArea = new Bitmap(newWidth, newHeight);
 
-            //</ create Empty Drawarea >
-
-
-
             using (var graphicsOfDrawArea = Graphics.FromImage(newDrawArea))
-
             {
-
-                //< setup >
-
-                graphicsOfDrawArea.CompositingQuality = CompositingQuality.HighSpeed;
+                graphicsOfDrawArea.CompositingQuality = CompositingQuality.HighQuality;
 
                 graphicsOfDrawArea.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
                 graphicsOfDrawArea.CompositingMode = CompositingMode.SourceCopy;
 
-                //</ setup >
-
-
-
-                //< draw into placeholder >
-
-                //*imports the image into the drawarea
-
                 graphicsOfDrawArea.DrawImage(sourceBitmap, 0, 0, newWidth, newHeight);
 
-                //</ draw into placeholder >
-
-
-
-                //--< Output as .Jpg >--
-
                 using (var output = File.Open(outputImagePath, FileMode.Create))
-
                 {
-
-                    //< setup jpg >
-
                     var qualityParamId = Encoder.Quality;
 
-                    var encoderParameters = new EncoderParameters(1);
+                    var encoderParameters = new EncoderParameters(1)
+                    {
+                        Param = { [0] = new EncoderParameter(qualityParamId, quality) }
+                    };
 
-                    encoderParameters.Param[0] = new EncoderParameter(qualityParamId, quality);
-
-                    //</ setup jpg >
-
-
-
-                    //< save Bitmap as Jpg >
-
-                    var codec = ImageCodecInfo.GetImageDecoders().FirstOrDefault(c => c.FormatID == ImageFormat.Jpeg.Guid);
+                    var codec = ImageCodecInfo.GetImageDecoders()
+                        .FirstOrDefault(c => c.FormatID == ImageFormat.Jpeg.Guid);
 
                     newDrawArea.Save(output, codec, encoderParameters);
 
-                    //resized_Bitmap.Dispose ();
-
                     output.Close();
-
-                    //</ save Bitmap as Jpg >
-
                 }
 
-                //--</ Output as .Jpg >--
-
                 graphicsOfDrawArea.Dispose();
-
             }
 
             sourceBitmap.Dispose();
-
-            //---------------</ Image_resize() >---------------
         }
 
-        public static async Task<string> CreateNewImage(IFormFile image, string path, int thumbWidth = 270)
+        public static async Task<string> CreateNewImage(IFormFile image, string path, int thumbWidth = 900)
         {
             string originalImgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(image.FileName);
             string thumbImgName = NameGenerator.GenerateUniqCodeWithDash() + Path.GetExtension(image.FileName);

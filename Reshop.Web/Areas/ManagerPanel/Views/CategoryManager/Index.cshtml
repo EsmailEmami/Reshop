@@ -15,8 +15,7 @@
 </div>
 
 
-<a class="btn btn-success text-white"
-   onclick="ShowModal('@Url.Action("AddOrEditCategory", "CategoryManager", null, Context.Request.Scheme)', 'گروه جدید')">
+<a class="btn btn-success text-white" asp-action="AddOrEditCategory">
     <i class="fal fa-layer-plus"></i> افزودن گروه جدید
 </a>
 
@@ -42,8 +41,7 @@
                             @Html.DisplayFor(modelItem => item.CategoryTitle)
                         </td>
                         <td>
-                            <a class="btn btn-warning text-white"
-                               onclick="ShowModal('@Url.Action("AddOrEditCategory", "CategoryManager", new {categoryId = item.CategoryId}, Context.Request.Scheme)', 'ویرایش گروه')">
+                            <a class="btn btn-warning text-white" asp-action="AddOrEditCategory" asp-route-categoryId="@item.CategoryId">
                                 <i class="fal fa-marker"></i> ویرایش
                             </a>
                             <form asp-action="RemoveCategory" asp-route-categoryId="@item.CategoryId" method="post" class="d-inline">
@@ -64,17 +62,4 @@ else
     <div class="alert alert-warning">
         گروهی یافت نشد
     </div>
-}
-
-
-
-
-@section AfterMainOptions
-{
-    <partial name="_Modal" />
-
-}
-
-@section Scripts{
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

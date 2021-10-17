@@ -30,6 +30,7 @@ namespace Reshop.Application.Interfaces.User
 
         IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId);
         IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId);
+        IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId);
 
         #region address
 

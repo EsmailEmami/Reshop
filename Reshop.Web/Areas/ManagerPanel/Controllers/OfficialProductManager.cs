@@ -75,6 +75,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             var officialBrandProduct = new OfficialBrandProduct()
             {
                 OfficialBrandProductName = model.OfficialBrandProductName,
+                LatinOfficialBrandProductName = model.LatinOfficialBrandProductName,
                 BrandId = model.BrandId,
                 IsActive = model.IsActive
             };
@@ -124,6 +125,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             var officialBrandProduct = await _brandService.GetOfficialBrandProductByIdAsync(model.OfficialBrandProductId);
 
             officialBrandProduct.OfficialBrandProductName = model.OfficialBrandProductName;
+            officialBrandProduct.LatinOfficialBrandProductName = model.LatinOfficialBrandProductName;
             officialBrandProduct.IsActive = model.IsActive;
             officialBrandProduct.BrandId = model.BrandId;
 

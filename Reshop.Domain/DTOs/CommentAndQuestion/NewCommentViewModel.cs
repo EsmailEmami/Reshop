@@ -8,6 +8,9 @@ namespace Reshop.Domain.DTOs.CommentAndQuestion
         [Required]
         public int ProductId { get; set; }
 
+        //[Required]
+        //public string ShortKey { get; set; }
+
         [Display(Name = "عنوان متن")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]

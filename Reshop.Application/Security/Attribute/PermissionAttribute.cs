@@ -18,7 +18,7 @@ namespace Reshop.Application.Security.Attribute
 
         private IRoleService _roleService;
 
-        public PermissionAttribute(string permissionsName)
+        public PermissionAttribute(string permissionsName = "")
         {
             _permissionsName = permissionsName;
         }

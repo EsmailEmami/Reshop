@@ -380,6 +380,7 @@ namespace Reshop.Application.Services.Product
             {
                 BrandId = brand.BrandId,
                 BrandName = brand.BrandName,
+                LatinBrandName = brand.LatinBrandName,
                 SelectedStoreTitleId = brand.StoreTitleId,
                 StoreTitles = storeTitles,
                 ChildCategories = childCategories,

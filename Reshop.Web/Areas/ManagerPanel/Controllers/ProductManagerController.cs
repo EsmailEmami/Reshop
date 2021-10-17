@@ -2567,7 +2567,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         "images",
                         "ProductImages");
 
-                    string imgName = await ImageConvertor.CreateNewImage(images[i], path, 750);
+                    string imgName = await ImageConvertor.CreateNewImage(images[i], path, 1600);
 
                     var productGallery = new ProductGallery()
                     {
@@ -2603,7 +2603,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         await _productService.DeleteProductGalleryAsync(imageInDatabase);
                         // create new image
 
-                        var newImageName = await ImageConvertor.CreateNewImage(images[i], filePath, 750);
+                        var newImageName = await ImageConvertor.CreateNewImage(images[i], filePath, 1600);
 
                         var newProductGallery = new ProductGallery()
                         {

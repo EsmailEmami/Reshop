@@ -207,6 +207,9 @@ namespace Reshop.Application.Services.User
         public IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId) =>
             _userRepository.GetUserCommentsForShow(userId);
 
+        public IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId) =>
+            _userRepository.GetUserProductCommentsFeedBack(userId, productId);
+
         public async Task<ResultTypes> AddUserAddressAsync(Address address)
         {
             try

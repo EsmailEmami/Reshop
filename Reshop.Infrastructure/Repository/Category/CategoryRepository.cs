@@ -40,6 +40,9 @@ namespace Reshop.Infrastructure.Repository.Category
             {
                 CategoryId = c.CategoryId,
                 CategoryTitle = c.CategoryTitle,
+                CategoryImages = c.CategoryGalleries
+                    .Select(g => new Tuple<string, string>(g.ImageName, g.ImageUrl))
+                    .ToList(),
                 ChildCategories = c.ChildCategoryToCategories
                     .Select(ch => ch.ChildCategory)
                     .Where(ch => ch.ProductToChildCategories.Any())
@@ -147,6 +150,24 @@ namespace Reshop.Infrastructure.Repository.Category
 
         public async Task AddProductToChildCategoryAsync(ProductToChildCategory productToChildCategory) =>
             await _context.ProductToChildCategories.AddAsync(productToChildCategory);
+
+        public async Task AddCategoryGalleryAsync(CategoryGallery categoryGallery) =>
+            await _context.CategoryGalleries.AddAsync(categoryGallery);
+
+        public void RemoveCategoryGallery(CategoryGallery categoryGallery) =>
+            _context.CategoryGalleries.Remove(categoryGallery);
+
+        public void UpdateCategoryGallery(CategoryGallery categoryGallery) =>
+            _context.CategoryGalleries.Update(categoryGallery);
+
+        public async Task<CategoryGallery> GetCategoryGalleryAsync(int categoryId, string imageName) =>
+            await _context.CategoryGalleries.Where(c => c.CategoryId == categoryId &&
+                                                  c.ImageName == imageName).SingleOrDefaultAsync();
+
+        public IEnumerable<Tuple<string, string>> GetCategoryGalleryImagesNameAndUrl(int categoryId) =>
+            _context.CategoryGalleries.Where(c => c.CategoryId == categoryId)
+                .OrderBy(c => c.OrderBy)
+                .Select(c => new Tuple<string, string>(c.ImageName, c.ImageUrl));
 
         public void EditCategory(Domain.Entities.Category.Category category)
         {

@@ -27,6 +27,11 @@ namespace Reshop.Domain.Entities.Product
         [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string BrandName { get; set; }
 
+        [Display(Name = "نام لاتین برند")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string LatinBrandName { get; set; }
+
         public bool IsActive { get; set; }
 
         #region Relations

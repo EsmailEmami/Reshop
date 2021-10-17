@@ -29,65 +29,65 @@
                                         @childCategory.ChildCategoryName
                                     </a>
                                 </li>
-                                
-                          @foreach (var brand in childCategory.TopBrands)
-                          {
 
-                              <li>
-                                  <a asp-controller="Product" asp-action="ProductsOfChildCategory"
-                                     asp-route-childCategoryId="@childCategory.ChildCategoryId"
-                                     asp-route-childCategoryName="@childCategory.ChildCategoryName.Replace(" ","-")"
-                                     asp-route-brands="@brand.Item1">@brand.Item2 (@brand.Item3.NumSplitter())</a>
-                              </li>
-                          }
-                          
-                          @if (childCategory.TopBrands.Count() == 5)
-                          {
-                              <li class="show-more-dropdown">
-                                  <a asp-controller="Product" asp-action="ProductsOfChildCategory"
-                                     asp-route-childCategoryId="@childCategory.ChildCategoryId"
-                                     asp-route-childCategoryName="@childCategory.ChildCategoryName">
-                                      مشاهده بیشتر
-                                  </a>
-                              </li>
-                          }
+                                @foreach (var brand in childCategory.TopBrands)
+                                {
+
+                                    <li>
+                                        <a asp-controller="Product" asp-action="ProductsOfChildCategory"
+                                           asp-route-childCategoryId="@childCategory.ChildCategoryId"
+                                           asp-route-childCategoryName="@childCategory.ChildCategoryName.Replace(" ","-")"
+                                           asp-route-brands="@brand.Item1">@brand.Item2 (@brand.Item3.NumSplitter())</a>
+                                    </li>
+                                }
+
+                                @if (childCategory.TopBrands.Count() == 5)
+                                {
+                                    <li class="show-more-dropdown">
+                                        <a asp-controller="Product" asp-action="ProductsOfChildCategory"
+                                           asp-route-childCategoryId="@childCategory.ChildCategoryId"
+                                           asp-route-childCategoryName="@childCategory.ChildCategoryName">
+                                            مشاهده بیشتر
+                                        </a>
+                                    </li>
+                                }
                             </ul>
                         }
 
                         <div class="slider-dropdown">
 
                             <div id="header-menu-slider" class="carousel" data-ride="carousel">
+
                                 <ol class="carousel-indicators">
-                                    <li data-target="#header-menu-slider" data-slide-to="0" class="active"></li>
-                                    <li data-target="#header-menu-slider" data-slide-to="1"></li>
-                                    <li data-target="#header-menu-slider" data-slide-to="2"></li>
-                                    <li data-target="#header-menu-slider" data-slide-to="3"></li>
+                                    @for (int i = 0; i < item.CategoryImages.Count(); i++)
+                                    {
+                                        <li data-target="#header-menu-slider" data-slide-to="@i" class="@(i == 0?"active":"")"></li>
+                                    }
                                 </ol>
+
                                 <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <a href="#">     
-                                            <img class="d-block w-100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIjf7i8SuUv3j_VnCnzc3RPAewbs9NY3RF2qL0hdYGOtSgpMLyEUr4MUquGTAaCCR4-M4&usqp=CAU" alt="First slide">
-                                        </a>
-                                     </div>
-                                    <div class="carousel-item">
-                                        <a href="#">    
-                                            <img class="d-block w-100" src="https://atlas-content-cdn.pixelsquid.com/assets_v2/248/2484978678165935682/jpeg-600/G03.jpg?modifiedAt=1" alt="Second slide">
-                                        </a>
-                                      </div>
-                                    <div class="carousel-item">
-                                        <a href="#">
-                                            <img class="d-block w-100" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSejg2kuKEjlw1VRzvhL8Cj6jqjWEAY6TTDKw&usqp=CAU" alt="Third slide">
-                                        </a> 
-                                        </div>
-                                    <div class="carousel-item">
-                                        <a href="#">
-                                            <img class="d-block w-100" src="https://ghost-armor.com/media/catalog/product/cache/f9b262cccfc4db316b94156ff62f9953/g/a/galaxy_s20_5.png" alt="Third slide">
-                                        </a>
-                                    </div>
+
+                                    @foreach (var image in item.CategoryImages)
+                                    {
+                                        if (Equals(item.CategoryImages.First(), image))
+                                        {
+                                            <div class="carousel-item active">
+                                                <a href="@image.Item2">
+                                                    <img class="d-block w-100" src="~/images/categoryImages/@image.Item1" alt="@item.CategoryTitle">
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="carousel-item">
+                                                <a href="@image.Item2">
+                                                    <img class="d-block w-100" src="~/images/categoryImages/@image.Item1" alt="@item.CategoryTitle">
+                                                </a>
+                                            </div>
+                                        }
+                                    }
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 </li>

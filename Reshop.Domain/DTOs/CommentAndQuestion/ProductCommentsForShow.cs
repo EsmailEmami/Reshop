@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Reshop.Domain.DTOs.CommentAndQuestion
 {
@@ -13,6 +14,6 @@ namespace Reshop.Domain.DTOs.CommentAndQuestion
         public DateTime CommentDate { get; set; }
         public string CommentTitle { get; set; }
         public string CommentText { get; set; }
-        public int LikeCount { get; set; }
+        public IEnumerable<bool> FeedBacks { get; set; }
     }
 }

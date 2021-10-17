@@ -83,6 +83,36 @@ table {
     height: auto;
 }
 
+.img-zoom-lens {
+    position: absolute;
+    border: 2px solid #fc5400;
+    box-shadow: 0 0 2px #FC5400;
+    width: 250px;
+    height: 150px;
+    border-radius: 4px;
+    display: none;
+}
+
+.img-zoom-result {
+    border: 2px solid #d4d4d4;
+    width: 80%;
+    max-width: 800px;
+    height: 400px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 155px auto auto 40px;
+    border-radius: 4px;
+    background: #f4f4f4;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 9999;
+}
+
+
 /* -------------------------------------- preload -------------------------------------- */
 
 .loader {
@@ -1721,25 +1751,58 @@ header .top-menu {
         text-decoration: none;
     }
 
-    .comment-area .comment-footer .comment-like {
+    .comment-area .comment-footer .comment-feed-backs {
         text-decoration: none;
         display: flex;
         align-items: center;
         flex-wrap: nowrap;
-        direction: rtl
+        direction: rtl;
+        border: 2px solid;
+        padding: 5px 5px;
+        border-radius: 7px;
     }
 
-        .comment-area .comment-footer .comment-like i {
-            color: #ca0202;
+        .comment-area .comment-footer .comment-feed-backs.active {
+            border-width: 1px;
+        }
+
+        .comment-area .comment-footer .comment-feed-backs:first-of-type {
+            margin-right: 5px;
+            border-color: #ad161c;
+            background: #ad161cc4;
+            box-shadow: 0 0 2px #ad161cc4;
+        }
+
+        .comment-area .comment-footer .comment-feed-backs.active:first-of-type {
+            border-color: #ad161c;
+            background: #ad161c;
+            box-shadow: 0 0 2px #ad161c;
+        }
+
+        .comment-area .comment-footer .comment-feed-backs:last-of-type {
+            background: #0ca902c4;
+            box-shadow: 0 0 2px #0ca902c4;
+            border-color: #0ca902;
+        }
+
+        .comment-area .comment-footer .comment-feed-backs.active:last-of-type {
+            background: #0ca902;
+            box-shadow: 0 0 2px #0ca902;
+            border-color: #0ca902;
+        }
+
+        .comment-area .comment-footer .comment-feed-backs i {
+            color: #fff;
             font-size: 19px;
         }
 
-        .comment-area .comment-footer .comment-like span {
+        .comment-area .comment-footer .comment-feed-backs span {
             font-size: 13px;
             font-weight: bold;
-            color: #5d5b5b;
+            color: #fff;
             display: inline-block;
             padding-left: 5px;
+            font-family: cursive
         }
 
 /* -------------------------------------- detail -------------------------------------- */
@@ -3186,29 +3249,43 @@ header .top-menu {
         margin-top: 20px;
         max-height: 350px;
         overflow-y: auto;
-        padding: 20px 10px;
+        padding: 5px 10px 0 20px;
     }
 
         .main-filter .filter-by-brand .brands span {
             position: relative;
-            color: #3d3b3b;
+            color: #000;
+            display: block;
+            font-size: 16px;
+            width: 80%;
         }
 
+            .main-filter .filter-by-brand .brands span span:nth-child(2) {
+                color: #A8A7A7;
+                font-size: 11px;
+                font-weight: bold;
+                margin-top: 4px;
+            }
+
         .main-filter .filter-by-brand .brands div {
-            margin-bottom: 10px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            border-bottom: 1px solid #cacaca;
         }
 
             .main-filter .filter-by-brand .brands div:last-of-type {
-                margin-bottom: 0;
+                border-bottom: none;
             }
 
         .main-filter .filter-by-brand .brands input[type="checkbox"] {
             float: left;
-            margin-top: 4px;
+            margin-top: 15px;
+            height: 14px;
+            width: 14px;
         }
 
         .main-filter .filter-by-brand .brands::-webkit-scrollbar {
-            width: 10px;
+            width: 5px;
         }
 
         .main-filter .filter-by-brand .brands::-webkit-scrollbar-track {
@@ -3217,12 +3294,12 @@ header .top-menu {
         }
 
         .main-filter .filter-by-brand .brands::-webkit-scrollbar-thumb {
-            background: #888;
+            background: #dadada;
             border-radius: 5px;
         }
 
             .main-filter .filter-by-brand .brands::-webkit-scrollbar-thumb:hover {
-                background: #555;
+                background: #a09c9c;
             }
 
 

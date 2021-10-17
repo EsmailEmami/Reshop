@@ -1,4 +1,5 @@
-﻿using Reshop.Domain.DTOs.User;
+﻿using System;
+using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -48,6 +49,7 @@ namespace Reshop.Domain.Interfaces.User
 
         IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId);
         IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId);
+        IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId);
 
         #endregion
 

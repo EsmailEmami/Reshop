@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Attribute;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Attribute;
 using ZarinpalSandbox;
 
 namespace Reshop.Web.Controllers.User
@@ -26,8 +26,19 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
+        [NoDirectAccess]
         public async Task<IActionResult> AddToCart(string shopperProductColorId)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                var refererUrl = HttpContext.Request.Headers["Referer"].ToString();
+
+                var url = new Uri(refererUrl);
+
+                return Json(new { isValid = false, returnUrl = $"{url.AbsoluteUri}Login?returnUrl={url.LocalPath}" });
+            }
+
+
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var result = await _cartService.AddToCart(userId, shopperProductColorId);

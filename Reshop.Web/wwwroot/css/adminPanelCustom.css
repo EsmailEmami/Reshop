@@ -781,7 +781,8 @@ ul.pagination-custom {
     .content-page .content-main {
         padding: 0 10px;
         width: 100%;
-        margin-top: 90px;
+        margin-top: 77px;
+        padding-top: 13px;
         overflow: hidden;
     }
 
@@ -1465,6 +1466,14 @@ ul.pagination-custom {
     margin-right: auto;
     margin-left: auto;
 }
+
+    .image-field .form-field {
+        margin: 8px 8px 6px 8px;
+    }
+
+        .image-field .form-field input {
+            direction: ltr;
+        }
 
     .image-field .image-area {
         padding: 5px;

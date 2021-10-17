@@ -11,6 +11,11 @@
                 if (res.success) {
                     ShowToast('success', 'محصول با موفقیت به سبد خرید اضافه شد.');
                 } else {
+
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
                     ShowToast('warning', 'محصول با موفقیت به سبد خرید اضافه نشد.');
                 }
             },
@@ -42,6 +47,14 @@ function AddProductToFavorites(form) {
                         ShowToast('success', 'فروشنده محصول با موفقیت تغییر کرد.');
                     }
                 } else {
+
+                    debugger;
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+
+
                     if (res.resultType == "NotFound") {
                         ShowToast('danger', 'متاسفانه خطایی غیر منتظره رخ داده است.');
                     } else if (res.resultType == "Available") {
@@ -204,6 +217,37 @@ function multiSelectRefresh(select, dropDown) {
     }
 }
 
+function multiSelectAll(select, selectDropdown) {
+    var op = newEl('div',
+        {
+            class: 'multiselect-dropdown-all-selector'
+        });
+    var ic = newEl('input', {
+        type: 'checkbox'
+    });
+    op.appendChild(ic);
+    op.appendChild(newEl('label', {
+        text: "انتخاب همه"
+    }));
+
+    op.addEventListener('click', () => {
+        op.querySelector("input").checked = !op.querySelector("input").checked;
+
+        var ch = op.querySelector("input").checked;
+        selectDropdown.querySelectorAll("input").forEach(i => i.checked = ch);
+
+        Array.from(select.options).map(x => x.selected = ch);
+
+        select.dispatchEvent(new Event('change'));
+    });
+    ic.addEventListener('click', (ev) => {
+        ic.checked = !ic.checked;
+    });
+
+    selectDropdown.appendChild(op);
+}
+
+
 function GetCitiesOfState(stateId) {
 
     var select = document.getElementById('city');
@@ -258,10 +302,10 @@ function SubmitFormData(form) {
                     $(".modal-header-custom .header-title").html('');
                     document.getElementById('modal').style.display = 'none';
 
-                    if (res.returnUrl !== '' && res.returnUrl.toLowerCase() === 'current') {
+                    if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
                         var loc = window.location.href;
                         ShowToast('success', 'عملیات با موفقیت انجام شد.', loc);
-                    } else if (res.returnUrl !== '' && res.returnUrl.toLowerCase() !== 'current') {
+                    } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
                         ShowToast('success', 'عملیات با موفقیت انجام شد.', res.returnUrl);
                     } else {
                         ShowToast('success', 'عملیات با موفقیت انجام شد.');
@@ -288,16 +332,21 @@ function AddComment(form) {
             contentType: false,
             success: function (res) {
                 if (res.isValid) {
-                    if (res.returnUrl !== '' && res.returnUrl.toLowerCase() === 'current') {
+                    if (res.returnUrl  != null && res.returnUrl.toLowerCase() === 'current') {
                         var loc = window.location.href;
                         ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.', loc);
-                    } else if (res.returnUrl !== '' && res.returnUrl.toLowerCase() !== 'current') {
+                    } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
                         ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.', res.returnUrl);
                     } else {
                         ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.');
                     }
-
                 } else
+
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+
                     $("#newComment").html(res.html);
             }
         });
@@ -597,7 +646,15 @@ function GetChildCategoriesOfBrand(brandId) {
 
             // make empty the select
             select.querySelectorAll('*').forEach(n => n.remove());
-            selectDropDownList.querySelectorAll('div:not([class])').forEach(n => n.remove());
+            selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+            if (select.hasAttribute('select-all')) {
+                if (select.attributes['select-all'].value == 'true') {
+                    multiSelectAll(select, selectDropDownList);
+                }
+            } else {
+                multiSelectAll(select, selectDropDownList);
+            }
 
             $.each(res, function (index, value) {
                 addMultiSelectList(select, selectDropDownList, value.item1, value.item2);
@@ -606,7 +663,15 @@ function GetChildCategoriesOfBrand(brandId) {
     } else {
         // make empty the select
         select.querySelectorAll('*').forEach(n => n.remove());
-        selectDropDownList.querySelectorAll('div:not([class])').forEach(n => n.remove());
+        selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+        if (select.hasAttribute('select-all')) {
+            if (select.attributes['select-all'].value == 'true') {
+                multiSelectAll(select, selectDropDownList);
+            }
+        } else {
+            multiSelectAll(select, selectDropDownList);
+        }
     }
 
     multiSelectRefresh(select, selectDropDown);

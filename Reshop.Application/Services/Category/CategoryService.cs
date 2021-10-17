@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Category;
 using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
+using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Interfaces.Category;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Application.Enums;
-using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Application.Services.Category
 {
@@ -33,9 +33,8 @@ namespace Reshop.Application.Services.Category
             return _categoryRepository.GetChildCategories();
         }
 
-        public IEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown()
-            =>
-                _categoryRepository.GetCategoriesDropdown();
+        public IEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown() =>
+            _categoryRepository.GetCategoriesDropdown();
 
         public async Task<Domain.Entities.Category.Category> GetCategoryByIdAsync(int categoryId)
         {
@@ -275,18 +274,82 @@ namespace Reshop.Application.Services.Category
             }
         }
 
+        public async Task<ResultTypes> AddCategoryGalleryAsync(CategoryGallery categoryGallery)
+        {
+            try
+            {
+                await _categoryRepository.AddCategoryGalleryAsync(categoryGallery);
+
+                await _categoryRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<CategoryGallery> GetCategoryGalleryAsync(int categoryId, string imageName) =>
+            await _categoryRepository.GetCategoryGalleryAsync(categoryId, imageName);
+
+        public async Task<ResultTypes> DeleteCategoryGalleryAsync(CategoryGallery categoryGallery)
+        {
+            try
+            {
+                _categoryRepository.RemoveCategoryGallery(categoryGallery);
+
+                await _categoryRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> EditCategoryGalleryAsync(CategoryGallery categoryGallery)
+        {
+            try
+            {
+                _categoryRepository.UpdateCategoryGallery(categoryGallery);
+
+                await _categoryRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<AddOrEditCategoryViewModel> GetCategoryDataAsync(int categoryId)
         {
             var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
             var childCategories = _categoryRepository.GetChildCategories();
             var childCategoriesOfCategory = _categoryRepository.GetChildCategoriesIdOfCategory(categoryId);
+            var imagesName = _categoryRepository.GetCategoryGalleryImagesNameAndUrl(category.CategoryId).ToList();
 
             return new AddOrEditCategoryViewModel()
             {
                 CategoryId = category.CategoryId,
                 CategoryTitle = category.CategoryTitle,
                 ChildCategories = childCategories,
-                SelectedChildCategories = childCategoriesOfCategory
+                SelectedChildCategories = childCategoriesOfCategory,
+                SelectedImage1IMG = imagesName.Skip(0).First().Item1,
+                SelectedImage2IMG = imagesName.Skip(1).First().Item1,
+                SelectedImage3IMG = imagesName.Skip(2).First().Item1,
+                SelectedImage4IMG = imagesName.Skip(3).First().Item1,
+                SelectedImage5IMG = imagesName.Skip(4).First().Item1,
+                SelectedImage6IMG = imagesName.Skip(5).First().Item1,
+                SelectedImage1URL = imagesName.Skip(0).First().Item2,
+                SelectedImage2URL = imagesName.Skip(1).First().Item2,
+                SelectedImage3URL = imagesName.Skip(2).First().Item2,
+                SelectedImage4URL = imagesName.Skip(3).First().Item2,
+                SelectedImage5URL = imagesName.Skip(4).First().Item2,
+                SelectedImage6URL = imagesName.Skip(5).First().Item2,
             };
         }
 

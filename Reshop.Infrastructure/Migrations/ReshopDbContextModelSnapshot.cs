@@ -36,6 +36,28 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Category.CategoryGallery", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageName")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("OrderBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryId", "ImageName");
+
+                    b.ToTable("CategoryGalleries");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Category.ChildCategory", b =>
                 {
                     b.Property<int>("ChildCategoryId")
@@ -120,6 +142,11 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LatinBrandName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<int>("StoreTitleId")
                         .HasColumnType("int");
 
@@ -201,10 +228,15 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LatinOfficialBrandProductName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("OfficialBrandProductName")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("OfficialBrandProductId");
 
@@ -2265,11 +2297,18 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<int>("ConstructionQuality")
                         .HasColumnType("int");
 
+                    b.Property<string>("DeleteDescription")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int>("DesignAndAppearance")
                         .HasColumnType("int");
 
                     b.Property<int>("FeaturesAndCapabilities")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
 
                     b.Property<int>("LikeCount")
                         .HasColumnType("int");
@@ -2298,6 +2337,31 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.CommentFeedback", b =>
+                {
+                    b.Property<int>("LikeCommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Type")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LikeCommentId");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentFeedBacks");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Discount", b =>
@@ -2484,6 +2548,47 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("QuestionAnswers");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportComment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("ReportCommentTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CommentId", "UserId");
+
+                    b.HasIndex("ReportCommentTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReportComments");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportCommentType", b =>
+                {
+                    b.Property<int>("ReportCommentTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ReportCommentTitle")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ReportCommentTypeId");
+
+                    b.ToTable("ReportCommentTypes");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.Role", b =>
                 {
                     b.Property<string>("RoleId")
@@ -2668,6 +2773,17 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasKey("WalletTypeId");
 
                     b.ToTable("WalletTypes");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Category.CategoryGallery", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Category.Category", "Category")
+                        .WithMany("CategoryGalleries")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Category.ChildCategoryToCategory", b =>
@@ -3081,6 +3197,23 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.User.CommentFeedback", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.User.Comment", "Comment")
+                        .WithMany("CommentFeedBacks")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("CommentFeedBacks")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.Order", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.User.Address", "Address")
@@ -3141,6 +3274,33 @@ namespace Reshop.Infrastructure.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportComment", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.User.Comment", "Comment")
+                        .WithMany("ReportComments")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.ReportCommentType", "ReportCommentType")
+                        .WithMany()
+                        .HasForeignKey("ReportCommentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("ReportComments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("ReportCommentType");
 
                     b.Navigation("User");
                 });
@@ -3213,6 +3373,8 @@ namespace Reshop.Infrastructure.Migrations
 
             modelBuilder.Entity("Reshop.Domain.Entities.Category.Category", b =>
                 {
+                    b.Navigation("CategoryGalleries");
+
                     b.Navigation("ChildCategoryToCategories");
                 });
 
@@ -3287,6 +3449,13 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("ShopperTitles");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.User.Comment", b =>
+                {
+                    b.Navigation("CommentFeedBacks");
+
+                    b.Navigation("ReportComments");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.User.Discount", b =>
                 {
                     b.Navigation("UserDiscountCodes");
@@ -3318,6 +3487,8 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     b.Navigation("Addresses");
 
+                    b.Navigation("CommentFeedBacks");
+
                     b.Navigation("Comments");
 
                     b.Navigation("FavoriteProducts");
@@ -3327,6 +3498,8 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("QuestionAnswers");
 
                     b.Navigation("Questions");
+
+                    b.Navigation("ReportComments");
 
                     b.Navigation("UserDiscountCodes");
 

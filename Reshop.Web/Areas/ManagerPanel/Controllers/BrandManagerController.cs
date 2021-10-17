@@ -85,6 +85,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             var brand = new Brand()
             {
                 BrandName = model.BrandName,
+                LatinBrandName = model.LatinBrandName,
                 StoreTitleId = model.SelectedStoreTitleId,
                 IsActive = model.IsActive
             };
@@ -127,7 +128,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (brandId == 0)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
-
             var brand = await _brandService.GetBrandDataByBrandIdAsync(brandId);
 
             if (brand == null)
@@ -149,6 +149,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             var brand = await _brandService.GetBrandByIdAsync(model.BrandId);
 
             brand.BrandName = model.BrandName;
+            brand.LatinBrandName = model.LatinBrandName;
             brand.IsActive = model.IsActive;
             brand.StoreTitleId = model.SelectedStoreTitleId;
 

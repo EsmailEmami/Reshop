@@ -9,6 +9,8 @@ namespace Reshop.Domain.DTOs.Category
         public int CategoryId { get; set; }
         public string CategoryTitle { get; set; }
 
+        public IEnumerable<Tuple<string,string>> CategoryImages { get; set; }
+
         public IEnumerable<ChildCategoriesOfCategoryForDropDown> ChildCategories { get; set; }
     }
 

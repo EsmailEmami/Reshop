@@ -63,15 +63,19 @@ namespace Reshop.Domain.Entities.User
         [Range(0, 100, ErrorMessage = "لطفا عددی بین {1} تا {2} استفاده کنید.")]
         public int OverallScore { get; set; }
 
-        public int LikeCount { get; set; }
+        public bool IsDelete { get; set; } = false;
+
+        [Display(Name = "دلیل حذف")]
+        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string DeleteDescription { get; set; }
 
         #region Relations
 
         public virtual Product.Product Product { get; set; }
-
         public virtual User User { get; set; }
-
         public virtual ShopperProductColor ShopperProductColor { get; set; }
+        public virtual ICollection<ReportComment> ReportComments { get; set; }
+        public virtual ICollection<CommentFeedback> CommentFeedBacks { get; set; }
 
         #endregion
     }

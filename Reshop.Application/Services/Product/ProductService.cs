@@ -81,7 +81,7 @@ namespace Reshop.Application.Services.Product
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
-            IEnumerable<Tuple<int, string>> brandsShow = _brandRepository.GetBrandsOfCategory(categoryId);
+            var brandsShow = _brandRepository.GetBrandsOfCategory(categoryId);
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfCategoryProductsAsync(categoryId, filter, brands);
 
@@ -110,7 +110,7 @@ namespace Reshop.Application.Services.Product
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
-            IEnumerable<Tuple<int, string>> brandsShow = _brandRepository.GetBrandsOfChildCategory(childCategoryId);
+            var brandsShow = _brandRepository.GetBrandsOfChildCategory(childCategoryId);
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfChildCategoryProductsAsync(childCategoryId, filter, brands);
 
@@ -140,7 +140,7 @@ namespace Reshop.Application.Services.Product
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
-            IEnumerable<Tuple<int, string>> officialBrandProductsForShow = _brandRepository.GetBrandOfficialProducts(brandId);
+            var officialBrandProductsForShow = _brandRepository.GetFullBrandOfficialProducts(brandId);
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfBrandProductsAsync(brandId, filter, officialBrandProducts);
 
@@ -318,7 +318,7 @@ namespace Reshop.Application.Services.Product
                 return null;
 
             var childCategories = _categoryRepository.GetProductChildCategories(product.ProductId);
-            var commentsAverage = await _productRepository.GetProductCommentsAverageAsync(product.ProductId);
+            var comments = await _productRepository.GetCommentsOfProductDetailAsync(product.ProductId);
             var productGalleries = _productRepository.GetProductImages(product.ProductId);
             var shoppers = _productRepository.GetProductShoppers(product.ProductId, product.SelectedColor);
             var colors = _colorRepository.GetProductColorsWithDetail(product.ProductId);
@@ -327,7 +327,7 @@ namespace Reshop.Application.Services.Product
             {
                 Product = product,
                 ChildCategories = childCategories,
-                CommentsAverage = commentsAverage,
+                Comments = comments,
                 ProductGalleries = productGalleries,
                 Shoppers = shoppers,
                 Colors = colors

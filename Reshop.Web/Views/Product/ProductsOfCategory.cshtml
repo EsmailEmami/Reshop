@@ -165,10 +165,13 @@
                         }
                         @foreach (var item in Model.Brands)
                         {
-                            <div>
-                                <input type="checkbox" name="brands" value="@item.Item1" @(selectedBrands!.Any(c => c == item.Item1) ? "checked" : "") onclick="submitForm()">
+                        <div>
+                            <input type="checkbox" name="brands" value="@item.Item1" @(selectedBrands!.Any(c => c == item.Item1) ? "checked" : "") onclick="submitForm()">
+                            <span>
                                 <span>@item.Item2</span>
-                            </div>
+                                <span>@item.Item3</span>
+                            </span>
+                        </div>
                         }
                     </div>
                 </div>

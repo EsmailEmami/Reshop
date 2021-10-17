@@ -9,11 +9,19 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="BrandId" />
 
-        <div class="col-sm-12">
+        <div class="col-sm-12 col-lg-7">
             <div class="form-field">
                 <input asp-for="BrandName">
-                <label><i class="far fa-list-alt"></i> نام گروه</label>
+                <label><i class="far fa-list-alt"></i> نام برند</label>
                 <span asp-validation-for="BrandName" class="text-danger"></span>
+            </div>
+        </div>
+        
+        <div class="col-sm-12 col-lg-5">
+            <div class="form-field">
+                <input asp-for="LatinBrandName">
+                <label><i class="far fa-list-alt"></i> نام لاتین برند</label>
+                <span asp-validation-for="LatinBrandName" class="text-danger"></span>
             </div>
         </div>
 

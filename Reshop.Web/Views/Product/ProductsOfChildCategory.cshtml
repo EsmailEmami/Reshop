@@ -168,7 +168,10 @@
                         {
                             <div>
                                 <input type="checkbox" name="brands" value="@item.Item1" @(selectedBrands != null && selectedBrands.Any(c => c == item.Item1) ? "checked" : "") onclick="submitForm()">
-                                <span>@item.Item2</span>
+                                <span>
+                                    <span>@item.Item2</span>
+                                    <span>@item.Item3</span>
+                                </span>
                             </div>
                         }
                     </div>
@@ -328,6 +331,30 @@
             window.location = url;
         }
 
+      
+        $(function () {
+            if (window.innerWidth > 767) {
+                let collapse = document.getElementsByClassName('collapse');
+                for (let i = 0; i < collapse.length; i++) {
+                    collapse[i].classList.add("show");
+                }
+            }
+
+            window.addEventListener('resize', function () {
+                let collapse = document.getElementsByClassName('collapse');
+
+                if (window.innerWidth > 767) {
+
+                    for (let i = 0; i < collapse.length; i++) {
+                        collapse[i].classList.add("show");
+                    }
+                } else {
+                    for (let i = 0; i < collapse.length; i++) {
+                        collapse[i].classList.remove("show");
+                    }
+                }
+            });
+        });
 
     </script>
 }

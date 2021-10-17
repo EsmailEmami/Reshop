@@ -1,21 +1,18 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
+using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Reshop.Application.Convertors;
-using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.Entities.User;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.Product
 {
-
     public class ProductController : Controller
     {
         #region constructor
@@ -107,7 +104,7 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SearchText = search;
 
             ViewBag.SelectedMinPrice = minPrice.ToDecimal();
-            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : (int)result.ProductsMaxPrice;
+            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
 
             return View(result);
         }
@@ -132,7 +129,7 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SearchText = search;
 
             ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : 0;
-            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : (int)result.ProductsMaxPrice;
+            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
 
             return View(result);
         }
@@ -156,14 +153,26 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SearchText = search;
 
             ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : 0;
-            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : (int)result.ProductsMaxPrice;
+            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
 
             return View(result);
         }
 
         [HttpPost]
+        [NoDirectAccess]
         public async Task<IActionResult> AddToFavoriteProduct(string shopperProductColorId)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                var refererUrl = HttpContext.Request.Headers["Referer"].ToString();
+
+                var url = new Uri(refererUrl);
+
+                return Json(new { isValid = false, returnUrl = $"{url.AbsoluteUri}Login?returnUrl={url.LocalPath}" });
+            }
+
+
+
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var result = await _productService.AddFavoriteProductAsync(userId, shopperProductColorId);
@@ -200,14 +209,27 @@ namespace Reshop.Web.Controllers.Product
             return ViewComponent("ProductCommentsComponent", new { productId, pageId, type });
         }
 
-        [Authorize]
         [HttpPost]
+        [NoDirectAccess]
         public async Task<IActionResult> AddComment(NewCommentViewModel model)
         {
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "_NewComment", model) });
 
+            if (!User.Identity.IsAuthenticated)
+            {
+                var refererUrl = HttpContext.Request.Headers["Referer"].ToString();
+
+                var url = new Uri(refererUrl);
+
+                return Json(new { isValid = false, returnUrl = $"{url.AbsoluteUri}Login?returnUrl={url.LocalPath}" });
+            }
+
+
+
+
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
 
             string isBought = await _cartService.IsUserBoughtProductAsync(userId, model.ProductId);
 

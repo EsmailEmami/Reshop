@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
@@ -120,6 +121,11 @@ namespace Reshop.Infrastructure.Repository.User
                     QuestionOrCommentTitle = c.CommentTitle,
                     SentDate = c.CommentDate
                 });
+
+        public IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId) =>
+            _context.Users.Where(c => c.UserId == userId)
+                .SelectMany(c => c.CommentFeedBacks)
+                .Select(c => new Tuple<int, bool>(c.CommentId, c.Type));
 
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();

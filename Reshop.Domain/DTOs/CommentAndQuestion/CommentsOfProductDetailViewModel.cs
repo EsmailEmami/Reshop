@@ -2,8 +2,17 @@
 
 namespace Reshop.Domain.DTOs.CommentAndQuestion
 {
-    public class CommentsAverageViewModel
+    public class CommentsOfProductDetailViewModel
     {
+        public int AllCommentsCount { get; set; }
+
+        public double CommentsScore { get; set; }
+
+        public int SuggestedBuyersCounts { get; set; }
+
+        public int SuggestedCommentsCounts { get; set; }
+
+        // AVG
         public int ProductSatisfaction { get; set; }
 
         public int ConstructionQuality { get; set; }

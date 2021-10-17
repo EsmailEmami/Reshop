@@ -33,55 +33,131 @@
     $('body').prepend('<div class="mobile-nav-overly"></div>');
 }
 
+function imageZoom(imgID, resultID) {
+    var img, lens, result, cx, cy;
+    img = document.getElementById(imgID);
+    result = document.getElementById(resultID);
+    /*create lens:*/
 
-// loader
-
-
-//$(document).ajaxStart(function () {
-
-//    alert("start");
-
-//    setTimeout(function () {
-//        $(".loader").fadeOut(1000);
-//    }, 500);
-//});
-
-// loader
+    lens = document.querySelector('.img-zoom-lens');
 
 
-//let megaDropDowns = $(".main-nav .mega-dropdown");
-
-//for (let i = 0; i < megaDropDowns.length; i++) {
-//    let megaDropDown = megaDropDowns[i];
-
-//    let childs = megaDropDown.childNodes;
-
-//    console.log(childs);
+    if (lens == null) {
+        lens = document.createElement("DIV");
+        lens.setAttribute("class", "img-zoom-lens");
+        /*insert lens:*/
+        img.parentElement.insertBefore(lens, img);
+    }
 
 
-//    let ulCount = 0;
-//    let width = 42;
-
-//    for (let child = 0; child < childs.length; child++) {
-//        if (childs[child].localName == "ul") {
-//            ulCount++;
-
-//            width = width + Math.round(childs[child].clientWidth);
-//        }
-//    }
+    lens.style.display = "block";
 
 
-//    if (ulCount > 3) {
-//        megaDropDown.style.width = "100%";
-//    }
 
-//    if (ulCount < 4) {
-//        megaDropDown.parentElement.style.position = "relative";
-//        megaDropDown.style.right = "0";
-//    }
+    pos = getCursorPos();
+    /*calculate the position of the lens:*/
+    var x = pos.x - (lens.offsetWidth / 2);
+    var y = pos.y - (lens.offsetHeight / 2);
+    /*prevent the lens from being positioned outside the image:*/
+    if (x > img.width - lens.offsetWidth) {
+        x = img.width - lens.offsetWidth;
+    }
+    if (x < 0) {
+        x = 0;
+    }
+    if (y > img.height - lens.offsetHeight) {
+        y = img.height - lens.offsetHeight;
+    }
+    if (y < 0) {
+        y = 0;
+    }
+    /*set the position of the lens:*/
+    lens.style.left = x + "px";
+    lens.style.top = y + "px";
 
-//    megaDropDown.style.width = width + "px";
-//}
+
+
+    /*calculate the ratio between result DIV and lens:*/
+    cx = result.offsetWidth / lens.offsetWidth;
+    cy = result.offsetHeight / lens.offsetHeight;
+    /*set background properties for the result DIV:*/
+    result.style.backgroundImage = "url('" + img.src + "')";
+    result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
+    /*execute a function when someone moves the cursor over the image, or the lens:*/
+    lens.addEventListener("mousemove", moveLens);
+    img.addEventListener("mousemove", moveLens);
+
+
+    lens.addEventListener("mouseout", mouseOut);
+
+
+    /*and also for touch screens:*/
+    lens.addEventListener("touchmove", moveLens);
+    img.addEventListener("touchmove", moveLens);
+
+    function moveLens(e) {
+
+        if (lens.style.display != "block") {
+            return;
+        }
+
+
+
+        result.style.visibility = "visible";
+        result.style.opacity = 1;
+
+        var pos, x, y;
+        /*prevent any other actions that may occur when moving over the image:*/
+        e.preventDefault();
+        /*get the cursor's x and y positions:*/
+        pos = getCursorPos(e);
+        /*calculate the position of the lens:*/
+        x = pos.x - (lens.offsetWidth / 2);
+        y = pos.y - (lens.offsetHeight / 2);
+        /*prevent the lens from being positioned outside the image:*/
+        if (x > img.width - lens.offsetWidth) {
+            x = img.width - lens.offsetWidth;
+        }
+        if (x < 0) {
+            x = 0;
+        }
+        if (y > img.height - lens.offsetHeight) {
+            y = img.height - lens.offsetHeight;
+        }
+        if (y < 0) {
+            y = 0;
+        }
+        /*set the position of the lens:*/
+        lens.style.left = x + "px";
+        lens.style.top = y + "px";
+        /*display what the lens "sees":*/
+        result.style.backgroundPosition = "-" + (x * cx) + "px -" + (y * cy) + "px";
+    }
+
+    function getCursorPos(e) {
+        var a, x = 0,
+            y = 0;
+        e = e || window.event;
+        /*get the x and y positions of the image:*/
+        a = img.getBoundingClientRect();
+        /*calculate the cursor's x and y coordinates, relative to the image:*/
+        x = e.pageX - a.left;
+        y = e.pageY - a.top;
+        /*consider any page scrolling:*/
+        x = x - window.pageXOffset;
+        y = y - window.pageYOffset;
+        return {
+            x: x,
+            y: y
+        };
+    }
+
+    function mouseOut() {
+        result.style.visibility = "hidden";
+        result.style.opacity = 0;
+        lens.style.display = "none";
+    }
+}
 
 $(window).scroll(function () {
     if ($(this).scrollTop() > 80 && window.innerWidth > 991) {
@@ -135,20 +211,18 @@ function ShowToast(type, text, returnUrl) {
 
 function BrandFilter(input) {
 
-    let txt, txtValue, checkbox;
+    let div = $(".main-filter .filter-by-brand .brands div");
+    let persian = $(".main-filter .filter-by-brand .brands span span:nth-child(1)");
+    let latin = $(".main-filter .filter-by-brand .brands span span:nth-child(2)");
 
-    txt = $(".main-filter .filter-by-brand .brands span");
-    checkbox = $(".main-filter .filter-by-brand .brands input[type=checkbox]");
 
-    for (i = 0; i < txt.length; i++) {
+    for (let i = 0; i < persian.length; i++) {
 
-        txtValue = txt[i].textContent || txt[i].innerText;
+        let txtValue = (persian[i].textContent || persian[i].innerText) + " " + (latin[i].textContent || latin[i].innerText);
         if (txtValue.indexOf(input.value) > -1) {
-            txt[i].style.display = "";
-            checkbox[i].style.display = "";
+            div[i].style.display = "";
         } else {
-            txt[i].style.display = "none";
-            checkbox[i].style.display = "none";
+            div[i].style.display = "none";
         }
     }
 
@@ -167,14 +241,12 @@ function ResetBrandFilterValue(btn) {
 
     btn.setAttribute("style", "");
 
-    let txt = $(".main-filter .filter-by-brand .brands span");
-    let checkbox = $(".main-filter .filter-by-brand .brands input[type=checkbox]");
+    let div = $(".main-filter .filter-by-brand .brands div");
 
-    for (i = 0; i < txt.length; i++) {
-        txt[i].style.display = "";
-        checkbox[i].style.display = "";
+
+    for (let i = 0; i < div.length; i++) {
+        div[i].style.display = "";
     }
-
 }
 
 function commaSep(number) {

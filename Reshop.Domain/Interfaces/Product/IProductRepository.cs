@@ -161,7 +161,7 @@ namespace Reshop.Domain.Interfaces.Product
         IEnumerable<Question> GetProductQuestions(int productId);
         Task<int> GetCommentsCountOfProductWithTypeAsync(int productId, string type = "all");
         IEnumerable<ProductCommentsForShow> GetProductCommentsWithPagination(int productId, int skip = 1, int take = 30, string type = "news");
-        Task<CommentsAverageViewModel> GetProductCommentsAverageAsync(int productId);
+        Task<CommentsOfProductDetailViewModel> GetCommentsOfProductDetailAsync(int productId);
         Task AddCommentAsync(Comment comment);
 
         #endregion

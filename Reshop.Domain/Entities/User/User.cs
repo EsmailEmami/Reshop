@@ -77,6 +77,8 @@ namespace Reshop.Domain.Entities.User
         public virtual ICollection<Wallet> Wallets { get; set; }
         public virtual ICollection<UserDiscountCode> UserDiscountCodes { get; set; }
         public virtual ICollection<UserInvite> UserInvites { get; set; }
+        public virtual ICollection<ReportComment> ReportComments { get; set; }
+        public virtual ICollection<CommentFeedback> CommentFeedBacks { get; set; }
 
         #endregion
     }

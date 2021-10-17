@@ -9,8 +9,8 @@ namespace Reshop.Domain.Interfaces.Product
     {
         #region brand
 
-        IEnumerable<Tuple<int, string>> GetBrandsOfCategory(int categoryId);
-        IEnumerable<Tuple<int, string>> GetBrandsOfChildCategory(int childCategoryId);
+        IEnumerable<Tuple<int, string, string>> GetBrandsOfCategory(int categoryId);
+        IEnumerable<Tuple<int, string, string>> GetBrandsOfChildCategory(int childCategoryId);
         IEnumerable<Tuple<int, string>> GetChildCategoriesOfBrand(int brandId);
         Task<Brand> GetBrandByIdAsync(int brandId);
         IEnumerable<Tuple<int, string>> GetBrandsForShow();
@@ -28,6 +28,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         IEnumerable<Tuple<int, string, bool>> GetOfficialBrandProductsForShow(int skip, int take, string filter = "");
         IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId);
+        IEnumerable<Tuple<int, string, string>> GetFullBrandOfficialProducts(int brandId);
         IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId);
         Task<int> GetOfficialBrandProductsCountAsync();
         Task<OfficialBrandProduct> GetOfficialBrandProductByIdAsync(int officialBrandProductId);

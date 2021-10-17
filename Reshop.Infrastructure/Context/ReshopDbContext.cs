@@ -24,6 +24,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<ChildCategory> ChildCategories { get; set; }
         public virtual DbSet<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
         public virtual DbSet<ProductToChildCategory> ProductToChildCategories { get; set; }
+        public virtual DbSet<CategoryGallery> CategoryGalleries { get; set; }
 
         #endregion
 
@@ -36,6 +37,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<OfficialBrandProduct> OfficialBrandProducts { get; set; }
         public virtual DbSet<Color> Colors { get; set; }
+        public virtual DbSet<BrandToChildCategory> BrandToChildCategories { get; set; }
 
         public virtual DbSet<LaptopDetail> LaptopDetails { get; set; }
         public virtual DbSet<MobileDetail> MobileDetails { get; set; }
@@ -57,6 +59,9 @@ namespace Reshop.Infrastructure.Context
 
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<ReportComment> ReportComments { get; set; }
+        public virtual DbSet<ReportCommentType> ReportCommentTypes { get; set; }
+        public virtual DbSet<CommentFeedback> CommentFeedBacks { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Question> Questions { get; set; }
@@ -72,7 +77,6 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<RolePermission> RolePermissions { get; set; }
-        public virtual DbSet<BrandToChildCategory> BrandToChildCategories { get; set; }
 
         #endregion
 
@@ -105,11 +109,17 @@ namespace Reshop.Infrastructure.Context
             modelBuilder.Entity<UserRole>()
                 .HasKey(c => new { c.UserId, c.RoleId });
 
+            modelBuilder.Entity<ReportComment>()
+                .HasKey(c => new { c.CommentId, c.UserId });
+
             modelBuilder.Entity<ShopperStoreTitle>()
                 .HasKey(c => new { c.ShopperId, c.StoreTitleId });
 
             modelBuilder.Entity<ProductGallery>()
                 .HasKey(c => new { c.ProductId, c.ImageName });
+
+            modelBuilder.Entity<CategoryGallery>()
+                .HasKey(c => new { c.CategoryId, c.ImageName });
 
             modelBuilder.Entity<RolePermission>()
                 .HasKey(c => new { c.RoleId, c.PermissionId });

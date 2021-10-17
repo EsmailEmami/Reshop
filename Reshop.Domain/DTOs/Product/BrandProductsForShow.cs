@@ -10,7 +10,7 @@ namespace Reshop.Domain.DTOs.Product
         public IEnumerable<ProductViewModel> Products { get; set; }
         public int PageId { get; set; }
         public int TotalPages { get; set; }
-        public IEnumerable<Tuple<int, string>> OfficialBrandProducts { get; set; }
+        public IEnumerable<Tuple<int, string, string>> OfficialBrandProducts { get; set; }
 
         public decimal ProductsMaxPrice { get; set; }
     }

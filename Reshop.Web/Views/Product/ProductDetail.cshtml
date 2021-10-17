@@ -4,12 +4,14 @@
     ViewData["Title"] = $"مشخصات کالای {Model.Product.Title.Replace(" ", "-")}";
 }
 
+<div id="image-big-container" class="img-zoom-result"></div>
+
 <div class="row">
     <div class="col-xs-12 col-lg-4 mb-3 mb-lg-0">
 
         <div class="img-detail box-shadow">
             <div class="show-img-product">
-                <img id="zoom" src="/images/ProductImages/@Model.ProductGalleries.First().ImageName" alt="@Model.Product.Title">
+                <img id="zoom" onclick="imageZoom('zoom', 'image-big-container')" src="/images/ProductImages/@Model.ProductGalleries.First().ImageName" alt="@Model.Product.Title">
             </div>
 
             <!-- start slider product picture -->
@@ -35,29 +37,23 @@
 
             <div class="pro-data">
 
+                @{ int rattingScore = (int)Model.Comments.CommentsScore;}
+
                 <div class="ratting-star">
-                    <span>(1 نفر)</span>
+                    <span>(@Model.Comments.AllCommentsCount.NumSplitter() نفر)</span>
+                    <span>(@Model.Comments.CommentsScore از 5) </span>
                     <ul>
-                        <li>
-                            <i class="far fa-star"></i>
-                        </li>
-                        <li>
-                            <i class="far fa-star"></i>
-                        </li>
-                        <li class="checked">
-                            <i class="far fa-star"></i>
-                        </li>
-                        <li class="checked">
-                            <i class="far fa-star"></i>
-                        </li>
-                        <li class="checked">
-                            <i class="far fa-star"></i>
-                        </li>
+                        @for (int i = 1; i < 6; i++)
+                        {
+                            <li class="@( i<= rattingScore?"checked":"")">
+                                <i class="far fa-star"></i>
+                            </li>
+                        }
                     </ul>
                 </div>
 
                 <div>
-                    <h2><i class="far fa-tags"></i> دسته بندی:</h2>
+                    <h2><i class="far fa-tags"></i> دسته بندی: </h2>
 
                     @foreach (var item in Model.ChildCategories)
                     {
@@ -65,9 +61,9 @@
                            asp-route-childCategoryId="@item.ChildCategoryId"
                            asp-route-childCategoryName="@item.ChildCategoryTitle.Replace(" ","-")">@item.ChildCategoryTitle</a>
                     }
-                </div> 
+                </div>
                 <div>
-                    <h2><i class="far fa-building"></i> برند:</h2>
+                    <h2><i class="far fa-building"></i> برند: </h2>
                     <a asp-controller="Product" asp-action="ProductsOfBrand"
                        asp-route-brandId="@Model.Product.Brand.Item1"
                        asp-route-brandName="@Model.Product.Brand.Item2.Replace(" ","-")">@Model.Product.Brand.Item2</a>
@@ -166,7 +162,7 @@
             </div>
             <hr>
             <span class="satisfaction">
-                <i class="far fa-award"></i> <span>23 کاربر</span> از این محصول رضایت داشتند.
+                <i class="far fa-award"></i> <span>@Model.Comments.SuggestedBuyersCounts خریدار</span> از این محصول رضایت داشتند.
             </span>
         </div>
     </div>
@@ -240,34 +236,34 @@
 
             <div class="detail-comments" id="comment-section">
                 <h5>امتیاز کاربران:</h5>
-                <p class="positive-comment">( این محصول <span>25 بازخورد مثبت</span> داشته است. )</p>
+                <p class="positive-comment">( این محصول <span>@Model.Comments.SuggestedCommentsCounts بازخورد مثبت</span> داشته است. )</p>
                 <div class="row">
                     <div class="col-sm-12 col-md-6 mb-2">
                         <span class="percent-title">میزان رضایت مندی از محصول</span>
-                        <span class="percent-num">( @Model.CommentsAverage.ProductSatisfaction% )</span>
+                        <span class="percent-num">( @Model.Comments.ProductSatisfaction% )</span>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.CommentsAverage.ProductSatisfaction" aria-valuemin="0" aria-valuemax="100" style="width: @Model.CommentsAverage.ProductSatisfaction%"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.Comments.ProductSatisfaction" aria-valuemin="0" aria-valuemax="100" style="width: @Model.Comments.ProductSatisfaction%"></div>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 mb-2">
                         <span class="percent-title">امکانات و قابلیت ها</span>
-                        <span class="percent-num">( @Model.CommentsAverage.FeaturesAndCapabilities% )</span>
+                        <span class="percent-num">( @Model.Comments.FeaturesAndCapabilities% )</span>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.CommentsAverage.FeaturesAndCapabilities" aria-valuemin="0" aria-valuemax="100" style="width: @Model.CommentsAverage.FeaturesAndCapabilities%"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.Comments.FeaturesAndCapabilities" aria-valuemin="0" aria-valuemax="100" style="width: @Model.Comments.FeaturesAndCapabilities%"></div>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 mb-2">
                         <span class="percent-title">کیفیت ساخت</span>
-                        <span class="percent-num">( @Model.CommentsAverage.ConstructionQuality% )</span>
+                        <span class="percent-num">( @Model.Comments.ConstructionQuality% )</span>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.CommentsAverage.ConstructionQuality" aria-valuemin="0" aria-valuemax="100" style="width: @Model.CommentsAverage.ConstructionQuality%"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.Comments.ConstructionQuality" aria-valuemin="0" aria-valuemax="100" style="width: @Model.Comments.ConstructionQuality%"></div>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 mb-2">
                         <span class="percent-title">طراحی و ظاهر</span>
-                        <span class="percent-num">( @Model.CommentsAverage.DesignAndAppearance% )</span>
+                        <span class="percent-num">( @Model.Comments.DesignAndAppearance% )</span>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.CommentsAverage.DesignAndAppearance" aria-valuemin="0" aria-valuemax="100" style="width: @Model.CommentsAverage.DesignAndAppearance%"></div>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="@Model.Comments.DesignAndAppearance" aria-valuemin="0" aria-valuemax="100" style="width: @Model.Comments.DesignAndAppearance%"></div>
                         </div>
                     </div>
                 </div>

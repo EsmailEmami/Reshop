@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\images\categoryImages\" />
     <Folder Include="wwwroot\images\ProductImages\" />
     <Folder Include="wwwroot\images\shoppersCardImages\" />
   </ItemGroup>

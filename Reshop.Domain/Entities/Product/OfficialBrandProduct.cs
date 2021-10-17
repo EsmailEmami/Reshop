@@ -15,9 +15,13 @@ namespace Reshop.Domain.Entities.Product
 
         [Display(Name = "نام رسمی محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string OfficialBrandProductName { get; set; }
 
+        [Display(Name = "نام لاتین")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string LatinOfficialBrandProductName { get; set; }
 
         [ForeignKey("Brand")]
         public int BrandId { get; set; }

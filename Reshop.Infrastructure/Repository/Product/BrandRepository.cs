@@ -22,18 +22,18 @@ namespace Reshop.Infrastructure.Repository.Product
 
         #endregion
 
-        public IEnumerable<Tuple<int, string>> GetBrandsOfCategory(int categoryId) =>
+        public IEnumerable<Tuple<int, string, string>> GetBrandsOfCategory(int categoryId) =>
             _context.ChildCategoryToCategories
                 .Where(c => c.CategoryId == categoryId)
                 .Select(c => c.ChildCategory)
                 .SelectMany(c => c.BrandToChildCategories)
                 .Select(c => c.Brand)
-                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName)).Distinct();
+                .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName)).Distinct();
 
-        public IEnumerable<Tuple<int, string>> GetBrandsOfChildCategory(int childCategoryId) =>
+        public IEnumerable<Tuple<int, string, string>> GetBrandsOfChildCategory(int childCategoryId) =>
             _context.BrandToChildCategories.Where(c => c.ChildCategoryId == childCategoryId)
                 .Select(c => c.Brand)
-                .Select(c => new Tuple<int, string>(c.BrandId, c.BrandName));
+                .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName));
 
         public IEnumerable<Tuple<int, string>> GetChildCategoriesOfBrand(int brandId) =>
             _context.BrandToChildCategories.Where(c => c.BrandId == brandId)
@@ -85,6 +85,12 @@ namespace Reshop.Infrastructure.Repository.Product
             _context.Brands.Where(c => c.BrandId == brandId)
                 .SelectMany(c => c.OfficialBrandProducts)
                 .Select(c => new Tuple<int, string>(c.OfficialBrandProductId, c.OfficialBrandProductName));
+
+        public IEnumerable<Tuple<int, string, string>> GetFullBrandOfficialProducts(int brandId) =>
+            _context.Brands.Where(c => c.BrandId == brandId)
+                .SelectMany(c => c.OfficialBrandProducts)
+                .Select(c => new Tuple<int, string, string>(c.OfficialBrandProductId, c.OfficialBrandProductName, c.LatinOfficialBrandProductName));
+
 
         public IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId) =>
             _context.OfficialBrandProducts.Where(c => c.OfficialBrandProductId == officialProductId)
