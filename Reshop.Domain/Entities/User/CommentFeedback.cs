@@ -8,10 +8,6 @@ namespace Reshop.Domain.Entities.User
         public CommentFeedback()
         {
         }
-
-        [Key]
-        public int LikeCommentId { get; set; }
-
         [ForeignKey("Comment")]
         public int CommentId { get; set; }
 

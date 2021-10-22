@@ -10,6 +10,8 @@ using Reshop.Domain.Entities.User;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Enums.User;
+using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.Controllers.Product
 {
@@ -19,11 +21,13 @@ namespace Reshop.Web.Controllers.Product
 
         private readonly IProductService _productService;
         private readonly ICartService _cartService;
+        private readonly IUserService _userService;
 
-        public ProductController(IProductService productService, ICartService cartService)
+        public ProductController(IProductService productService, ICartService cartService, IUserService userService)
         {
             _productService = productService;
             _cartService = cartService;
+            _userService = userService;
         }
 
         #endregion
@@ -160,19 +164,9 @@ namespace Reshop.Web.Controllers.Product
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs]
         public async Task<IActionResult> AddToFavoriteProduct(string shopperProductColorId)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                var refererUrl = HttpContext.Request.Headers["Referer"].ToString();
-
-                var url = new Uri(refererUrl);
-
-                return Json(new { isValid = false, returnUrl = $"{url.AbsoluteUri}Login?returnUrl={url.LocalPath}" });
-            }
-
-
-
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var result = await _productService.AddFavoriteProductAsync(userId, shopperProductColorId);
@@ -211,22 +205,11 @@ namespace Reshop.Web.Controllers.Product
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs]
         public async Task<IActionResult> AddComment(NewCommentViewModel model)
         {
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "_NewComment", model) });
-
-            if (!User.Identity.IsAuthenticated)
-            {
-                var refererUrl = HttpContext.Request.Headers["Referer"].ToString();
-
-                var url = new Uri(refererUrl);
-
-                return Json(new { isValid = false, returnUrl = $"{url.AbsoluteUri}Login?returnUrl={url.LocalPath}" });
-            }
-
-
-
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -270,6 +253,152 @@ namespace Reshop.Web.Controllers.Product
                 ModelState.AddModelError("", "متاسفانه هنگام افزودن بازخورد شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "_NewComment", model) });
             }
+        }
+
+        [HttpGet]
+        [PermissionJs]
+        [NoDirectAccess]
+        public async Task<IActionResult> ReportComment(int commentId)
+        {
+            if (commentId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (await _userService.IsReportCommentTimeLockAsync(userId, commentId))
+                return Json(new { isValid = false, errorType = "warning", errorText = "لطفا چند دقیقه دیگر تلاش کنید." });
+
+
+            var model = new AddReportCommentViewModel()
+            {
+                CommentId = commentId,
+                Types = _userService.GetReportCommentTypes()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [PermissionJs]
+        [NoDirectAccess]
+        public async Task<IActionResult> ReportComment(AddReportCommentViewModel model)
+        {
+            model.Types = _userService.GetReportCommentTypes();
+
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+
+            if (model.SelectedType == 0)
+            {
+                ModelState.AddModelError("Types", "لطفا عنوان گزارش را انتخاب کنید.");
+
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var res = await _userService.ReportCommentByUserAsync(userId, model);
+
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+        }
+
+        [HttpPost]
+        [PermissionJs]
+        [NoDirectAccess]
+        public async Task<IActionResult> RemoveCommentFromReport(int commentId)
+        {
+            if (commentId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (await _userService.IsReportCommentTimeLockAsync(userId, commentId))
+                return Json(new { isValid = false, errorType = "warning", errorText = "لطفا چند دقیقه دیگر تلاش کنید." });
+
+
+            var res = await _userService.RemoveReportCommentByUserAsync(userId, commentId);
+
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+            }
+        }
+
+        [HttpPost]
+        [PermissionJs]
+        [NoDirectAccess]
+        public async Task<IActionResult> LikeOrDisLikeComment(int commentId, string type)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var res = await _userService.AddCommentFeedBackAsync(userId, commentId, type);
+
+            return res switch
+            {
+                CommentFeedBackType.LikeAdded => Json(new
+                {
+                    isValid = true,
+                    where = "LikeAdded",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت ثبت شد."
+                }),
+                CommentFeedBackType.DislikeAdded => Json(new
+                {
+                    isValid = true,
+                    where = "DislikeAdded",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت ثبت شد."
+                }),
+                CommentFeedBackType.LikeRemoved => Json(new
+                {
+                    isValid = true,
+                    where = "LikeRemoved",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت حذف شد."
+                }),
+                CommentFeedBackType.DislikeRemoved => Json(new
+                {
+                    isValid = true,
+                    where = "DislikeRemoved",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت حذف شد."
+                }),
+                CommentFeedBackType.LikeEdited => Json(new
+                {
+                    isValid = true,
+                    where = "LikeEdited",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت تغییر یافت."
+                }),
+                CommentFeedBackType.DislikeEdited => Json(new
+                {
+                    isValid = true,
+                    where = "DislikeEdited",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت تغییر یافت."
+                }),
+                CommentFeedBackType.Error => Json(new
+                {
+                    isValid = false,
+                    errorType = "danger",
+                    errorText = "متاسفانه مشکلی پیش آمده است."
+                }),
+                _ => Json(new { isValid = false, errorType = "danger", errorText = "متاسفانه مشکلی پیش آمده است." })
+            };
         }
     }
 }

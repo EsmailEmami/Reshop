@@ -1,19 +1,24 @@
 ﻿@model int
 @{
-    ViewData["Title"] = "ارور";
+    ViewData["Title"] = "خطا";
 }
 
 
 @switch (Model)
 {
     case 404:
-    {
-        <h5>error 404</h5>
-        break;
-    }
+        {
+            <div class="error-page">
+                <img src="~/icons/404.svg" alt="صفحه مورد نظر یافت نشد." width="700"/>
+                <h1>ممکن است صفحه ای که به دنبال آن میگردید حذف شده باشد و یا آدرس آن را به درستی وارد نکرده باشید</h1>
+            </div>
+
+
+            break;
+        }
     default:
-    {
-        <h5>error</h5>
-        break;
-    }
+        {
+            <h5>error</h5>
+            break;
+        }
 }

@@ -78,6 +78,10 @@ function ShowModal(url, title) {
         success: function (res) {
 
             if (res.isValid == false) {
+                if (res.returnUrl != null) {
+                    window.location.href = res.returnUrl;
+                }
+
                 ShowToast(res.errorType, res.errorText);
             } else {
                 // modal body 
@@ -247,7 +251,6 @@ function multiSelectAll(select, selectDropdown) {
     selectDropdown.appendChild(op);
 }
 
-
 function GetCitiesOfState(stateId) {
 
     var select = document.getElementById('city');
@@ -332,7 +335,7 @@ function AddComment(form) {
             contentType: false,
             success: function (res) {
                 if (res.isValid) {
-                    if (res.returnUrl  != null && res.returnUrl.toLowerCase() === 'current') {
+                    if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
                         var loc = window.location.href;
                         ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.', loc);
                     } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
@@ -347,7 +350,213 @@ function AddComment(form) {
                     }
 
 
-                    $("#newComment").html(res.html);
+                $("#newComment").html(res.html);
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+function ReportComment(form, name, token) {
+    var commentId = form[0].defaultValue;
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                var reportBtn = 'report-btn' + commentId;
+
+                if (res.isValid) {
+                    // modal body 
+                    $("#modal .modal-body").html('');
+                    // title of modal
+                    $(".modal-header-custom .header-title").html('');
+                    document.getElementById('modal').style.display = 'none';
+
+                    ShowToast('success', 'گزارش شما با موفقیت ثبت شد');
+
+
+                    var tag = document.createElement('form');
+
+                    tag.setAttribute('id', reportBtn);
+                    tag.setAttribute('action', '/Product/RemoveCommentFromReport');
+                    tag.setAttribute('method', 'post');
+                    tag.setAttribute('onsubmit', 'return RemoveReportComment(this)');
+
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'hidden');
+                    input.setAttribute('name', 'commentId');
+                    input.value = commentId;
+
+                    var button = document.createElement('button');
+                    button.setAttribute('type', 'submit');
+                    button.classList.add('badge');
+                    button.innerHTML = "گزارش شده";
+
+                    var validation = document.createElement('input');
+                    validation.setAttribute('name', name);
+                    validation.setAttribute('type', 'hidden');
+                    validation.value = token;
+
+
+                    tag.appendChild(input);
+                    tag.appendChild(button);
+                    tag.appendChild(validation);
+
+
+                    document.getElementById(reportBtn).replaceWith(tag);
+
+                } else
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                $("#modal .modal-body").html(res.html);
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+function RemoveReportComment(form) {
+    var commentId = form[0].defaultValue;
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                var reportBtn = 'report-btn' + commentId;
+
+                if (res.isValid) {
+                    ShowToast('success', 'گزارش شما با موفقیت حذف شد.');
+
+                    var tag = document.createElement('a');
+
+                    tag.setAttribute('id',reportBtn);
+                    tag.innerHTML = "گزارش";
+                    tag.classList.add('badge');
+
+                    var origin = window.location.origin;
+
+                    var url = origin + '/Product/ReportComment?commentId=' + commentId;
+
+                    tag.onclick = function () {
+                        ShowModal(url, 'گزارش بازخورد');
+                    }
+
+                
+
+                    document.getElementById(reportBtn).replaceWith(tag);
+
+                } else {
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                    ShowToast(res.errorType, res.errorText);
+                }
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+function LikeOrDisLikeComment(form) {
+    var commentId = form[0].defaultValue;
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+
+                if (res.isValid) {
+                    var likeBtnId = 'like-btn' + commentId;
+                    var disLikeBtnId = 'dislike-btn' + commentId;
+
+                    var btnLike = document.getElementById(likeBtnId);
+                    var spanLike = btnLike.querySelector('span');
+                    var likeCount = parseInt(spanLike.innerHTML);
+
+                    var btnDislike = document.getElementById(disLikeBtnId);
+                    var spanDislike = btnDislike.querySelector('span');
+                    var dislikeCount = parseInt(spanDislike.innerHTML);
+
+                    switch (res.where) {
+                        case "LikeAdded":
+                            {
+                                btnLike.classList.add('active');
+                                spanLike.innerHTML = likeCount + 1;
+
+                                break;
+                            }
+                        case "DislikeAdded":
+                            {
+                                btnDislike.classList.add('active');
+                                spanDislike.innerHTML = dislikeCount + 1;
+
+                                break;
+                            }
+                        case "LikeRemoved":
+                            {
+                                btnLike.classList.remove('active');
+                                spanLike.innerHTML = likeCount - 1;
+
+                                break;
+                            }
+                        case "DislikeRemoved":
+                            {
+                                btnDislike.classList.remove('active');
+                                spanDislike.innerHTML = dislikeCount - 1;
+
+                                break;
+                            }
+                        case "LikeEdited":
+                            {
+                                btnLike.classList.add('active');
+                                btnDislike.classList.remove('active');
+
+                                spanLike.innerHTML = likeCount + 1;
+                                spanDislike.innerHTML = dislikeCount - 1;
+                                break;
+                            }
+                        case "DislikeEdited":
+                            {
+                                btnDislike.classList.add('active');
+                                btnLike.classList.remove('active');
+
+                                spanDislike.innerHTML = dislikeCount + 1;
+                                spanLike.innerHTML = likeCount - 1;
+                                break;
+                            }
+                    }
+
+                    ShowToast(res.errorType, res.errorText);
+
+                } else {
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                    ShowToast(res.errorType, res.errorText);
+                }
             }
         });
         //to prevent default form submit event

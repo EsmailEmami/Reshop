@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.Product;
@@ -110,6 +109,9 @@ namespace Reshop.Infrastructure.Context
                 .HasKey(c => new { c.UserId, c.RoleId });
 
             modelBuilder.Entity<ReportComment>()
+                .HasKey(c => new { c.CommentId, c.UserId });
+
+            modelBuilder.Entity<CommentFeedback>()
                 .HasKey(c => new { c.CommentId, c.UserId });
 
             modelBuilder.Entity<ShopperStoreTitle>()

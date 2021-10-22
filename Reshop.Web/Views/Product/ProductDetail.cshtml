@@ -4,6 +4,10 @@
     ViewData["Title"] = $"مشخصات کالای {Model.Product.Title.Replace(" ", "-")}";
 }
 
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+
 <div id="image-big-container" class="img-zoom-result"></div>
 
 <div class="row">
@@ -298,9 +302,11 @@
 
 @section AfterMainOptions
 {
-    <partial name="_toast" />
+    <partial name="_Modal" />
 }
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/js/select.js"></script>
 }

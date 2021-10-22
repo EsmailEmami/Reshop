@@ -1,8 +1,10 @@
-﻿using Reshop.Application.Enums;
+﻿using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
+using Reshop.Application.Enums.User;
 using Reshop.Application.Interfaces.User;
+using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
-using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
@@ -17,13 +19,11 @@ namespace Reshop.Application.Services.User
 
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
-        private readonly IShopperRepository _shopperRepository;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IShopperRepository shopperRepository)
+        public UserService(IUserRepository userRepository, IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
-            _shopperRepository = shopperRepository;
         }
 
         #endregion
@@ -45,7 +45,7 @@ namespace Reshop.Application.Services.User
                 NationalCode = user.NationalCode,
                 IsBlocked = user.IsBlocked,
                 Roles = roles,
-                SelectedRoles = userRoles 
+                SelectedRoles = userRoles
             };
         }
 
@@ -179,7 +179,7 @@ namespace Reshop.Application.Services.User
             var userRoles = _roleRepository.GetUserRolesByUserId(user.UserId);
             try
             {
-                if (userRoles is not null)
+                if (userRoles != null)
                 {
                     await foreach (var userRole in userRoles)
                     {
@@ -209,6 +209,152 @@ namespace Reshop.Application.Services.User
 
         public IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId) =>
             _userRepository.GetUserProductCommentsFeedBack(userId, productId);
+
+        public async Task<ResultTypes> ReportCommentByUserAsync(string userId, AddReportCommentViewModel model)
+        {
+            try
+            {
+                if (await _userRepository.IsUserReportCommentExistAsync(userId, model.CommentId))
+                    return ResultTypes.Failed;
+
+
+                var reportComment = new ReportComment()
+                {
+                    UserId = userId,
+                    CommentId = model.CommentId,
+                    Description = model.Description,
+                    ReportCommentTypeId = model.SelectedType,
+                    CreateDate = DateTime.Now
+                };
+
+                await _userRepository.AddReportCommentAsync(reportComment);
+
+                await _userRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> RemoveReportCommentByUserAsync(string userId, int commentId)
+        {
+            try
+            {
+                var reportComment = await _userRepository.GetReportCommentAsync(userId, commentId);
+
+                if (reportComment == null)
+                    return ResultTypes.Failed;
+
+
+                _userRepository.RemoveReportComment(reportComment);
+
+                await _userRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public IEnumerable<ReportCommentType> GetReportCommentTypes() =>
+            _userRepository.GetReportCommentTypes();
+
+        public async Task<bool> IsReportCommentTimeLockAsync(string userId, int commentId) =>
+            await _userRepository.IsReportCommentTimeLockAsync(userId, commentId);
+
+        public IEnumerable<int> GetUserReportCommentsOfProduct(string userId, int productId) =>
+             _userRepository.GetUserReportCommentsOfProduct(userId, productId);
+
+        public async Task<CommentFeedBackType> AddCommentFeedBackAsync(string userId, int commentId, string type)
+        {
+            try
+            {
+                var commentFeedBack = await _userRepository.GetCommentFeedBackAsync(userId, commentId);
+
+                bool boolType;
+
+                if (type.FixedText() == "like")
+                {
+                    boolType = true;
+                }
+                else if (type.FixedText() == "dislike")
+                {
+                    boolType = false;
+                }
+                else
+                {
+                    return CommentFeedBackType.Error;
+                }
+
+
+                // user have no feedback of comment
+                if (commentFeedBack == null)
+                {
+                    var newCommentFeedBack = new CommentFeedback()
+                    {
+                        CommentId = commentId,
+                        UserId = userId,
+                        Type = boolType
+                    };
+
+                    await _userRepository.AddCommentFeedBackAsync(newCommentFeedBack);
+                    await _userRepository.SaveChangesAsync();
+
+
+                    if (boolType)
+                    {
+                        return CommentFeedBackType.LikeAdded;
+                    }
+                    else
+                    {
+                        return CommentFeedBackType.DislikeAdded;
+                    }
+                }
+                else
+                {
+                    if (commentFeedBack.Type == boolType)
+                    {
+                        _userRepository.RemoveCommentFeedBack(commentFeedBack);
+                        await _userRepository.SaveChangesAsync();
+
+                        await _userRepository.SaveChangesAsync();
+
+                        if (boolType)
+                        {
+                            return CommentFeedBackType.LikeRemoved;
+                        }
+                        else
+                        {
+                            return CommentFeedBackType.DislikeRemoved;
+                        }
+                    }
+                    else
+                    {
+                        commentFeedBack.Type = boolType;
+                        _userRepository.UpdateCommentFeedBack(commentFeedBack);
+                        await _userRepository.SaveChangesAsync();
+
+                        if (boolType)
+                        {
+                            return CommentFeedBackType.LikeEdited;
+                        }
+                        else
+                        {
+                            return CommentFeedBackType.DislikeEdited;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return CommentFeedBackType.Error;
+            }
+        }
 
         public async Task<ResultTypes> AddUserAddressAsync(Address address)
         {

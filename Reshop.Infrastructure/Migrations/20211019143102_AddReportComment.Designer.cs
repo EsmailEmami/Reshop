@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reshop.Infrastructure.Context;
 
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    partial class ReshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211019143102_AddReportComment")]
+    partial class AddReportComment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2338,16 +2340,23 @@ namespace Reshop.Infrastructure.Migrations
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.CommentFeedback", b =>
                 {
+                    b.Property<int>("LikeCommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<int>("CommentId")
                         .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Type")
                         .HasColumnType("bit");
 
-                    b.HasKey("CommentId", "UserId");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LikeCommentId");
+
+                    b.HasIndex("CommentId");
 
                     b.HasIndex("UserId");
 
@@ -3200,9 +3209,7 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.HasOne("Reshop.Domain.Entities.User.User", "User")
                         .WithMany("CommentFeedBacks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Comment");
 

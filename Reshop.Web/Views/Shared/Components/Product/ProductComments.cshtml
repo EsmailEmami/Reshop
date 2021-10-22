@@ -65,6 +65,7 @@
 <div class="row mt-4">
     @{
         var userFeedBacks = ViewBag.UserFeedBacks as List<Tuple<int, bool>>;
+        var reportedComments = ViewBag.ReportedComments as List<int>;
     }
 
 
@@ -94,8 +95,23 @@
                         {
                             <span class="badge badge-light">خریدار</span>
                         }
+                        @{
+                            string reportBtn = "report-btn" + item.CommentId;
+                 
+                        }
 
-                        <a href="#" class="badge badge-warning">گزارش</a>
+                        @if (reportedComments.Any(c => c == item.CommentId))
+                        {
+                            <form id="@reportBtn" asp-action="RemoveCommentFromReport" onsubmit="return RemoveReportComment(this)">
+                                <input type="hidden" name="commentId" value="@item.CommentId" />
+                                <button type="submit" class="badge">گزارش شده</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a id="@reportBtn" onclick="ShowModal('@Url.Action("ReportComment", "Product" ,new {commentId = item.CommentId}, Context.Request.Scheme)', 'گزارش بازخورد')" class="badge">گزارش</a>
+                        }
+
                     </div>
                     <div class="comment-text">
                         <h4>@item.CommentTitle</h4>
@@ -117,30 +133,56 @@
                         }
 
                         <div class="d-flex align-items-center flex-row">
-                            <a href="#" class="comment-feed-backs">
-                                <span>@item.FeedBacks.Count(c => c == true).NumSplitter()</span>
+                            @{
+                                string likeBtn = "like-btn" + item.CommentId;
+                                string disLikeBtn = "dislike-btn" + item.CommentId;
+                            }
 
-                                @if (userFeedBacks.Any(c => c.Item1 == item.CommentId))
-                                {
-                                    <i class="fal fa-thumbs-down"></i>
-                                }
-                                else
-                                {
-                                    <i class="fal fa-thumbs-down"></i>
-                                }
-                            </a>
-                            <a href="#" class="comment-feed-backs">
-                                <span>@item.FeedBacks.Count(c => c == false).NumSplitter()</span>
+                            @if (userFeedBacks.Any(c => c.Item1 == item.CommentId && c.Item2 == false))
+                            {
+                                <form asp-action="LikeOrDisLikeComment" asp-route-type="dislike" onsubmit="return LikeOrDisLikeComment(this)">
+                                    <input type="hidden" name="commentId" value="@item.CommentId" />
+                                    <button id="@disLikeBtn" type="submit" class="comment-feed-backs dislike active">
+                                        <span>@item.FeedBacks.Count(c => c == false)</span>
+                                        <i class="fal fa-thumbs-down"></i>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="LikeOrDisLikeComment" asp-route-type="dislike" onsubmit="return LikeOrDisLikeComment(this)">
+                                    <input type="hidden" name="commentId" value="@item.CommentId" />
+                                    <button id="@disLikeBtn" type="submit" class="comment-feed-backs dislike">
+                                        <span>@item.FeedBacks.Count(c => c == false)</span>
+                                        <i class="fal fa-thumbs-down"></i>
+                                    </button>
+                                </form>
+                            }
 
-                                @if (userFeedBacks.Any(c => c.Item1 == item.CommentId))
-                                {
-                                    <i class="fal fa-thumbs-up"></i>
-                                }
-                                else
-                                {
-                                    <i class="fal fa-thumbs-up"></i>
-                                }
-                            </a>
+                            @if (userFeedBacks.Any(c => c.Item1 == item.CommentId && c.Item2))
+                            {
+                                <form asp-action="LikeOrDisLikeComment" asp-route-type="like" onsubmit="return LikeOrDisLikeComment(this)">
+                                    <input type="hidden" name="commentId" value="@item.CommentId" />
+                                    <button id="@likeBtn" type="submit" class="comment-feed-backs like active">
+                                        <span>@item.FeedBacks.Count(c => c == true)</span>
+                                        <i class="fal fa-thumbs-up"></i>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="LikeOrDisLikeComment" asp-route-type="like" onsubmit="return LikeOrDisLikeComment(this)">
+                                    <input type="hidden" name="commentId" value="@item.CommentId" />
+                                    <button id="@likeBtn" type="submit" class="comment-feed-backs like">
+                                        <span>@item.FeedBacks.Count(c => c == true)</span>
+                                        <i class="fal fa-thumbs-up"></i>
+                                    </button>
+                                </form>
+                            }
+
+
+
+
                         </div>
 
                     </div>

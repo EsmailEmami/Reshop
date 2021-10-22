@@ -1709,9 +1709,31 @@ header .top-menu {
         color: #fff;
     }
 
-        .comment-area .comment-header a.badge {
-            background-color: #e1a715;
+    .comment-area .comment-header form {
+        position: absolute;
+        left: 10px;
+        top: 8px;
+        text-decoration: none;
+        color: #fff;
+    }
+
+
+
+        .comment-area .comment-header form button {
+            background: #ad161c;
+            box-shadow: 0 0 2px #ad161c;
+            border: none;
+            outline: none;
+            padding: 6px;
         }
+
+
+
+    .comment-area .comment-header a.badge {
+        background-color: #e1a715;
+        box-shadow: 0 0 2px #e1a715;
+        cursor: pointer;
+    }
 
     .comment-area .comment-header span.badge {
         padding: 6px;
@@ -1752,7 +1774,6 @@ header .top-menu {
     }
 
     .comment-area .comment-footer .comment-feed-backs {
-        text-decoration: none;
         display: flex;
         align-items: center;
         flex-wrap: nowrap;
@@ -1760,50 +1781,62 @@ header .top-menu {
         border: 2px solid;
         padding: 5px 5px;
         border-radius: 7px;
+        outline: none;
     }
 
-        .comment-area .comment-footer .comment-feed-backs.active {
-            border-width: 1px;
-        }
+    .comment-area .comment-footer .comment-feed-backs.dislike {
+        margin-right: 5px;
+        border-color: #ad161c;
+        background: #ad161cc4;
+        box-shadow: 0 0 2px #ad161cc4;
+    }
 
-        .comment-area .comment-footer .comment-feed-backs:first-of-type {
-            margin-right: 5px;
-            border-color: #ad161c;
-            background: #ad161cc4;
-            box-shadow: 0 0 2px #ad161cc4;
-        }
+    .comment-area .comment-footer .comment-feed-backs.dislike.active {
+        border-color: #ad161c;
+        background: #ad161c;
+        box-shadow: 0 0 2px #ad161c;
+    }
 
-        .comment-area .comment-footer .comment-feed-backs.active:first-of-type {
-            border-color: #ad161c;
-            background: #ad161c;
-            box-shadow: 0 0 2px #ad161c;
-        }
+    .comment-area .comment-footer .comment-feed-backs.like {
+        background: #0ca902c4;
+        box-shadow: 0 0 2px #0ca902c4;
+        border-color: #0ca902;
+    }
 
-        .comment-area .comment-footer .comment-feed-backs:last-of-type {
-            background: #0ca902c4;
-            box-shadow: 0 0 2px #0ca902c4;
-            border-color: #0ca902;
-        }
-
-        .comment-area .comment-footer .comment-feed-backs.active:last-of-type {
+        .comment-area .comment-footer .comment-feed-backs.like.active {
             background: #0ca902;
             box-shadow: 0 0 2px #0ca902;
             border-color: #0ca902;
         }
 
-        .comment-area .comment-footer .comment-feed-backs i {
-            color: #fff;
-            font-size: 19px;
-        }
+    .comment-area .comment-footer .comment-feed-backs i {
+        color: #fff;
+        font-size: 16px;
+    }
 
-        .comment-area .comment-footer .comment-feed-backs span {
-            font-size: 13px;
-            font-weight: bold;
-            color: #fff;
-            display: inline-block;
-            padding-left: 5px;
-            font-family: cursive
-        }
+    .comment-area .comment-footer .comment-feed-backs span {
+        font-size: 11px;
+        font-weight: bold;
+        color: #fff;
+        display: inline-block;
+        padding-left: 5px;
+        font-family: cursive
+    }
+
+
+    .comment-area .comment-footer .comment-feed-backs.active i {
+        color: #fff;
+        font-size: 19px;
+    }
+
+    .comment-area .comment-footer .comment-feed-backs.active span {
+        font-size: 13px;
+        font-weight: bold;
+        color: #fff;
+        display: inline-block;
+        padding-left: 5px;
+        font-family: cursive
+    }
 
 /* -------------------------------------- detail -------------------------------------- */
 
@@ -2801,6 +2834,27 @@ header .top-menu {
         line-height: 28px;
     }
 
+        .basket-empty h1 a {
+            color: #3bb5e9;
+        }
+
+.error-page {
+    display: block;
+    position: relative;
+    width: 100%;
+}
+
+    .error-page img {
+        display: block;
+        width: 530px;
+        margin: 0 auto 20px;
+    }
+
+    .error-page h1 {
+        text-align: center;
+        font-size: 18px;
+        line-height: 28px;
+    }
 
 .cart-box {
     display: flex;

@@ -122,6 +122,13 @@ namespace Reshop.Infrastructure
 
             #endregion
 
+
+            services.AddAntiforgery(options => {
+                options.Cookie.Name = "X-CSRF-TOKEN-RESHOP";
+                options.HeaderName = "X-CSRF-TOKEN-RESHOP";
+                options.FormFieldName = "X-CSRF-TOKEN-RESHOP";
+            });
+
             return services;
         }
     }

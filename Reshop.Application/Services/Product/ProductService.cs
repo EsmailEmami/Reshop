@@ -3,22 +3,21 @@ using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Domain.DTOs.Chart;
+using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
+using Reshop.Domain.Interfaces.Category;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
+using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Domain.DTOs.CommentAndQuestion;
-using Reshop.Domain.Interfaces.Category;
-using Reshop.Domain.Interfaces.Discount;
-using Reshop.Domain.Interfaces.User;
 
 namespace Reshop.Application.Services.Product
 {

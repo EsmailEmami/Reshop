@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Reshop.Domain.Attribute
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class AllowFileSizeAttribute : ValidationAttribute
     {
         #region Public / Protected Properties

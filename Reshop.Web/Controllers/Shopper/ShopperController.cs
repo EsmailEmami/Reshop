@@ -21,7 +21,7 @@ using Reshop.Domain.Entities.User;
 
 namespace Reshop.Web.Controllers.Shopper
 {
-    [Permission("Shopper")]
+    [Permission(PermissionsName = "Shopper")]
     public class ShopperController : Controller
     {
         #region Constructor

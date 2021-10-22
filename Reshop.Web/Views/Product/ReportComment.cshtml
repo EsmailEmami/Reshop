@@ -1,0 +1,48 @@
+﻿@model AddReportCommentViewModel
+
+
+@inject IAntiforgery antiforgery
+@{
+    Layout = null;
+    var tokenSet = antiforgery.GetAndStoreTokens(Context);
+}
+
+
+<form asp-action="ReportComment" method="post" onsubmit="return ReportComment(this,'@tokenSet.FormFieldName','@tokenSet.RequestToken')">
+    <div class="row">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="CommentId" />
+        <div class="col-12">
+            <div class="form-field">
+                <textarea asp-for="Description"></textarea>
+                <label><i class="far fa-list-alt"></i> توضیحات (اختیاری)</label>
+            </div>
+        </div>
+
+
+        <div class="col-12">
+            <select asp-for="SelectedType">
+                <option>عنوان گزارش</option>
+                @foreach (var state in Model.Types)
+                {
+                    @:<option value="@state.ReportCommentTypeId" @(Model.SelectedType == state.ReportCommentTypeId ? "selected" : "")>@state.ReportCommentTitle</option>
+                }
+            </select>
+        </div>
+
+
+        <div class="form-field">
+            <button type="submit" class="btn btn-success">
+                ثبت
+            </button>
+        </div>
+
+    </div>
+</form>
+
+
+<script>
+    inputJs();
+    callSelect();
+</script>

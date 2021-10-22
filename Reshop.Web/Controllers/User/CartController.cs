@@ -7,6 +7,7 @@ using Reshop.Application.Interfaces.User;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Security.Attribute;
 using ZarinpalSandbox;
 
 namespace Reshop.Web.Controllers.User
@@ -27,18 +28,9 @@ namespace Reshop.Web.Controllers.User
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs]
         public async Task<IActionResult> AddToCart(string shopperProductColorId)
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                var refererUrl = HttpContext.Request.Headers["Referer"].ToString();
-
-                var url = new Uri(refererUrl);
-
-                return Json(new { isValid = false, returnUrl = $"{url.AbsoluteUri}Login?returnUrl={url.LocalPath}" });
-            }
-
-
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var result = await _cartService.AddToCart(userId, shopperProductColorId);
