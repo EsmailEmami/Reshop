@@ -26,9 +26,13 @@ using Reshop.Infrastructure.Repository.Product;
 using Reshop.Infrastructure.Repository.Shopper;
 using Reshop.Infrastructure.Repository.User;
 using System;
+using Reshop.Application.Interfaces.Conversation;
 using Reshop.Application.Interfaces.Discount;
+using Reshop.Application.Services.Conversation;
 using Reshop.Application.Services.Discount;
+using Reshop.Domain.Interfaces.Conversation;
 using Reshop.Domain.Interfaces.Discount;
+using Reshop.Infrastructure.Repository.Conversation;
 using Reshop.Infrastructure.Repository.Discount;
 
 namespace Reshop.Infrastructure
@@ -57,6 +61,8 @@ namespace Reshop.Infrastructure
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IColorService, ColorService>();
             services.AddScoped<IDiscountService, DiscountService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IQuestionService, QuestionService>();
 
             //repository
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -69,6 +75,8 @@ namespace Reshop.Infrastructure
             services.AddScoped<IBrandRepository, BrandRepository>();
             services.AddScoped<IColorRepository, ColorRepository>();
             services.AddScoped<IDiscountRepository, DiscountRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
 
             services.AddSingleton<IMessageSender, MessageSender>();
 
@@ -122,12 +130,17 @@ namespace Reshop.Infrastructure
 
             #endregion
 
+            #region Prevent Cross-Site Request
 
-            services.AddAntiforgery(options => {
+            services.AddAntiforgery(options =>
+            {
                 options.Cookie.Name = "X-CSRF-TOKEN-RESHOP";
                 options.HeaderName = "X-CSRF-TOKEN-RESHOP";
                 options.FormFieldName = "X-CSRF-TOKEN-RESHOP";
             });
+
+            #endregion
+
 
             return services;
         }
