@@ -113,58 +113,6 @@ namespace Reshop.Infrastructure.Repository.User
                     SentDate = c.QuestionDate
                 });
 
-        public IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId) =>
-            _context.Comments.Where(c => c.UserId == userId)
-                .Select(c => new ShowQuestionOrCommentViewModel()
-                {
-                    QuestionOrCommentId = c.CommentId,
-                    QuestionOrCommentTitle = c.CommentTitle,
-                    SentDate = c.CommentDate
-                });
-
-        public IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId) =>
-            _context.Users.Where(c => c.UserId == userId)
-                .SelectMany(c => c.CommentFeedBacks)
-                .Where(c => c.Comment.ProductId == productId)
-                .Select(c => new Tuple<int, bool>(c.CommentId, c.Type));
-
-        public async Task<bool> IsUserReportCommentExistAsync(string userId, int commentId) =>
-            await _context.ReportComments.AnyAsync(c => c.UserId == userId && c.CommentId == commentId);
-
-        public async Task AddReportCommentAsync(ReportComment reportComment) =>
-            await _context.ReportComments.AddAsync(reportComment);
-
-        public void RemoveReportComment(ReportComment reportComment) =>
-            _context.ReportComments.Remove(reportComment);
-
-        public async Task<ReportComment> GetReportCommentAsync(string userId, int commentId) =>
-            await _context.ReportComments.SingleOrDefaultAsync(c => c.UserId == userId && c.CommentId == commentId);
-
-        public IEnumerable<ReportCommentType> GetReportCommentTypes() =>
-            _context.ReportCommentTypes;
-
-        public async Task<bool> IsReportCommentTimeLockAsync(string userId, int commentId) =>
-            await _context.ReportComments
-                .AnyAsync(c => c.UserId == userId && c.CommentId == commentId && c.CreateDate >= DateTime.Now.AddMinutes(-2));
-
-        public IEnumerable<int> GetUserReportCommentsOfProduct(string userId, int productId) =>
-            _context.Users.Where(c => c.UserId == userId)
-                .SelectMany(c => c.ReportComments)
-                .Where(c => c.Comment.ProductId == productId)
-                .Select(c => c.CommentId);
-
-        public async Task<CommentFeedback> GetCommentFeedBackAsync(string userId, int commentId) =>
-            await _context.CommentFeedBacks.SingleOrDefaultAsync(c => c.UserId == userId && c.CommentId == commentId);
-
-        public async Task AddCommentFeedBackAsync(CommentFeedback commentFeedback) =>
-            await _context.CommentFeedBacks.AddAsync(commentFeedback);
-
-        public void RemoveCommentFeedBack(CommentFeedback commentFeedback) =>
-            _context.CommentFeedBacks.Remove(commentFeedback);
-
-        public void UpdateCommentFeedBack(CommentFeedback commentFeedback) =>
-            _context.CommentFeedBacks.Update(commentFeedback);
-
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 
         public void SaveChanges() => _context.SaveChanges();

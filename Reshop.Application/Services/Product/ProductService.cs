@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.Interfaces.Conversation;
 
 namespace Reshop.Application.Services.Product
 {
@@ -31,8 +32,9 @@ namespace Reshop.Application.Services.Product
         private readonly IBrandRepository _brandRepository;
         private readonly IColorRepository _colorRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ICommentRepository _commentRepository;
 
-        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository, IBrandRepository brandRepository, IColorRepository colorRepository, ICategoryRepository categoryRepository)
+        public ProductService(IProductRepository productRepository, IShopperRepository shopperRepository, ICartRepository cartRepository, IBrandRepository brandRepository, IColorRepository colorRepository, ICategoryRepository categoryRepository, ICommentRepository commentRepository)
         {
             _productRepository = productRepository;
             _shopperRepository = shopperRepository;
@@ -40,6 +42,7 @@ namespace Reshop.Application.Services.Product
             _brandRepository = brandRepository;
             _colorRepository = colorRepository;
             _categoryRepository = categoryRepository;
+            _commentRepository = commentRepository;
         }
 
         #endregion
@@ -317,7 +320,7 @@ namespace Reshop.Application.Services.Product
                 return null;
 
             var childCategories = _categoryRepository.GetProductChildCategories(product.ProductId);
-            var comments = await _productRepository.GetCommentsOfProductDetailAsync(product.ProductId);
+            var comments = await _commentRepository.GetCommentsOfProductDetailAsync(product.ProductId);
             var productGalleries = _productRepository.GetProductImages(product.ProductId);
             var shoppers = _productRepository.GetProductShoppers(product.ProductId, product.SelectedColor);
             var colors = _colorRepository.GetProductColorsWithDetail(product.ProductId);
@@ -1012,38 +1015,6 @@ namespace Reshop.Application.Services.Product
         {
             _productRepository.RemoveFavoriteProduct(favoriteProduct);
             await _productRepository.SaveChangesAsync();
-        }
-
-        public IEnumerable<Question> GetProductQuestions(int productId) =>
-            _productRepository.GetProductQuestions(productId);
-
-        public async Task<Tuple<IEnumerable<ProductCommentsForShow>, int, int>> GetProductCommentsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news")
-        {
-            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
-
-            int count = await _productRepository.GetCommentsCountOfProductWithTypeAsync(productId, type.FixedText());
-
-            var data = _productRepository.GetProductCommentsWithPagination(productId, skip, take, type.FixedText());
-
-            int totalPages = (int)Math.Ceiling(1.0 * count / take);
-
-            return new Tuple<IEnumerable<ProductCommentsForShow>, int, int>(data, pageId, totalPages);
-        }
-
-        public async Task<ResultTypes> AddCommentAsync(Comment comment)
-        {
-            try
-            {
-                await _productRepository.AddCommentAsync(comment);
-
-                await _productRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
         }
 
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart() =>

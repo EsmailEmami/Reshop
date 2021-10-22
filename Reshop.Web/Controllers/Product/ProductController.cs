@@ -3,15 +3,16 @@ using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
+using Reshop.Application.Enums.User;
+using Reshop.Application.Interfaces.Conversation;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.Entities.User;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Enums.User;
-using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.Controllers.Product
 {
@@ -21,13 +22,13 @@ namespace Reshop.Web.Controllers.Product
 
         private readonly IProductService _productService;
         private readonly ICartService _cartService;
-        private readonly IUserService _userService;
+        private readonly ICommentService _commentService;
 
-        public ProductController(IProductService productService, ICartService cartService, IUserService userService)
+        public ProductController(IProductService productService, ICartService cartService, ICommentService commentService)
         {
             _productService = productService;
             _cartService = cartService;
-            _userService = userService;
+            _commentService = commentService;
         }
 
         #endregion
@@ -242,7 +243,7 @@ namespace Reshop.Web.Controllers.Product
                 comment.ShopperProductColorId = isBought;
             }
 
-            var res = await _productService.AddCommentAsync(comment);
+            var res = await _commentService.AddCommentAsync(comment);
 
             if (res == ResultTypes.Successful)
             {
@@ -265,14 +266,14 @@ namespace Reshop.Web.Controllers.Product
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (await _userService.IsReportCommentTimeLockAsync(userId, commentId))
+            if (await _commentService.IsReportCommentTimeLockAsync(userId, commentId))
                 return Json(new { isValid = false, errorType = "warning", errorText = "لطفا چند دقیقه دیگر تلاش کنید." });
 
 
             var model = new AddReportCommentViewModel()
             {
                 CommentId = commentId,
-                Types = _userService.GetReportCommentTypes()
+                Types = _commentService.GetReportCommentTypes()
             };
 
             return View(model);
@@ -283,7 +284,7 @@ namespace Reshop.Web.Controllers.Product
         [NoDirectAccess]
         public async Task<IActionResult> ReportComment(AddReportCommentViewModel model)
         {
-            model.Types = _userService.GetReportCommentTypes();
+            model.Types = _commentService.GetReportCommentTypes();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
@@ -298,7 +299,7 @@ namespace Reshop.Web.Controllers.Product
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var res = await _userService.ReportCommentByUserAsync(userId, model);
+            var res = await _commentService.ReportCommentByUserAsync(userId, model);
 
             if (res == ResultTypes.Successful)
             {
@@ -322,11 +323,11 @@ namespace Reshop.Web.Controllers.Product
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (await _userService.IsReportCommentTimeLockAsync(userId, commentId))
+            if (await _commentService.IsReportCommentTimeLockAsync(userId, commentId))
                 return Json(new { isValid = false, errorType = "warning", errorText = "لطفا چند دقیقه دیگر تلاش کنید." });
 
 
-            var res = await _userService.RemoveReportCommentByUserAsync(userId, commentId);
+            var res = await _commentService.RemoveReportCommentByUserAsync(userId, commentId);
 
             if (res == ResultTypes.Successful)
             {
@@ -345,7 +346,7 @@ namespace Reshop.Web.Controllers.Product
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var res = await _userService.AddCommentFeedBackAsync(userId, commentId, type);
+            var res = await _commentService.AddCommentFeedBackAsync(userId, commentId, type);
 
             return res switch
             {

@@ -155,17 +155,6 @@ namespace Reshop.Domain.Interfaces.Product
         #endregion
 
 
-        #region comment and quesiton
-
-        IEnumerable<Comment> GetProductComments(int productId);
-        IEnumerable<Question> GetProductQuestions(int productId);
-        Task<int> GetCommentsCountOfProductWithTypeAsync(int productId, string type = "all");
-        IEnumerable<ProductCommentsForShow> GetProductCommentsWithPagination(int productId, int skip = 1, int take = 30, string type = "news");
-        Task<CommentsOfProductDetailViewModel> GetCommentsOfProductDetailAsync(int productId);
-        Task AddCommentAsync(Comment comment);
-
-        #endregion
-
         #region favorite product
 
         IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24);

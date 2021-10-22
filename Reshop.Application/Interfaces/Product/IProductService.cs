@@ -116,11 +116,6 @@ namespace Reshop.Application.Interfaces.Product
 
         #region Question & Comment
 
-        IEnumerable<Question> GetProductQuestions(int productId);
-
-        Task<Tuple<IEnumerable<ProductCommentsForShow>, int, int>> GetProductCommentsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news");
-        Task<ResultTypes> AddCommentAsync(Comment comment);
-
 
         #endregion
 

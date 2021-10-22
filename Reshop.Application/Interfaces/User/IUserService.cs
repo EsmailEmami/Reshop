@@ -31,15 +31,7 @@ namespace Reshop.Application.Interfaces.User
 
 
         IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId);
-        IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId);
-        IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId);
-        Task<ResultTypes> ReportCommentByUserAsync(string userId, AddReportCommentViewModel model);
-        Task<ResultTypes> RemoveReportCommentByUserAsync(string userId, int commentId);
-        IEnumerable<ReportCommentType> GetReportCommentTypes();
-        Task<bool> IsReportCommentTimeLockAsync(string userId, int commentId);
-        IEnumerable<int> GetUserReportCommentsOfProduct(string userId, int productId);
-        Task<CommentFeedBackType> AddCommentFeedBackAsync(string userId, int commentId, string type);
-
+  
         #region address
 
         Task<ResultTypes> AddUserAddressAsync(Address address);

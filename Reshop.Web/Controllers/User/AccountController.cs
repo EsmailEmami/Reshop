@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Reshop.Application.Interfaces.Conversation;
 using Reshop.Application.Security.GoogleRecaptcha;
 
 namespace Reshop.Web.Controllers.User
@@ -31,18 +32,18 @@ namespace Reshop.Web.Controllers.User
         private readonly ICartService _cartService;
         private readonly IProductService _productService;
         private readonly IOriginService _originService;
-        private readonly IShopperService _shopperService;
+        private readonly ICommentService _commentService;
         private readonly IOptions<GoogleReCaptchaKey> _captchaKey;
         private readonly IDataProtector _dataProtector;
 
-        public AccountController(IUserService userService, ICartService cartService, IProductService productService, IOriginService stateService, IShopperService shopperService, IOptions<GoogleReCaptchaKey> captchaKey, IDataProtectionProvider dataProtectionProvider)
+        public AccountController(IUserService userService, ICartService cartService, IProductService productService, IOriginService stateService, IOptions<GoogleReCaptchaKey> captchaKey, IDataProtectionProvider dataProtectionProvider, ICommentService commentService)
         {
             _userService = userService;
             _cartService = cartService;
             _productService = productService;
             _originService = stateService;
-            _shopperService = shopperService;
             _captchaKey = captchaKey;
+            _commentService = commentService;
             _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Controllers.User.AccountController",
                 new string[] { "AccountController" });
         }
@@ -510,7 +511,7 @@ namespace Reshop.Web.Controllers.User
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return View(_userService.GetUserCommentsForShow(userId));
+            return View(_commentService.GetUserCommentsForShow(userId));
         }
 
         #endregion

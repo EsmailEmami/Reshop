@@ -48,19 +48,6 @@ namespace Reshop.Domain.Interfaces.User
         #region comment and question
 
         IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId);
-        IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId);
-        IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId);
-        Task<bool> IsUserReportCommentExistAsync(string userId, int commentId);
-        Task AddReportCommentAsync(ReportComment reportComment);
-        void RemoveReportComment(ReportComment reportComment);
-        Task<ReportComment> GetReportCommentAsync(string userId, int commentId);
-        IEnumerable<ReportCommentType> GetReportCommentTypes();
-        Task<bool> IsReportCommentTimeLockAsync(string userId, int commentId);
-        IEnumerable<int> GetUserReportCommentsOfProduct(string userId, int productId);
-        Task<CommentFeedback> GetCommentFeedBackAsync(string userId, int commentId);
-        Task AddCommentFeedBackAsync(CommentFeedback commentFeedback);
-        void RemoveCommentFeedBack(CommentFeedback commentFeedback);
-        void UpdateCommentFeedBack(CommentFeedback commentFeedback);
 
         #endregion
 

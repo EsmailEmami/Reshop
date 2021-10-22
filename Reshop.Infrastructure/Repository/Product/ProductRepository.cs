@@ -840,112 +840,6 @@ namespace Reshop.Infrastructure.Repository.Product
                 .OrderBy(c => c.OrderBy);
         }
 
-        public IEnumerable<Comment> GetProductComments(int productId)
-        {
-            return _context.Comments.Where(c => c.ProductId == productId)
-                .Include(c => c.User);
-        }
-
-        public IEnumerable<Question> GetProductQuestions(int productId)
-        {
-            return _context.Questions.Where(c => c.ProductId == productId)
-                .Include(c => c.QuestionAnswers);
-        }
-
-        public async Task<int> GetCommentsCountOfProductWithTypeAsync(int productId, string type = "all") =>
-            type switch
-            {
-                "all" => await _context.Comments
-                    .Where(c => c.ProductId == productId)
-                    .CountAsync(),
-                "buyers" => await _context.Comments
-                    .Where(c => c.ProductId == productId && !string.IsNullOrEmpty(c.ShopperProductColorId))
-                    .CountAsync(),
-                _ => await _context.Comments
-                    .Where(c => c.ProductId == productId)
-                    .CountAsync()
-            };
-
-
-
-        public IEnumerable<ProductCommentsForShow> GetProductCommentsWithPagination(int productId, int skip = 1, int take = 30, string type = "news")
-        {
-            IQueryable<Comment> comments = _context.Comments
-                .Where(c => c.ProductId == productId);
-
-            comments = type switch
-            {
-                "news" => comments.OrderByDescending(c => c.CommentDate),
-                "buyers" => comments.Where(c => !string.IsNullOrEmpty(c.ShopperProductColorId))
-                    .OrderByDescending(c => c.CommentDate),
-                "best" => comments.OrderByDescending(c => c.CommentFeedBacks.Count(f => f.Type)),
-                _ => comments.OrderByDescending(c => c.CommentDate)
-            };
-
-            comments = comments.Skip(skip).Take(take);
-
-            return comments.Select(c => new ProductCommentsForShow()
-            {
-                CommentId = c.CommentId,
-                FullName = c.User.FullName,
-                Image = c.User.UserAvatar,
-                CommentDate = c.CommentDate,
-                CommentTitle = c.CommentTitle,
-                CommentText = c.CommentText,
-                StoreName = c.ShopperProductColor.ShopperProduct.Shopper.StoreName,
-                ColorName = c.ShopperProductColor.Color.ColorName,
-                ProductShortKey = c.ShopperProductColor.ShortKey,
-                FeedBacks = c.CommentFeedBacks.Select(f=> f.Type)
-            });
-        }
-
-        public async Task<CommentsOfProductDetailViewModel> GetCommentsOfProductDetailAsync(int productId)
-        {
-            IQueryable<Comment> comments = _context.Products
-                .Where(c => c.ProductId == productId)
-                .SelectMany(c => c.Comments);
-
-
-            int productSatisfaction = 0;
-            int constructionQuality = 0;
-            int featuresAndCapabilities = 0;
-            int designAndAppearance = 0;
-            int suggestedCommentsCounts = await comments.Where(c => c.OverallScore >= 50).CountAsync();
-            int suggestedBuyersCounts = await comments.Where(c => c.OverallScore >= 50 && c.ShopperProductColorId != null).CountAsync();
-            int allCommentsCount = await comments.CountAsync();
-
-
-            int commentsPercent = CommentCalculator.CalculatePercentOfTwoNumber(suggestedCommentsCounts, allCommentsCount);
-
-            double commentsScore = CommentCalculator.CommentScore(commentsPercent);
-
-            if (comments.Any())
-            {
-                productSatisfaction = (int)await comments.AverageAsync(c => c.ProductSatisfaction);
-                constructionQuality = (int)await comments.AverageAsync(c => c.ConstructionQuality);
-                featuresAndCapabilities = (int)await comments.AverageAsync(c => c.FeaturesAndCapabilities);
-                designAndAppearance = (int)await comments.AverageAsync(c => c.DesignAndAppearance);
-            }
-
-
-
-
-            return new CommentsOfProductDetailViewModel()
-            {
-                AllCommentsCount = allCommentsCount,
-                CommentsScore = commentsScore,
-                SuggestedBuyersCounts = suggestedBuyersCounts,
-                SuggestedCommentsCounts = suggestedCommentsCounts,
-                ProductSatisfaction = productSatisfaction,
-                ConstructionQuality = constructionQuality,
-                FeaturesAndCapabilities = featuresAndCapabilities,
-                DesignAndAppearance = designAndAppearance
-            };
-        }
-
-        public async Task AddCommentAsync(Comment comment) =>
-            await _context.Comments.AddAsync(comment);
-
 
         public IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24)
         {
@@ -1687,9 +1581,6 @@ namespace Reshop.Infrastructure.Repository.Product
             return await _context.ShopperProductColors.AnyAsync(c => c.ShortKey == shortKey);
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+        public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }
 }
