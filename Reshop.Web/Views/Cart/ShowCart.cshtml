@@ -3,6 +3,14 @@
     ViewData["Title"] = "سبد خرید";
     int counter = 1;
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Cart" asp-action="ShowCart">سبد خرید</a>
+    </li>
+</ul>
 
 @if (Model == null)
 {

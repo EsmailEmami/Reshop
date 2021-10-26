@@ -1,7 +1,15 @@
 ﻿@model IEnumerable<ShowQuestionOrCommentViewModel>
 @{
-    ViewData["Title"] = "ManageProducts";
+    ViewData["Title"] = "سوالات پرسیده شده";
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Account" asp-action="Questions">سوالات</a>
+    </li>
+</ul>
 
 <div class="row">
 <div class="col-sm-12 col-md-4 col-lg-3">

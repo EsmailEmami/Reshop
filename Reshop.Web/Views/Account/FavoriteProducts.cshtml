@@ -1,7 +1,15 @@
 ﻿@model Tuple<IEnumerable<ProductViewModel>, int, int>
 @{
-    ViewData["Title"] = "FavoriteProducts";
+    ViewData["Title"] = "کالا های مورد علاقه";
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Account" asp-action="FavoriteProducts">کالا های مورد علاقه</a>
+    </li>
+</ul>
 <div class="row">
 
     <div class="col-sm-12 col-md-4 col-lg-3">

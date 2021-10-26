@@ -193,8 +193,11 @@
     <div class="col-md-8 col-lg-9">
         @if (!Model.Products.Any())
         {
-            <div class="alert alert-warning text-muted">
-                متاسفانه محصولی یافت نشد.
+            <div class="basket-empty">
+                <img src="~/icons/search-site.svg" alt="کالای مورد نظر یافت نشد." />
+                <h1>
+                    متاسفانه کالای مورد نظر یافت نشد
+                </h1>
             </div>
         }
         else
@@ -341,7 +344,7 @@
             window.location = url;
         }
 
-        
+
         $(function () {
             if (window.innerWidth > 767) {
                 let collapse = document.getElementsByClassName('collapse');

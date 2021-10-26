@@ -1,7 +1,15 @@
 ﻿@model IEnumerable<ReceivedOrdersViewModel>
 @{
-    ViewData["Title"] = "UserAddresses";
+    ViewData["Title"] = "سفارش های تحویل شده";
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Account" asp-action="FinallyOrders">سفارش های تحویل شده</a>
+    </li>
+</ul>
 
 
 <div class="row">

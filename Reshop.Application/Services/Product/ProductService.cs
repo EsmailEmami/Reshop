@@ -2,24 +2,21 @@
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
+using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.DTOs.Chart;
-using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
-using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Category;
+using Reshop.Domain.Interfaces.Conversation;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Domain.DTOs.Category;
-using Reshop.Domain.Interfaces.Conversation;
 
 namespace Reshop.Application.Services.Product
 {
@@ -61,11 +58,7 @@ namespace Reshop.Application.Services.Product
 
             var products = _productRepository.GetProductsWithPaginationForAdmin(type.FixedText(), skip, take, filter);
 
-            if (products == null)
-                return null;
-
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
-
 
             return new Tuple<IEnumerable<ProductDataForAdmin>, int, int>(products, pageId, totalPages);
         }
@@ -76,9 +69,6 @@ namespace Reshop.Application.Services.Product
 
 
             int productsCount = await _productRepository.GetCategoryProductsCountAsync(categoryId, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
-
-            if (productsCount == 0)
-                return null;
 
             var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
 
@@ -109,13 +99,9 @@ namespace Reshop.Application.Services.Product
 
             int productsCount = await _productRepository.GetChildCategoryProductsCountAsync(childCategoryId, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
-            if (productsCount == 0)
-                return null;
-
             var childCategory = await _categoryRepository.GetChildCategoryByIdAsync(childCategoryId);
 
             var category = await _categoryRepository.GetCategoryByIdAsync(childCategory.CategoryId);
-
 
             var products = _productRepository.GetProductsOfChildCategoryWithPagination(childCategoryId, sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
@@ -129,7 +115,7 @@ namespace Reshop.Application.Services.Product
             {
                 ChildCategoryId = childCategoryId,
                 ChildCategoryName = childCategory.ChildCategoryTitle,
-                Category = new Tuple<int, string>(category.CategoryId,category.CategoryTitle),
+                Category = new Tuple<int, string>(category.CategoryId, category.CategoryTitle),
                 Products = products,
                 PageId = pageId,
                 TotalPages = totalPages,
@@ -143,10 +129,6 @@ namespace Reshop.Application.Services.Product
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
             int productsCount = await _productRepository.GetBrandProductsCountAsync(brandId, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), officialBrandProducts);
-
-            if (productsCount == 0)
-                return null;
-
 
             var products = _productRepository.GetProductsOfBrandWithPagination(brandId, sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), officialBrandProducts);
 
@@ -330,7 +312,7 @@ namespace Reshop.Application.Services.Product
             if (product == null)
                 return null;
 
-            var childCategory =await _categoryRepository.GetProductChildCategoryAsync(product.ProductId);
+            var childCategory = await _categoryRepository.GetProductChildCategoryAsync(product.ProductId);
             var category = await _categoryRepository.GetProductCategoryAsync(product.ProductId);
             var comments = await _commentRepository.GetCommentsOfProductDetailAsync(product.ProductId);
             var productGalleries = _productRepository.GetProductImages(product.ProductId);

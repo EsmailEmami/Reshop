@@ -1,13 +1,21 @@
 ﻿@model IEnumerable<Address>
 @inject IRoleService RoleService;
 @{
-    ViewData["Title"] = "UserAddresses";
+    ViewData["Title"] = "آدرس ها";
 
     int addressCounter = 1;
 }
 @section Css{
     <link href="~/css/select.css" rel="stylesheet" />
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Account" asp-action="Address">آدرس ها</a>
+    </li>
+</ul>
 
 <div class="row">
 

@@ -3,6 +3,14 @@
 @{
     ViewData["Title"] = $"پنل مدیریت - {Model.FullName}";
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Account" asp-action="Dashboard">داشبورد</a>
+    </li>
+</ul>
 
 <div class="row">
 

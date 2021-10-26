@@ -8,6 +8,17 @@
         addressId = ViewData["SelectedAddress"].ToString();
     }
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Cart" asp-action="ShowCart">سبد خرید</a>
+    </li>
+    <li>
+        <a asp-controller="Cart" asp-action="Address">انتخاب آدرس</a>
+    </li>
+</ul>
 
 <div class="shopping-page">
     <div class="level">
