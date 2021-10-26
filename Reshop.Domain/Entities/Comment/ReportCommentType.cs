@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Reshop.Domain.Entities.User
+namespace Reshop.Domain.Entities.Comment
 {
     public class ReportCommentType
     {

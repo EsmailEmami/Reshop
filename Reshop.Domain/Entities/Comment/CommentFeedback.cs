@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Reshop.Domain.Entities.User
+namespace Reshop.Domain.Entities.Comment
 {
     public class CommentFeedback
     {
@@ -20,7 +20,7 @@ namespace Reshop.Domain.Entities.User
         #region Relation
 
         public virtual Comment Comment { get; set; }
-        public virtual User User { get; set; }
+        public virtual User.User User { get; set; }
 
         #endregion
     }

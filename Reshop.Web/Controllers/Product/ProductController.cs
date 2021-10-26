@@ -13,6 +13,7 @@ using Reshop.Domain.Entities.User;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Comment;
 
 namespace Reshop.Web.Controllers.Product
 {
@@ -254,7 +255,8 @@ namespace Reshop.Web.Controllers.Product
                 DesignAndAppearance = model.DesignAndAppearance,
                 ConstructionQuality = model.ConstructionQuality,
                 FeaturesAndCapabilities = model.FeaturesAndCapabilities,
-                OverallScore = average
+                OverallScore = average,
+                IsDelete = false
             };
 
             if (!string.IsNullOrEmpty(isBought))

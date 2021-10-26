@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Reshop.Domain.Entities.User
+namespace Reshop.Domain.Entities.Comment
 {
     public class ReportComment
     {
@@ -30,7 +30,7 @@ namespace Reshop.Domain.Entities.User
 
         public virtual ReportCommentType ReportCommentType { get; set; }
         public virtual Comment Comment { get; set; }
-        public virtual User User { get; set; }
+        public virtual User.User User { get; set; }
 
         #endregion
     }

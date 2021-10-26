@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Reshop.Domain.DTOs.CommentAndQuestion;
+using Reshop.Domain.DTOs.User;
+using Reshop.Domain.Entities.Comment;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reshop.Domain.DTOs.CommentAndQuestion;
-using Reshop.Domain.DTOs.User;
-using Reshop.Domain.Entities.User;
 
 namespace Reshop.Domain.Interfaces.Conversation
 {

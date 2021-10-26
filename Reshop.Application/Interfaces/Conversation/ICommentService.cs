@@ -5,6 +5,7 @@ using Reshop.Application.Enums;
 using Reshop.Application.Enums.User;
 using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.DTOs.User;
+using Reshop.Domain.Entities.Comment;
 using Reshop.Domain.Entities.User;
 
 namespace Reshop.Application.Interfaces.Conversation

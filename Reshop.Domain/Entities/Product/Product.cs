@@ -90,7 +90,7 @@ namespace Reshop.Domain.Entities.Product
 
         public virtual ChildCategory ChildCategory { get; set; }
 
-        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comment.Comment> Comments { get; set; }
 
         public virtual MobileDetail MobileDetail { get; set; }
 

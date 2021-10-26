@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Reshop.Domain.Entities.Shopper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Reshop.Domain.Entities.Shopper;
 
-namespace Reshop.Domain.Entities.User
+namespace Reshop.Domain.Entities.Comment
 {
     public class Comment
     {
         public Comment()
         {
-            
+
         }
 
         [Key]
@@ -40,7 +40,7 @@ namespace Reshop.Domain.Entities.User
 
         [Display(Name = "میزان رضایت مندی از محصول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [Range(0,100,ErrorMessage = "لطفا عددی بین {1} تا {2} استفاده کنید.")]
+        [Range(0, 100, ErrorMessage = "لطفا عددی بین {1} تا {2} استفاده کنید.")]
         public int ProductSatisfaction { get; set; }
 
         [Display(Name = "کیفیت ساخت")]
@@ -72,7 +72,7 @@ namespace Reshop.Domain.Entities.User
         #region Relations
 
         public virtual Product.Product Product { get; set; }
-        public virtual User User { get; set; }
+        public virtual User.User User { get; set; }
         public virtual ShopperProductColor ShopperProductColor { get; set; }
         public virtual ICollection<ReportComment> ReportComments { get; set; }
         public virtual ICollection<CommentFeedback> CommentFeedBacks { get; set; }

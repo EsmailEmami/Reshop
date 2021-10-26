@@ -57,7 +57,7 @@ namespace Reshop.Domain.Entities.Shopper
 
         public virtual ICollection<ShopperProductDiscount> Discounts { get; set; }
 
-        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comment.Comment> Comments { get; set; }
 
         #endregion
     }

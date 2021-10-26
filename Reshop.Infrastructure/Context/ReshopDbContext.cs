@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.Entities.Category;
+using Reshop.Domain.Entities.Comment;
 using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
