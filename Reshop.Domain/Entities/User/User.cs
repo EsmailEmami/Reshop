@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Reshop.Domain.Entities.Question;
 
 namespace Reshop.Domain.Entities.User
 {
@@ -72,7 +73,7 @@ namespace Reshop.Domain.Entities.User
         public virtual ICollection<FavoriteProduct> FavoriteProducts { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
-        public virtual ICollection<Question> Questions { get; set; }
+        public virtual ICollection<Question.Question> Questions { get; set; }
         public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; }
         public virtual ICollection<Wallet> Wallets { get; set; }
         public virtual ICollection<UserDiscountCode> UserDiscountCodes { get; set; }

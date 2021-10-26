@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Reshop.Domain.Entities.User
+namespace Reshop.Domain.Entities.Question
 {
     public class QuestionAnswer
     {
         public QuestionAnswer()
         {
-            
+
         }
 
         [Key]
@@ -41,7 +38,7 @@ namespace Reshop.Domain.Entities.User
         #region Relations
 
         public virtual Question Question { get; set; }
-        public virtual User User { get; set; }
+        public virtual User.User User { get; set; }
         public virtual ICollection<QuestionAnswerLike> QuestionAnswerLikes { get; set; }
         public virtual ICollection<ReportQuestionAnswer> Reports { get; set; }
 

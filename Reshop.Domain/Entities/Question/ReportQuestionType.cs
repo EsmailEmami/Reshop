@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Reshop.Domain.Entities.User
+namespace Reshop.Domain.Entities.Question
 {
     public class ReportQuestionType
     {

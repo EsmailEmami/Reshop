@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.DTOs.User;
-using Reshop.Domain.Entities.User;
+using Reshop.Domain.Entities.Question;
 using Reshop.Domain.Interfaces.Conversation;
 using Reshop.Infrastructure.Context;
 using System.Collections.Generic;

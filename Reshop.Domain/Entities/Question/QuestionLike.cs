@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Reshop.Domain.Entities.User
+namespace Reshop.Domain.Entities.Question
 {
     public class QuestionLike
     {
@@ -17,7 +17,7 @@ namespace Reshop.Domain.Entities.User
         #region Relation
 
         public virtual Question Question { get; set; }
-        public virtual User User { get; set; }
+        public virtual User.User User { get; set; }
 
         #endregion
     }

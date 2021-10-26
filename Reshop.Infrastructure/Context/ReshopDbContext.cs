@@ -3,6 +3,7 @@ using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
+using Reshop.Domain.Entities.Question;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 
@@ -58,7 +59,7 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-  
+
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }

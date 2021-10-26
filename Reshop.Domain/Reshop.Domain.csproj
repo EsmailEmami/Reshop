@@ -12,6 +12,7 @@
 
 
 	<ItemGroup>
+	  <Folder Include="Entities\Comment\" />
 	  <Folder Include="Interfaces\Discount\" />
 	</ItemGroup>
 

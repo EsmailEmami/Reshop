@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
-using Reshop.Domain.Entities.Category;
 
 namespace Reshop.Domain.Entities.Product
 {
@@ -99,7 +98,7 @@ namespace Reshop.Domain.Entities.Product
 
         public virtual ICollection<ProductGallery> ProductGalleries { get; set; }
 
-        public virtual ICollection<Question> Questions { get; set; }
+        public virtual ICollection<Question.Question> Questions { get; set; }
 
         public virtual MobileCoverDetail MobileCoverDetail { get; set; }
 
