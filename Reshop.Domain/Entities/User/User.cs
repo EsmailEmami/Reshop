@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Reshop.Domain.Entities.Permission;
 
 namespace Reshop.Domain.Entities.User
 {
@@ -68,7 +69,7 @@ namespace Reshop.Domain.Entities.User
         public bool IsBlocked { get; set; }
 
         #region Relations
-
+        
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<FavoriteProduct> FavoriteProducts { get; set; }

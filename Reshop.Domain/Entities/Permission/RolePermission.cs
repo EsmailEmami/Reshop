@@ -1,5 +1,4 @@
-﻿using Reshop.Domain.Entities.User;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Reshop.Domain.Entities.Permission
 {
@@ -15,7 +14,7 @@ namespace Reshop.Domain.Entities.Permission
         [ForeignKey("Permission")]
         public int PermissionId { get; set; }
 
-        #region MyRegion
+        #region Relations
 
         public virtual Role Role { get; set; }
 

@@ -4,7 +4,7 @@ using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.User;
-using Reshop.Domain.Entities.User;
+using Reshop.Domain.Entities.Permission;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

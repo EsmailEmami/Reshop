@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Reshop.Domain.Entities.User
+﻿namespace Reshop.Domain.Entities.Permission
 {
     public class UserRole
     {
         public UserRole()
         {
-            
+
         }
 
         public string UserId { get; set; }
@@ -21,7 +19,7 @@ namespace Reshop.Domain.Entities.User
 
         #region Relations
 
-        public virtual User User { get; set; }
+        public virtual User.User User { get; set; }
         public virtual Role Role { get; set; }
 
         #endregion

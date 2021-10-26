@@ -8,6 +8,7 @@ using Reshop.Domain.Entities.User;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Permission;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
