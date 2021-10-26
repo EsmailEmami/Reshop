@@ -8,7 +8,6 @@ using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
@@ -38,12 +37,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (categoryId == 0)
             {
-                var model = new AddOrEditCategoryViewModel()
-                {
-                    ChildCategories = _categoryService.GetChildCategories()
-                };
-
-                return View(model);
+                return View(new AddOrEditCategoryViewModel());
             }
             else
             {
@@ -60,8 +54,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrEditCategory(AddOrEditCategoryViewModel model)
         {
-            model.ChildCategories = _categoryService.GetChildCategories();
-
             if (!ModelState.IsValid) return View(model);
 
             // in this section we check that all images are ok
@@ -127,18 +119,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 var category = new Category()
                 {
                     CategoryTitle = model.CategoryTitle,
+                    IsActive = model.IsActive
                 };
 
                 var res = await _categoryService.AddCategoryAsync(category);
 
                 if (res == ResultTypes.Successful)
                 {
-                    // add child categories
-                    if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
-                    {
-                        await _categoryService.AddChildCategoryToCategoryAsync(category.CategoryId, model.SelectedChildCategories as List<int>);
-                    }
-
                     // add images
                     await AddImg(images, urls, category.CategoryId);
 
@@ -151,7 +138,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
             else
             {
-
                 var category = await _categoryService.GetCategoryByIdAsync(model.CategoryId);
 
                 if (category == null)
@@ -163,6 +149,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 // update category
                 category.CategoryTitle = model.CategoryTitle;
+                category.IsActive = model.IsActive;
 
                 var res = await _categoryService.EditCategoryAsync(category);
 
@@ -170,17 +157,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ModelState.AddModelError("", "متاسفاه هنگام ویرایش گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
                     return View(model);
-                }
-
-
-                // remove all child categories
-                await _categoryService.RemoveChildCategoryToCategoryByCategoryIdAsync(category.CategoryId);
-
-
-                // add selected child categories
-                if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
-                {
-                    await _categoryService.AddChildCategoryToCategoryAsync(category.CategoryId, model.SelectedChildCategories as List<int>);
                 }
 
                 var imagesName = new List<string>()

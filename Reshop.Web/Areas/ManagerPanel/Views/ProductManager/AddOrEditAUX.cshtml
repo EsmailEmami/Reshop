@@ -10,6 +10,7 @@
 
 @section Css{
     <link href="~/css/select.css" rel="stylesheet" />
+    <link href="~/css/ckEditor.css" rel="stylesheet" />
 }
 
 <form asp-action="AddOrEditAUX" method="post" enctype="multipart/form-data">
@@ -79,22 +80,28 @@
 
         @* this is for child categories *@
         <div class="col-sm-12 col-lg-4">
-            <select id="childCategory"  multiple asp-for="SelectedChildCategories" placeholder="انتخاب زیر گروه ها">
+            <select id="childCategory" asp-for="SelectedChildCategory">
+                <option>لطفا برند را انتخاب کنید</option>
                 @if (Model.ChildCategories != null)
                 {
                     @foreach (var item in Model.ChildCategories)
                     {
-                        @:<option value="@item.Item1" @(Model.SelectedChildCategories != null && Model.SelectedChildCategories.Any(c => c == item.Item1) ? "selected" : "")>@item.Item2</option>
+                        @:<option value="@item.ChildCategoryId" @(Model.SelectedChildCategory == item.ChildCategoryId? "selected" : "")>@item.ChildCategoryTitle - @item.IsActive.BoolToText("فعال")</option>
                     }
                 }
             </select>
         </div>
 
-        <div class="col-sm-12 ">
-            <div class="form-field">
-                <textarea asp-for="Description"></textarea>
-                <label><i class="far fa-audio-description"></i> توضیجات</label>
-                <span asp-validation-for="Description" class="text-danger"></span>
+        <div class="col-sm-12 mb-4">
+            <textarea id="editor" asp-for="Description"> </textarea>
+
+            <div class="word-count">
+                <div id="word-count">
+                    کلمه ها : 0
+                </div>
+                <div id="character-count">
+                    کاراکتر ها : 0
+                </div>
             </div>
         </div>
 
@@ -118,7 +125,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct1">
+                        <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا" id="imgProduct1">
                     </div>
                     <div class="file-field">
                         <input asp-for="SelectedImage1" onchange="readURL(this, 'imgProduct1')">
@@ -129,7 +136,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct2">
+                        <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا" id="imgProduct2">
                     </div>
                     <div class="file-field">
                         <input asp-for="SelectedImage2" onchange="readURL(this, 'imgProduct2')">
@@ -140,7 +147,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct3">
+                        <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا" id="imgProduct3">
                     </div>
                     <div class="file-field">
                         <input asp-for="SelectedImage3" onchange="readURL(this, 'imgProduct3')">
@@ -151,7 +158,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct4">
+                        <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا" id="imgProduct4">
                     </div>
                     <div class="file-field">
                         <input asp-for="SelectedImage4" onchange="readURL(this, 'imgProduct4')">
@@ -162,7 +169,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct5">
+                        <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا" id="imgProduct5">
                     </div>
                     <div class="file-field">
                         <input asp-for="SelectedImage5" onchange="readURL(this, 'imgProduct5')">
@@ -173,7 +180,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/placeholder-image.png" alt="تصویر کالا" id="imgProduct6">
+                        <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا" id="imgProduct6">
                     </div>
                     <div class="file-field">
                         <input asp-for="SelectedImage6" onchange="readURL(this, 'imgProduct6')">
@@ -199,7 +206,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/@Model.SelectedImage1IMG" alt="تصویر کالا" id="imgProduct1">
+                        <img src="~/images/pattern/@Model.SelectedImage1IMG" alt="تصویر کالا" id="imgProduct1">
                     </div>
                     <div class="file-field">
                         <input type="file" asp-for="SelectedImage1" onchange="readURL(this, 'imgProduct1')">
@@ -209,7 +216,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/@Model.SelectedImage2IMG" alt="تصویر کالا" id="imgProduct2">
+                        <img src="~/images/pattern/@Model.SelectedImage2IMG" alt="تصویر کالا" id="imgProduct2">
                     </div>
                     <div class="file-field">
                         <input type="file" asp-for="SelectedImage2" onchange="readURL(this, 'imgProduct2')">
@@ -220,7 +227,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/@Model.SelectedImage3IMG" alt="تصویر کالا" id="imgProduct3">
+                        <img src="~/images/pattern/@Model.SelectedImage3IMG" alt="تصویر کالا" id="imgProduct3">
                     </div>
                     <div class="file-field">
                         <input type="file" asp-for="SelectedImage3" onchange="readURL(this, 'imgProduct3')">
@@ -231,7 +238,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/@Model.SelectedImage4IMG" alt="تصویر کالا" id="imgProduct4">
+                        <img src="~/images/pattern/@Model.SelectedImage4IMG" alt="تصویر کالا" id="imgProduct4">
                     </div>
                     <div class="file-field">
                         <input type="file" asp-for="SelectedImage4" onchange="readURL(this, 'imgProduct4')">
@@ -242,7 +249,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/@Model.SelectedImage5IMG" alt="تصویر کالا" id="imgProduct5">
+                        <img src="~/images/pattern/@Model.SelectedImage5IMG" alt="تصویر کالا" id="imgProduct5">
                     </div>
                     <div class="file-field">
                         <input type="file" asp-for="SelectedImage5" onchange="readURL(this, 'imgProduct5')">
@@ -253,7 +260,7 @@
             <div class="col-auto">
                 <div class="image-field">
                     <div class="image-area">
-                        <img src="~/images/ProductImages/@Model.SelectedImage6IMG" alt="تصویر کالا" id="imgProduct6">
+                        <img src="~/images/pattern/@Model.SelectedImage6IMG" alt="تصویر کالا" id="imgProduct6">
                     </div>
                     <div class="file-field">
                         <input type="file" asp-for="SelectedImage6" onchange="readURL(this, 'imgProduct6')">
@@ -296,10 +303,113 @@
     <script src="~/js/select.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+    <script src="~/lib/CKEditor/ckeditor.js"></script>
+
     <script>
         function updateSelectsOfBand(brandId) {
             GetOfficialProductsOfBrand(brandId);
             GetChildCategoriesOfBrand(brandId);
+        }
+    </script>
+
+
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+
+                toolbar: {
+                    items: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'link',
+                        'underline',
+                        'bulletedList',
+                        'numberedList',
+                        '|',
+                        'fontFamily',
+                        'fontColor',
+                        'fontSize',
+                        'fontBackgroundColor',
+                        'highlight',
+                        '|',
+                        'imageUpload',
+                        'imageInsert',
+                        'blockQuote',
+                        'insertTable',
+                        'mediaEmbed',
+                        'undo',
+                        'redo',
+                        'findAndReplace'
+                    ]
+                },
+                language: 'fa',
+                image: {
+                    toolbar: [
+                        'imageTextAlternative',
+                        'imageStyle:inline',
+                        'imageStyle:block',
+                        'imageStyle:side',
+                        'linkImage'
+                    ]
+                },
+                table: {
+                    contentToolbar: [
+                        'tableColumn',
+                        'tableRow',
+                        'mergeTableCells',
+                        'tableCellProperties',
+                        'tableProperties'
+                    ]
+                },
+                fileBrowserUploadUrl:'/file_upload',
+                fontFamily: {
+                    options: [
+                        'Sahel, sans-serif'
+                    ]
+                },
+                fontSize: {
+                    options: [
+                        9,
+                        10,
+                        11,
+                        'default',
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19
+                    ]
+                },
+
+            })
+            .then(editor => {
+                window.editor = editor;
+                const wordCountPlugin = editor.plugins.get('WordCount');
+
+                wordCountPlugin.on('update', (evt, data) => {
+                    // data is an object with "words" and "characters" field
+                    doSthWithNewWordsNumber(data.words);
+                    doSthWithNewCharactersNumber(data.characters);
+                });
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+
+    <script>
+        function doSthWithNewWordsNumber(count) {
+            document.getElementById('word-count').innerHTML = "کلمه ها" + count;
+        }
+
+        function doSthWithNewCharactersNumber(count) {
+            document.getElementById('character-count').innerHTML = "کاراکتر ها" + count;
         }
     </script>
 }

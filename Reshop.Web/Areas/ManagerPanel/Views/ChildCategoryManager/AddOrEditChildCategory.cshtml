@@ -7,42 +7,28 @@
 
 <form asp-action="AddOrEditChildCategory" method="post" onsubmit="return SubmitFormData(this)">
     <div class="row">
-        <div class="col-sm-12 col-lg-8">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ChildCategoryId" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ChildCategoryId" />
 
+
+        <div class="col-sm-12 col-lg-7">
             <div class="form-field">
                 <input asp-for="ChildCategoryTitle">
                 <label><i class="far fa-list-alt"></i> نام زیر گروه</label>
                 <span asp-validation-for="ChildCategoryTitle" class="text-danger"></span>
             </div>
-
-            <div class="form-field">
-                <button type="submit" class="btn btn-success">
-                    ثبت
-                </button>
-            </div>
         </div>
 
-        <div class="col-sm-12 col-lg-4">
-            <h3 class="text-center">
-                گروه ها
-            </h3>
-
+        <div class="col-sm-12 col-lg-5">
 
             @if (Model.Categories != null)
             {
-                @foreach (var item in Model.Categories)
-                {
-                    <div class="form-check m-0">
-                        <label>
-                            @item.CategoryTitle
-                            <input type="checkbox" name="SelectedCategories"
-                                   value="@item.CategoryId" @((Model.ChildCategoryId != 0 && Model.SelectedCategories.Any(c => c == item.CategoryId) ? "checked" : "")) />
-                            <span></span>
-                        </label>
-                    </div>
-                }
+                <select asp-for="SelectedCategory">
+                    @foreach (var item in Model.Categories)
+                    {
+                        @:<option value="@item.CategoryId" @(Model.SelectedCategory == item.CategoryId ? "selected" : "")>@item.CategoryTitle - @item.IsActive.BoolToText("فعال")</option>
+                    }
+                </select>
             }
             else
             {
@@ -51,7 +37,27 @@
                 </div>
             }
         </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-check">
+                <label>
+                    این زیر گروه فعال است
+                    <input type="checkbox" asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-field">
+                <button type="submit" class="btn btn-success">
+                    ثبت
+                </button>
+            </div>
+        </div>
     </div>
 </form>
 
-<script src="~/js/Input.js"></script>
+<script>
+    inputJs();
+    callSelect();
+</script>

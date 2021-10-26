@@ -1,19 +1,32 @@
-﻿@model CategoryOrChildCategoryProductsForShow
+﻿@model ChildCategoryProductsForShow
 @{
-    string categoryName = ViewData["ChildCategoryName"].ToString();
-
-
-    ViewData["Title"] = $"کالاهای زیر گروه {categoryName?.Replace("-", " ")}";
+    ViewData["Title"] = $"کالاهای زیر گروه {Model.ChildCategoryName}";
 }
 
 @section Css
 {
     <link href="~/css/nouislider.min.css" rel="stylesheet" />
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Product" asp-action="ProductsOfCategory"
+           asp-route-categoryId="@Model.Category.Item1"
+           asp-route-categoryName="@Model.Category.Item2.Replace(" ", "-")">@Model.Category.Item2</a>
+    </li>
+    <li>
+        <a asp-controller="Product" asp-action="ProductsOfChildCategory"
+           asp-route-childCategoryId="@Model.ChildCategoryId"
+           asp-route-childCategoryName="@Model.ChildCategoryName.Replace(" ","-")">@Model.ChildCategoryName</a>
+    </li>
+</ul>
+
 
 <input type="hidden" value="1" id="pageId" />
 <input type="hidden" value="news" id="sortBy" />
-<input type="hidden" value="@categoryName" id="categoryName" />
+<input type="hidden" value="@Model.ChildCategoryName.Replace(" ","-")" id="categoryName" />
 
 <div class="top-filter box-shadow">
     <section class="p-one">
@@ -326,7 +339,7 @@
 
             console.log(brandsArray);
 
-            var url = window.location.origin + "/ChildCategory/@Model.Id/" + categoryName + "?pageId=" + pageId + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&search=" + search + "&sortBy=" + sortBy + "&brands=" + brandsArray;
+            var url = window.location.origin + "/ChildCategory/@Model.ChildCategoryId/" + categoryName + "?pageId=" + pageId + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&search=" + search + "&sortBy=" + sortBy + "&brands=" + brandsArray;
 
             window.location = url;
         }

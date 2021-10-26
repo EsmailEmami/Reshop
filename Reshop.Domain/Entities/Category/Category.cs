@@ -18,9 +18,11 @@ namespace Reshop.Domain.Entities.Category
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string CategoryTitle { get; set; }
 
+        public bool IsActive { get; set; }
+
         #region Relations
 
-        public virtual ICollection<ChildCategoryToCategory> ChildCategoryToCategories { get; set; }
+        public virtual ICollection<ChildCategory> ChildCategories { get; set; }
         public virtual ICollection<CategoryGallery> CategoryGalleries { get; set; }
 
         #endregion

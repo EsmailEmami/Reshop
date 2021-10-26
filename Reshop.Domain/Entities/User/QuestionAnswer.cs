@@ -32,11 +32,18 @@ namespace Reshop.Domain.Entities.User
         [Display(Name = "تاریخ ثبت نظر")]
         public DateTime CommentDate { get; set; }
 
+        public bool IsDelete { get; set; } = false;
+
+        [Display(Name = "دلیل حذف")]
+        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string DeleteDescription { get; set; }
+
         #region Relations
 
         public virtual Question Question { get; set; }
-
         public virtual User User { get; set; }
+        public virtual ICollection<QuestionAnswerLike> QuestionAnswerLikes { get; set; }
+        public virtual ICollection<ReportQuestionAnswer> Reports { get; set; }
 
         #endregion
     }

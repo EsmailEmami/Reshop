@@ -109,7 +109,12 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SearchText = search;
 
             ViewBag.SelectedMinPrice = minPrice.ToDecimal();
-            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+            ViewBag.SelectedMaxPrice = 0;
+
+            if (result != null)
+            {
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+            }
 
             return View(result);
         }
@@ -128,13 +133,22 @@ namespace Reshop.Web.Controllers.Product
 
             ViewData["ChildCategoryName"] = childCategoryName;
 
+            if (result == null)
+            {
+
+            }
 
             ViewBag.SortBy = sortBy;
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SearchText = search;
 
             ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : 0;
-            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+            ViewBag.SelectedMaxPrice = 0;
+
+            if (result != null)
+            {
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+            }
 
             return View(result);
         }
@@ -158,7 +172,12 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SearchText = search;
 
             ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : 0;
-            ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+            ViewBag.SelectedMaxPrice = 0;
+
+            if (result != null)
+            {
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+            }
 
             return View(result);
         }

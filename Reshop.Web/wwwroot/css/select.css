@@ -21,6 +21,7 @@
         overflow: hidden;
         margin: 3.6px 0.2em 0 0;
         padding: 1px 0.75em;
+        height: 30px;
     }
 
     .multiselect-dropdown span.optext {
@@ -100,7 +101,7 @@
         padding: 5px;
         position: relative;
         margin-bottom: 2px;
-        height: 34px;
+        border: 1px solid transparent;
     }
 
         .multiselect-dropdown-list div:last-of-type {
@@ -154,6 +155,8 @@
         line-height: 30px;
         margin: 0;
         display: inline-block;
+        overflow: hidden;
+        height: 30px;
     }
 
 .select-dropdown-list-wrapper {
@@ -219,7 +222,7 @@
         padding: 5px;
         position: relative;
         margin-bottom: 2px;
-        height: 34px;
+        border: 1px solid transparent;
     }
 
         .select-dropdown-list div:last-of-type {

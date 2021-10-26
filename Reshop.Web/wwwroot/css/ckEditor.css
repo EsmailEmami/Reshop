@@ -1,0 +1,132 @@
+@font-face {
+    font-family: Sahel;
+    src: url('/Fonts/SahelFarsi/Sahel-FD.eot') format('embedded-opentype');
+    src: url('/Fonts/SahelFarsi/Sahel-FD.ttf') format('truetype');
+    src: url('/Fonts/SahelFarsi/Sahel-FD.woff') format('woff');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Sahel;
+    src: url('/Fonts/SahelFarsi/Sahel-Black-FD.eot') format('embedded-opentype');
+    src: url('/Fonts/SahelFarsi/Sahel-Black-FD.ttf') format('truetype');
+    src: url('/Fonts/SahelFarsi/Sahel-Black-FD.woff') format('woff');
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: Sahel;
+    src: url('/Fonts/SahelFarsi/Sahel-Bold-FD.eot') format('embedded-opentype');
+    src: url('/Fonts/SahelFarsi/Sahel-Bold-FD.ttf') format('truetype');
+    src: url('/Fonts/SahelFarsi/Sahel-Bold-FD.woff') format('woff');
+    font-weight: 900;
+}
+
+ :root {
+    --ck-border-radius: 4px;
+    --ck-font-face: 'Sahel', Sans-Serif, Tahoma, Arial, Verdana;
+    --ck-font-size-base: 13px;
+    --ck-line-height-base: 1.84615;
+    --ck-color-base-active: #FC5400;
+    --ck-color-base-active-focus: #c44202;
+}
+
+.ck-content {
+    height: 300px;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    background: #c5c2c2;
+    border-radius: 25px;
+}
+
+
+/* Track */
+
+ ::-webkit-scrollbar-track {
+    border-radius: 25px;
+}
+
+
+/* Handle */
+
+ ::-webkit-scrollbar-thumb {
+    background: #a3a2a2;
+    border-radius: 25px;
+}
+
+
+/* Handle on hover */
+
+ ::-webkit-scrollbar-thumb:hover {
+    background: #8b8b8b;
+}
+
+.ck .ck-reset .ck-list {
+    height: 100%;
+    max-height: 200px;
+    overflow-y: scroll;
+    padding: 0 5px;
+}
+
+.ck.ck-list__item .ck-button {
+    justify-content: start;
+}
+
+.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_sw {
+    border-radius: 7px;
+    padding: 3px;
+}
+
+.ck.ck-reset_all input[type=text] {
+    text-align: end;
+    border-radius: 5px;
+    border-color: #FC5400;
+}
+
+.ck.ck-reset_all input[type=text]:focus {
+    box-shadow: 0 0 3px 1px #FC5400;
+}
+
+[dir=rtl] .ck.ck-labeled-field-view>.ck.ck-labeled-field-view__input-wrapper>.ck.ck-label {
+    top: -2px;
+}
+
+.ck.ck-form__row.ck-image-insert-form__action-row .ck-button {
+    border-radius: 5px;
+}
+
+.ck.ck-button .ck-button__label,
+a.ck.ck-button .ck-button__label {
+    font-family: 'Sahel', sans-serif;
+}
+
+.ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+    border-radius: 0;
+}
+
+.ck.ck-editor__main>.ck-editor__editable.ck-focused {
+    border-color: #Fc5400;
+    box-shadow: 0 0 2px #FC5400;
+    border-radius: 0;
+}
+
+.word-count {
+    border-radius: 0 0 37px 37px;
+    border: 3px solid #c4c4c4;
+    background: #f2f2f2;
+    border-top: none;
+    margin: 0 auto;
+    text-align-last: center;
+}
+
+.word-count div {
+    display: inline-block;
+    padding: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #3d3d3d;
+    min-width: 100px;
+    text-align: center;
+}

@@ -42,7 +42,7 @@ namespace Reshop.Infrastructure.Repository.Conversation
         public IEnumerable<ProductCommentsForShow> GetProductCommentsWithPagination(int productId, int skip = 1, int take = 30, string type = "news")
         {
             IQueryable<Comment> comments = _context.Comments
-                .Where(c => c.ProductId == productId);
+                .Where(c => c.ProductId == productId && !c.IsDelete);
 
             comments = type switch
             {

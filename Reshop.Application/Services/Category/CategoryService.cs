@@ -2,7 +2,6 @@
 using Reshop.Application.Interfaces.Category;
 using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
-using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Interfaces.Category;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +49,7 @@ namespace Reshop.Application.Services.Category
         {
             try
             {
-                _categoryRepository.EditChildCategory(childCategory);
+                _categoryRepository.UpdateChildCategory(childCategory);
                 await _categoryRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
@@ -71,72 +70,32 @@ namespace Reshop.Application.Services.Category
             return await _categoryRepository.IsChildCategoryExistAsync(childCategoryId);
         }
 
-        public async Task RemoveChildCategoryToCategoryByCategoryIdAsync(int categoryId)
-        {
-            var childCategoryToCategories = _categoryRepository.GetChildCategoryToCategoryByCategoryId(categoryId);
-
-            if (childCategoryToCategories != null)
-            {
-                foreach (var childCategoryToCategory in childCategoryToCategories)
-                {
-                    _categoryRepository.RemoveChildCategoryToCategory(childCategoryToCategory);
-                }
-
-                await _categoryRepository.SaveChangesAsync();
-            }
-        }
-
-        public async Task RemoveChildCategoryToCategoryByChildCategoryIdAsync(int childCategoryId)
-        {
-            var childCategoryToCategories = _categoryRepository.GetChildCategoryToCategoryByChildCategoryId(childCategoryId);
-
-            if (childCategoryToCategories != null)
-            {
-                foreach (var childCategoryToCategory in childCategoryToCategories)
-                {
-                    _categoryRepository.RemoveChildCategoryToCategory(childCategoryToCategory);
-                }
-
-                await _categoryRepository.SaveChangesAsync();
-            }
-        }
-
-        public async Task RemoveProductToChildCategoryByProductIdAsync(int productId)
-        {
-            var productToChildCategories = _categoryRepository.GetProductToChildCategoriesByProductId(productId);
-
-            if (productToChildCategories != null)
-            {
-                foreach (var productToChildCategory in productToChildCategories)
-                {
-                    _categoryRepository.RemoveProductToChildCategory(productToChildCategory);
-                }
-
-                await _categoryRepository.SaveChangesAsync();
-            }
-        }
-
         public async Task RemoveCategoryAsync(int categoryId)
         {
             var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
 
             if (category != null)
             {
-                var childCategoryToCategories = _categoryRepository.GetChildCategoryToCategoryByCategoryId(categoryId);
+                var childCategories = _categoryRepository.GetChildCategoriesOfCategory(categoryId);
 
-                if (childCategoryToCategories != null)
+                if (childCategories != null)
                 {
-                    foreach (var childCategoryToCategory in childCategoryToCategories)
+                    foreach (var childCategory in childCategories)
                     {
-                        _categoryRepository.RemoveChildCategoryToCategory(childCategoryToCategory);
+                        childCategory.IsActive = false;
+
+
+                        _categoryRepository.UpdateChildCategory(childCategory);
                     }
 
                     await _categoryRepository.SaveChangesAsync();
                 }
-            }
 
-            _categoryRepository.RemoveCategory(category);
-            await _categoryRepository.SaveChangesAsync();
+                category.IsActive = false;
+
+                _categoryRepository.UpdateCategory(category);
+                await _categoryRepository.SaveChangesAsync();
+            }
         }
 
         public async Task RemoveChildCategoryAsync(int childCategoryId)
@@ -145,45 +104,50 @@ namespace Reshop.Application.Services.Category
 
             if (childCategory != null)
             {
-                var childCategoryToCategories = _categoryRepository.GetChildCategoryToCategoryByChildCategoryId(childCategoryId);
+                childCategory.IsActive = false;
 
-                if (childCategoryToCategories != null)
-                {
-                    foreach (var childCategoryToCategory in childCategoryToCategories)
-                    {
-                        _categoryRepository.RemoveChildCategoryToCategory(childCategoryToCategory);
-                    }
-
-                    await _categoryRepository.SaveChangesAsync();
-                }
+                _categoryRepository.UpdateChildCategory(childCategory);
+                await _categoryRepository.SaveChangesAsync();
             }
-
-            _categoryRepository.RemoveChildCategory(childCategory);
-            await _categoryRepository.SaveChangesAsync();
-        }
-
-        public IEnumerable<ChildCategory> GetChildCategoriesOfCategory(int categoryId)
-        {
-            return _categoryRepository.GetChildCategoriesOfCategory(categoryId);
-        }
-
-        public IEnumerable<Domain.Entities.Category.Category> GetCategoriesOfChildCategory(int childCategoryId)
-        {
-            return _categoryRepository.GetCategoriesOfChildCategory(childCategoryId);
         }
 
         public async Task<AddOrEditChildCategoryViewModel> GetChildCategoryDataAsync(int childCategoryId)
         {
             var childCategory = await _categoryRepository.GetChildCategoryByIdAsync(childCategoryId);
             var categories = _categoryRepository.GetCategories();
-            var categoryOfChildCategory = _categoryRepository.GetCategoriesIdOfChildCategory(childCategoryId);
 
             return new AddOrEditChildCategoryViewModel()
             {
                 ChildCategoryId = childCategory.ChildCategoryId,
                 ChildCategoryTitle = childCategory.ChildCategoryTitle,
                 Categories = categories,
-                SelectedCategories = categoryOfChildCategory
+                IsActive = childCategory.IsActive,
+                SelectedCategory = childCategory.CategoryId,
+            };
+        }
+
+        public async Task<AddOrEditCategoryViewModel> GetCategoryDataAsync(int categoryId)
+        {
+            var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
+            var imagesName = _categoryRepository.GetCategoryGalleryImagesNameAndUrl(category.CategoryId).ToList();
+
+            return new AddOrEditCategoryViewModel()
+            {
+                CategoryId = category.CategoryId,
+                CategoryTitle = category.CategoryTitle,
+                IsActive = category.IsActive,
+                SelectedImage1IMG = imagesName.Skip(0).First().Item1,
+                SelectedImage2IMG = imagesName.Skip(1).First().Item1,
+                SelectedImage3IMG = imagesName.Skip(2).First().Item1,
+                SelectedImage4IMG = imagesName.Skip(3).First().Item1,
+                SelectedImage5IMG = imagesName.Skip(4).First().Item1,
+                SelectedImage6IMG = imagesName.Skip(5).First().Item1,
+                SelectedImage1URL = imagesName.Skip(0).First().Item2,
+                SelectedImage2URL = imagesName.Skip(1).First().Item2,
+                SelectedImage3URL = imagesName.Skip(2).First().Item2,
+                SelectedImage4URL = imagesName.Skip(3).First().Item2,
+                SelectedImage5URL = imagesName.Skip(4).First().Item2,
+                SelectedImage6URL = imagesName.Skip(5).First().Item2,
             };
         }
 
@@ -207,63 +171,6 @@ namespace Reshop.Application.Services.Category
             try
             {
                 await _categoryRepository.AddChildCategoryAsync(childCategory);
-                await _categoryRepository.SaveChangesAsync();
-
-                return ResultTypes.Successful;
-            }
-            catch
-            {
-                return ResultTypes.Failed;
-            }
-        }
-
-        public async Task AddChildCategoryToCategoryAsync(int categoryId, List<int> childCategoriesId)
-        {
-            foreach (int item in childCategoriesId)
-            {
-                var childCategoryToCategory = new ChildCategoryToCategory()
-                {
-                    CategoryId = categoryId,
-                    ChildCategoryId = item
-                };
-                await _categoryRepository.AddChildCategoryToCategoryAsync(childCategoryToCategory);
-            }
-
-
-            await _categoryRepository.SaveChangesAsync();
-        }
-
-        public async Task AddCategoryToChildCategoryAsync(int childCategoryId, List<int> categoriesId)
-        {
-            foreach (int item in categoriesId)
-            {
-                var childCategoryToCategory = new ChildCategoryToCategory()
-                {
-                    CategoryId = item,
-                    ChildCategoryId = childCategoryId
-                };
-                await _categoryRepository.AddChildCategoryToCategoryAsync(childCategoryToCategory);
-            }
-
-
-            await _categoryRepository.SaveChangesAsync();
-        }
-
-        public async Task<ResultTypes> AddProductToChildCategoryByProductAsync(int productId, List<int> childCategoryIds)
-        {
-            try
-            {
-                foreach (int item in childCategoryIds)
-                {
-                    var productToChildCategory = new ProductToChildCategory()
-                    {
-                        ChildCategoryId = item,
-                        ProductId = productId
-                    };
-                    await _categoryRepository.AddProductToChildCategoryAsync(productToChildCategory);
-                }
-
-
                 await _categoryRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
@@ -325,39 +232,30 @@ namespace Reshop.Application.Services.Category
             }
         }
 
-        public async Task<AddOrEditCategoryViewModel> GetCategoryDataAsync(int categoryId)
-        {
-            var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
-            var childCategories = _categoryRepository.GetChildCategories();
-            var childCategoriesOfCategory = _categoryRepository.GetChildCategoriesIdOfCategory(categoryId);
-            var imagesName = _categoryRepository.GetCategoryGalleryImagesNameAndUrl(category.CategoryId).ToList();
-
-            return new AddOrEditCategoryViewModel()
-            {
-                CategoryId = category.CategoryId,
-                CategoryTitle = category.CategoryTitle,
-                ChildCategories = childCategories,
-                SelectedChildCategories = childCategoriesOfCategory,
-                SelectedImage1IMG = imagesName.Skip(0).First().Item1,
-                SelectedImage2IMG = imagesName.Skip(1).First().Item1,
-                SelectedImage3IMG = imagesName.Skip(2).First().Item1,
-                SelectedImage4IMG = imagesName.Skip(3).First().Item1,
-                SelectedImage5IMG = imagesName.Skip(4).First().Item1,
-                SelectedImage6IMG = imagesName.Skip(5).First().Item1,
-                SelectedImage1URL = imagesName.Skip(0).First().Item2,
-                SelectedImage2URL = imagesName.Skip(1).First().Item2,
-                SelectedImage3URL = imagesName.Skip(2).First().Item2,
-                SelectedImage4URL = imagesName.Skip(3).First().Item2,
-                SelectedImage5URL = imagesName.Skip(4).First().Item2,
-                SelectedImage6URL = imagesName.Skip(5).First().Item2,
-            };
-        }
-
         public async Task<ResultTypes> EditCategoryAsync(Domain.Entities.Category.Category category)
         {
             try
             {
-                _categoryRepository.EditCategory(category);
+                _categoryRepository.UpdateCategory(category);
+
+                if (!category.IsActive)
+                {
+                    var childCategories = _categoryRepository.GetChildCategoriesOfCategory(category.CategoryId);
+
+                    if (childCategories != null)
+                    {
+                        foreach (var childCategory in childCategories)
+                        {
+                            childCategory.IsActive = false;
+
+
+                            _categoryRepository.UpdateChildCategory(childCategory);
+                        }
+
+                        await _categoryRepository.SaveChangesAsync();
+                    }
+                }
+
                 await _categoryRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;

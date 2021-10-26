@@ -175,6 +175,12 @@ $(window).scroll(function () {
     }
 });
 
+function CopyToClipboard(a) {
+    var text = a.attributes['data-clipboard-text'].value;
+
+    navigator.clipboard.writeText(text);
+    ShowToast('success', 'لینک با موفقیت کپی شد.');
+}
 
 function ShowToast(type, text, returnUrl) {
 
@@ -207,7 +213,6 @@ function ShowToast(type, text, returnUrl) {
         }
     }, 3000);
 }
-
 
 function BrandFilter(input) {
 

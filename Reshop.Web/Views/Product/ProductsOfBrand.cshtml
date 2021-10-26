@@ -10,6 +10,17 @@
 {
     <link href="~/css/nouislider.min.css" rel="stylesheet" />
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Product" asp-action="ProductsOfBrand"
+           asp-route-brandId="@Model.BrandId"
+           asp-route-brandName="@Model.BrandName.Replace(" ","-")">@Model.BrandName</a>
+    </li>
+</ul>
+
 
 <input type="hidden" value="1" id="pageId" />
 <input type="hidden" value="news" id="sortBy" />

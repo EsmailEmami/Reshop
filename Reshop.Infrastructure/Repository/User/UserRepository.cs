@@ -102,19 +102,6 @@ namespace Reshop.Infrastructure.Repository.User
 
         #endregion
 
-
-
-        public IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId) =>
-            _context.Questions.Where(c => c.UserId == userId)
-                .Select(c => new ShowQuestionOrCommentViewModel()
-                {
-                    QuestionOrCommentId = c.QuestionId,
-                    QuestionOrCommentTitle = c.QuestionTitle,
-                    SentDate = c.QuestionDate
-                });
-
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
-
-        public void SaveChanges() => _context.SaveChanges();
     }
 }

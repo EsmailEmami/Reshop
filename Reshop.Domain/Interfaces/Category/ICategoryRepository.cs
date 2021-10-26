@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
@@ -19,14 +20,9 @@ namespace Reshop.Domain.Interfaces.Category
         Task<Entities.Category.Category> GetCategoryByIdAsync(int categoryId);
         Task<ChildCategory> GetChildCategoryByIdAsync(int childCategoryId);
 
+        Task<Tuple<int, string>> GetProductChildCategoryAsync(int productId);
+        Task<Tuple<int, string>> GetProductCategoryAsync(int productId);
         IEnumerable<ChildCategory> GetChildCategoriesOfCategory(int categoryId);
-        IEnumerable<Entities.Category.Category> GetCategoriesOfChildCategory(int childCategoryId);
-        IEnumerable<int> GetChildCategoriesIdOfCategory(int categoryId);
-        IEnumerable<int> GetCategoriesIdOfChildCategory(int childCategoryId);
-        IEnumerable<ChildCategoryToCategory> GetChildCategoryToCategoryByCategoryId(int categoryId);
-        IEnumerable<ChildCategoryToCategory> GetChildCategoryToCategoryByChildCategoryId(int childCategoryId);
-        IEnumerable<ProductToChildCategory> GetProductToChildCategoriesByProductId(int productId);
-        IEnumerable<ChildCategory> GetProductChildCategories(int productId);
 
         // validations 
         Task<bool> IsCategoryExistAsync(int categoryId);
@@ -35,24 +31,19 @@ namespace Reshop.Domain.Interfaces.Category
         // insert
         Task AddCategoryAsync(Entities.Category.Category category);
         Task AddChildCategoryAsync(ChildCategory childCategory);
-        Task AddChildCategoryToCategoryAsync(ChildCategoryToCategory childCategoryToCategory);
-        Task AddProductToChildCategoryAsync(ProductToChildCategory productToChildCategory);
-        Task AddCategoryGalleryAsync(CategoryGallery categoryGallery);
+         Task AddCategoryGalleryAsync(CategoryGallery categoryGallery);
         void RemoveCategoryGallery(CategoryGallery categoryGallery);
         void UpdateCategoryGallery(CategoryGallery categoryGallery);
         Task<CategoryGallery> GetCategoryGalleryAsync(int categoryId, string imageName);
         IEnumerable<Tuple<string, string>> GetCategoryGalleryImagesNameAndUrl(int categoryId);
 
         // update
-        void EditCategory(Entities.Category.Category category);
-        void EditChildCategory(ChildCategory childCategory);
+        void UpdateCategory(Entities.Category.Category category);
+        void UpdateChildCategory(ChildCategory childCategory);
 
         // remove
         void RemoveCategory(Entities.Category.Category category);
         void RemoveChildCategory(ChildCategory childCategory);
-        void RemoveChildCategoryToCategory(ChildCategoryToCategory childCategoryToCategory);
-        void RemoveProductToChildCategory(ProductToChildCategory productToChildCategory);
-
         Task SaveChangesAsync();
     }
 }

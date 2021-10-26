@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Interfaces.Conversation;
 
 namespace Reshop.Application.Services.Product
@@ -60,7 +61,7 @@ namespace Reshop.Application.Services.Product
 
             var products = _productRepository.GetProductsWithPaginationForAdmin(type.FixedText(), skip, take, filter);
 
-            if (products == null || !products.Any())
+            if (products == null)
                 return null;
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -69,7 +70,7 @@ namespace Reshop.Application.Services.Product
             return new Tuple<IEnumerable<ProductDataForAdmin>, int, int>(products, pageId, totalPages);
         }
 
-        public async Task<CategoryOrChildCategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null)
+        public async Task<CategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
@@ -79,6 +80,8 @@ namespace Reshop.Application.Services.Product
             if (productsCount == 0)
                 return null;
 
+            var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
+
             var products = _productRepository.GetProductsOfCategoryWithPagination(categoryId, sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -87,9 +90,10 @@ namespace Reshop.Application.Services.Product
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfCategoryProductsAsync(categoryId, filter, brands);
 
-            return new CategoryOrChildCategoryProductsForShow()
+            return new CategoryProductsForShow()
             {
-                Id = categoryId,
+                CategoryId = categoryId,
+                CategoryName = category.CategoryTitle,
                 Products = products,
                 PageId = pageId,
                 TotalPages = totalPages,
@@ -98,7 +102,7 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<CategoryOrChildCategoryProductsForShow> GetChildCategoryProductsWithPaginationAsync(int childCategoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null)
+        public async Task<ChildCategoryProductsForShow> GetChildCategoryProductsWithPaginationAsync(int childCategoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
@@ -108,6 +112,11 @@ namespace Reshop.Application.Services.Product
             if (productsCount == 0)
                 return null;
 
+            var childCategory = await _categoryRepository.GetChildCategoryByIdAsync(childCategoryId);
+
+            var category = await _categoryRepository.GetCategoryByIdAsync(childCategory.CategoryId);
+
+
             var products = _productRepository.GetProductsOfChildCategoryWithPagination(childCategoryId, sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -116,9 +125,11 @@ namespace Reshop.Application.Services.Product
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfChildCategoryProductsAsync(childCategoryId, filter, brands);
 
-            return new CategoryOrChildCategoryProductsForShow()
+            return new ChildCategoryProductsForShow()
             {
-                Id = childCategoryId,
+                ChildCategoryId = childCategoryId,
+                ChildCategoryName = childCategory.ChildCategoryTitle,
+                Category = new Tuple<int, string>(category.CategoryId,category.CategoryTitle),
                 Products = products,
                 PageId = pageId,
                 TotalPages = totalPages,
@@ -319,7 +330,8 @@ namespace Reshop.Application.Services.Product
             if (product == null)
                 return null;
 
-            var childCategories = _categoryRepository.GetProductChildCategories(product.ProductId);
+            var childCategory =await _categoryRepository.GetProductChildCategoryAsync(product.ProductId);
+            var category = await _categoryRepository.GetProductCategoryAsync(product.ProductId);
             var comments = await _commentRepository.GetCommentsOfProductDetailAsync(product.ProductId);
             var productGalleries = _productRepository.GetProductImages(product.ProductId);
             var shoppers = _productRepository.GetProductShoppers(product.ProductId, product.SelectedColor);
@@ -328,7 +340,8 @@ namespace Reshop.Application.Services.Product
             return new ProductDetailViewModel()
             {
                 Product = product,
-                ChildCategories = childCategories,
+                Category = category,
+                ChildCategory = childCategory,
                 Comments = comments,
                 ProductGalleries = productGalleries,
                 Shoppers = shoppers,
@@ -402,7 +415,6 @@ namespace Reshop.Application.Services.Product
             model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
             model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
             model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
-            model.SelectedChildCategories = _brandRepository.GetChildCategoriesIdOfBrand(model.SelectedBrand);
 
             return model;
         }

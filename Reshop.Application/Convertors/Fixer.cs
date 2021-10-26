@@ -111,5 +111,39 @@ namespace Reshop.Application.Convertors
         {
             return value.Substring(value.IndexOf(search) + search.Length);
         }
+
+        public static string TruncateLongString(this string str, int maxLength)
+        {
+            return str?[0..Math.Min(str.Length, maxLength)];
+        }
+
+        public static string WorldSelector(this string str, int skip)
+        {
+            var b = str.Split(" ").Skip(skip);
+
+            var result = string.Join(" ", b);
+
+            return result;
+        }
+
+        public static string WorldSelector(this string str, int skip, int take)
+        {
+            if (take <= 0)
+                return null;
+            
+
+            var b = str.Split(" ").Skip(skip).Take(take);
+
+            var result = string.Join(" ", b);
+
+            return result;
+        }
+
+        public static string BoolToText(this bool value,string beforeText)
+        {
+            string boolText = value ? "بله" : "خیر";
+
+            return $"{beforeText}: {boolText}";
+        }
     }
 }

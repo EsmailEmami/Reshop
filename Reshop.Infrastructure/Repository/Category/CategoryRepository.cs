@@ -1,13 +1,12 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Interfaces.Category;
 using Reshop.Infrastructure.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Domain.DTOs.Category;
-using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Infrastructure.Repository.Category
 {
@@ -36,16 +35,17 @@ namespace Reshop.Infrastructure.Repository.Category
         }
 
         public IEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown() =>
-            _context.Categories.Select(c => new CategoriesDropdownViewModel()
-            {
-                CategoryId = c.CategoryId,
-                CategoryTitle = c.CategoryTitle,
-                CategoryImages = c.CategoryGalleries
+            _context.Categories
+                .Where(c => c.IsActive)
+                .Select(c => new CategoriesDropdownViewModel()
+                {
+                    CategoryId = c.CategoryId,
+                    CategoryTitle = c.CategoryTitle,
+                    CategoryImages = c.CategoryGalleries
                     .Select(g => new Tuple<string, string>(g.ImageName, g.ImageUrl))
                     .ToList(),
-                ChildCategories = c.ChildCategoryToCategories
-                    .Select(ch => ch.ChildCategory)
-                    .Where(ch => ch.ProductToChildCategories.Any())
+                    ChildCategories = c.ChildCategories
+                    .Where(ch => ch.IsActive && ch.Products.Any())
                     .Select(ch => new ChildCategoriesOfCategoryForDropDown()
                     {
                         ChildCategoryId = ch.ChildCategoryId,
@@ -61,7 +61,7 @@ namespace Reshop.Infrastructure.Repository.Category
                                 p.OfficialBrandProducts
                                     .SelectMany(b => b.Products).Count(b => b.IsActive && b.ShopperProducts.Any(i => i.IsActive && i.ShopperProductColors.Any(co => co.IsActive)))))
                     })
-            });
+                });
 
 
         public async Task<Domain.Entities.Category.Category> GetCategoryByIdAsync(int categoryId)
@@ -74,53 +74,22 @@ namespace Reshop.Infrastructure.Repository.Category
             return await _context.ChildCategories.SingleOrDefaultAsync(c => c.ChildCategoryId == childCategoryId);
         }
 
-        public IEnumerable<ChildCategory> GetChildCategoriesOfCategory(int categoryId)
-        {
-            return _context.ChildCategoryToCategories
-                .Where(c => c.CategoryId == categoryId)
-                .Select(c => c.ChildCategory);
-        }
+        public async Task<Tuple<int, string>> GetProductChildCategoryAsync(int productId) =>
+            await _context.Products.Where(c => c.ProductId == productId)
+               .Select(c => c.ChildCategory)
+                .Select(c => new Tuple<int, string>(c.ChildCategoryId, c.ChildCategoryTitle))
+               .SingleOrDefaultAsync();
 
-        public IEnumerable<Domain.Entities.Category.Category> GetCategoriesOfChildCategory(int childCategoryId)
-        {
-            return _context.ChildCategoryToCategories
-                .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.Category);
-        }
+        public async Task<Tuple<int, string>> GetProductCategoryAsync(int productId) =>
+            await _context.Products.Where(c => c.ProductId == productId)
+                .Select(c => c.ChildCategory)
+                .Select(c => c.Category)
+                .Select(c => new Tuple<int, string>(c.CategoryId, c.CategoryTitle))
+                .SingleOrDefaultAsync();
 
-        public IEnumerable<int> GetChildCategoriesIdOfCategory(int categoryId)
-        {
-            return _context.ChildCategoryToCategories
-                .Where(c => c.CategoryId == categoryId)
-                .Select(c => c.ChildCategoryId);
-        }
-
-        public IEnumerable<int> GetCategoriesIdOfChildCategory(int childCategoryId)
-        {
-            return _context.ChildCategoryToCategories
-                .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.CategoryId);
-        }
-
-        public IEnumerable<ChildCategoryToCategory> GetChildCategoryToCategoryByCategoryId(int categoryId)
-        {
-            return _context.ChildCategoryToCategories.Where(c => c.CategoryId == categoryId);
-        }
-
-        public IEnumerable<ChildCategoryToCategory> GetChildCategoryToCategoryByChildCategoryId(int childCategoryId)
-        {
-            return _context.ChildCategoryToCategories.Where(c => c.ChildCategoryId == childCategoryId);
-        }
-
-        public IEnumerable<ProductToChildCategory> GetProductToChildCategoriesByProductId(int productId) =>
-            _context.ProductToChildCategories.Where(c => c.ProductId == productId);
-
-        public IEnumerable<ChildCategory> GetProductChildCategories(int productId)
-        {
-            return _context.ProductToChildCategories
-                .Where(c => c.ProductId == productId)
-                .Select(c => c.ChildCategory);
-        }
+        public IEnumerable<ChildCategory> GetChildCategoriesOfCategory(int categoryId) =>
+            _context.Categories.Where(c => c.CategoryId == categoryId)
+                .SelectMany(c => c.ChildCategories);
 
 
         public async Task<bool> IsCategoryExistAsync(int categoryId)
@@ -143,14 +112,6 @@ namespace Reshop.Infrastructure.Repository.Category
             await _context.ChildCategories.AddAsync(childCategory);
         }
 
-        public async Task AddChildCategoryToCategoryAsync(ChildCategoryToCategory childCategoryToCategory)
-        {
-            await _context.ChildCategoryToCategories.AddAsync(childCategoryToCategory);
-        }
-
-        public async Task AddProductToChildCategoryAsync(ProductToChildCategory productToChildCategory) =>
-            await _context.ProductToChildCategories.AddAsync(productToChildCategory);
-
         public async Task AddCategoryGalleryAsync(CategoryGallery categoryGallery) =>
             await _context.CategoryGalleries.AddAsync(categoryGallery);
 
@@ -169,12 +130,12 @@ namespace Reshop.Infrastructure.Repository.Category
                 .OrderBy(c => c.OrderBy)
                 .Select(c => new Tuple<string, string>(c.ImageName, c.ImageUrl));
 
-        public void EditCategory(Domain.Entities.Category.Category category)
+        public void UpdateCategory(Domain.Entities.Category.Category category)
         {
             _context.Categories.Update(category);
         }
 
-        public void EditChildCategory(ChildCategory childCategory)
+        public void UpdateChildCategory(ChildCategory childCategory)
         {
             _context.ChildCategories.Update(childCategory);
         }
@@ -188,14 +149,6 @@ namespace Reshop.Infrastructure.Repository.Category
         {
             _context.ChildCategories.Remove(childCategory);
         }
-
-        public void RemoveChildCategoryToCategory(ChildCategoryToCategory childCategoryToCategory)
-        {
-            _context.ChildCategoryToCategories.Remove(childCategoryToCategory);
-        }
-
-        public void RemoveProductToChildCategory(ProductToChildCategory productToChildCategory) =>
-            _context.ProductToChildCategories.Remove(productToChildCategory);
 
         public async Task SaveChangesAsync()
         {

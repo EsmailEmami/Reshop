@@ -312,6 +312,21 @@
         $('#header-slider').carousel({
             interval: 10000
         });
+        $('.carousel-product').owlCarousel({
+            rtl: true,
+            loop: true,
+            dots: false,
+            nav: true,
+            autoWidth:true,
+            margin: 30,
+            autoplay: true,
+            autoplayTimeout: 3000,
+            autoplayHoverPause: true,
+            animateOut: 'slideOutDown',
+            animateIn: 'flipInX',
+            smartSpeed: 1000,
+        });
+
     </script>
 }
 

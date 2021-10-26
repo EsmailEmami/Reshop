@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.User;
 
 namespace Reshop.Web.Controllers
@@ -86,6 +89,27 @@ namespace Reshop.Web.Controllers
             }
 
             return View();
+        }
+
+        [IgnoreAntiforgeryToken]
+        [HttpPost]
+        [Route("file_upload")]
+        public async Task<IActionResult> UploadImage(IFormFile upload)
+        {
+            if (upload.Length <= 0) return null;
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "images",
+                "productDescriptionImages",
+                "images");
+
+            string imageName = await ImageConvertor.CreateNewImage(upload, path);
+
+            var url = $"/images/productDescriptionImages/images/{imageName}";
+
+
+            return Json(new { uploaded = true, url });
         }
     }
 }

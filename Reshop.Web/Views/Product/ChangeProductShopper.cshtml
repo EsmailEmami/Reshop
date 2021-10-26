@@ -24,7 +24,7 @@
 
     <h5><i class="far fa-store"></i> فروشندگان:</h5>
 
-    <select class="Seller-ipnut" id="selected-shopper" onchange="UpdateProductDetailShopper('@Model.ProductTitle.Replace(" ", "-")',this.value)">
+    <select id="selected-shopper" onchange="UpdateProductDetailShopper('@Model.ProductTitle.Replace(" ", "-")',this.value)">
         @foreach (var item in Model.Shoppers)
         {
             @:<option value="@item.Item1" @(item.Item1 == Model.SelectedShopper ? "selected" : "")>فروشگاه @item.Item2 - @item.Item3</option>
@@ -52,7 +52,7 @@
 
         <form asp-controller="Cart" asp-action="AddToCart" onsubmit="return  AddProductToCart(this)">
             <input type="hidden" value="@Model.SelectedShopper" name="shopperProductColorId" />
-            <button type="submit" class="btn btn-warning">افزودن به سبد خرید</button>
+            <button type="submit" class="btn">افزودن به سبد خرید</button>
         </form>
 
 

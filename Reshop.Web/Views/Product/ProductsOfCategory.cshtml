@@ -1,18 +1,27 @@
-﻿@model CategoryOrChildCategoryProductsForShow
+﻿@model CategoryProductsForShow
 @{
-    string categoryName = ViewData["CategoryName"].ToString();
-
-    ViewData["Title"] = $"کالاهای گروه {categoryName?.Replace("-", " ")}";
+  
+    ViewData["Title"] = $"کالاهای گروه {Model.CategoryName}";
 }
 
 @section Css
 {
     <link href="~/css/nouislider.min.css" rel="stylesheet" />
 }
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Product" asp-action="ProductsOfCategory"
+           asp-route-categoryId="@Model.CategoryId"
+           asp-route-categoryName="@Model.CategoryName.Replace(" ", "-")">@Model.CategoryName</a>
+    </li>
+</ul>
 
 <input type="hidden" value="1" id="pageId" />
 <input type="hidden" value="news" id="sortBy" />
-<input type="hidden" value="@categoryName" id="categoryName" />
+<input type="hidden" value="@Model.CategoryName.Replace(" ", "-")" id="categoryName" />
 
 <div class="top-filter box-shadow">
     <section class="p-one">
@@ -302,7 +311,7 @@
             }
 
 
-            var url = window.location.origin + "/Category/@Model.Id/" + categoryName + "?pageId=" + pageId + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&search=" + search + "&sortBy=" + sortBy + "&brands=" + brandsArray;
+            var url = window.location.origin + "/Category/@Model.CategoryId/" + categoryName + "?pageId=" + pageId + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&search=" + search + "&sortBy=" + sortBy + "&brands=" + brandsArray;
 
             window.location = url;
         }

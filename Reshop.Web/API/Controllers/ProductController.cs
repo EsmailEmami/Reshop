@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
 
@@ -109,7 +112,13 @@ namespace Reshop.Web.API.Controllers
             if (res == null)
                 return NotFound();
 
-            return new ObjectResult(res);
+            var model = res
+                .Select(c => new Tuple<int, string>(
+                    c.ChildCategoryId,
+                    $"{c.ChildCategoryTitle} - {c.IsActive.BoolToText("فعال")}"
+                    ));
+
+            return new ObjectResult(model);
         }
 
         [HttpGet("GetProductsOfOfficialProduct/{officialProductId}")]

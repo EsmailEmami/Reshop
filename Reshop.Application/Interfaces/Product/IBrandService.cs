@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.Product;
+using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Application.Interfaces.Product
@@ -21,7 +22,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetBrandsForShowAsync(int pageId = 1, int take = 30, string filter = "");
         Task<Tuple<IEnumerable<Tuple<int, string, bool>>, int, int>> GetOfficialBrandProductsForShowAsync(int pageId = 1, int take = 30, string filter = "");
         IEnumerable<Tuple<int, string>> GetBrandOfficialProducts(int brandId);
-        IEnumerable<Tuple<int, string>> GetChildCategoriesOfBrand(int brandId);
+        IEnumerable<ChildCategory> GetChildCategoriesOfBrand(int brandId);
         IEnumerable<Tuple<int, string>> GetProductsOfOfficialProduct(int officialProductId);
         Task<bool> IsBrandExistAsync(int brandId);
         Task<bool> IsOfficialBrandProductExistAsync(int officialBrandProductId);

@@ -9,6 +9,12 @@
     @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.CategoryPage); }
 }
 
+
+
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+
 <div class="display-6 text-center">
     مدیریت زیر گروه
 </div>
@@ -20,41 +26,41 @@
     <i class="fal fa-layer-plus"></i> افزودن زیر گروه جدید
 </a>
 
-@if(Model.Any())
+@if (Model.Any())
 {
     <div class="table-responsive">
         <table class="table responsive table-bordered table-striped">
             <thead>
-            <tr>
-                <th>#</th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ChildCategoryTitle)
-                </th>
-                <th>دستورات</th>
-            </tr>
+                <tr>
+                    <th>#</th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ChildCategoryTitle)
+                    </th>
+                    <th>دستورات</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@rowCount</td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ChildCategoryTitle)
-                    </td>
-                    <td>
-                        <a class="btn btn-warning text-white"
-                           onclick="ShowModal('@Url.Action("AddOrEditChildCategory", "ChildCategoryManager",new {childCategoryId = item.ChildCategoryId} , Context.Request.Scheme)', 'ویرایش زیر گروه')">
-                            <i class="fal fa-marker"></i> ویرایش
-                        </a>
-                        <form asp-action="RemoveChildCategory" asp-route-childCategoryId="@item.ChildCategoryId" method="post" class="d-inline-block ml-2">
-                            <button type="submit" class="btn btn-danger text-white me-2">
-                                <i class="fal fa-trash-alt"></i> حذف
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                rowCount++;
-            }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@rowCount</td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ChildCategoryTitle)
+                        </td>
+                        <td>
+                            <a class="btn btn-warning text-white"
+                               onclick="ShowModal('@Url.Action("AddOrEditChildCategory", "ChildCategoryManager",new {childCategoryId = item.ChildCategoryId} , Context.Request.Scheme)', 'ویرایش زیر گروه')">
+                                <i class="fal fa-marker"></i> ویرایش
+                            </a>
+                            <form asp-action="RemoveChildCategory" asp-route-childCategoryId="@item.ChildCategoryId" method="post" class="d-inline-block ml-2">
+                                <button type="submit" class="btn btn-danger text-white me-2">
+                                    <i class="fal fa-trash-alt"></i> حذف
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    rowCount++;
+                }
             </tbody>
         </table>
 
@@ -76,5 +82,6 @@ else
 }
 
 @section Scripts{
+    <script src="~/js/select.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

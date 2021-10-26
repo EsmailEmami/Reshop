@@ -45,13 +45,6 @@ namespace Reshop.Domain.Interfaces.User
         Task<bool> IsUserAddressExistAsync(string addressId, string userId);
         #endregion
 
-        #region comment and question
-
-        IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId);
-
-        #endregion
-
         Task SaveChangesAsync();
-        void SaveChanges();
     }
 }

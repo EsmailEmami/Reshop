@@ -3,6 +3,7 @@ using Reshop.Domain.Entities.Shopper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Reshop.Domain.Entities.Category;
 
 namespace Reshop.Domain.DTOs.Product
 {
@@ -13,7 +14,7 @@ namespace Reshop.Domain.DTOs.Product
 
         [Display(Name = "نام کالا")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [MaxLength(150, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ProductTitle { get; set; }
 
         [Display(Name = "توضیحات کالا")]
@@ -31,11 +32,11 @@ namespace Reshop.Domain.DTOs.Product
         public IEnumerable<StoreTitle> StoreTitles { get; set; }
         public IEnumerable<Tuple<int, string>> Brands { get; set; }
         public IEnumerable<Tuple<int, string>> OfficialProducts { get; set; }
-        public IEnumerable<Tuple<int,string>> ChildCategories { get; set; }
+        public IEnumerable<ChildCategory> ChildCategories { get; set; }
 
         public int SelectedStoreTitle { get; set; }
         public int SelectedBrand { get; set; }
-        public IEnumerable<int> SelectedChildCategories { get; set; }
+        public int SelectedChildCategory { get; set; }
 
         // --------------------------------------------------------------------------- ITEMS
 

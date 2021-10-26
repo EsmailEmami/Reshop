@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.Interfaces.Conversation;
 
 namespace Reshop.Application.Services.User
 {
@@ -19,11 +20,13 @@ namespace Reshop.Application.Services.User
 
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly IQuestionRepository _questionRepository;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository)
+        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IQuestionRepository questionRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
+            _questionRepository = questionRepository;
         }
 
         #endregion
@@ -202,7 +205,7 @@ namespace Reshop.Application.Services.User
         }
 
         public IEnumerable<ShowQuestionOrCommentViewModel> GetUserQuestionsForShow(string userId) =>
-            _userRepository.GetUserQuestionsForShow(userId);
+            _questionRepository.GetUserQuestionsForShow(userId);
 
         public async Task<ResultTypes> AddUserAddressAsync(Address address)
         {

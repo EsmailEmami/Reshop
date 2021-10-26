@@ -2438,7 +2438,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Description = model.Description,
                     ProductType = ProductTypes.AUX.ToString(),
                     OfficialBrandProductId = model.OfficialBrandProductId,
-                    IsActive = model.IsActive
+                    IsActive = model.IsActive,
+                    ChildCategoryId = model.SelectedChildCategory
                 };
 
                 var auxDetail = new AUXDetail()
@@ -2459,12 +2460,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         model.SelectedImage5, model.SelectedImage6
                     }, product.ProductId);
 
-
-                    // add product to child category
-                    if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
-                    {
-                        await _categoryService.AddProductToChildCategoryByProductAsync(product.ProductId, model.SelectedChildCategories as List<int>);
-                    }
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -2495,6 +2490,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.Description = model.Description;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
+                product.ChildCategoryId = model.SelectedChildCategory;
 
                 // update mobile cover detail
                 auxDetail.CableLenght = model.CableLenght;
@@ -2516,15 +2512,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
                         model.SelectedImage5IMG, model.SelectedImage6IMG
                     });
-
-                    // edit childCategories
-                    await _categoryService.RemoveProductToChildCategoryByProductIdAsync(product.ProductId);
-
-                    if (model.SelectedChildCategories != null && model.SelectedChildCategories.Any())
-                    {
-                        await _categoryService.AddProductToChildCategoryByProductAsync(product.ProductId, model.SelectedChildCategories as List<int>);
-                    }
-
 
                     return RedirectToAction(nameof(Index));
                 }

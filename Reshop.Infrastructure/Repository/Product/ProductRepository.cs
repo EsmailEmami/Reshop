@@ -133,11 +133,10 @@ namespace Reshop.Infrastructure.Repository.Product
             int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0,
             List<int> brands = null)
         {
-            IQueryable<ShopperProductColor> products = _context.ChildCategoryToCategories
+            IQueryable<ShopperProductColor> products = _context.Categories
                 .Where(c => c.CategoryId == categoryId)
-                .Select(c => c.ChildCategory)
-                .SelectMany(c => c.ProductToChildCategories)
-                .Select(c => c.Product)
+                .SelectMany(c => c.ChildCategories)
+                .SelectMany(c => c.Products)
                 .Where(c => c.IsActive &&
                             c.ShopperProducts
                                   .Any(i => i.IsActive
@@ -208,9 +207,9 @@ namespace Reshop.Infrastructure.Repository.Product
             string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0,
             decimal maxPrice = 0, List<int> brands = null)
         {
-            IQueryable<ShopperProductColor> products = _context.ProductToChildCategories
+            IQueryable<ShopperProductColor> products = _context.ChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.Product)
+                .SelectMany(c => c.Products)
                 .Where(c => c.IsActive &&
                             c.ShopperProducts
                                 .Any(i => i.IsActive
@@ -348,11 +347,10 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<decimal> GetMaxPriceOfCategoryProductsAsync(int categoryId, string filter = null, List<int> brands = null)
         {
-            IQueryable<ShopperProductColor> products = _context.ChildCategoryToCategories
+            IQueryable<ShopperProductColor> products = _context.Categories
                 .Where(c => c.CategoryId == categoryId)
-                .Select(c => c.ChildCategory)
-                .SelectMany(c => c.ProductToChildCategories)
-                .Select(c => c.Product)
+                .SelectMany(c => c.ChildCategories)
+                .SelectMany(c => c.Products)
                 .Where(c => c.IsActive &&
                             c.ShopperProducts
                                 .Any(i => i.IsActive
@@ -383,9 +381,9 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<decimal> GetMaxPriceOfChildCategoryProductsAsync(int childCategoryId, string filter = null, List<int> brands = null)
         {
-            IQueryable<ShopperProductColor> products = _context.ProductToChildCategories
+            IQueryable<ShopperProductColor> products = _context.ChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
-                .Select(c => c.Product)
+                .SelectMany(c => c.Products)
                 .Where(c => c.IsActive &&
                             c.ShopperProducts
                                 .Any(i => i.IsActive
@@ -665,11 +663,10 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<int> GetCategoryProductsCountAsync(int categoryId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null)
         {
-            IQueryable<ShopperProductColor> products = _context.ChildCategoryToCategories
+            IQueryable<ShopperProductColor> products = _context.Categories
                 .Where(c => c.CategoryId == categoryId)
-                .Select(c => c.ChildCategory)
-                .SelectMany(c => c.ProductToChildCategories)
-                .Select(c => c.Product)
+                .SelectMany(c => c.ChildCategories)
+                .SelectMany(c => c.Products)
                 .Where(c => c.IsActive &&
                             c.ShopperProducts
                                 .Any(i => i.IsActive
@@ -701,10 +698,9 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public async Task<int> GetChildCategoryProductsCountAsync(int childCategoryId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null)
         {
-            IQueryable<ShopperProduct> products = _context.ProductToChildCategories
+            IQueryable<ShopperProduct> products = _context.ChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
-
-                .Select(c => c.Product)
+                .SelectMany(c => c.Products)
                 .Where(c => c.IsActive &&
                             c.ShopperProducts.Any(s => s.IsActive &&
                                                        s.ShopperProductColors.Any(i => i.IsActive)))
@@ -1446,6 +1442,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     IsActive = c.IsActive,
                     SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
                     SelectedBrand = c.OfficialBrandProduct.BrandId,
+                    SelectedChildCategory = c.ChildCategoryId,
                     //img
                     SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                     SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,

@@ -9,9 +9,9 @@ namespace Reshop.Domain.Entities.User
     {
         public Question()
         {
-            
         }
 
+        [Key]
         public int QuestionId { get; set; }
 
         [ForeignKey("Product")]
@@ -33,7 +33,11 @@ namespace Reshop.Domain.Entities.User
         [Display(Name = "تاریخ ثبت نظر")]
         public DateTime QuestionDate { get; set; }
 
-        public bool IsRead { get; set; }
+        public bool IsDelete { get; set; } = false;
+
+        [Display(Name = "دلیل حذف")]
+        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string DeleteDescription { get; set; }
 
         #region Relations
 
@@ -42,6 +46,8 @@ namespace Reshop.Domain.Entities.User
         public virtual User User { get; set; }
 
         public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; }
+        public virtual ICollection<QuestionLike> QuestionLikes { get; set; }
+        public virtual ICollection<ReportQuestion> QuestionReports { get; set; }
 
         #endregion
     }

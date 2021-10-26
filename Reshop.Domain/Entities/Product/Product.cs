@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Reshop.Domain.Entities.Category;
 
 namespace Reshop.Domain.Entities.Product
 {
@@ -21,12 +22,11 @@ namespace Reshop.Domain.Entities.Product
 
         [Display(Name = "نام کالا")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [MaxLength(150, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ProductTitle { get; set; }
 
         [Display(Name = "توضیحات کالا")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(2000, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string Description { get; set; }
 
         [Display(Name = "نوع محصول")]
@@ -36,6 +36,9 @@ namespace Reshop.Domain.Entities.Product
 
         [ForeignKey("OfficialBrandProduct")]
         public int OfficialBrandProductId { get; set; }
+
+        [ForeignKey("ChildCategory")]
+        public int ChildCategoryId { get; set; }
 
         [Required]
         public DateTime CreateDate { get; set; }
@@ -86,7 +89,7 @@ namespace Reshop.Domain.Entities.Product
 
         public virtual OfficialBrandProduct OfficialBrandProduct { get; set; }
 
-        public virtual ICollection<ProductToChildCategory> ProductToChildCategories { get; set; }
+        public virtual ChildCategory ChildCategory { get; set; }
 
         public virtual ICollection<Comment> Comments { get; set; }
 

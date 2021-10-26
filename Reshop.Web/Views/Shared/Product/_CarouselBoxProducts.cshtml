@@ -2,9 +2,7 @@
 
 @foreach (var item in Model)
 {
-    <div class="item">
-        <div class="col-sm-12">
-            <div class="product-item box-shadow">
+    <div class="product-item box-shadow">
                 <div class="product-img">
                     <a asp-controller="Product" asp-action="ProductDetail"
                        asp-route-productName="@item.ProductTitle.Replace(" ", "-")"
@@ -64,6 +62,4 @@
                     <h5 class="pro-price">@((item.ProductPrice - discountPrice).NumSplitter()) <span class="toman">تومان</span></h5>
                 </div>
             </div>
-        </div>
-    </div>
 }

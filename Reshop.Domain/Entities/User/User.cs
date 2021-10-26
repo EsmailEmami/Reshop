@@ -79,6 +79,10 @@ namespace Reshop.Domain.Entities.User
         public virtual ICollection<UserInvite> UserInvites { get; set; }
         public virtual ICollection<ReportComment> ReportComments { get; set; }
         public virtual ICollection<CommentFeedback> CommentFeedBacks { get; set; }
+        public virtual ICollection<QuestionLike> QuestionLikes { get; set; }
+        public virtual ICollection<QuestionAnswerLike> QuestionAnswerLikes { get; set; }
+        public virtual ICollection<ReportQuestion> QuestionReports { get; set; }
+        public virtual ICollection<ReportQuestionAnswer> QuestionAnswerReports { get; set; }
 
         #endregion
     }

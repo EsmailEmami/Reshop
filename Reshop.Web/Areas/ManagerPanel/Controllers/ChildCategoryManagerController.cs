@@ -67,6 +67,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 var childCategory = new ChildCategory()
                 {
                     ChildCategoryTitle = model.ChildCategoryTitle,
+                    IsActive = model.IsActive,
+                    CategoryId = model.SelectedCategory
                 };
 
                 var res = await _categoryService.AddChildCategoryAsync(childCategory);
@@ -75,12 +77,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ModelState.AddModelError("", "متاسفاه هنگام افزودن زیر گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
                     return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
-                }
-
-
-                if (model.SelectedCategories != null)
-                {
-                    await _categoryService.AddCategoryToChildCategoryAsync(childCategory.ChildCategoryId, model.SelectedCategories as List<int>);
                 }
             }
             else
@@ -95,6 +91,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 // update category
                 childCategory.ChildCategoryTitle = model.ChildCategoryTitle;
+                childCategory.IsActive = model.IsActive;
+                childCategory.CategoryId = model.SelectedCategory;
 
                 var res = await _categoryService.EditChildCategoryAsync(childCategory);
 
@@ -102,16 +100,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ModelState.AddModelError("", "متاسفاه هنگام ویرایش زیر گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
                     return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
-                }
-
-                // remove all child categories
-                await _categoryService.RemoveChildCategoryToCategoryByChildCategoryIdAsync(childCategory.ChildCategoryId);
-
-
-                // add selected child categories
-                if (model.SelectedCategories != null)
-                {
-                    await _categoryService.AddCategoryToChildCategoryAsync(childCategory.ChildCategoryId, model.SelectedCategories as List<int>);
                 }
             }
 

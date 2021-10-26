@@ -12,7 +12,10 @@ namespace Reshop.Domain.DTOs.Category
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ChildCategoryTitle { get; set; }
 
+        public bool IsActive { get; set; }
+
+        public int SelectedCategory { get; set; }
+
         public IEnumerable<Entities.Category.Category> Categories { get; set; }
-        public IEnumerable<int> SelectedCategories { get; set; }
     }
 }

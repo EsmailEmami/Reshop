@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Domain.Interfaces.Product
@@ -11,7 +12,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         IEnumerable<Tuple<int, string, string>> GetBrandsOfCategory(int categoryId);
         IEnumerable<Tuple<int, string, string>> GetBrandsOfChildCategory(int childCategoryId);
-        IEnumerable<Tuple<int, string>> GetChildCategoriesOfBrand(int brandId);
+        IEnumerable<ChildCategory> GetChildCategoriesOfBrand(int brandId);
         Task<Brand> GetBrandByIdAsync(int brandId);
         IEnumerable<Tuple<int, string>> GetBrandsForShow();
         IEnumerable<Tuple<int, string, bool>> GetBrandsForShow(int skip, int take, string filter);

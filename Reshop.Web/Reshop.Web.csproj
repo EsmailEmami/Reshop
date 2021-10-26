@@ -31,7 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Fonts\Kalameh\" />
     <Folder Include="wwwroot\images\categoryImages\" />
+    <Folder Include="wwwroot\images\productDescription\images\" />
     <Folder Include="wwwroot\images\ProductImages\" />
     <Folder Include="wwwroot\images\shoppersCardImages\" />
   </ItemGroup>

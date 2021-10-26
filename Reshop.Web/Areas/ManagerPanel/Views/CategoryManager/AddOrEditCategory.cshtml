@@ -25,21 +25,13 @@
         </div>
 
         <div class="col-sm-12 col-lg-6">
-            @if (Model.ChildCategories != null)
-            {
-                <select multiple asp-for="SelectedChildCategories" placeholder="انتخاب زیر گروه ها">
-                    @foreach (var item in Model.ChildCategories)
-                    {
-                        @: <option value="@item.ChildCategoryId" @(Model.SelectedChildCategories != null && Model.SelectedChildCategories.Any(c => c == item.ChildCategoryId) ? "selected" : "")>@item.ChildCategoryTitle</option>
-                    }
-                </select>
-            }
-            else
-            {
-                <div class="alert alert-warning">
-                    زیر گروهی برای نمایش یافت نشد.
-                </div>
-            }
+            <div class="form-check">
+                <label>
+                    این گروه فعال است
+                    <input type="checkbox" asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
         </div>
     </div>
 

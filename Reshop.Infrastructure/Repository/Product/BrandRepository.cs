@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Category;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -23,9 +24,9 @@ namespace Reshop.Infrastructure.Repository.Product
         #endregion
 
         public IEnumerable<Tuple<int, string, string>> GetBrandsOfCategory(int categoryId) =>
-            _context.ChildCategoryToCategories
+            _context.Categories
                 .Where(c => c.CategoryId == categoryId)
-                .Select(c => c.ChildCategory)
+                .SelectMany(c => c.ChildCategories)
                 .SelectMany(c => c.BrandToChildCategories)
                 .Select(c => c.Brand)
                 .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName)).Distinct();
@@ -35,10 +36,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.Brand)
                 .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName));
 
-        public IEnumerable<Tuple<int, string>> GetChildCategoriesOfBrand(int brandId) =>
+        public IEnumerable<ChildCategory> GetChildCategoriesOfBrand(int brandId) =>
             _context.BrandToChildCategories.Where(c => c.BrandId == brandId)
-                .Select(c => c.ChildCategory)
-                .Select(c => new Tuple<int, string>(c.ChildCategoryId, c.ChildCategoryTitle));
+                .Select(c => c.ChildCategory);
 
         public async Task<Brand> GetBrandByIdAsync(int brandId) =>
         await _context.Brands.FindAsync(brandId);
