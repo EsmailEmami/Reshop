@@ -1,4 +1,4 @@
-﻿@model AddReportCommentViewModel
+﻿@model AddReportConversationViewModel
 
 
 @inject IAntiforgery antiforgery
@@ -12,7 +12,7 @@
     <div class="row">
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="CommentId" />
+        <input type="hidden" asp-for="Id" />
         <div class="col-12">
             <div class="form-field">
                 <textarea asp-for="Description"></textarea>
@@ -24,9 +24,9 @@
         <div class="col-12">
             <select asp-for="SelectedType">
                 <option>عنوان گزارش</option>
-                @foreach (var state in Model.Types)
+                @foreach (var item in Model.Types)
                 {
-                    @:<option value="@state.ReportCommentTypeId" @(Model.SelectedType == state.ReportCommentTypeId ? "selected" : "")>@state.ReportCommentTitle</option>
+                    @:<option value="@item.Item1" @(Model.SelectedType == item.Item1 ? "selected" : "")>@item.Item2</option>
                 }
             </select>
         </div>

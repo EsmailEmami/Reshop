@@ -1,13 +1,13 @@
-﻿using Reshop.Domain.Entities.Comment;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Reshop.Domain.DTOs.CommentAndQuestion
 {
-    public class AddReportCommentViewModel
+    public class AddReportConversationViewModel
     {
         [Required]
-        public int CommentId { get; set; }
+        public int Id { get; set; }
 
         public int SelectedType { get; set; }
 
@@ -16,6 +16,6 @@ namespace Reshop.Domain.DTOs.CommentAndQuestion
         public string Description { get; set; }
 
 
-        public IEnumerable<ReportCommentType> Types { get; set; }
+        public IEnumerable<Tuple<int, string>> Types { get; set; }
     }
 }

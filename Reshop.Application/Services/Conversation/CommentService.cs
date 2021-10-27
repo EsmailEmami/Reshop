@@ -61,22 +61,12 @@ namespace Reshop.Application.Services.Conversation
         public IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId) =>
             _commentRepository.GetUserProductCommentsFeedBack(userId, productId);
 
-        public async Task<ResultTypes> ReportCommentByUserAsync(string userId, AddReportCommentViewModel model)
+        public async Task<ResultTypes> AddReportCommentAsync(ReportComment reportComment)
         {
             try
             {
-                if (await _commentRepository.IsUserReportCommentExistAsync(userId, model.CommentId))
+                if (await _commentRepository.IsUserReportCommentExistAsync(reportComment.UserId, reportComment.CommentId))
                     return ResultTypes.Failed;
-
-
-                var reportComment = new ReportComment()
-                {
-                    UserId = userId,
-                    CommentId = model.CommentId,
-                    Description = model.Description,
-                    ReportCommentTypeId = model.SelectedType,
-                    CreateDate = DateTime.Now
-                };
 
                 await _commentRepository.AddReportCommentAsync(reportComment);
 

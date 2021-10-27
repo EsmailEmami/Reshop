@@ -16,7 +16,7 @@ namespace Reshop.Application.Interfaces.Conversation
         Task<ResultTypes> AddCommentAsync(Comment comment);
         IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId);
         IEnumerable<Tuple<int, bool>> GetUserProductCommentsFeedBack(string userId, int productId);
-        Task<ResultTypes> ReportCommentByUserAsync(string userId, AddReportCommentViewModel model);
+        Task<ResultTypes> AddReportCommentAsync(ReportComment reportComment);
         Task<ResultTypes> RemoveReportCommentByUserAsync(string userId, int commentId);
         IEnumerable<ReportCommentType> GetReportCommentTypes();
         Task<bool> IsReportCommentTimeLockAsync(string userId, int commentId);

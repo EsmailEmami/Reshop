@@ -238,7 +238,7 @@
 
         $.ajax({
             type: 'GET',
-                url: '/Product/ProductCommentsList?productId=@ViewBag.ProductId.ToString()&pageId=' + pageId + '&type='+ type,
+                url: '/Comment/ProductCommentsList?productId=@ViewBag.ProductId.ToString()&pageId=' + pageId + '&type='+ type,
             }).done(function (res) {
 
 

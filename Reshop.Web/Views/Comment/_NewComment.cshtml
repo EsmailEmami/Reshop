@@ -2,7 +2,7 @@
 
 <link href="~/css/nouislider.min.css" rel="stylesheet" />
 
-<form asp-action="AddComment" method="post" onsubmit="return AddComment(this)" autocomplete="off">
+<form asp-controller="Comment" asp-action="AddComment" method="post" onsubmit="return AddComment(this)" autocomplete="off">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <input type="hidden" asp-for="ProductId" />

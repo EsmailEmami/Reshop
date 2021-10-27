@@ -27,7 +27,7 @@ namespace Reshop.Domain.Entities.Question
         public string AnswerText { get; set; }
 
         [Display(Name = "تاریخ ثبت نظر")]
-        public DateTime CommentDate { get; set; }
+        public DateTime QuestionAnswerDate { get; set; }
 
         public bool IsDelete { get; set; } = false;
 
