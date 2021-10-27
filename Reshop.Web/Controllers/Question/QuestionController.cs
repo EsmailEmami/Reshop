@@ -2,6 +2,7 @@
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
+using Reshop.Application.Enums.User;
 using Reshop.Application.Interfaces.Conversation;
 using Reshop.Application.Security.Attribute;
 using Reshop.Domain.DTOs.CommentAndQuestion;
@@ -206,6 +207,83 @@ namespace Reshop.Web.Controllers.Question
 
         #endregion
 
+        #region remove report question
+
+        [HttpPost]
+        [PermissionJs]
+        [NoDirectAccess]
+        public async Task<IActionResult> RemoveReportQuestion(int questionId)
+        {
+            if (questionId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var res = await _questionService.RemoveReportQuestionAsync(userId, questionId);
+
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+            }
+        }
+
+        #endregion
+
+        #region like question
+
+        [HttpPost]
+        [PermissionJs]
+        [NoDirectAccess]
+        public async Task<IActionResult> LikeQuestion(int questionId)
+        {
+            if (questionId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+
+            var like = new QuestionLike()
+            {
+                QuestionId = questionId,
+                UserId = userId
+            };
+
+            var res = await _questionService.LikeQuestionAsync(like);
+
+            return res switch
+            {
+                QuestionAndAnswerResultTypes.Added => Json(new
+                {
+                    isValid = true,
+                    where = "Added",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت ثبت شد."
+                }),
+                QuestionAndAnswerResultTypes.Deleted => Json(new
+                {
+                    isValid = true,
+                    where = "Deleted",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت حذف شد."
+                }),
+                QuestionAndAnswerResultTypes.Failed => Json(new
+                {
+                    isValid = false,
+                    where = "Failed",
+                    errorType = "danger",
+                    errorText = "متاسفانه مشکلی پیش آمده است."
+                }),
+                _ => Json(new { isValid = false, errorType = "danger", errorText = "متاسفانه مشکلی پیش آمده است." })
+            };
+        }
+
+        #endregion
+
         #region  add question answer
 
         [HttpGet]
@@ -383,6 +461,83 @@ namespace Reshop.Web.Controllers.Question
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+        }
+
+        #endregion
+
+        #region like question answer
+
+        [HttpPost]
+        [PermissionJs]
+        [NoDirectAccess]
+        public async Task<IActionResult> LikeQuestionAnswer(int questionAnswerId)
+        {
+            if (questionAnswerId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+
+            var like = new QuestionAnswerLike()
+            {
+                QuestionAnswerId = questionAnswerId,
+                UserId = userId
+            };
+
+            var res = await _questionService.LikeQuestionAnswerAsync(like);
+
+            return res switch
+            {
+                QuestionAndAnswerResultTypes.Added => Json(new
+                {
+                    isValid = true,
+                    where = "Added",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت ثبت شد."
+                }),
+                QuestionAndAnswerResultTypes.Deleted => Json(new
+                {
+                    isValid = true,
+                    where = "Deleted",
+                    errorType = "success",
+                    errorText = "بازخورد شما با موفقیت حذف شد."
+                }),
+                QuestionAndAnswerResultTypes.Failed => Json(new
+                {
+                    isValid = false,
+                    where = "Failed",
+                    errorType = "danger",
+                    errorText = "متاسفانه مشکلی پیش آمده است."
+                }),
+                _ => Json(new { isValid = false, errorType = "danger", errorText = "متاسفانه مشکلی پیش آمده است." })
+            };
+        }
+
+        #endregion
+
+        #region remove report question
+
+        [HttpPost]
+        [PermissionJs]
+        [NoDirectAccess]
+        public async Task<IActionResult> RemoveReportQuestionAnswer(int questionAnswerId)
+        {
+            if (questionAnswerId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var res = await _questionService.RemoveReportQuestionAnswerAsync(userId, questionAnswerId);
+
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true });
+            }
+            else
+            {
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
             }
         }
 

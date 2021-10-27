@@ -18,8 +18,15 @@ namespace Reshop.Domain.Interfaces.Conversation
         Task<int> GetQuestionsCountOfProductWithTypeAsync(int productId);
         IEnumerable<ProductQuestionsForShow> GetProductQuestionsWithPagination(int productId, int skip = 1, int take = 30, string type = "news");
 
+        Task AddQuestionLikeAsync(QuestionLike questionLike);
+        void RemoveQuestionLike(QuestionLike questionLike);
+        Task<bool> IsQuestionLikeExistAsync(string userId, int questionId);
+
         Task AddReportQuestionAsync(ReportQuestion reportQuestion);
         Task<bool> IsReportQuestionExistAsync(string userId, int questionId);
+        Task<ReportQuestion> GetReportQuestionAsync(string userId, int questionId);
+        void RemoveReportQuestion(ReportQuestion reportQuestion);
+
         IEnumerable<ReportQuestionType> GetReportQuestionTypes();
 
         // questionAnswer
@@ -29,8 +36,14 @@ namespace Reshop.Domain.Interfaces.Conversation
         Task<QuestionAnswer> GetQuestionAnswerByIdAsync(int questionAnswerId);
         Task<EditQuestionAnswerViewModel> GetQuestionAnswerDataForEditAsync(int questionAnswerId);
 
+        Task AddQuestionAnswerLikeAsync(QuestionAnswerLike questionAnswerLike);
+        void RemoveQuestionAnswerLike(QuestionAnswerLike questionAnswerLike);
+        Task<bool> IsQuestionAnswerLikeExistAsync(string userId, int questionAnswerId);
+
         Task AddReportQuestionAnswerAsync(ReportQuestionAnswer reportQuestionAnswer);
         Task<bool> IsReportQuestionAnswerExistAsync(string userId, int questionAnswerId);
+        Task<ReportQuestionAnswer> GetReportQuestionAnswerAsync(string userId, int questionAnswerId);
+        void RemoveReportQuestionAnswer(ReportQuestionAnswer reportQuestionAnswer);
         IEnumerable<ReportQuestionAnswerType> GetReportQuestionAnswerTypes();
 
         Task SaveChangesAsync();

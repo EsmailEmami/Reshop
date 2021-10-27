@@ -84,11 +84,27 @@ namespace Reshop.Infrastructure.Repository.Conversation
             });
         }
 
+        public async Task AddQuestionLikeAsync(QuestionLike questionLike) =>
+            await _context.QuestionLikes.AddAsync(questionLike);
+
+        public void RemoveQuestionLike(QuestionLike questionLike) =>
+             _context.QuestionLikes.Remove(questionLike);
+
+        public async Task<bool> IsQuestionLikeExistAsync(string userId, int questionId) =>
+            await _context.QuestionLikes.AnyAsync(c=> c.UserId == userId && c.QuestionId == questionId);
+
         public async Task AddReportQuestionAsync(ReportQuestion reportQuestion) =>
             await _context.QuestionReports.AddAsync(reportQuestion);
 
         public async Task<bool> IsReportQuestionExistAsync(string userId, int questionId) =>
             await _context.QuestionReports.AnyAsync(c => c.UserId == userId && c.QuestionId == questionId);
+
+        public async Task<ReportQuestion> GetReportQuestionAsync(string userId, int questionId) =>
+            await _context.QuestionReports
+                .SingleOrDefaultAsync(c => c.UserId == userId && c.QuestionId == questionId);
+
+        public void RemoveReportQuestion(ReportQuestion reportQuestion) =>
+            _context.QuestionReports.Remove(reportQuestion);
 
         public IEnumerable<ReportQuestionType> GetReportQuestionTypes() =>
              _context.ReportQuestionTypes;
@@ -114,12 +130,27 @@ namespace Reshop.Infrastructure.Repository.Conversation
                     AnswerText = c.AnswerText,
                 }).SingleOrDefaultAsync();
 
+        public async Task AddQuestionAnswerLikeAsync(QuestionAnswerLike questionAnswerLike) =>
+            await _context.QuestionAnswerLikes.AddAsync(questionAnswerLike);
+
+        public void RemoveQuestionAnswerLike(QuestionAnswerLike questionAnswerLike) => 
+            _context.QuestionAnswerLikes.Remove(questionAnswerLike);
+
+        public async Task<bool> IsQuestionAnswerLikeExistAsync(string userId, int questionAnswerId) =>
+            await _context.QuestionAnswerLikes.AnyAsync(c => c.UserId == userId && c.QuestionAnswerId == questionAnswerId);
+
         public async Task AddReportQuestionAnswerAsync(ReportQuestionAnswer reportQuestionAnswer) =>
             await _context.QuestionAnswerReports.AddAsync(reportQuestionAnswer);
 
-
         public async Task<bool> IsReportQuestionAnswerExistAsync(string userId, int questionAnswerId) =>
             await _context.QuestionAnswerReports.AnyAsync(c => c.UserId == userId && c.QuestionAnswerId == questionAnswerId);
+
+        public async Task<ReportQuestionAnswer> GetReportQuestionAnswerAsync(string userId, int questionAnswerId) =>
+            await _context.QuestionAnswerReports
+                .SingleOrDefaultAsync(c => c.UserId == userId && c.QuestionAnswerId == questionAnswerId);
+
+        public void RemoveReportQuestionAnswer(ReportQuestionAnswer reportQuestionAnswer) =>
+            _context.QuestionAnswerReports.Remove(reportQuestionAnswer);
 
         public IEnumerable<ReportQuestionAnswerType> GetReportQuestionAnswerTypes() =>
             _context.ReportQuestionAnswerTypes;

@@ -1,4 +1,5 @@
 ﻿using Reshop.Application.Enums;
+using Reshop.Application.Enums.User;
 using Reshop.Application.Interfaces.Conversation;
 using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.Entities.Question;
@@ -59,6 +60,33 @@ namespace Reshop.Application.Services.Conversation
         public async Task<EditQuestionViewModel> GetQuestionDataForEditAsync(int questionId) =>
             await _questionRepository.GetQuestionDataForEditAsync(questionId);
 
+        public async Task<QuestionAndAnswerResultTypes> LikeQuestionAsync(QuestionLike questionLike)
+        {
+            try
+            {
+                if (await _questionRepository.IsQuestionLikeExistAsync(questionLike.UserId, questionLike.QuestionId))
+                {
+                    _questionRepository.RemoveQuestionLike(questionLike);
+
+                    await _questionRepository.SaveChangesAsync();
+
+                    return QuestionAndAnswerResultTypes.Deleted;
+                }
+                else
+                {
+                    await _questionRepository.AddQuestionLikeAsync(questionLike);
+
+                    await _questionRepository.SaveChangesAsync();
+
+                    return QuestionAndAnswerResultTypes.Added;
+                }
+            }
+            catch
+            {
+                return QuestionAndAnswerResultTypes.Failed;
+            }
+        }
+
         public async Task<ResultTypes> AddReportQuestionAsync(ReportQuestion reportQuestion)
         {
             try
@@ -67,6 +95,27 @@ namespace Reshop.Application.Services.Conversation
                     return ResultTypes.Failed;
 
                 await _questionRepository.AddReportQuestionAsync(reportQuestion);
+
+                await _questionRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> RemoveReportQuestionAsync(string userId, int questionId)
+        {
+            try
+            {
+                var report = await _questionRepository.GetReportQuestionAsync(userId, questionId);
+
+                if (report == null)
+                    return ResultTypes.Failed;
+
+                _questionRepository.RemoveReportQuestion(report);
 
                 await _questionRepository.SaveChangesAsync();
 
@@ -119,6 +168,33 @@ namespace Reshop.Application.Services.Conversation
         public async Task<EditQuestionAnswerViewModel> GetQuestionAnswerDataForEditAsync(int questionAnswerId) =>
             await _questionRepository.GetQuestionAnswerDataForEditAsync(questionAnswerId);
 
+        public async Task<QuestionAndAnswerResultTypes> LikeQuestionAnswerAsync(QuestionAnswerLike questionAnswerLike)
+        {
+            try
+            {
+                if (await _questionRepository.IsQuestionAnswerLikeExistAsync(questionAnswerLike.UserId, questionAnswerLike.QuestionAnswerId))
+                {
+                    _questionRepository.RemoveQuestionAnswerLike(questionAnswerLike);
+
+                    await _questionRepository.SaveChangesAsync();
+
+                    return QuestionAndAnswerResultTypes.Deleted;
+                }
+                else
+                {
+                    await _questionRepository.AddQuestionAnswerLikeAsync(questionAnswerLike);
+
+                    await _questionRepository.SaveChangesAsync();
+
+                    return QuestionAndAnswerResultTypes.Added;
+                }
+            }
+            catch
+            {
+                return QuestionAndAnswerResultTypes.Failed;
+            }
+        }
+
         public async Task<ResultTypes> AddReportQuestionAnswerAsync(ReportQuestionAnswer reportQuestionAnswer)
         {
             try
@@ -127,6 +203,27 @@ namespace Reshop.Application.Services.Conversation
                     return ResultTypes.Failed;
 
                 await _questionRepository.AddReportQuestionAnswerAsync(reportQuestionAnswer);
+
+                await _questionRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> RemoveReportQuestionAnswerAsync(string userId, int questionAnswerId)
+        {
+            try
+            {
+                var report = await _questionRepository.GetReportQuestionAnswerAsync(userId, questionAnswerId);
+
+                if (report == null)
+                    return ResultTypes.Failed;
+
+                _questionRepository.RemoveReportQuestionAnswer(report);
 
                 await _questionRepository.SaveChangesAsync();
 
