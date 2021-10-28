@@ -60,6 +60,49 @@ namespace Reshop.Application.Services.Conversation
         public async Task<EditQuestionViewModel> GetQuestionDataForEditAsync(int questionId) =>
             await _questionRepository.GetQuestionDataForEditAsync(questionId);
 
+        public async Task<bool> IsQuestionRemovableAsync(int questionId) =>
+            await _questionRepository.IsQuestionRemovableAsync(questionId);
+
+        public async Task<bool> IsUserQuestionAsync(string userId, int questionId) =>
+            await _questionRepository.IsUserQuestionAsync(userId, questionId);
+
+        public async Task<ResultTypes> DeleteQuestionAsync(int questionId, string description)
+        {
+            try
+            {
+                if (!await _questionRepository.IsQuestionRemovableAsync(questionId))
+                    return ResultTypes.Failed;
+
+                var question = await _questionRepository.GetQuestionByIdAsync(questionId);
+
+                if (question == null)
+                    return ResultTypes.Failed;
+
+                var questionAnswers = _questionRepository.GetQuestionAnswersOfQuestion(question.QuestionId);
+
+                foreach (var questionAnswer in questionAnswers)
+                {
+                    questionAnswer.IsDelete = true;
+                    questionAnswer.DeleteDescription = "سوال پرسیده شده حذف گردید.";
+
+                    _questionRepository.UpdateQuestionAnswer(questionAnswer);
+                }
+
+                question.IsDelete = true;
+                question.DeleteDescription = description;
+
+                _questionRepository.UpdateQuestion(question);
+
+                await _questionRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<QuestionAndAnswerResultTypes> LikeQuestionAsync(QuestionLike questionLike)
         {
             try
@@ -224,6 +267,39 @@ namespace Reshop.Application.Services.Conversation
                     return ResultTypes.Failed;
 
                 _questionRepository.RemoveReportQuestionAnswer(report);
+
+                await _questionRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<bool> IsQuestionAnswerRemovableAsync(int questionAnswerId) =>
+            await _questionRepository.IsQuestionAnswerRemovableAsync(questionAnswerId);
+
+        public async Task<bool> IsUserQuestionAnswerAsync(string userId, int questionAnswerId) =>
+            await _questionRepository.IsUserQuestionAnswerAsync(userId, questionAnswerId);
+
+        public async Task<ResultTypes> DeleteQuestionAnswerAsync(int questionAnswerId, string description)
+        {
+            try
+            {
+                if (!await _questionRepository.IsQuestionAnswerRemovableAsync(questionAnswerId))
+                    return ResultTypes.Failed;
+
+                var questionAnswer = await _questionRepository.GetQuestionAnswerByIdAsync(questionAnswerId);
+
+                if (questionAnswer == null)
+                    return ResultTypes.Failed;
+
+                questionAnswer.IsDelete = true;
+                questionAnswer.DeleteDescription = description;
+
+                _questionRepository.UpdateQuestionAnswer(questionAnswer);
 
                 await _questionRepository.SaveChangesAsync();
 

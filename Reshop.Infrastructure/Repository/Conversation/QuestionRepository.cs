@@ -4,6 +4,7 @@ using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.Question;
 using Reshop.Domain.Interfaces.Conversation;
 using Reshop.Infrastructure.Context;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,6 +55,10 @@ namespace Reshop.Infrastructure.Repository.Conversation
                     QuestionText = c.QuestionText,
                 }).SingleOrDefaultAsync();
 
+        public async Task<bool> IsQuestionRemovableAsync(int questionId) =>
+            await _context.Questions.AnyAsync(c =>
+                c.QuestionId == questionId && c.QuestionDate >= DateTime.Now.AddHours(-3));
+
         public async Task<int> GetQuestionsCountOfProductWithTypeAsync(int productId) =>
             await _context.Questions
                 .Where(c => c.ProductId == productId)
@@ -84,6 +89,9 @@ namespace Reshop.Infrastructure.Repository.Conversation
             });
         }
 
+        public async Task<bool> IsUserQuestionAsync(string userId, int questionId) =>
+            await _context.Questions.AnyAsync(c => c.UserId == userId && c.QuestionId == questionId);
+
         public async Task AddQuestionLikeAsync(QuestionLike questionLike) =>
             await _context.QuestionLikes.AddAsync(questionLike);
 
@@ -91,7 +99,7 @@ namespace Reshop.Infrastructure.Repository.Conversation
              _context.QuestionLikes.Remove(questionLike);
 
         public async Task<bool> IsQuestionLikeExistAsync(string userId, int questionId) =>
-            await _context.QuestionLikes.AnyAsync(c=> c.UserId == userId && c.QuestionId == questionId);
+            await _context.QuestionLikes.AnyAsync(c => c.UserId == userId && c.QuestionId == questionId);
 
         public async Task AddReportQuestionAsync(ReportQuestion reportQuestion) =>
             await _context.QuestionReports.AddAsync(reportQuestion);
@@ -133,7 +141,7 @@ namespace Reshop.Infrastructure.Repository.Conversation
         public async Task AddQuestionAnswerLikeAsync(QuestionAnswerLike questionAnswerLike) =>
             await _context.QuestionAnswerLikes.AddAsync(questionAnswerLike);
 
-        public void RemoveQuestionAnswerLike(QuestionAnswerLike questionAnswerLike) => 
+        public void RemoveQuestionAnswerLike(QuestionAnswerLike questionAnswerLike) =>
             _context.QuestionAnswerLikes.Remove(questionAnswerLike);
 
         public async Task<bool> IsQuestionAnswerLikeExistAsync(string userId, int questionAnswerId) =>
@@ -154,6 +162,17 @@ namespace Reshop.Infrastructure.Repository.Conversation
 
         public IEnumerable<ReportQuestionAnswerType> GetReportQuestionAnswerTypes() =>
             _context.ReportQuestionAnswerTypes;
+
+        public async Task<bool> IsQuestionAnswerRemovableAsync(int questionAnswerId) =>
+            await _context.QuestionAnswers.AnyAsync(c =>
+                c.QuestionAnswerId == questionAnswerId && c.QuestionAnswerDate >= DateTime.Now.AddHours(-3));
+
+        public async Task<bool> IsUserQuestionAnswerAsync(string userId, int questionAnswerId) =>
+            await _context.QuestionAnswers.AnyAsync(c => c.UserId == userId && c.QuestionAnswerId == questionAnswerId);
+
+        public IEnumerable<QuestionAnswer> GetQuestionAnswersOfQuestion(int questionId) =>
+             _context.Questions.Where(c => c.QuestionId == questionId)
+                .SelectMany(c => c.QuestionAnswers);
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }

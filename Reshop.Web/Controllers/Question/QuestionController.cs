@@ -14,6 +14,10 @@ using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.Question
 {
+    // most methods of this controller return json then we used PermissionJs attr
+    [PermissionJs]
+    // methods must not load in route 
+    [NoDirectAccess]
     public class QuestionController : Controller
     {
         private readonly IQuestionService _questionService;
@@ -26,8 +30,6 @@ namespace Reshop.Web.Controllers.Question
         #region add question
 
         [HttpGet]
-        [PermissionJs]
-        [NoDirectAccess]
         public IActionResult AddQuestion(int productId)
         {
             if (productId == 0)
@@ -43,8 +45,6 @@ namespace Reshop.Web.Controllers.Question
         }
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> AddQuestion(AddQuestionViewModel model)
         {
             if (!ModelState.IsValid)
@@ -81,8 +81,6 @@ namespace Reshop.Web.Controllers.Question
         #region edit question
 
         [HttpGet]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> EditQuestion(int questionId)
         {
             if (questionId == 0)
@@ -99,8 +97,6 @@ namespace Reshop.Web.Controllers.Question
         }
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> EditQuestion(EditQuestionViewModel model)
         {
             if (!ModelState.IsValid)
@@ -136,11 +132,65 @@ namespace Reshop.Web.Controllers.Question
 
         #endregion
 
+        #region remove question
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteQuestion(int questionId)
+        {
+            if (questionId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!await _questionService.IsQuestionRemovableAsync(questionId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+
+            if (!await _questionService.IsUserQuestionAsync(userId, questionId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var model = new DeleteConversationViewModel()
+            {
+                Id = questionId
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteQuestion(DeleteConversationViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!await _questionService.IsUserQuestionAsync(userId, model.Id))
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+
+            var res = await _questionService.DeleteQuestionAsync(model.Id, model.DeleteDescription);
+
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+        }
+
+        #endregion
+
         #region report question
 
         [HttpGet]
-        [PermissionJs]
-        [NoDirectAccess]
         public IActionResult ReportQuestion(int questionId)
         {
             if (questionId == 0)
@@ -161,8 +211,6 @@ namespace Reshop.Web.Controllers.Question
         }
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> ReportQuestion(AddReportConversationViewModel model)
         {
             model.Types = _questionService.GetReportQuestionTypes()
@@ -210,8 +258,6 @@ namespace Reshop.Web.Controllers.Question
         #region remove report question
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> RemoveReportQuestion(int questionId)
         {
             if (questionId == 0)
@@ -236,8 +282,6 @@ namespace Reshop.Web.Controllers.Question
         #region like question
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> LikeQuestion(int questionId)
         {
             if (questionId == 0)
@@ -287,8 +331,6 @@ namespace Reshop.Web.Controllers.Question
         #region  add question answer
 
         [HttpGet]
-        [PermissionJs]
-        [NoDirectAccess]
         public IActionResult AddQuestionAnswer(int questionId)
         {
             if (questionId == 0)
@@ -304,8 +346,6 @@ namespace Reshop.Web.Controllers.Question
         }
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> AddQuestionAnswer(AddQuestionAnswerViewModel model)
         {
             if (!ModelState.IsValid)
@@ -341,8 +381,6 @@ namespace Reshop.Web.Controllers.Question
         #region edit question answer
 
         [HttpGet]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> EditQuestionAnswer(int questionAnswerId)
         {
             if (questionAnswerId == 0)
@@ -359,8 +397,6 @@ namespace Reshop.Web.Controllers.Question
         }
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> EditQuestionAnswer(EditQuestionAnswerViewModel model)
         {
             if (!ModelState.IsValid)
@@ -398,8 +434,6 @@ namespace Reshop.Web.Controllers.Question
         #region report question answer
 
         [HttpGet]
-        [PermissionJs]
-        [NoDirectAccess]
         public IActionResult ReportQuestionAnswer(int questionAnswerId)
         {
             if (questionAnswerId == 0)
@@ -420,8 +454,6 @@ namespace Reshop.Web.Controllers.Question
         }
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> ReportQuestionAnswer(AddReportConversationViewModel model)
         {
             model.Types = _questionService.GetReportQuestionAnswerTypes()
@@ -469,8 +501,6 @@ namespace Reshop.Web.Controllers.Question
         #region like question answer
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> LikeQuestionAnswer(int questionAnswerId)
         {
             if (questionAnswerId == 0)
@@ -520,8 +550,6 @@ namespace Reshop.Web.Controllers.Question
         #region remove report question
 
         [HttpPost]
-        [PermissionJs]
-        [NoDirectAccess]
         public async Task<IActionResult> RemoveReportQuestionAnswer(int questionAnswerId)
         {
             if (questionAnswerId == 0)
@@ -538,6 +566,62 @@ namespace Reshop.Web.Controllers.Question
             else
             {
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+            }
+        }
+
+        #endregion
+
+        #region remove question
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteQuestionAnswer(int questionAnswerId)
+        {
+            if (questionAnswerId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!await _questionService.IsQuestionAnswerRemovableAsync(questionAnswerId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+
+            if (!await _questionService.IsUserQuestionAnswerAsync(userId, questionAnswerId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var model = new DeleteConversationViewModel()
+            {
+                Id = questionAnswerId
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteQuestionAnswer(DeleteConversationViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!await _questionService.IsUserQuestionAnswerAsync(userId, model.Id))
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            }
+
+            var res = await _questionService.DeleteQuestionAnswerAsync(model.Id, model.DeleteDescription);
+
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
+
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
             }
         }
 

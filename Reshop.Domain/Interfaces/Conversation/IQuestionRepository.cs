@@ -15,8 +15,11 @@ namespace Reshop.Domain.Interfaces.Conversation
         void RemoveQuestion(Question question);
         Task<Question> GetQuestionByIdAsync(int questionId);
         Task<EditQuestionViewModel> GetQuestionDataForEditAsync(int questionId);
+        Task<bool> IsQuestionRemovableAsync(int questionId);
         Task<int> GetQuestionsCountOfProductWithTypeAsync(int productId);
         IEnumerable<ProductQuestionsForShow> GetProductQuestionsWithPagination(int productId, int skip = 1, int take = 30, string type = "news");
+
+        Task<bool> IsUserQuestionAsync(string userId, int questionId);
 
         Task AddQuestionLikeAsync(QuestionLike questionLike);
         void RemoveQuestionLike(QuestionLike questionLike);
@@ -45,6 +48,12 @@ namespace Reshop.Domain.Interfaces.Conversation
         Task<ReportQuestionAnswer> GetReportQuestionAnswerAsync(string userId, int questionAnswerId);
         void RemoveReportQuestionAnswer(ReportQuestionAnswer reportQuestionAnswer);
         IEnumerable<ReportQuestionAnswerType> GetReportQuestionAnswerTypes();
+
+        Task<bool> IsQuestionAnswerRemovableAsync(int questionAnswerId);
+        Task<bool> IsUserQuestionAnswerAsync(string userId, int questionAnswerId);
+
+        IEnumerable<QuestionAnswer> GetQuestionAnswersOfQuestion(int questionId);
+
 
         Task SaveChangesAsync();
     }

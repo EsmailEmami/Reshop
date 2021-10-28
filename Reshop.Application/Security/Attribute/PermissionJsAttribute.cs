@@ -9,7 +9,7 @@ namespace Reshop.Application.Security.Attribute
     // for using of this attribute our ajax request must have isValid & returnUrl response context
 
 
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public class PermissionJsAttribute : System.Attribute, IAuthorizationFilter
     {
         public string PermissionsName { get; set; }
