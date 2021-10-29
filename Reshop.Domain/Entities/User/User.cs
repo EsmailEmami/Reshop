@@ -62,7 +62,7 @@ namespace Reshop.Domain.Entities.User
 
         [Display(Name = "تاریخ ثبت نام")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public DateTime RegisteredDate { get; set; }
+        public DateTime RegisterDate { get; set; }
 
         [Display(Name = "وضعیت مسدودیت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]

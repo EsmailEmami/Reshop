@@ -15,9 +15,11 @@ namespace Reshop.Application.Interfaces.User
 
         Task<EditUserViewModel> GetUserDataForEditAsync(string userId);
 
+        Task<UserDetailViewModel> GetUserDetailAsync(string userId);
+
         int GetUserWalletBalance(string userId);
         IAsyncEnumerable<Domain.Entities.User.User> GetUsers();
-        IEnumerable<UserInformationViewModel> GetUsersInformation();
+        IEnumerable<UserInformationForListViewModel> GetUsersInformation();
         //Task<Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>> GetShoppersInformationWithPagination(int pageId = 1, int take = 18);
         IEnumerable<Address> GetUserAddresses(string userId);
         Task<bool> IsPhoneExistAsync(string phone);

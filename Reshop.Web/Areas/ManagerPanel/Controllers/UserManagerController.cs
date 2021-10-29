@@ -4,11 +4,12 @@ using Reshop.Application.Enums;
 using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.User;
+using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.User;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Domain.Entities.Permission;
+using Reshop.Application.Attribute;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -34,7 +35,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return View(_userService.GetUsersInformation());
         }
 
+        #region add or edit
+
         [HttpGet]
+        [NoDirectAccess]
         public async Task<IActionResult> AddOrEditUser(string userId = "")
         {
             if (userId == "")
@@ -51,11 +55,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (!await _userService.IsUserExistAsync(userId))
                     return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
-                return View(await _userService.GetUserDataForAdminAsync(userId));
+                var model = await _userService.GetUserDataForAdminAsync(userId);
+
+                if (model == null)
+                    return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+
+                return View();
             }
         }
 
         [HttpPost]
+        [NoDirectAccess]
         public async Task<IActionResult> AddOrEditUser(AddOrEditUserForAdminViewModel model)
         {
             model.Roles = _roleService.GetRoles();
@@ -161,10 +172,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return Json(new { isValid = true, returnUrl = "current" });
         }
 
+        #endregion
+
+
         #region remove
 
         [HttpPost]
-
+        [NoDirectAccess]
         public async Task<IActionResult> RemoveUser(string userId)
         {
             if (!await _userService.IsUserExistAsync(userId)) return NotFound();
@@ -181,8 +195,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpGet]
         public async Task<IActionResult> UserDetail(string userId)
         {
-            var user = await _userService.GetUserByIdAsync(userId);
-            if (user == null) return NotFound();
+            if (userId == null)
+                return BadRequest();
+
+            var user = await _userService.GetUserDetailAsync(userId);
+            if (user == null)
+                return NotFound();
 
             return View(user);
         }

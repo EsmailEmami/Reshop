@@ -50,6 +50,23 @@ namespace Reshop.Infrastructure.Repository.User
                     NationalCode = c.NationalCode,
                 }).SingleOrDefaultAsync();
 
+        public async Task<UserDetailViewModel> GetUserDetailAsync(string userId) =>
+            await _context.Users.Where(c => c.UserId == userId)
+                .Select(c => new UserDetailViewModel()
+                {
+                    UserId = c.UserId,
+                    UserImage = c.UserAvatar,
+                    FullName = c.FullName,
+                    NationalCode = c.NationalCode,
+                  AddressesCount = c.Addresses.Count,
+                  PhoneNumber = c.PhoneNumber,
+                  Email = c.Email,
+                  OrdersCount = c.Orders.Count(o => o.IsReceived),
+                  RegisterDate = c.RegisterDate,
+                  RolesName = c.UserRoles.Select(o=> o.Role.RoleTitle),
+                })
+                .SingleOrDefaultAsync();
+
 
         public IEnumerable<Address> GetUserAddresses(string userId)
             =>
@@ -63,10 +80,10 @@ namespace Reshop.Infrastructure.Repository.User
 
         public IAsyncEnumerable<Domain.Entities.User.User> GetUsers() => _context.Users;
 
-        public IEnumerable<UserInformationViewModel> GetUsersInformation()
+        public IEnumerable<UserInformationForListViewModel> GetUsersInformation()
             =>
                 _context.Users
-                    .Select(c => new UserInformationViewModel(c.UserId, c.FullName, c.PhoneNumber));
+                    .Select(c => new UserInformationForListViewModel(c.UserId, c.FullName, c.PhoneNumber));
 
         public async Task<Domain.Entities.User.User> GetUserByInviteCodeAsync(string inviteCode)
             =>

@@ -55,6 +55,9 @@ namespace Reshop.Application.Services.User
         public async Task<EditUserViewModel> GetUserDataForEditAsync(string userId) =>
             await _userRepository.GetUserDataForEditAsync(userId);
 
+        public async Task<UserDetailViewModel> GetUserDetailAsync(string userId) =>
+            await _userRepository.GetUserDetailAsync(userId);
+
         public int GetUserWalletBalance(string userId)
         {
 
@@ -72,7 +75,7 @@ namespace Reshop.Application.Services.User
             return _userRepository.GetUsers();
         }
 
-        public IEnumerable<UserInformationViewModel> GetUsersInformation()
+        public IEnumerable<UserInformationForListViewModel> GetUsersInformation()
             =>
                 _userRepository.GetUsersInformation();
 

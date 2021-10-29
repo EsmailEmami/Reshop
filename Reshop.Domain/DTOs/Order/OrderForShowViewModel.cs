@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Reshop.Domain.DTOs.Order
 {
-    public class ReceivedOrdersViewModel
+    public class OrderForShowViewModel
     {
         public string OrderId { get; set; }
 

@@ -130,7 +130,7 @@ namespace Reshop.Application.Convertors
         {
             if (take <= 0)
                 return null;
-            
+
 
             var b = str.Split(" ").Skip(skip).Take(take);
 
@@ -139,11 +139,16 @@ namespace Reshop.Application.Convertors
             return result;
         }
 
-        public static string BoolToText(this bool value,string beforeText)
+        public static string BoolToText(this bool value, string beforeText)
         {
             string boolText = value ? "بله" : "خیر";
 
             return $"{beforeText}: {boolText}";
+        }
+
+        public static string ListToString(this IEnumerable<object> list, string delimiter)
+        {
+            return string.Join(delimiter, list);
         }
     }
 }

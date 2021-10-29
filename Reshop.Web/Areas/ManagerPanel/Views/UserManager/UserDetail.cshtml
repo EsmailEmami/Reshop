@@ -1,4 +1,4 @@
-﻿@model User
+﻿@model UserDetailViewModel
 
 @{
     ViewData["Title"] = $"جزئیات کاربر {Model.FullName}";
@@ -8,3 +8,80 @@
     @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.UserPage); }
 }
 
+<section class="general-detail mb-3">
+    <div class="row">
+        <!-- img part -->
+        <div class="col-sm-12 col-md-4 mb-3 mb-md-0">
+            <div class="box-shadow">
+                <div class="show-img-box">
+                    <img src="/images/UserImages/@Model.UserImage" alt="@Model.FullName">
+                </div>
+            </div>
+        </div>
+
+        <!-- product data part -->
+        <div class="col-sm-12 col-md-8">
+            <div class="general-data box-shadow">
+                <span class="part-title">اطلاعات کلی</span>
+                <div>
+                    <h3><i class="far fa-tags"></i> نام و نام خانوادگی کاربر: </h3>
+                    <span>@Model.FullName</span>
+                </div>
+                <div>
+                    <h3><i class="far fa-tags"></i> شماره تلفن: </h3>
+                    <span>@Model.PhoneNumber</span>
+                </div>
+                <div>
+                    <h3><i class="far fa-tags"></i> تاریخ تولد: </h3>
+                    <span>@Model.RegisterDate.ToShamsiDate()</span>
+                </div>
+                <div>
+                    <h3><i class="far fa-tags"></i> کد ملی: </h3>
+                    <span>@Model.NationalCode</span>
+                </div>
+                <div>
+                    <h3><i class="far fa-tags"></i> ایمیل: </h3>
+                    <span>@Model.Email</span>
+                </div>
+                <div>
+                    <h3><i class="far fa-tags"></i> تعداد سفارش ها: </h3>
+                    <span>@Model.OrdersCount.NumSplitter()</span>
+                </div>
+                <div>
+                    <h3><i class="far fa-tags"></i> مقام ها: </h3>
+                    <span>@Model.RolesName.ListToString(" , ")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<a onclick="ShowModal('@Url.Action("AddShopperProduct","ShoppersManager",new {shopperId = Model.ShopperId},Context.Request.Scheme)','افزودن کالا به فروشنده')"
+   class="btn btn-success text-white mt-3 mb-2">افزودن کالا</a>
+
+<section class="table-list" id="tableList">
+    @await Component.InvokeAsync("ShopperProductsOfShopperComponent", new { shopperId = Model.ShopperId })
+</section>
+
+
+
+<section class="table-list" id="tableRequestList">
+    @await Component.InvokeAsync("ShopperRequestsComponent", new { shopperId = Model.ShopperId })
+</section>
+
+
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+}

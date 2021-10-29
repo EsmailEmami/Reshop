@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Reshop.Application.Calculate;
+using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.User;
 using Reshop.Application.Generator;
@@ -264,10 +265,10 @@ namespace Reshop.Application.Services.User
             return _cartRepository.GetOrdersAfterDateTime(time);
         }
 
-        public IEnumerable<ReceivedOrdersViewModel> GetReceivedOrders(string userId) =>
+        public IEnumerable<OrderForShowViewModel> GetReceivedOrders(string userId) =>
             _cartRepository.GetReceivedOrders(userId);
 
-        public IEnumerable<ReceivedOrdersViewModel> GetNotReceivedOrders(string userId) =>
+        public IEnumerable<OrderForShowViewModel> GetNotReceivedOrders(string userId) =>
             _cartRepository.GetNotReceivedOrders(userId);
 
 
@@ -318,5 +319,20 @@ namespace Reshop.Application.Services.User
         public string GetOpenOrderAddressId(string userId) =>
             _cartRepository.GetOpenOrderAddressId(userId);
 
+        public async Task<Tuple<IEnumerable<OrderForShowViewModel>, int, int>> GetUserOrdersForShowWithPaginationAsync(string userId, int pageId, int take,string type = "all", string orderBy = "payDate")
+        {
+            var ordersCount = await _cartRepository.GetUserOrdersCount(type.FixedText());
+
+            if (ordersCount == 0)
+                return null;
+
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int totalPages = (int)Math.Ceiling(1.0 * ordersCount / take);
+
+            var orders = _cartRepository.GetUserOrdersWithPagination(userId, type.FixedText(), orderBy.FixedText(), skip, take);
+
+            return new Tuple<IEnumerable<OrderForShowViewModel>, int, int>(orders,pageId,totalPages);
+        }
     }
 }

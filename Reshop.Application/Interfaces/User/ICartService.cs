@@ -1,5 +1,4 @@
 ﻿using Reshop.Application.Enums;
-using Reshop.Application.Enums.User;
 using Reshop.Domain.DTOs.Order;
 using Reshop.Domain.Entities.User;
 using System;
@@ -21,13 +20,15 @@ namespace Reshop.Application.Interfaces.User
         Task IncreaseOrderDetailCountAsync(string orderDetailId);
         Task ReduceOrderDetailAsync(string orderDetailId);
         IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time);
-        IEnumerable<ReceivedOrdersViewModel> GetReceivedOrders(string userId);
-        IEnumerable<ReceivedOrdersViewModel> GetNotReceivedOrders(string userId);
+        IEnumerable<OrderForShowViewModel> GetReceivedOrders(string userId);
+        IEnumerable<OrderForShowViewModel> GetNotReceivedOrders(string userId);
         IAsyncEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId);
         Task RemoveOrderAsync(Order order);
         Task<ResultTypes> RemoveOrderDetailAsync(string orderDetailId);
         string GetOpenOrderAddressId(string userId);
 
-
+        // type = all , received , payed
+        // order by = news , last , received-news , received-last , payed-news , payed-last
+        Task<Tuple<IEnumerable<OrderForShowViewModel>, int, int>> GetUserOrdersForShowWithPaginationAsync(string userId, int pageId, int take, string type = "all", string orderBy = "news");
     }
 }

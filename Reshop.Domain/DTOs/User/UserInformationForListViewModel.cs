@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Reshop.Domain.DTOs.User
 {
-    public class UserInformationViewModel
+    public class UserInformationForListViewModel
     {
         public string UserId { get; set; }
 
@@ -17,7 +17,7 @@ namespace Reshop.Domain.DTOs.User
         [Display(Name = "شماره تلفن")]
         public string PhoneNumber { get; set; }
 
-        public UserInformationViewModel(string userId, string fullName, string phoneNumber)
+        public UserInformationForListViewModel(string userId, string fullName, string phoneNumber)
         {
             UserId = userId;
             FullName = fullName;

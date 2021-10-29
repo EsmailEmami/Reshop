@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.DTOs.Order;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
 using Reshop.Infrastructure.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reshop.Infrastructure.Repository.User
 {
@@ -98,9 +97,9 @@ namespace Reshop.Infrastructure.Repository.User
                 .SingleOrDefaultAsync(o => o.UserId == userId && !o.IsPayed && !o.IsReceived);
         }
 
-        public IEnumerable<ReceivedOrdersViewModel> GetReceivedOrders(string userId) =>
+        public IEnumerable<OrderForShowViewModel> GetReceivedOrders(string userId) =>
             _context.Orders.Where(c => c.UserId == userId && c.IsReceived && c.IsPayed)
-                .Select(c => new ReceivedOrdersViewModel()
+                .Select(c => new OrderForShowViewModel()
                 {
                     OrderId = c.OrderId,
                     TrackingCode = c.TrackingCode,
@@ -109,9 +108,9 @@ namespace Reshop.Infrastructure.Repository.User
                     ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
                 });
 
-        public IEnumerable<ReceivedOrdersViewModel> GetNotReceivedOrders(string userId) =>
+        public IEnumerable<OrderForShowViewModel> GetNotReceivedOrders(string userId) =>
             _context.Orders.Where(c => c.UserId == userId && !c.IsReceived && c.IsPayed)
-                .Select(c => new ReceivedOrdersViewModel()
+                .Select(c => new OrderForShowViewModel()
                 {
                     OrderId = c.OrderId,
                     TrackingCode = c.TrackingCode,
@@ -119,6 +118,55 @@ namespace Reshop.Infrastructure.Repository.User
                     Sum = c.Sum,
                     ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
                 });
+
+        public IEnumerable<OrderForShowViewModel> GetUserOrdersWithPagination(string userId, string type, string orderBy, int skip, int take)
+        {
+            IQueryable<Order> orders = _context.Users
+                .Where(c => c.UserId == userId)
+                .SelectMany(c => c.Orders)
+                .Where(c => c.IsPayed);
+
+
+            orders = type.ToLower() switch
+            {
+                "all" => orders,
+                "received" => orders.Where(c => c.IsReceived),
+                "payed" => orders.Where(c => c.IsPayed),
+                _ => orders
+            };
+
+
+            orders = orderBy.ToLower() switch
+            {
+                "news" => orders.OrderByDescending(c => c.CreateDate),
+                "last" => orders.OrderBy(c => c.CreateDate),
+                "received-news" => orders.OrderByDescending(c => c.IsReceived)
+                    .ThenByDescending(c => c.CreateDate),
+                "received-last" => orders.OrderByDescending(c => c.IsReceived)
+                    .ThenBy(c => c.CreateDate),
+                "payed-news" => orders.OrderByDescending(c => c.IsPayed)
+                    .ThenByDescending(c => c.CreateDate),
+                "payed-last" => orders.OrderByDescending(c => c.IsPayed)
+                    .ThenBy(c => c.CreateDate),
+                _ => orders.OrderByDescending(c => c.CreateDate)
+            };
+
+            orders = orders.Skip(skip).Take(take);
+
+            return orders.Select(c => new OrderForShowViewModel()
+            {
+                OrderId = c.OrderId,
+                PayDate = c.PayDate.Value,
+                ProPics = c.OrderDetails.Select(p => p.ShopperProductColor
+                    .ShopperProduct
+                    .Product
+                    .ProductGalleries
+                    .OrderBy(o => o.OrderBy)
+                    .First().ImageName),
+                Sum = c.Sum,
+                TrackingCode = c.TrackingCode
+            });
+        }
 
         public async Task<Order> GetOrderByIdAsync(string orderId)
         {
@@ -153,6 +201,21 @@ namespace Reshop.Infrastructure.Repository.User
 
         public string GetOpenOrderAddressId(string userId) =>
             _context.Orders.Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived).Select(c => c.AddressId).SingleOrDefault();
+
+        public async Task<int> GetUserOrdersCount(string userId, string type = "all")
+        {
+            IQueryable<Order> orders = _context.Users.Where(c => c.UserId == userId)
+                .SelectMany(c => c.Orders)
+                .Where(c => c.IsPayed);
+
+            return type.ToLower() switch
+            {
+                "all" => await orders.CountAsync(),
+                "payed" => await orders.Where(c => !c.IsReceived).CountAsync(),
+                "received" => await orders.Where(c => c.IsReceived).CountAsync(),
+                _ => 0
+            };
+        }
 
         public async Task<int> GetSellsCountFromDateAsync(DateTime dateTime) =>
             await _context.OrderDetails.Where(c =>
