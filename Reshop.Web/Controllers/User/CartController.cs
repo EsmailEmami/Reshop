@@ -4,10 +4,9 @@ using Reshop.Application.Attribute;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
-using System;
+using Reshop.Application.Security.Attribute;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Security.Attribute;
 using ZarinpalSandbox;
 
 namespace Reshop.Web.Controllers.User
@@ -130,17 +129,23 @@ namespace Reshop.Web.Controllers.User
             }
 
 
-            var order = await _cartService.GetUserOpenOrderAsync(userId);
+            var orderId = await _cartService.GetUserOpenCartOrderIdAsync(userId);
 
-            if (order is null)
+            if (string.IsNullOrEmpty(orderId))
             {
                 return Json(new { isValid = false, isNull = false });
             }
 
-            order.AddressId = addressId;
-            await _cartService.EditOrderAsync(order);
+            var res = await _cartService.AddAddressToOrderAsync(orderId, addressId);
 
-            return Json(new { isValid = true, isNull = false });
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, isNull = false });
+            }
+            else
+            {
+                return Json(new { isValid = false, isNull = false });
+            }
         }
 
         [HttpGet]
@@ -148,20 +153,17 @@ namespace Reshop.Web.Controllers.User
         public async Task<IActionResult> Payment()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var order = await _cartService.GetUserOpenOrderAsync(userId);
+            var order = await _cartService.GetOpenOrderForPaymentAsync(userId);
 
-            if (order == null) return NotFound();
+            if (order == null)
+                return NotFound();
 
-            if (string.IsNullOrEmpty(order.AddressId))
-            {
+            if (!order.Item3)
                 return BadRequest();
-            }
 
+            var payment = new Payment((int)order.Item2);
 
-
-            var payment = new Payment((int)order.Sum);
-
-            var res = await payment.PaymentRequest($"خرید فاکتور {order.TrackingCode}", "https://localhost:44312/OnlinePayment/" + order.OrderId, "esmaeilemami84@gmail.com", "09903669556");
+            var res = await payment.PaymentRequest($"خرید فاکتور {order.Item4}", "https://localhost:44312/OnlinePayment/" + order.Item1, "esmaeilemami84@gmail.com", "09903669556");
 
             if (res.Status == 100)
             {

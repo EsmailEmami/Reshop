@@ -59,6 +59,7 @@ namespace Reshop.Infrastructure.Context
 
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderAddress> OrderAddresses { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
         public virtual DbSet<Role> Roles { get; set; }

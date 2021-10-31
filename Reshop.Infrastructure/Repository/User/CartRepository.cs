@@ -83,7 +83,10 @@ namespace Reshop.Infrastructure.Repository.User
                     ProductsCount = o.Count,
                     ProductPrice = o.ShopperProductColor.Price,
                     ColorName = o.ShopperProductColor.Color.ColorName,
-                    Discount = o.ShopperProductColor.Discounts.OrderByDescending(c => c.EndDate).Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate)).FirstOrDefault(),
+                    Discount = o.ShopperProductColor.Discounts
+                        .OrderByDescending(c => c.EndDate)
+                        .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate))
+                        .FirstOrDefault(),
                     ProductTitle = o.ShopperProductColor.ShopperProduct.Product.ProductTitle,
                     ProductImg = o.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName,
                     Warranty = o.ShopperProductColor.ShopperProduct.Warranty,
@@ -96,6 +99,35 @@ namespace Reshop.Infrastructure.Repository.User
             return await _context.Orders
                 .SingleOrDefaultAsync(o => o.UserId == userId && !o.IsPayed && !o.IsReceived);
         }
+
+        public async Task<bool> IsUserOrderAsync(string userId, string orderId) =>
+            await _context.Orders.AnyAsync(c => c.OrderId == orderId && c.UserId == userId);
+
+        public async Task<bool> IsOrderExistsAsync(string orderId) =>
+            await _context.Orders.AnyAsync(c => c.OrderId == orderId);
+
+        public async Task<decimal> GetOrderDiscountAsync(string orderId) =>
+            await _context.Orders.Where(c => c.OrderId == orderId)
+                .Select(c => c.OrderDiscount)
+                .SingleOrDefaultAsync();
+
+        public async Task<string> GetUserOpenCartOrderIdAsync(string userId) =>
+            await _context.Orders.Where(c => c.UserId == userId && !c.IsPayed && !c.IsReceived)
+                .Select(c => c.OrderId).SingleOrDefaultAsync();
+
+        public Task<List<OpenCartDetailViewModel>> GetOrderDetailAsync(string orderId) =>
+            _context.Orders.Where(c => c.OrderId == orderId)
+                .SelectMany(c => c.OrderDetails)
+                .Select(c => new OpenCartDetailViewModel()
+                {
+                    ProductPrice = c.ShopperProductColor.Price,
+                    ProductsCount = c.Count,
+                    Discount = c.ShopperProductColor.Discounts
+                        .OrderByDescending(e => e.EndDate)
+                        .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate))
+                        .FirstOrDefault(),
+                })
+                .ToListAsync();
 
         public IEnumerable<OrderForShowViewModel> GetReceivedOrders(string userId) =>
             _context.Orders.Where(c => c.UserId == userId && c.IsReceived && c.IsPayed)
@@ -119,7 +151,7 @@ namespace Reshop.Infrastructure.Repository.User
                     ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
                 });
 
-        public IEnumerable<OrderForShowViewModel> GetUserOrdersWithPagination(string userId, string type, string orderBy, int skip, int take)
+        public IEnumerable<OrderForShowInListViewModel> GetUserOrdersForShowInListWithPagination(string userId, string type, string orderBy, int skip, int take)
         {
             IQueryable<Order> orders = _context.Users
                 .Where(c => c.UserId == userId)
@@ -153,17 +185,12 @@ namespace Reshop.Infrastructure.Repository.User
 
             orders = orders.Skip(skip).Take(take);
 
-            return orders.Select(c => new OrderForShowViewModel()
+            return orders.Select(c => new OrderForShowInListViewModel()
             {
                 OrderId = c.OrderId,
                 PayDate = c.PayDate.Value,
-                ProPics = c.OrderDetails.Select(p => p.ShopperProductColor
-                    .ShopperProduct
-                    .Product
-                    .ProductGalleries
-                    .OrderBy(o => o.OrderBy)
-                    .First().ImageName),
                 Sum = c.Sum,
+                IsReceived = c.IsReceived,
                 TrackingCode = c.TrackingCode
             });
         }
@@ -200,7 +227,7 @@ namespace Reshop.Infrastructure.Repository.User
         }
 
         public string GetOpenOrderAddressId(string userId) =>
-            _context.Orders.Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived).Select(c => c.AddressId).SingleOrDefault();
+            _context.Orders.Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived).Select(c => c.OrderAddressId).SingleOrDefault();
 
         public async Task<int> GetUserOrdersCount(string userId, string type = "all")
         {
@@ -216,6 +243,18 @@ namespace Reshop.Infrastructure.Repository.User
                 _ => 0
             };
         }
+
+        public async Task AddOrderAddressAsync(OrderAddress orderAddress) =>
+            await _context.OrderAddresses.AddAsync(orderAddress);
+
+        public void UpdateOrderAddress(OrderAddress orderAddress) =>
+            _context.OrderAddresses.Update(orderAddress);
+
+        public void RemoveOrderAddress(OrderAddress orderAddress) =>
+            _context.OrderAddresses.Remove(orderAddress);
+
+        public async Task<OrderAddress> GetOrderAddressByIdAsync(string orderAddressId) =>
+            await _context.OrderAddresses.FindAsync(orderAddressId);
 
         public async Task<int> GetSellsCountFromDateAsync(DateTime dateTime) =>
             await _context.OrderDetails.Where(c =>

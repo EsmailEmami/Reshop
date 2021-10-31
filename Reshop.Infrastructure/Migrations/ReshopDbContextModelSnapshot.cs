@@ -86,6 +86,130 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("ChildCategories");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Comment.Comment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CommentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CommentText")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("CommentTitle")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("ConstructionQuality")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DeleteDescription")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("DesignAndAppearance")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FeaturesAndCapabilities")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("OverallScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductSatisfaction")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShopperProductColorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CommentId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ShopperProductColorId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Comment.CommentFeedback", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Type")
+                        .HasColumnType("bit");
+
+                    b.HasKey("CommentId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentFeedBacks");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Comment.ReportComment", b =>
+                {
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("ReportCommentTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CommentId", "UserId");
+
+                    b.HasIndex("ReportCommentTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReportComments");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Comment.ReportCommentType", b =>
+                {
+                    b.Property<int>("ReportCommentTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ReportCommentTitle")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ReportCommentTypeId");
+
+                    b.ToTable("ReportCommentTypes");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.Permission", b =>
                 {
                     b.Property<int>("PermissionId")
@@ -108,6 +232,22 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("Permissions");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Permission.Role", b =>
+                {
+                    b.Property<string>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleTitle")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.RolePermission", b =>
                 {
                     b.Property<string>("RoleId")
@@ -121,6 +261,21 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Permission.UserRole", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Brand", b =>
@@ -1858,6 +2013,203 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("ProductGalleries");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.Question", b =>
+                {
+                    b.Property<int>("QuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DeleteDescription")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("QuestionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("QuestionText")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("QuestionTitle")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("QuestionId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.QuestionAnswer", b =>
+                {
+                    b.Property<int>("QuestionAnswerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AnswerText")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("DeleteDescription")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("QuestionAnswerDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("QuestionAnswerId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("QuestionAnswers");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.QuestionAnswerLike", b =>
+                {
+                    b.Property<int>("QuestionAnswerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("QuestionAnswerId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("QuestionAnswerLikes");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.QuestionLike", b =>
+                {
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("QuestionId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("QuestionLikes");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.ReportQuestion", b =>
+                {
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("ReportQuestionTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("QuestionId", "UserId");
+
+                    b.HasIndex("ReportQuestionTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("QuestionReports");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.ReportQuestionAnswer", b =>
+                {
+                    b.Property<int>("QuestionAnswerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("ReportQuestionAnswerTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("QuestionAnswerId", "UserId");
+
+                    b.HasIndex("ReportQuestionAnswerTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("QuestionAnswerReports");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.ReportQuestionAnswerType", b =>
+                {
+                    b.Property<int>("ReportQuestionAnswerTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ReportQuestionAnswerTitle")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ReportQuestionAnswerTypeId");
+
+                    b.ToTable("ReportQuestionAnswerTypes");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.ReportQuestionType", b =>
+                {
+                    b.Property<int>("ReportQuestionTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ReportQuestionTitle")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("ReportQuestionTypeId");
+
+                    b.ToTable("ReportQuestionTypes");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.Shopper", b =>
                 {
                     b.Property<string>("ShopperId")
@@ -2259,86 +2611,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.ToTable("Cities");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Entities.User.Comment", b =>
-                {
-                    b.Property<int>("CommentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CommentText")
-                        .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
-                    b.Property<string>("CommentTitle")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<int>("ConstructionQuality")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DeleteDescription")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("DesignAndAppearance")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FeaturesAndCapabilities")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("OverallScore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductSatisfaction")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ShopperProductColorId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("CommentId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ShopperProductColorId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.CommentFeedback", b =>
-                {
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("Type")
-                        .HasColumnType("bit");
-
-                    b.HasKey("CommentId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CommentFeedBacks");
-                });
-
             modelBuilder.Entity("Reshop.Domain.Entities.User.Discount", b =>
                 {
                     b.Property<string>("DiscountId")
@@ -2373,9 +2645,6 @@ namespace Reshop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AddressId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
@@ -2384,6 +2653,9 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.Property<bool>("IsReceived")
                         .HasColumnType("bit");
+
+                    b.Property<string>("OrderAddressId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("OrderDiscount")
                         .HasColumnType("Money");
@@ -2407,11 +2679,52 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("OrderAddressId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.OrderAddress", b =>
+                {
+                    b.Property<string>("OrderAddressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AddressText")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("Plaque")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("OrderAddressId");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("OrderAddresses");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.OrderDetail", b =>
@@ -2453,263 +2766,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("ShopperProductColorId");
 
                     b.ToTable("OrderDetails");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.Question", b =>
-                {
-                    b.Property<int>("QuestionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("DeleteDescription")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("QuestionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("QuestionText")
-                        .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
-                    b.Property<string>("QuestionTitle")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("QuestionId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.QuestionAnswer", b =>
-                {
-                    b.Property<int>("QuestionAnswerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AnswerText")
-                        .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
-
-                    b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DeleteDescription")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("QuestionAnswerId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuestionAnswers");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.QuestionAnswerLike", b =>
-                {
-                    b.Property<int>("QuestionAnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("QuestionAnswerId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuestionAnswerLikes");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.QuestionLike", b =>
-                {
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("QuestionId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuestionLikes");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportComment", b =>
-                {
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("ReportCommentTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CommentId", "UserId");
-
-                    b.HasIndex("ReportCommentTypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ReportComments");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportCommentType", b =>
-                {
-                    b.Property<int>("ReportCommentTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ReportCommentTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("ReportCommentTypeId");
-
-                    b.ToTable("ReportCommentTypes");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportQuestion", b =>
-                {
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("ReportQuestionTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("QuestionId", "UserId");
-
-                    b.HasIndex("ReportQuestionTypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuestionReports");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportQuestionAnswer", b =>
-                {
-                    b.Property<int>("QuestionAnswerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("ReportQuestionAnswerTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("QuestionAnswerId", "UserId");
-
-                    b.HasIndex("ReportQuestionAnswerTypeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuestionAnswerReports");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportQuestionAnswerType", b =>
-                {
-                    b.Property<int>("ReportQuestionAnswerTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ReportQuestionAnswerTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("ReportQuestionAnswerTypeId");
-
-                    b.ToTable("ReportQuestionAnswerTypes");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportQuestionType", b =>
-                {
-                    b.Property<int>("ReportQuestionTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ReportQuestionTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("ReportQuestionTypeId");
-
-                    b.ToTable("ReportQuestionTypes");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.Role", b =>
-                {
-                    b.Property<string>("RoleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("RoleId");
-
-                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.State", b =>
@@ -2767,7 +2823,7 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
-                    b.Property<DateTime>("RegisteredDate")
+                    b.Property<DateTime>("RegisterDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Score")
@@ -2815,21 +2871,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("InviterUserId");
 
                     b.ToTable("UserInvites");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.UserRole", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Wallet", b =>
@@ -2904,6 +2945,75 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Comment.Comment", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Product.Product", "Product")
+                        .WithMany("Comments")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.Shopper.ShopperProductColor", "ShopperProductColor")
+                        .WithMany("Comments")
+                        .HasForeignKey("ShopperProductColorId");
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ShopperProductColor");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Comment.CommentFeedback", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Comment.Comment", "Comment")
+                        .WithMany("CommentFeedBacks")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("CommentFeedBacks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Comment.ReportComment", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Comment.Comment", "Comment")
+                        .WithMany("ReportComments")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.Comment.ReportCommentType", "ReportCommentType")
+                        .WithMany()
+                        .HasForeignKey("ReportCommentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("ReportComments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("ReportCommentType");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.Permission", b =>
                 {
                     b.HasOne("Reshop.Domain.Entities.Permission.Permission", null)
@@ -2919,7 +3029,7 @@ namespace Reshop.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Reshop.Domain.Entities.User.Role", "Role")
+                    b.HasOne("Reshop.Domain.Entities.Permission.Role", "Role")
                         .WithMany("RolePermissions")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2928,6 +3038,25 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Permission");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Permission.UserRole", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Permission.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Brand", b =>
@@ -3092,6 +3221,132 @@ namespace Reshop.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.Question", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Product.Product", "Product")
+                        .WithMany("Questions")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("Questions")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.QuestionAnswer", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Question.Question", "Question")
+                        .WithMany("QuestionAnswers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("QuestionAnswers")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.QuestionAnswerLike", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Question.QuestionAnswer", "QuestionAnswer")
+                        .WithMany("QuestionAnswerLikes")
+                        .HasForeignKey("QuestionAnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("QuestionAnswerLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuestionAnswer");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.QuestionLike", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Question.Question", "Question")
+                        .WithMany("QuestionLikes")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("QuestionLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.ReportQuestion", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Question.Question", "Question")
+                        .WithMany("QuestionReports")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.Question.ReportQuestionType", "ReportQuestionType")
+                        .WithMany()
+                        .HasForeignKey("ReportQuestionTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("QuestionReports")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("ReportQuestionType");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.ReportQuestionAnswer", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.Question.QuestionAnswer", "QuestionAnswer")
+                        .WithMany("Reports")
+                        .HasForeignKey("QuestionAnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.Question.ReportQuestionAnswerType", "ReportQuestionAnswerType")
+                        .WithMany()
+                        .HasForeignKey("ReportQuestionAnswerTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
+                        .WithMany("QuestionAnswerReports")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuestionAnswer");
+
+                    b.Navigation("ReportQuestionAnswerType");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.Shopper", b =>
@@ -3262,61 +3517,30 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("State");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Entities.User.Comment", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.Product.Product", "Product")
-                        .WithMany("Comments")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.Shopper.ShopperProductColor", "ShopperProductColor")
-                        .WithMany("Comments")
-                        .HasForeignKey("ShopperProductColorId");
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ShopperProductColor");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.CommentFeedback", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.User.Comment", "Comment")
-                        .WithMany("CommentFeedBacks")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("CommentFeedBacks")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Reshop.Domain.Entities.User.Order", b =>
                 {
-                    b.HasOne("Reshop.Domain.Entities.User.Address", "Address")
+                    b.HasOne("Reshop.Domain.Entities.User.OrderAddress", "OrderAddress")
                         .WithMany()
-                        .HasForeignKey("AddressId");
+                        .HasForeignKey("OrderAddressId");
 
                     b.HasOne("Reshop.Domain.Entities.User.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Address");
+                    b.Navigation("OrderAddress");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.User.OrderAddress", b =>
+                {
+                    b.HasOne("Reshop.Domain.Entities.User.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.OrderDetail", b =>
@@ -3332,159 +3556,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("ShopperProductColor");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.Question", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.Product.Product", "Product")
-                        .WithMany("Questions")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("Questions")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.QuestionAnswer", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.User.Question", "Question")
-                        .WithMany("QuestionAnswers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("QuestionAnswers")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.QuestionAnswerLike", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.User.QuestionAnswer", "QuestionAnswer")
-                        .WithMany("QuestionAnswerLikes")
-                        .HasForeignKey("QuestionAnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("QuestionAnswerLikes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("QuestionAnswer");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.QuestionLike", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.User.Question", "Question")
-                        .WithMany("QuestionLikes")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("QuestionLikes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportComment", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.User.Comment", "Comment")
-                        .WithMany("ReportComments")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.ReportCommentType", "ReportCommentType")
-                        .WithMany()
-                        .HasForeignKey("ReportCommentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("ReportComments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("ReportCommentType");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportQuestion", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.User.Question", "Question")
-                        .WithMany("QuestionReports")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.ReportQuestionType", "ReportQuestionType")
-                        .WithMany()
-                        .HasForeignKey("ReportQuestionTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("QuestionReports")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("ReportQuestionType");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.ReportQuestionAnswer", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.User.QuestionAnswer", "QuestionAnswer")
-                        .WithMany("Reports")
-                        .HasForeignKey("QuestionAnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.ReportQuestionAnswerType", "ReportQuestionAnswerType")
-                        .WithMany()
-                        .HasForeignKey("ReportQuestionAnswerTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("QuestionAnswerReports")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("QuestionAnswer");
-
-                    b.Navigation("ReportQuestionAnswerType");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.UserDiscountCode", b =>
@@ -3511,25 +3582,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasOne("Reshop.Domain.Entities.User.User", "User")
                         .WithMany("UserInvites")
                         .HasForeignKey("InviterUserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.UserRole", b =>
-                {
-                    b.HasOne("Reshop.Domain.Entities.User.Role", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reshop.Domain.Entities.User.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });
@@ -3567,11 +3619,25 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("Reshop.Domain.Entities.Comment.Comment", b =>
+                {
+                    b.Navigation("CommentFeedBacks");
+
+                    b.Navigation("ReportComments");
+                });
+
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.Permission", b =>
                 {
                     b.Navigation("Permissions");
 
                     b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Permission.Role", b =>
+                {
+                    b.Navigation("RolePermissions");
+
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Brand", b =>
@@ -3595,6 +3661,22 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("Questions");
 
                     b.Navigation("ShopperProducts");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.Question", b =>
+                {
+                    b.Navigation("QuestionAnswers");
+
+                    b.Navigation("QuestionLikes");
+
+                    b.Navigation("QuestionReports");
+                });
+
+            modelBuilder.Entity("Reshop.Domain.Entities.Question.QuestionAnswer", b =>
+                {
+                    b.Navigation("QuestionAnswerLikes");
+
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.Shopper", b =>
@@ -3627,13 +3709,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.Navigation("ShopperTitles");
                 });
 
-            modelBuilder.Entity("Reshop.Domain.Entities.User.Comment", b =>
-                {
-                    b.Navigation("CommentFeedBacks");
-
-                    b.Navigation("ReportComments");
-                });
-
             modelBuilder.Entity("Reshop.Domain.Entities.User.Discount", b =>
                 {
                     b.Navigation("UserDiscountCodes");
@@ -3642,29 +3717,6 @@ namespace Reshop.Infrastructure.Migrations
             modelBuilder.Entity("Reshop.Domain.Entities.User.Order", b =>
                 {
                     b.Navigation("OrderDetails");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.Question", b =>
-                {
-                    b.Navigation("QuestionAnswers");
-
-                    b.Navigation("QuestionLikes");
-
-                    b.Navigation("QuestionReports");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.QuestionAnswer", b =>
-                {
-                    b.Navigation("QuestionAnswerLikes");
-
-                    b.Navigation("Reports");
-                });
-
-            modelBuilder.Entity("Reshop.Domain.Entities.User.Role", b =>
-                {
-                    b.Navigation("RolePermissions");
-
-                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.State", b =>

@@ -146,9 +146,11 @@ namespace Reshop.Application.Convertors
             return $"{beforeText}: {boolText}";
         }
 
-        public static string ListToString(this IEnumerable<object> list, string delimiter)
-        {
-            return string.Join(delimiter, list);
-        }
+        public static string BoolToText(this bool value) =>
+             value ? "بله" : "خیر";
+
+
+        public static string ListToString(this IEnumerable<object> list, string delimiter) =>
+            string.Join(delimiter, list);
     }
 }

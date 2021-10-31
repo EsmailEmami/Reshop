@@ -56,20 +56,9 @@
     </div>
 </section>
 
-
-<a onclick="ShowModal('@Url.Action("AddShopperProduct","ShoppersManager",new {shopperId = Model.ShopperId},Context.Request.Scheme)','افزودن کالا به فروشنده')"
-   class="btn btn-success text-white mt-3 mb-2">افزودن کالا</a>
-
 <section class="table-list" id="tableList">
-    @await Component.InvokeAsync("ShopperProductsOfShopperComponent", new { shopperId = Model.ShopperId })
+    @await Component.InvokeAsync("UserOrdersComponent", new { userId = Model.UserId })
 </section>
-
-
-
-<section class="table-list" id="tableRequestList">
-    @await Component.InvokeAsync("ShopperRequestsComponent", new { shopperId = Model.ShopperId })
-</section>
-
 
 
 @section AfterMainOptions
@@ -82,6 +71,4 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 }

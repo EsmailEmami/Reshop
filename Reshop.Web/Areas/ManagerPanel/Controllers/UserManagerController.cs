@@ -79,7 +79,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 var user = new User
                 {
                     FullName = model.FullName,
-                    RegisteredDate = DateTime.Now,
+                    RegisterDate = DateTime.Now,
                     UserAvatar = "userAvatar.jpg",
                     PhoneNumber = model.PhoneNumber,
                     Email = model.Email,

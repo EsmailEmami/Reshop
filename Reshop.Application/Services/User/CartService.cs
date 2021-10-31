@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Reshop.Application.Calculate;
+﻿using Reshop.Application.Calculate;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
-using Reshop.Application.Enums.User;
 using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.Order;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.Discount;
-using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reshop.Application.Services.User
 {
@@ -59,7 +56,7 @@ namespace Reshop.Application.Services.User
         public async Task<ResultTypes> MakeFinalTheOrder(Order order)
         {
 
-            if (order.IsPayed || order.IsReceived || string.IsNullOrEmpty(order.AddressId))
+            if (order.IsPayed || order.IsReceived || string.IsNullOrEmpty(order.OrderAddressId))
             {
                 return ResultTypes.Failed;
             }
@@ -83,7 +80,7 @@ namespace Reshop.Application.Services.User
 
                     if (lastDiscount.EndDate > DateTime.Now)
                     {
-                        order.OrderDiscount = CartCalculator.CalculateDiscount(orderDetail.Price, lastDiscount.DiscountPercent, orderDetail.Count);
+                        order.OrderDiscount = CartCalculator.CalculatePrice(orderDetail.Price, lastDiscount.DiscountPercent, orderDetail.Count);
                     }
 
                     orderDetail.Sum = (orderDetail.Count * orderDetail.Price) - orderDetail.ProductDiscountPrice;
@@ -213,6 +210,9 @@ namespace Reshop.Application.Services.User
         public async Task<string> IsUserBoughtProductAsync(string userId, int productId) =>
             await _cartRepository.IsUserBoughtProductAsync(userId, productId);
 
+        public async Task<string> GetUserOpenCartOrderIdAsync(string userId) =>
+            await _cartRepository.GetUserOpenCartOrderIdAsync(userId);
+
         public async Task IncreaseOrderDetailCountAsync(string orderDetailId)
         {
             var orderDetail = await _cartRepository.GetOrderDetailByIdAsync(orderDetailId);
@@ -241,8 +241,6 @@ namespace Reshop.Application.Services.User
 
                 if (orderDetail.Count > 0)
                 {
-
-
                     _cartRepository.UpdateOrderDetail(orderDetail);
                 }
                 else
@@ -254,6 +252,16 @@ namespace Reshop.Application.Services.User
 
                 if (!order.OrderDetails.Any())
                 {
+                    if (!string.IsNullOrEmpty(order.OrderAddressId))
+                    {
+                        var orderAddress = await _cartRepository.GetOrderAddressByIdAsync(order.OrderAddressId);
+
+                        if (orderAddress != null)
+                        {
+                            _cartRepository.RemoveOrderAddress(orderAddress);
+                        }
+                    }
+
                     _cartRepository.RemoveOrder(order);
                     await _cartRepository.SaveChangesAsync();
                 }
@@ -303,6 +311,16 @@ namespace Reshop.Application.Services.User
                 }
                 else
                 {
+                    if (!string.IsNullOrEmpty(order.OrderAddressId))
+                    {
+                        var orderAddress = await _cartRepository.GetOrderAddressByIdAsync(order.OrderAddressId);
+
+                        if (orderAddress != null)
+                        {
+                            _cartRepository.RemoveOrderAddress(orderAddress);
+                        }
+                    }
+
                     _cartRepository.RemoveOrder(order);
                 }
 
@@ -319,20 +337,115 @@ namespace Reshop.Application.Services.User
         public string GetOpenOrderAddressId(string userId) =>
             _cartRepository.GetOpenOrderAddressId(userId);
 
-        public async Task<Tuple<IEnumerable<OrderForShowViewModel>, int, int>> GetUserOrdersForShowWithPaginationAsync(string userId, int pageId, int take,string type = "all", string orderBy = "payDate")
+        public async Task<ResultTypes> AddAddressToOrderAsync(string orderId, string userAddressId)
+        {
+            try
+            {
+                var address = await _userRepository.GetAddressByIdAsync(userAddressId);
+
+                if (address == null)
+                    return ResultTypes.Failed;
+
+                var order = await _cartRepository.GetOrderByIdAsync(orderId);
+
+                if (order == null)
+                    return ResultTypes.Failed;
+
+                if (string.IsNullOrEmpty(order.OrderAddressId))
+                {
+                    var orderAddress = new OrderAddress()
+                    {
+                        AddressText = address.AddressText,
+                        CityId = address.CityId,
+                        FullName = address.FullName,
+                        PhoneNumber = address.PhoneNumber,
+                        Plaque = address.Plaque,
+                        PostalCode = address.PostalCode
+                    };
+
+                    await _cartRepository.AddOrderAddressAsync(orderAddress);
+                    await _cartRepository.SaveChangesAsync();
+
+                    order.OrderAddressId = orderAddress.OrderAddressId;
+                    await _cartRepository.SaveChangesAsync();
+
+                    return ResultTypes.Successful;
+                }
+                else
+                {
+                    var orderAddress = await _cartRepository.GetOrderAddressByIdAsync(order.OrderAddressId);
+
+                    if (orderAddress == null)
+                        return ResultTypes.Failed;
+
+                    orderAddress.AddressText = address.AddressText;
+                    orderAddress.CityId = address.CityId;
+                    orderAddress.FullName = address.FullName;
+                    orderAddress.Plaque = address.Plaque;
+                    orderAddress.PostalCode = address.PostalCode;
+                    orderAddress.PhoneNumber = address.PhoneNumber;
+
+                    _cartRepository.UpdateOrderAddress(orderAddress);
+
+                    await _cartRepository.SaveChangesAsync();
+
+                    return ResultTypes.Successful;
+                }
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<Tuple<string, decimal, bool, string>> GetOpenOrderForPaymentAsync(string userId)
+        {
+            var orderId = await _cartRepository.GetUserOpenCartOrderIdAsync(userId);
+
+            if (orderId == null)
+                return null;
+
+            var order = await _cartRepository.GetOrderByIdAsync(orderId);
+
+            if (order == null)
+                return null;
+
+
+            var orderProducts = await _cartRepository.GetOrderDetailAsync(orderId);
+
+            if (orderProducts == null)
+                return null;
+
+            decimal orderSum = 0 - order.OrderDiscount;
+
+            foreach (var item in orderProducts)
+            {
+                byte discount = 0;
+
+                if (item.Discount != null && item.Discount.Item2 > DateTime.Now)
+                {
+                    discount = item.Discount.Item1;
+                }
+
+                orderSum += CartCalculator.CalculatePrice(item.ProductPrice, discount, item.ProductsCount);
+            }
+
+            bool anyAddress = !string.IsNullOrEmpty(order.OrderAddressId);
+
+            return new Tuple<string, decimal, bool, string>(order.OrderId, orderSum, anyAddress, order.TrackingCode);
+        }
+
+        public async Task<Tuple<IEnumerable<OrderForShowInListViewModel>, int, int>> GetUserOrdersForShowInListWithPaginationAsync(string userId, int pageId, int take, string type = "all", string orderBy = "payDate")
         {
             var ordersCount = await _cartRepository.GetUserOrdersCount(type.FixedText());
-
-            if (ordersCount == 0)
-                return null;
 
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
             int totalPages = (int)Math.Ceiling(1.0 * ordersCount / take);
 
-            var orders = _cartRepository.GetUserOrdersWithPagination(userId, type.FixedText(), orderBy.FixedText(), skip, take);
+            var orders = _cartRepository.GetUserOrdersForShowInListWithPagination(userId, type.FixedText(), orderBy.FixedText(), skip, take);
 
-            return new Tuple<IEnumerable<OrderForShowViewModel>, int, int>(orders,pageId,totalPages);
+            return new Tuple<IEnumerable<OrderForShowInListViewModel>, int, int>(orders, pageId, totalPages);
         }
     }
 }

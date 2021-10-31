@@ -42,11 +42,11 @@
     {
         <span class="badge badge-pill badge-info ">@Model.LastDiscount.Item1 ٪ تخفیف</span>
 
-        <span class="badge badge-pill badge-success text-black">سود شما: @CartCalculator.CalculateDiscount(Model.Price, Convert.ToByte(((Model.LastDiscount.Item2 > DateTime.Now) ? Model.LastDiscount.Item1 : 0))).NumSplitter() تومان</span>
+        <span class="badge badge-pill badge-success text-black">سود شما: @CartCalculator.CalculatePrice(Model.Price, Convert.ToByte(((Model.LastDiscount.Item2 > DateTime.Now) ? Model.LastDiscount.Item1 : 0))).NumSplitter() تومان</span>
     }
 
     <div class="price-amount">
-        <h3>@CartCalculator.CalculateDiscount(Model.Price, Convert.ToByte(((Model.LastDiscount != null && Model.LastDiscount.Item2 > DateTime.Now) ? Model.LastDiscount.Item1 : 0))).NumSplitter() <span>تومان</span></h3>
+        <h3>@CartCalculator.CalculatePrice(Model.Price, Convert.ToByte(((Model.LastDiscount != null && Model.LastDiscount.Item2 > DateTime.Now) ? Model.LastDiscount.Item1 : 0))).NumSplitter() <span>تومان</span></h3>
 
 
 

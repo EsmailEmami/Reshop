@@ -45,30 +45,29 @@
         </div>
 
         <div class="col-sm-12 col-md-6 col-lg-5">
-            <div class="form-field">
 
-                @{
-                    var states = ViewBag.States as IEnumerable<Tuple<int, string>>;
-                }
+            @{
+                var states = ViewBag.States as IEnumerable<Tuple<int, string>>;
+            }
 
-                <select onchange="GetCitiesOfState(this.value)" name="selectedState">
-                    <option value="0">استان</option>
-                    @if (states != null)
+            <select onchange="GetCitiesOfState(this.value)" name="selectedState">
+                <option value="0">استان</option>
+                @if (states != null)
+                {
+                    @foreach (var state in states)
                     {
-                        @foreach (var state in states)
-                        {
-                            @:<option value="@state.Item1" @((selectedState != 0 && state.Item1 == selectedState) ? "selected" : "" )>@state.Item2</option>
-                        }
+                        @:<option value="@state.Item1" @((selectedState != 0 && state.Item1 == selectedState) ? "selected" : "")>@state.Item2</option>
                     }
-                </select>
-            </div>
+                }
+            </select>
+
         </div>
         <div class="col-sm-12 col-md-6 col-lg-4">
-            <div class="form-field">
+         
                 <select id="city" asp-for="CityId">
                     <option value="0">لطفا استان را انتخاب کنید</option>
                 </select>
-            </div>
+
         </div>
         <div class="col-sm-12 col-lg-3">
             <div class="form-field">

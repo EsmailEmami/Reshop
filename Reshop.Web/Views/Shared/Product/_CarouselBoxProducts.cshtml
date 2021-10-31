@@ -36,7 +36,7 @@
 
                         @if (item.LastDiscount != null && item.LastDiscount.Item2 > DateTime.Now)
                         {
-                            discountPrice =  CartCalculator.CalculateDiscount(item.ProductPrice, Convert.ToByte(((item.LastDiscount.Item2 > DateTime.Now) ? item.LastDiscount.Item1 : 0)));
+                            discountPrice =  CartCalculator.CalculatePrice(item.ProductPrice, Convert.ToByte(((item.LastDiscount.Item2 > DateTime.Now) ? item.LastDiscount.Item1 : 0)));
                         }
                     }
 

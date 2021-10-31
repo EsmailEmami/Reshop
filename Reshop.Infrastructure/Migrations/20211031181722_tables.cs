@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Reshop.Infrastructure.Migrations
 {
-    public partial class Tables : Migration
+    public partial class tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,7 +52,7 @@ namespace Reshop.Infrastructure.Migrations
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CategoryTitle = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    IsDelete = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -584,7 +584,7 @@ namespace Reshop.Infrastructure.Migrations
                     Score = table.Column<int>(type: "int", nullable: false),
                     NationalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     AccountBalance = table.Column<decimal>(type: "Money", nullable: false),
-                    RegisteredDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsBlocked = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -669,7 +669,7 @@ namespace Reshop.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ChildCategoryTitle = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    IsDelete = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -900,6 +900,29 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderAddresses",
+                columns: table => new
+                {
+                    OrderAddressId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    Plaque = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    AddressText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderAddresses", x => x.OrderAddressId);
+                    table.ForeignKey(
+                        name: "FK_OrderAddresses_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "CityId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BrandToChildCategories",
                 columns: table => new
                 {
@@ -1011,7 +1034,7 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    AddressId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    OrderAddressId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TrackingCode = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OrderDiscount = table.Column<decimal>(type: "Money", nullable: false),
@@ -1025,10 +1048,10 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_Orders_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Addresses",
-                        principalColumn: "AddressId",
+                        name: "FK_Orders_OrderAddresses_OrderAddressId",
+                        column: x => x.OrderAddressId,
+                        principalTable: "OrderAddresses",
+                        principalColumn: "OrderAddressId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Orders_Users_UserId",
@@ -1044,8 +1067,8 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     ProductId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    ProductTitle = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductType = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     OfficialBrandProductId = table.Column<int>(type: "int", nullable: false),
                     ChildCategoryId = table.Column<int>(type: "int", nullable: false),
@@ -1287,7 +1310,7 @@ namespace Reshop.Infrastructure.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     QuestionId = table.Column<int>(type: "int", nullable: false),
                     AnswerText = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
-                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    QuestionAnswerDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDelete = table.Column<bool>(type: "bit", nullable: false),
                     DeleteDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
                 },
@@ -1739,6 +1762,11 @@ namespace Reshop.Infrastructure.Migrations
                 column: "BrandId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderAddresses_CityId",
+                table: "OrderAddresses",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
                 table: "OrderDetails",
                 column: "OrderId");
@@ -1749,9 +1777,9 @@ namespace Reshop.Infrastructure.Migrations
                 column: "ShopperProductColorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_AddressId",
+                name: "IX_Orders_OrderAddressId",
                 table: "Orders",
-                column: "AddressId");
+                column: "OrderAddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
@@ -2012,6 +2040,9 @@ namespace Reshop.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
                 name: "BrandToChildCategories");
 
             migrationBuilder.DropTable(
@@ -2105,7 +2136,7 @@ namespace Reshop.Infrastructure.Migrations
                 name: "WalletTypes");
 
             migrationBuilder.DropTable(
-                name: "Addresses");
+                name: "OrderAddresses");
 
             migrationBuilder.DropTable(
                 name: "Questions");

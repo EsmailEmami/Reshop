@@ -19,8 +19,8 @@ namespace Reshop.Domain.Entities.User
         [ForeignKey("User")]
         public string UserId { get; set; }
 
-        [ForeignKey("Address")]
-        public string? AddressId { get; set; }
+        [ForeignKey("OrderAddress")]
+        public string? OrderAddressId { get; set; }
 
         [Display(Name = "کد پیگیری")]
         [Required]
@@ -57,9 +57,7 @@ namespace Reshop.Domain.Entities.User
 
 
         public virtual User User { get; set; }
-
-        public virtual Address Address { get; set; }
-
+        public virtual OrderAddress OrderAddress { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 
         #endregion

@@ -171,7 +171,7 @@
 
                         @if (Model.Product.LastDiscount != null && Model.Product.LastDiscount.Item2 > DateTime.Now)
                         {
-                            discountPrice = CartCalculator.CalculateDiscount(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0)));
+                            discountPrice = CartCalculator.CalculatePrice(Model.Product.Price, Convert.ToByte(((Model.Product.LastDiscount.Item2 > DateTime.Now) ? Model.Product.LastDiscount.Item1 : 0)));
                         }
                     }
 
@@ -330,10 +330,9 @@
                 <button class="new-comment" type="button" data-toggle="collapse" data-target="#newComment" aria-expanded="false" aria-controls="newComment">
                     بازخورد جدید
                 </button>
-
-
+               
                 <div class="collapse mt-5 mb-3" id="newComment">
-                    @await Html.PartialAsync("_NewComment", new NewCommentViewModel()
+                    @await Html.PartialAsync("/Comment/_NewComment", new NewCommentViewModel()
                     {
                    ProductId = Model.Product.ProductId
                     })

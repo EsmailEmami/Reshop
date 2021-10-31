@@ -8,6 +8,11 @@
         addressId = ViewData["SelectedAddress"].ToString();
     }
 }
+
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+
 <ul class="breadcrumb">
     <li>
         <a href="/">ریشاپ</a>
@@ -110,6 +115,7 @@
 
 
 @section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
         $('.owl-carousel').owlCarousel({
             rtl: true,
@@ -135,6 +141,7 @@
             }
         });
     </script>
+    <script src="~/js/select.js"></script>
 }
 
 

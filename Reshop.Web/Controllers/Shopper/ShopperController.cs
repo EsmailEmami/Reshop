@@ -100,7 +100,7 @@ namespace Reshop.Web.Controllers.Shopper
                 var user = new Domain.Entities.User.User
                 {
                     FullName = model.FullName,
-                    RegisteredDate = DateTime.Now,
+                    RegisterDate = DateTime.Now,
                     UserAvatar = "userAvatar.jpg",
                     PhoneNumber = model.PhoneNumber,
                     InviteCode = NameGenerator.GenerateUniqUpperCaseCodeWithoutDash(),

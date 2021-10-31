@@ -28,11 +28,20 @@ namespace Reshop.Domain.Interfaces.User
         IEnumerable<OpenCartViewModel> GetOrderInCartByUserIdForShowCart(string userId);
         Task<Order> GetOrderInCartByUserIdAsync(string userId);
 
+        Task<bool> IsUserOrderAsync(string userId, string orderId);
+        Task<bool> IsOrderExistsAsync(string orderId);
+
+        Task<decimal> GetOrderDiscountAsync(string orderId);
+
+        Task<string> GetUserOpenCartOrderIdAsync(string userId);
+
+        Task<List<OpenCartDetailViewModel>> GetOrderDetailAsync(string orderId);
+
         IEnumerable<OrderForShowViewModel> GetReceivedOrders(string userId);
         IEnumerable<OrderForShowViewModel> GetNotReceivedOrders(string userId);
 
         // type = all , received , payed
-        IEnumerable<OrderForShowViewModel> GetUserOrdersWithPagination(string userId, string type, string orderBy, int skip, int take);
+        IEnumerable<OrderForShowInListViewModel> GetUserOrdersForShowInListWithPagination(string userId, string type, string orderBy, int skip, int take);
         Task<Order> GetOrderByIdAsync(string orderId);
         Task AddOrderAsync(Order order);
         void UpdateOrder(Order order);
@@ -44,6 +53,12 @@ namespace Reshop.Domain.Interfaces.User
 
         // type = all , payed , received
         Task<int> GetUserOrdersCount(string userId, string type = "all");
+
+
+        Task AddOrderAddressAsync(OrderAddress orderAddress);
+        void UpdateOrderAddress(OrderAddress orderAddress);
+        void RemoveOrderAddress(OrderAddress orderAddress);
+        Task<OrderAddress> GetOrderAddressByIdAsync(string orderAddressId);
 
         #endregion
 

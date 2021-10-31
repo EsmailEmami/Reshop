@@ -17,13 +17,14 @@ namespace Reshop.Web.Components.User
         {
             int take = 20;
 
-            var orders = await _cartService.GetUserOrdersForShowWithPaginationAsync(userId,pageId,take,type,orderBy);
+            var orders = await _cartService.GetUserOrdersForShowInListWithPaginationAsync(userId,pageId,take,type,orderBy);
 
             ViewBag.TakeCount = take;
             ViewBag.SelectedType = type;
             ViewBag.SelectedOrderBy = orderBy;
 
-            return View("", orders);
+
+            return View("/Views/Shared/Components/User/UserOrders.cshtml", orders);
         }
     }
 }
