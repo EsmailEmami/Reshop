@@ -1,5 +1,5 @@
 ﻿@model User
-@inject IRoleService RoleService;
+@inject IpermissionService permissionService;
 @{
     ViewData["Title"] = $"پنل مدیریت - {Model.FullName}";
 }
@@ -28,7 +28,7 @@
                     <ul>
                         <li class="active"><a asp-action="Dashboard">اطلاعات شخصی</a> </li>
                         <li><a asp-action="Address">آدرس</a> </li>
-                        @if (RoleService.PermissionChecker(Model.UserId, "Shopper,FullManager"))
+                        @if (permissionService.PermissionChecker(Model.UserId, "Shopper,FullManager"))
                         {
                             <li><a asp-action="Address">اطلاعات مغازه</a> </li>
                         }

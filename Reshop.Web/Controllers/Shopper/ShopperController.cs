@@ -30,17 +30,17 @@ namespace Reshop.Web.Controllers.Shopper
         private readonly IShopperService _shopperService;
         private readonly IUserService _userService;
         private readonly IOriginService _originService;
-        private readonly IRoleService _roleService;
+        private readonly IPermissionService _permissionService;
         private readonly IDataProtector _dataProtector;
         private readonly IDiscountService _discountService;
 
-        public ShopperController(IProductService productService, IShopperService shopperService, IUserService userService, IOriginService originService, IDataProtectionProvider dataProtectionProvider, IRoleService roleService, IDiscountService discountService)
+        public ShopperController(IProductService productService, IShopperService shopperService, IUserService userService, IOriginService originService, IDataProtectionProvider dataProtectionProvider, IPermissionService permissionService, IDiscountService discountService)
         {
             _productService = productService;
             _shopperService = shopperService;
             _userService = userService;
             _originService = originService;
-            _roleService = roleService;
+            _permissionService = permissionService;
             _discountService = discountService;
             _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Controllers.Shopper.ShopperController",
                 new string[] { "ShopperController" });
@@ -115,7 +115,7 @@ namespace Reshop.Web.Controllers.Shopper
 
                 if (addUser == ResultTypes.Successful)
                 {
-                    var addUserToRoleResult = await _roleService.AddUserToRoleAsync(user.UserId, "Shopper");
+                    var addUserToRoleResult = await _permissionService.AddUserToRoleAsync(user.UserId, "Shopper");
 
                     if (addUserToRoleResult != ResultTypes.Successful)
                     {

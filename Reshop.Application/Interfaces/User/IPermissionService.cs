@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Reshop.Application.Enums;
-using Reshop.Domain.DTOs.User;
+﻿using Reshop.Application.Enums;
+using Reshop.Domain.DTOs.Permission;
 using Reshop.Domain.Entities.Permission;
-using Reshop.Domain.Entities.User;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Reshop.Application.Interfaces.User
 {
-    public interface IRoleService
+    public interface IPermissionService
     {
         IEnumerable<Role> GetRoles();
         Task<AddOrEditRoleViewModel> GetRoleDataAsync(string roleId);
@@ -26,10 +25,15 @@ namespace Reshop.Application.Interfaces.User
 
         #region Permission
 
-        IEnumerable<Permission> GetPermissions();
+        Task<Permission> GetPermissionByIdAsync(int permissionId);
+        Task<IEnumerable<Permission>> GetPermissionsAsync();
         Task<ResultTypes> AddPermissionsToRoleAsync(string roleId, List<int> permissionsId);
         Task<ResultTypes> RemoveRolePermissionsByRoleId(string roleId);
+        Task<ResultTypes> RemoveRolePermissionsByPermissionId(int permissionId);
         IEnumerable<string> GetPermissionRolesIdByPermission(string permissionName);
+
+        Task<ResultTypes> AddPermissionAsync(Permission permission);
+        Task<ResultTypes> EditPermissionAsync(Permission permission);
 
         bool PermissionChecker(string userId, string permissions);
 

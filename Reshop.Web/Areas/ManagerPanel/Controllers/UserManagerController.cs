@@ -19,12 +19,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region constructor
 
         private readonly IUserService _userService;
-        private readonly IRoleService _roleService;
+        private readonly IPermissionService _permissionService;
 
-        public UserManagerController(IUserService userService, IRoleService roleService)
+        public UserManagerController(IUserService userService, IPermissionService permissionService)
         {
             _userService = userService;
-            _roleService = roleService;
+            _permissionService = permissionService;
         }
 
         #endregion
@@ -45,7 +45,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 var model = new AddOrEditUserForAdminViewModel()
                 {
-                    Roles = _roleService.GetRoles()
+                    Roles = _permissionService.GetRoles()
                 };
 
                 return View(model);
@@ -69,7 +69,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> AddOrEditUser(AddOrEditUserForAdminViewModel model)
         {
-            model.Roles = _roleService.GetRoles();
+            model.Roles = _permissionService.GetRoles();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
@@ -105,7 +105,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                                 RoleId = role
                             };
 
-                            await _roleService.AddUserRoleAsync(userRole);
+                            await _permissionService.AddUserRoleAsync(userRole);
                         }
                     }
                 }
@@ -141,7 +141,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (editUser == ResultTypes.Successful)
                 {
                     // remove user roles
-                    var removeUserRoles = await _roleService.RemoveAllUserRolesByUserIdAsync(user.UserId);
+                    var removeUserRoles = await _permissionService.RemoveAllUserRolesByUserIdAsync(user.UserId);
 
                     if (removeUserRoles != ResultTypes.Successful)
                     {
@@ -158,7 +158,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                                 UserId = user.UserId,
                                 RoleId = roleId
                             };
-                            await _roleService.AddUserRoleAsync(userRole);
+                            await _permissionService.AddUserRoleAsync(userRole);
                         }
                     }
                 }

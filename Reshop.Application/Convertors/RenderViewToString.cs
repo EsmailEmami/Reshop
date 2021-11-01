@@ -8,37 +8,58 @@ namespace Reshop.Application.Convertors
 {
     public class RenderViewToString
     {
-        public static string RenderRazorViewToString(Controller controller, string viewName = null, object model = null)
+        public static string RenderRazorViewToString(Controller controller, string viewName, object model = null)
         {
-            if (string.IsNullOrEmpty(viewName))
+            controller.ViewData.Model = model;
+            using var sw = new StringWriter();
+            IViewEngine viewEngine = controller.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+
+            if (viewEngine != null)
             {
-                viewName = controller.ControllerContext.ActionDescriptor.ActionName;
+                ViewEngineResult viewResult = viewEngine.FindView(controller.ControllerContext, viewName, false);
+
+                ViewContext viewContext = new ViewContext(
+                    controller.ControllerContext,
+                    viewResult.View,
+                    controller.ViewData,
+                    controller.TempData,
+                    sw,
+                    new HtmlHelperOptions()
+                );
+                viewResult.View.RenderAsync(viewContext);
             }
+
+
+            return sw.GetStringBuilder().ToString();
+        }
+
+        public static string RenderRazorViewToString(Controller controller, object model = null)
+        {
+            string viewName = controller.ControllerContext.ActionDescriptor.ActionName;
+
 
 
             controller.ViewData.Model = model;
-            using (var sw = new StringWriter())
+            using var sw = new StringWriter();
+            IViewEngine viewEngine = controller.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+
+            if (viewEngine != null)
             {
-                IViewEngine viewEngine = controller.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+                ViewEngineResult viewResult = viewEngine.FindView(controller.ControllerContext, viewName, false);
 
-                if (viewEngine != null)
-                {
-                    ViewEngineResult viewResult = viewEngine.FindView(controller.ControllerContext, viewName, false);
-
-                    ViewContext viewContext = new ViewContext(
-                        controller.ControllerContext,
-                        viewResult.View,
-                        controller.ViewData,
-                        controller.TempData,
-                        sw,
-                        new HtmlHelperOptions()
-                    );
-                    viewResult.View.RenderAsync(viewContext);
-                }
-
-
-                return sw.GetStringBuilder().ToString();
+                ViewContext viewContext = new ViewContext(
+                    controller.ControllerContext,
+                    viewResult.View,
+                    controller.ViewData,
+                    controller.TempData,
+                    sw,
+                    new HtmlHelperOptions()
+                );
+                viewResult.View.RenderAsync(viewContext);
             }
+
+
+            return sw.GetStringBuilder().ToString();
         }
     }
 }

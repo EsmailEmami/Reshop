@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<Address>
-@inject IRoleService RoleService;
+@inject IPermissionService permissionService;
 @{
     ViewData["Title"] = "آدرس ها";
 
@@ -33,7 +33,7 @@
                     <ul>
                         <li><a asp-action="Dashboard">اطلاعات شخصی</a> </li>
                         <li class="active"><a asp-action="Address">آدرس</a> </li>
-                        @if (RoleService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "Shopper,FullManager"))
+                        @if (permissionService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "Shopper,FullManager"))
                         {
                             <li><a asp-action="Address">اطلاعات مغازه</a> </li>
                         }

@@ -19,10 +19,10 @@ namespace Reshop.Application.Services.User
         #region constructor
 
         private readonly IUserRepository _userRepository;
-        private readonly IRoleRepository _roleRepository;
+        private readonly IPermissionRepository _roleRepository;
         private readonly IQuestionRepository _questionRepository;
 
-        public UserService(IUserRepository userRepository, IRoleRepository roleRepository, IQuestionRepository questionRepository)
+        public UserService(IUserRepository userRepository, IPermissionRepository roleRepository, IQuestionRepository questionRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;

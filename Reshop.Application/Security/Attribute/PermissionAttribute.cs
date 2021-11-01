@@ -11,12 +11,12 @@ namespace Reshop.Application.Security.Attribute
     {
         public string PermissionsName { get; set; }
 
-        private IRoleService _roleService;
+        private IPermissionService _roleService;
 
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            _roleService = (IRoleService)context.HttpContext.RequestServices.GetService(typeof(IRoleService));
+            _roleService = (IPermissionService)context.HttpContext.RequestServices.GetService(typeof(IPermissionService));
 
             if (context.HttpContext.User.Identity != null && context.HttpContext.User.Identity.IsAuthenticated)
             {

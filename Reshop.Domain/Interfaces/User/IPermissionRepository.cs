@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Reshop.Domain.Entities.Permission;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reshop.Domain.Entities.Permission;
-using Reshop.Domain.Entities.User;
 
 namespace Reshop.Domain.Interfaces.User
 {
-    public interface IRoleRepository
+    public interface IPermissionRepository
     {
         #region role
 
@@ -33,9 +32,14 @@ namespace Reshop.Domain.Interfaces.User
 
         #region permission
 
-        IEnumerable<Permission> GetPermissions();
+        Task<Permission> GetPermissionByIdAsync(int permissionId);
+        Task AddPermissionAsync(Permission permission);
+        void UpdatePermission(Permission permission);
+        void RemovePermission(Permission permission);
+        Task<IEnumerable<Permission>> GetPermissionsAsync();
         Task AddRolePermissionAsync(RolePermission rolePermission);
-        IAsyncEnumerable<RolePermission> GetRolePermissionsOfRole(string roleId);
+        Task<IEnumerable<RolePermission>> GetRolePermissionsOfRoleAsync(string roleId);
+        Task<IEnumerable<RolePermission>> GetRolePermissionsOfPermissionAsync(int permissionId);
         void RemoveRolePermission(RolePermission rolePermission);
         IEnumerable<int> GetPermissionsIdOfRole(string roleId);
         int GetPermissionIdByName(string permissionName);
