@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Reshop.Domain.Entities.Permission;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Reshop.Domain.DTOs.Permission
@@ -15,5 +16,9 @@ namespace Reshop.Domain.DTOs.Permission
         public int ParentId { get; set; }
 
         public IEnumerable<Entities.Permission.Permission> Permissions { get; set; }
+
+        // role
+        public IEnumerable<Role> Roles { get; set; }
+        public IEnumerable<string> SelectedRoles { get; set; }
     }
 }

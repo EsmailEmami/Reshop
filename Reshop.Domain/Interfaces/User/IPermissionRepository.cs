@@ -8,10 +8,10 @@ namespace Reshop.Domain.Interfaces.User
     {
         #region role
 
-        IEnumerable<Role> GetRoles();
+        Task<IEnumerable<Role>> GetRolesAsync();
         Task<Role> GetRoleByIdAsync(string roleId);
         Task<Role> GetRoleByNameAsync(string roleName);
-        IEnumerable<string> GetRolesIdOfUser(string userId);
+        Task<IEnumerable<string>> GetRolesIdOfUserAsync(string userId);
         IAsyncEnumerable<string> GetUsersIdOfRole(string roleId);
         Task AddRoleAsync(Role role);
         void UpdateRole(Role role);
@@ -43,7 +43,8 @@ namespace Reshop.Domain.Interfaces.User
         void RemoveRolePermission(RolePermission rolePermission);
         IEnumerable<int> GetPermissionsIdOfRole(string roleId);
         int GetPermissionIdByName(string permissionName);
-        IEnumerable<string> GetRolesIdOfPermission(int permissionId);
+        Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(int permissionId);
+        Task<bool> IsPermissionExistsAsync(int permissionId);
 
         #endregion
 

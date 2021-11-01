@@ -23,7 +23,8 @@ namespace Reshop.Infrastructure.Repository.User
 
         #region role
 
-        public IEnumerable<Role> GetRoles() => _context.Roles;
+        public async Task<IEnumerable<Role>> GetRolesAsync() =>
+            await _context.Roles.ToListAsync();
 
         public async Task<Role> GetRoleByIdAsync(string roleId) => await _context.Roles.FindAsync(roleId);
 
@@ -31,9 +32,11 @@ namespace Reshop.Infrastructure.Repository.User
             =>
                 await _context.Roles.SingleOrDefaultAsync(c => c.RoleTitle == roleName);
 
-        public IEnumerable<string> GetRolesIdOfUser(string userId) =>
-                _context.UserRoles.Where(c => c.UserId == userId)
-                    .Select(c => c.RoleId);
+        public async Task<IEnumerable<string>> GetRolesIdOfUserAsync(string userId) =>
+               await _context.UserRoles
+                    .Where(c => c.UserId == userId)
+                    .Select(c => c.RoleId)
+                    .ToListAsync();
 
         public IAsyncEnumerable<string> GetUsersIdOfRole(string roleId)
             =>
@@ -117,10 +120,14 @@ namespace Reshop.Infrastructure.Repository.User
             }
         }
 
-        public IEnumerable<string> GetRolesIdOfPermission(int permissionId) =>
-            _context.RolePermissions.Where(c => c.PermissionId == permissionId)
-                .Select(c => c.RoleId);
+        public async Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(int permissionId) =>
+            await _context.RolePermissions
+                .Where(c => c.PermissionId == permissionId)
+                .Select(c => c.RoleId)
+                .ToListAsync();
 
+        public async Task<bool> IsPermissionExistsAsync(int permissionId) =>
+            await _context.Permissions.AnyAsync(c => c.PermissionId == permissionId);
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 

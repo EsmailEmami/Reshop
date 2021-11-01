@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Generator;
@@ -9,7 +10,6 @@ using Reshop.Domain.Entities.User;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Application.Attribute;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -45,7 +45,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 var model = new AddOrEditUserForAdminViewModel()
                 {
-                    Roles = _permissionService.GetRoles()
+                    Roles = await _permissionService.GetRolesAsync()
                 };
 
                 return View(model);
@@ -69,7 +69,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> AddOrEditUser(AddOrEditUserForAdminViewModel model)
         {
-            model.Roles = _permissionService.GetRoles();
+            model.Roles = await _permissionService.GetRolesAsync();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });

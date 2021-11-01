@@ -29,9 +29,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region role
 
         [HttpGet]
-        public IActionResult RoleIndex()
+        public async Task<IActionResult> RoleIndex()
         {
-            return View(_permissionService.GetRoles());
+            return View(await _permissionService.GetRolesAsync());
         }
 
         [HttpGet]
@@ -78,7 +78,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     if (model.SelectedPermissions.Any())
                     {
-                        var addRolePermission = await _permissionService.AddPermissionsToRoleAsync(role.RoleId, model.SelectedPermissions as List<int>);
+                        var addRolePermission = await _permissionService.AddRolePermissionByRoleAsync(role.RoleId, model.SelectedPermissions as List<int>);
                         if (addRolePermission == ResultTypes.Failed)
                         {
                             ModelState.AddModelError("", "هنگام افزودن دسترسی ها به مشکل خوردیم.");
@@ -120,7 +120,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (model.SelectedPermissions.Any())
                 {
-                    var addRolePermission = await _permissionService.AddPermissionsToRoleAsync(role.RoleId, model.SelectedPermissions as List<int>);
+                    var addRolePermission = await _permissionService.AddRolePermissionByRoleAsync(role.RoleId, model.SelectedPermissions as List<int>);
                     if (addRolePermission == ResultTypes.Failed)
                     {
                         ModelState.AddModelError("", "هنگام ویرایش دسترسی ها به مشکل برخوردیم");
@@ -139,7 +139,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!await _permissionService.IsRoleExistAsync(roleId))
                 return NotFound();
 
-            await _permissionService.RemoveRoleAsync(roleId);
+            await _permissionService.DeleteRoleAsync(roleId);
 
             return RedirectToAction("RoleIndex");
         }
@@ -159,6 +159,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             var model = new AddOrEditPermissionViewModel()
             {
+                Roles = await _permissionService.GetRolesAsync(),
                 Permissions = await _permissionService.GetPermissionsAsync()
             };
 
@@ -169,6 +170,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> AddPermission(AddOrEditPermissionViewModel model)
         {
+            model.Roles = await _permissionService.GetRolesAsync();
             model.Permissions = await _permissionService.GetPermissionsAsync();
 
             if (!ModelState.IsValid)
@@ -192,6 +194,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             if (res == ResultTypes.Successful)
             {
+                await _permissionService.AddRolePermissionByPermissionAsync(permission.PermissionId, model.SelectedRoles.ToList());
+
+
                 return Json(new { isValid = true, returnUrl = "current" });
             }
             else
@@ -205,29 +210,19 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> EditPermission(int permissionId)
         {
-            var permission = await _permissionService.GetPermissionByIdAsync(permissionId);
+            var permission = await _permissionService.GetPermissionDataAsync(permissionId);
 
             if (permission == null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
-
-
-
-            var model = new AddOrEditPermissionViewModel()
-            {
-                PermissionId = permission.PermissionId,
-                Permissions = await _permissionService.GetPermissionsAsync(),
-                PermissionTitle = permission.PermissionTitle,
-                ParentId = permission.ParentId.GetValueOrDefault(0)
-            };
-
-            return View(model);
+            return View(permission);
         }
 
         [HttpPost]
         [NoDirectAccess]
         public async Task<IActionResult> EditPermission(AddOrEditPermissionViewModel model)
         {
+            model.Roles = await _permissionService.GetRolesAsync();
             model.Permissions = await _permissionService.GetPermissionsAsync();
 
             if (!ModelState.IsValid)
@@ -249,10 +244,17 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 });
             }
 
-            var res = await _permissionService.AddPermissionAsync(permission);
+            permission.ParentId = model.ParentId;
+            permission.PermissionTitle = model.PermissionTitle;
+
+            var res = await _permissionService.EditPermissionAsync(permission);
 
             if (res == ResultTypes.Successful)
             {
+                await _permissionService.RemoveRolePermissionsByPermissionId(permission.PermissionId);
+
+                await _permissionService.AddRolePermissionByPermissionAsync(permission.PermissionId, model.SelectedRoles.ToList());
+
                 return Json(new { isValid = true, returnUrl = "current" });
             }
             else
@@ -263,6 +265,25 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     isValid = false,
                     html = RenderViewToString.RenderRazorViewToString(this, model)
                 });
+            }
+        }
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> DeletePermission(int permissionId)
+        {
+            if (await _permissionService.IsPermissionExistsAsync(permissionId))
+                return NotFound();
+
+            var delete = await _permissionService.DeletePermissionAsync(permissionId);
+
+            if (delete == ResultTypes.Successful)
+            {
+                return RedirectToAction("PermissionIndex");
+            }
+            else
+            {
+                return BadRequest();
             }
         }
 

@@ -28,7 +28,7 @@
                     <ul>
                         <li class="active"><a asp-action="Dashboard">اطلاعات شخصی</a> </li>
                         <li><a asp-action="Address">آدرس</a> </li>
-                        @if (permissionService.PermissionChecker(Model.UserId, "Shopper,FullManager"))
+                        @if (await permissionService.PermissionCheckerAsync(Model.UserId, "Shopper,FullManager"))
                         {
                             <li><a asp-action="Address">اطلاعات مغازه</a> </li>
                         }

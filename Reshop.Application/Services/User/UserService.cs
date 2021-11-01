@@ -34,8 +34,8 @@ namespace Reshop.Application.Services.User
         public async Task<AddOrEditUserForAdminViewModel> GetUserDataForAdminAsync(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            var roles = _roleRepository.GetRoles();
-            var userRoles = _roleRepository.GetRolesIdOfUser(userId);
+            var roles =await _roleRepository.GetRolesAsync();
+            var userRoles =await _roleRepository.GetRolesIdOfUserAsync(userId);
 
             return new AddOrEditUserForAdminViewModel()
             {

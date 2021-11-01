@@ -8,12 +8,12 @@ namespace Reshop.Application.Interfaces.User
 {
     public interface IPermissionService
     {
-        IEnumerable<Role> GetRoles();
+        Task<IEnumerable<Role>> GetRolesAsync();
         Task<AddOrEditRoleViewModel> GetRoleDataAsync(string roleId);
         Task<ResultTypes> AddRoleAsync(Role role);
         Task<ResultTypes> EditRoleAsync(Role role);
         Task<Role> GetRoleByIdAsync(string roleId);
-        Task<ResultTypes> RemoveRoleAsync(string roleId);
+        Task<ResultTypes> DeleteRoleAsync(string roleId);
         Task<bool> IsRoleExistAsync(string roleId);
 
         Task<ResultTypes> AddUserToRoleAsync(string userId, string rolesName);
@@ -27,15 +27,17 @@ namespace Reshop.Application.Interfaces.User
 
         Task<Permission> GetPermissionByIdAsync(int permissionId);
         Task<IEnumerable<Permission>> GetPermissionsAsync();
-        Task<ResultTypes> AddPermissionsToRoleAsync(string roleId, List<int> permissionsId);
+        Task<AddOrEditPermissionViewModel> GetPermissionDataAsync(int permissionId);
+        Task<ResultTypes> AddRolePermissionByRoleAsync(string roleId, List<int> permissionsId);
+        Task<ResultTypes> AddRolePermissionByPermissionAsync(int permissionId, List<string> rolesId);
         Task<ResultTypes> RemoveRolePermissionsByRoleId(string roleId);
         Task<ResultTypes> RemoveRolePermissionsByPermissionId(int permissionId);
-        IEnumerable<string> GetPermissionRolesIdByPermission(string permissionName);
-
+        Task<bool> IsPermissionExistsAsync(int permissionId);
+        Task<ResultTypes> DeletePermissionAsync(int permissionId);
         Task<ResultTypes> AddPermissionAsync(Permission permission);
         Task<ResultTypes> EditPermissionAsync(Permission permission);
 
-        bool PermissionChecker(string userId, string permissions);
+        Task<bool> PermissionCheckerAsync(string userId, string permissions);
 
         #endregion
     }

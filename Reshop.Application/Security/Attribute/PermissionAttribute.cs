@@ -14,7 +14,7 @@ namespace Reshop.Application.Security.Attribute
         private IPermissionService _roleService;
 
 
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public async void OnAuthorization(AuthorizationFilterContext context)
         {
             _roleService = (IPermissionService)context.HttpContext.RequestServices.GetService(typeof(IPermissionService));
 
@@ -25,7 +25,7 @@ namespace Reshop.Application.Security.Attribute
 
                 if (!string.IsNullOrEmpty(PermissionsName))
                 {
-                    if (_roleService != null && !_roleService.PermissionChecker(userId, PermissionsName))
+                    if (_roleService != null && !await _roleService.PermissionCheckerAsync(userId, PermissionsName))
                     {
                         context.Result = new RedirectResult("/Error/404");
                     }
