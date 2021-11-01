@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
 using Reshop.Domain.Entities.User;
 using System.Threading.Tasks;
-using Reshop.Application.Attribute;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -86,7 +83,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         public async Task<IActionResult> AddOrEditState(State model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             if (model.StateId == 0)
             {
@@ -103,7 +100,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
 
                 ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ثبت استان جدید با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
             else
             {
@@ -111,7 +108,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (state == null)
                 {
                     ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش استان با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
-                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                 }
 
                 state.StateName = model.StateName;
@@ -123,12 +120,11 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
 
                 ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش استان با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
         #endregion
-
 
         [HttpPost]
         public async Task<IActionResult> DeleteState(int stateId)
@@ -175,7 +171,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             ViewBag.States = _stateService.GetStates();
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             if (model.CityId == 0)
             {
@@ -200,7 +196,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (city == null)
                 {
                     ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش شهر با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
-                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                 }
 
                 city.CityName = model.CityName;
@@ -214,10 +210,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
 
                 ModelState.AddModelError("", "ادمین عزیز متاسفانه هنگام ویرایش استان با مشکلی غیر منتظره مواجه شدیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
-
 
         #endregion
 

@@ -52,10 +52,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (model == null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
-
             return View(model);
         }
-
 
         #region add brand
 
@@ -80,7 +78,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             model.ChildCategories = _categoryService.GetChildCategories();
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             var brand = new Brand()
             {
@@ -105,7 +103,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     else
                     {
                         ModelState.AddModelError("", "هنگام افزودن برند به مشکل خوردیم");
-                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                     }
                 }
                 else
@@ -114,7 +112,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
             }
             ModelState.AddModelError("", "هنگام افزودن برند به مشکل خوردیم");
-            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
         #endregion
@@ -144,7 +142,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             model.ChildCategories = _categoryService.GetChildCategories();
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             var brand = await _brandService.GetBrandByIdAsync(model.BrandId);
 
@@ -172,7 +170,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     else
                     {
                         ModelState.AddModelError("", "هنگام افزودن برند به مشکل خوردیم");
-                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                     }
                 }
                 else
@@ -182,7 +180,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
 
             ModelState.AddModelError("", "هنگام ویرایش برند به مشکل خوردیم");
-            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
         #endregion
@@ -206,10 +204,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         public async Task<IActionResult> AvailableBrand(AvailableBrandViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             var res = await _brandService.AvailableBrand(model);
-
 
             if (res == ResultTypes.Successful)
             {
@@ -217,7 +214,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
 
             ModelState.AddModelError("", "هنگام فعال شدن برند به مشکل خوردیم");
-            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
         [HttpPost]
@@ -228,7 +225,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             if (res != ResultTypes.Successful)
                 return BadRequest();
-
 
             return RedirectToAction(nameof(Index));
         }

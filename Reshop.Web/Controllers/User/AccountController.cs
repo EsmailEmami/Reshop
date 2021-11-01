@@ -261,7 +261,7 @@ namespace Reshop.Web.Controllers.User
         public async Task<IActionResult> EditUserInformation(EditUserViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditUserInformation", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
 
             try
@@ -271,7 +271,7 @@ namespace Reshop.Web.Controllers.User
             catch
             {
                 ModelState.AddModelError("", "هنگام ویرایش اطلاعات به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             var user = await _userService.GetUserByIdAsync(model.UserId);
@@ -279,7 +279,7 @@ namespace Reshop.Web.Controllers.User
             if (user is null)
             {
                 ModelState.AddModelError("", "هنگام ویرایش اطلاعات به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             user.FullName = model.FullName;
@@ -296,7 +296,7 @@ namespace Reshop.Web.Controllers.User
             else
             {
                 ModelState.AddModelError("", "هنگام ویرایش اطلاعات به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -339,7 +339,7 @@ namespace Reshop.Web.Controllers.User
             ViewData["selectedState"] = selectedState;
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -350,12 +350,12 @@ namespace Reshop.Web.Controllers.User
             if (city == null)
             {
                 ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
             else if (city.StateId != selectedState)
             {
                 ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
 
@@ -379,7 +379,7 @@ namespace Reshop.Web.Controllers.User
             else
             {
                 ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -422,7 +422,7 @@ namespace Reshop.Web.Controllers.User
 
             ViewData["selectedState"] = selectedState;
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditAddress", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
 
             try
@@ -432,7 +432,7 @@ namespace Reshop.Web.Controllers.User
             catch
             {
                 ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             var address = await _userService.GetAddressByIdAsync(model.AddressId);
@@ -440,7 +440,7 @@ namespace Reshop.Web.Controllers.User
             if (address is null)
             {
                 ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -449,7 +449,7 @@ namespace Reshop.Web.Controllers.User
             if (address.UserId != userId)
             {
                 ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
 
@@ -470,7 +470,7 @@ namespace Reshop.Web.Controllers.User
             else
             {
                 ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -530,6 +530,5 @@ namespace Reshop.Web.Controllers.User
         }
 
         #endregion
-
     }
 }

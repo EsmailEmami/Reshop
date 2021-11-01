@@ -374,7 +374,7 @@ namespace Reshop.Web.Controllers.Shopper
         {
             ViewData["Colors"] = _shopperService.GetColors();
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddProductOfShopper", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             try
             {
@@ -385,7 +385,7 @@ namespace Reshop.Web.Controllers.Shopper
             catch
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ویرایش محصول به مشکلی غیر منتظره برخوردیم.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditProductOfShopper", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -411,7 +411,7 @@ namespace Reshop.Web.Controllers.Shopper
             }
 
             ModelState.AddModelError("", "متاسفانه هنگام ویرایش محصول به مشکلی غیر منتظره برخوردیم.");
-            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddProductOfShopper", model) });
+            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
         // edit color information
@@ -450,7 +450,7 @@ namespace Reshop.Web.Controllers.Shopper
         public async Task<IActionResult> EditProductOfShopper(EditColorOfShopperProductViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddShopperToProduct", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             try
             {
@@ -461,7 +461,7 @@ namespace Reshop.Web.Controllers.Shopper
             catch
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ویرایش محصول به مشکلی غیر منتظره برخوردیم.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditProductOfShopper", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -471,7 +471,7 @@ namespace Reshop.Web.Controllers.Shopper
             if (shopperProductColor is null)
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ویرایش محصول به مشکلی غیر منتظره برخوردیم.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditProductOfShopper", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             var shopperProductColorRequest = new ShopperProductColorRequest()
@@ -501,7 +501,7 @@ namespace Reshop.Web.Controllers.Shopper
             }
 
             ModelState.AddModelError("", "متاسفانه هنگام ویرایش محصول به مشکلی غیر منتظره برخوردیم.");
-            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "EditProductOfShopper", model) });
+            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
         // new discount
@@ -540,7 +540,7 @@ namespace Reshop.Web.Controllers.Shopper
         public async Task<IActionResult> AddProductDiscount(AddOrEditShopperProductDiscountViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddProductDiscount", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             try
             {
@@ -549,7 +549,7 @@ namespace Reshop.Web.Controllers.Shopper
             catch
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت تخفیف به مشتکلی غیر منتظره برخوردیم.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddProductDiscount", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             DateTime startDate = model.StartDate.ConvertPersianDateTimeToEnglishDateTime();
@@ -561,7 +561,7 @@ namespace Reshop.Web.Controllers.Shopper
                 startDate.Date < DateTime.Now.Date)
             {
                 ModelState.AddModelError("", "فروشنده عزیز تاریخ شروع تخفیف نباید کواه تر از 12 ساعت باشد.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddProductDiscount", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
 
@@ -582,7 +582,7 @@ namespace Reshop.Web.Controllers.Shopper
             }
 
             ModelState.AddModelError("", "متاسفانه خطایی هنگام ثبت تخفیف رخ داده است. لطفا دوباره تلاش کنید.");
-            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "AddProductDiscount", model) });
+            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
         [HttpPost]

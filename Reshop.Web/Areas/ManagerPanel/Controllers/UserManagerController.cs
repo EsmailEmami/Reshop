@@ -72,7 +72,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             model.Roles = _permissionService.GetRoles();
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             if (string.IsNullOrEmpty(model.UserId))
             {
@@ -112,7 +112,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 else
                 {
                     ModelState.AddModelError("", "عنگام ثبت کاربر مشکلی غیر منتظره به وجود آمده است.");
-                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                 }
             }
             else
@@ -122,7 +122,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError("", "هنگام ویراش کاربر مشکلی غیر منتظره پیش آمده است! لطفا دوباره تلاش کنید.");
-                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                 }
 
 
@@ -146,7 +146,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     if (removeUserRoles != ResultTypes.Successful)
                     {
                         ModelState.AddModelError("", "هنگام ویراش مقام کاربر مشکلی غیر منتظره پیش آمده است! لطفا دوباره تلاش کنید.");
-                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                        return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                     }
 
                     if (model.SelectedRoles.Any())
@@ -165,7 +165,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 else
                 {
                     ModelState.AddModelError("", "هنگام ویراش کاربر مشکلی غیر منتظره پیش آمده است! لطفا دوباره تلاش کنید.");
-                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                 }
             }
 
@@ -173,7 +173,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         #endregion
-
 
         #region remove
 

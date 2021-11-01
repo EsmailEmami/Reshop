@@ -1,5 +1,5 @@
 ﻿@model AccountMenuActivePage
-@inject IpermissionService permissionService;
+@inject IPermissionService permissionService;
 
 <div class="profile-menu box-shadow">
     <div class="user-img d-flex justify-content-center flex-column align-self-center">
@@ -23,7 +23,7 @@
         }
         @if (permissionService.PermissionChecker(User.FindFirstValue(ClaimTypes.NameIdentifier), "FullManager"))
         {
-            <a asp-area="AdminManagerPanel" asp-controller="FullAdminPanel" asp-action="Index" class="@(Model == AccountMenuActivePage.FullManage?"active":"")"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
+            <a asp-area="ManagerPanel" asp-controller="AdminPanel" asp-action="Dashboard" class="@(Model == AccountMenuActivePage.FullManage?"active":"")"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
         }
     </div>
 </div>

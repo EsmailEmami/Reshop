@@ -120,13 +120,13 @@ namespace Reshop.Web.Controllers.Comment
             model.Types = _commentService.GetReportCommentTypes().Select(c => new Tuple<int, string>(c.ReportCommentTypeId, c.ReportCommentTitle));
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             if (model.SelectedType == 0)
             {
                 ModelState.AddModelError("Types", "لطفا عنوان گزارش را انتخاب کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
 
@@ -152,7 +152,7 @@ namespace Reshop.Web.Controllers.Comment
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 

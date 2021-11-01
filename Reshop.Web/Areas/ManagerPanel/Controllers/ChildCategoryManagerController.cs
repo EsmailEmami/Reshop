@@ -60,7 +60,11 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             model.Categories = _categoryService.GetCategories();
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new
+                {
+                    isValid = false, 
+                    html = RenderViewToString.RenderRazorViewToString(this, model)
+                });
 
             if (model.ChildCategoryId == 0)
             {
@@ -76,7 +80,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (res != ResultTypes.Successful)
                 {
                     ModelState.AddModelError("", "متاسفاه هنگام افزودن زیر گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
-                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                 }
             }
             else
@@ -86,7 +90,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (childCategory == null)
                 {
                     ModelState.AddModelError("", "متاسفاه هنگام ویرایش زیر گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
-                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                 }
 
                 // update category
@@ -99,7 +103,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (res != ResultTypes.Successful)
                 {
                     ModelState.AddModelError("", "متاسفاه هنگام ویرایش زیر گروه به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
-                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                    return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                 }
             }
 

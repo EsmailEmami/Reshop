@@ -48,7 +48,7 @@ namespace Reshop.Web.Controllers.Question
         public async Task<IActionResult> AddQuestion(AddQuestionViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -72,7 +72,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت سوال شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -100,7 +100,7 @@ namespace Reshop.Web.Controllers.Question
         public async Task<IActionResult> EditQuestion(EditQuestionViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -110,7 +110,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ویرایش سوال شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             question.QuestionText = model.QuestionText;
@@ -126,7 +126,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ویرایش سوال شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -161,7 +161,7 @@ namespace Reshop.Web.Controllers.Question
         public async Task<IActionResult> DeleteQuestion(DeleteConversationViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -169,7 +169,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             var res = await _questionService.DeleteQuestionAsync(model.Id, model.DeleteDescription);
@@ -182,7 +182,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -219,13 +219,13 @@ namespace Reshop.Web.Controllers.Question
                     c.ReportQuestionTitle));
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             if (model.SelectedType == 0)
             {
                 ModelState.AddModelError("Types", "لطفا عنوان گزارش را انتخاب کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -249,7 +249,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -349,7 +349,7 @@ namespace Reshop.Web.Controllers.Question
         public async Task<IActionResult> AddQuestionAnswer(AddQuestionAnswerViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -372,7 +372,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت سوال شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -400,7 +400,7 @@ namespace Reshop.Web.Controllers.Question
         public async Task<IActionResult> EditQuestionAnswer(EditQuestionAnswerViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -410,7 +410,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ویرایش سوال شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             questionAnswer.AnswerText = model.AnswerText;
@@ -425,7 +425,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ویرایش سوال شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -462,13 +462,13 @@ namespace Reshop.Web.Controllers.Question
                     c.ReportQuestionAnswerTitle));
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             if (model.SelectedType == 0)
             {
                 ModelState.AddModelError("Types", "لطفا عنوان گزارش را انتخاب کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -492,7 +492,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 
@@ -600,7 +600,7 @@ namespace Reshop.Web.Controllers.Question
         public async Task<IActionResult> DeleteQuestionAnswer(DeleteConversationViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -608,7 +608,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
             var res = await _questionService.DeleteQuestionAnswerAsync(model.Id, model.DeleteDescription);
@@ -621,7 +621,7 @@ namespace Reshop.Web.Controllers.Question
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت گزارش شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
         }
 

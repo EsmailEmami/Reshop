@@ -70,7 +70,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             ViewBag.Brands = _brandService.GetBrandsForShow();
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             var officialBrandProduct = new OfficialBrandProduct()
             {
@@ -88,7 +88,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
 
             ModelState.AddModelError("", "هنگام افزودن برند به مشکل خوردیم");
-            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
         #endregion
@@ -120,7 +120,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             ViewBag.Brands = _brandService.GetBrandsForShow();
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             var officialBrandProduct = await _brandService.GetOfficialBrandProductByIdAsync(model.OfficialBrandProductId);
 
@@ -138,7 +138,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
 
             ModelState.AddModelError("", "هنگام ویرایش نام اختصاصی کالا به مشکل خوردیم");
-            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
         #endregion
@@ -162,7 +162,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         public async Task<IActionResult> AvailableOfficialBrandProduct(AvailableOfficialBrandProductViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
             var res = await _brandService.AvailableOfficialBrandProductAsync(model.OfficialBrandProductId, model.AvailableProducts);
 
@@ -173,7 +173,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             }
 
             ModelState.AddModelError("", "هنگام فعال شدن برند به مشکل خوردیم");
-            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, null, model) });
+            return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
         [HttpPost]
