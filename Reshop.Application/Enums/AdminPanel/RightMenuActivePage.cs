@@ -7,6 +7,7 @@
         UserPage,
         OriginPage,
         CategoryPage,
-        ProductPage
+        ProductPage,
+        PermissionPage
     }
 }

@@ -62,8 +62,20 @@
                 <li>
                     <a asp-area="ManagerPanel" asp-controller="UserManager" asp-action="Index"><i class="far fa-user"></i> کاربران</a>
                 </li>
+            </ul>
+        </li>
+        <li class="dropdown @(Model == RightMenuActivePage.PermissionPage? "active":"")">
+            <span class="name">
+                <i class="far fa-user"></i>
+                <span>دسترسی</span>
+            </span>
+
+            <ul>
                 <li>
-                    <a asp-area="ManagerPanel" asp-controller="RoleManager" asp-action="Index"><i class="far fa-shield-check"></i> مقام</a>
+                    <a asp-area="ManagerPanel" asp-controller="PermissionManager" asp-action="RoleIndex"><i class="far fa-shield-check"></i> مقام</a>
+                </li>
+                <li>
+                    <a asp-area="ManagerPanel" asp-controller="PermissionManager" asp-action="PermissionIndex"><i class="far fa-shield-check"></i> دسترسی</a>
                 </li>
             </ul>
         </li>

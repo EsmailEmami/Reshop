@@ -1,0 +1,65 @@
+﻿@model AddOrEditPermissionViewModel
+
+@{
+    Layout = null;
+}
+
+
+<form asp-action="EditPermission" method="post" onsubmit="return SubmitFormData(this)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="PermissionId" />
+    <div class="row">
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="PermissionTitle">
+                <label><i class="far fa-list-alt"></i> نام دسترسی</label>
+                <span asp-validation-for="PermissionTitle" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <select asp-for="ParentId">
+                <option>انتخاب پدر دسترسی</option>
+                @if (Model.Permissions.Any())
+                {
+                    foreach (var item in Model.Permissions)
+                    {
+                        @: <option value="@item.PermissionId" @(Model.ParentId == item.PermissionId ? "selected" : "")>@item.PermissionTitle</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="col-sm-12">
+
+            @if (Model.Roles.Any())
+            {
+                <select multiple asp-for="SelectedRoles" placeholder="انتخاب مقام ها">
+                    @foreach (var item in Model.Roles)
+                    {
+                        @: <option value="@item.RoleId" @(Model.SelectedRoles != null && Model.SelectedRoles.Any(c => c == item.RoleId) ? "selected" : "")>@item.RoleTitle</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    مقامی برای نمایش یافت نشد.
+                </div>
+            }
+        </div>
+
+
+        <div class="col-sm-12">
+            <div class="form-field">
+                <button type="submit" class="btn btn-success">ثبت</button>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    inputJs();
+    callSelect();
+</script>

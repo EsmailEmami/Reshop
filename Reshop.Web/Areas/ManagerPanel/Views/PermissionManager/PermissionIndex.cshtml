@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Role>
+﻿@model IEnumerable<Permission>
 
 @{
-    ViewData["Title"] = "مدیریت مقام ها";
+    ViewData["Title"] = "مدیریت دسترسی ها";
     int rowCount = 1;
 }
 @section RightMenu
@@ -9,19 +9,23 @@
     @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.PermissionPage); }
 }
 
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+
 <div class="display-6 text-center">
-    مدیریت مقام ها
+    مدیریت دسترسی ها
 </div>
 
-<a onclick="ShowModal('@Url.Action("AddOrEditRole", "PermissionManager",null, Context.Request.Scheme)', 'افزودن مقام')"
+<a onclick="ShowModal('@Url.Action("AddPermission", "PermissionManager",null, Context.Request.Scheme)', 'افزودن دسترسی')"
    class="btn btn-success text-white">
-    <i class="fal fa-layer-plus"></i> افزودن مقام جدید
+    <i class="fal fa-layer-plus"></i> افزودن دسترسی جدید
 </a>
 
 @if (Model == null)
 {
     <div class="alert alert-warning mt-2">
-        متاسفانه مقامی یافت نشد!
+        متاسفانه دسترسی یافت نشد!
     </div>
 }
 else
@@ -31,7 +35,7 @@ else
             <tr>
                 <th>#</th>
                 <th>
-                    نام مقام
+                    نام دسترسی
                 </th>
                 <th></th>
             </tr>
@@ -42,14 +46,14 @@ else
                 <tr>
                     <td>@rowCount</td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.RoleTitle)
+                        @item.PermissionTitle
                     </td>
                     <td>
-                        <a onclick="ShowModal('@Url.Action("AddOrEditRole", "PermissionManager",new {roleId = item.RoleId}, Context.Request.Scheme)', 'افزودن مقام')"
+                        <a onclick="ShowModal('@Url.Action("EditPermission", "PermissionManager",new {permissionId = item.PermissionId}, Context.Request.Scheme)', 'ویرایش دسترسی')"
                            class="btn btn-warning text-white">
                             <i class="fal fa-marker"></i> ویرایش
                         </a>
-                        <form asp-action="RemoveRole" asp-route-roleId="@item.RoleId" method="post" class="d-inline">
+                        <form asp-action="DeletePermission" asp-route-permissionId="@item.PermissionId" method="post" class="d-inline">
                             <button type="submit" class="btn btn-danger text-white me-2">
                                 <i class="fal fa-trash-alt"></i> حذف
                             </button>
@@ -72,4 +76,5 @@ else
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/select.js"></script>
 }

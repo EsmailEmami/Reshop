@@ -148,9 +148,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #region permission
 
-        public IActionResult PermissionIndex()
+        public async Task<IActionResult> PermissionIndex()
         {
-            return View();
+            return View(await _permissionService.GetPermissionsAsync());
         }
 
         [HttpGet]
