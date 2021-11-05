@@ -18,7 +18,7 @@ namespace Reshop.Application.Interfaces.Conversation
         Task<bool> IsQuestionRemovableAsync(int questionId);
         Task<bool> IsUserQuestionAsync(string userId, int questionId);
 
-        Task<Tuple<IEnumerable<ProductQuestionsForShow>, int, int>> GetProductQuestionsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news");
+        Task<Tuple<IEnumerable<ProductQuestionsForShow>, int, int>> GetProductQuestionsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news", string filter = "");
 
         Task<ResultTypes> DeleteQuestionAsync(int questionId, string description);
 

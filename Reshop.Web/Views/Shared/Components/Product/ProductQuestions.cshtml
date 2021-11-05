@@ -37,13 +37,23 @@
         }
     </div>
 
-
-    <div class="search-form">
-        <div class="form">
-            <input type="text" id="search" placeholder="سوال مورد نظر...">
-            <button onclick="submitForm()"><i class="far fa-search"></i></button>
+    @if (ViewBag.SearchText != null)
+    {  <div class="search-form">
+           <div class="form">
+               <input type="text" id="filter" placeholder="سوال مورد نظر..." value ="@ViewBag.SearchText.ToString()">
+               <button onclick="changeList()"><i class="far fa-search"></i></button>
+           </div>
+       </div>}
+    else
+    {<div class="search-form">
+            <div class="form">
+                <input type="text" id="filter" placeholder="سوال مورد نظر...">
+                <button onclick="changeList()"><i class="far fa-search"></i></button>
+            </div>
         </div>
-    </div>
+    } 
+
+
 
 
 
@@ -235,15 +245,15 @@
     function changeList() {
         let pageId = $('#pageId').val();
         let type = $('#type').val();
-
+        let filter = $('#filter').val();
 
         $.ajax({
             type: 'GET',
-                url: '/Comment/ProductCommentsList?productId=@ViewBag.ProductId.ToString()&pageId=' + pageId + '&type='+ type,
+            url: '/Question/ProductQuestionsList?productId=@ViewBag.ProductId.ToString()&pageId=' + pageId + '&type=' + type + '&filter=' + filter,
             }).done(function (res) {
 
 
-                $("#tableComments").html(res);
+                $("#tableQuestions").html(res);
             });
         }
 

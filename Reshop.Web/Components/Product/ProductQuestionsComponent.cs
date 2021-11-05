@@ -16,13 +16,13 @@ namespace Reshop.Web.Components.Product
         }
 
         // type = news,buyers,best
-        public async Task<IViewComponentResult> InvokeAsync(int productId, int pageId = 1, string type = "news")
+        public async Task<IViewComponentResult> InvokeAsync(int productId, int pageId = 1, string type = "news", string filter = null)
         {
-            var questions = await _questionService.GetProductQuestionsWithPaginationAsync(productId, pageId, 25);
+            var questions = await _questionService.GetProductQuestionsWithPaginationAsync(productId, pageId, 25, type, filter);
 
             ViewBag.SelectedType = type;
             ViewBag.ProductId = productId;
-
+            ViewBag.SearchText = filter;
 
             IEnumerable<int> userQuestionLikes = new List<int>();
             IEnumerable<int> reportedQuestions = new List<int>();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
@@ -27,11 +28,15 @@ namespace Reshop.Web.Controllers.Question
             _questionService = questionService;
         }
 
+        [AllowAnonymous]
+        public IActionResult ProductQuestionsList(int productId, int pageId, string type, string filter)
+        {
+            return ViewComponent("ProductQuestionsComponent", new { productId, pageId, type, filter });
+        }
 
 
 
         #region add question
-
 
         [HttpPost]
         public async Task<IActionResult> AddQuestion(AddQuestionViewModel model)

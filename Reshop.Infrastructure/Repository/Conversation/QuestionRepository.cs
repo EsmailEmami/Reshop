@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.Internal;
 
 namespace Reshop.Infrastructure.Repository.Conversation
 {
@@ -64,7 +65,7 @@ namespace Reshop.Infrastructure.Repository.Conversation
                 .Where(c => c.ProductId == productId)
                 .CountAsync();
 
-        public async Task<IEnumerable<ProductQuestionsForShow>> GetProductQuestionsWithPaginationAsync(int productId, int skip = 1, int take = 30, string type = "news")
+        public async Task<IEnumerable<ProductQuestionsForShow>> GetProductQuestionsWithPaginationAsync(int productId, int skip = 1, int take = 30, string type = "news",string filter = "")
         {
             IQueryable<Question> questions = _context.Questions
                 .Where(c => c.ProductId == productId && !c.IsDelete);
@@ -76,6 +77,11 @@ namespace Reshop.Infrastructure.Repository.Conversation
                 _ => questions.OrderByDescending(c => c.QuestionDate)
             };
 
+            if (!string.IsNullOrEmpty(filter))
+            {
+                questions = questions.Where(c => c.QuestionText.Contains(filter) || c.QuestionTitle.Contains(filter));
+            }
+
             questions = questions.Skip(skip).Take(take);
 
             return await questions.Select(c => new ProductQuestionsForShow()
@@ -85,6 +91,7 @@ namespace Reshop.Infrastructure.Repository.Conversation
                 Image = c.User.UserAvatar,
                 QuestionDate = c.QuestionDate,
                 QuestionTitle = c.QuestionTitle,
+                QuestionText = c.QuestionText,
                 Likes = c.QuestionLikes.Count,
                 Answers = c.QuestionAnswers.Select(a => new QuestionAnswersForShow()
                 {

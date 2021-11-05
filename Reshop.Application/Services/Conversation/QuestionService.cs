@@ -68,7 +68,7 @@ namespace Reshop.Application.Services.Conversation
         public async Task<bool> IsUserQuestionAsync(string userId, int questionId) =>
             await _questionRepository.IsUserQuestionAsync(userId, questionId);
 
-        public async Task<Tuple<IEnumerable<ProductQuestionsForShow>, int, int>> GetProductQuestionsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news")
+        public async Task<Tuple<IEnumerable<ProductQuestionsForShow>, int, int>> GetProductQuestionsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news", string filter = "")
         {
             var questionsCount = await _questionRepository.GetQuestionsCountOfProductAsync(productId);
 
@@ -76,7 +76,7 @@ namespace Reshop.Application.Services.Conversation
 
             int totalPages = (int)Math.Ceiling(1.0 * questionsCount / take);
 
-            var questions = await _questionRepository.GetProductQuestionsWithPaginationAsync(productId, skip, take, type.FixedText());
+            var questions = await _questionRepository.GetProductQuestionsWithPaginationAsync(productId, skip, take, type.FixedText(), filter);
 
             return new Tuple<IEnumerable<ProductQuestionsForShow>, int, int>(questions, pageId, totalPages);
         }
@@ -139,7 +139,7 @@ namespace Reshop.Application.Services.Conversation
                 {
                     var questionLike = new QuestionLike()
                     {
-                        UserId =  userId,
+                        UserId = userId,
                         QuestionId = questionId
                     };
 

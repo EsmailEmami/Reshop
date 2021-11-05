@@ -17,7 +17,7 @@ namespace Reshop.Domain.Interfaces.Conversation
         Task<EditQuestionViewModel> GetQuestionDataForEditAsync(int questionId);
         Task<bool> IsQuestionRemovableAsync(int questionId);
         Task<int> GetQuestionsCountOfProductAsync(int productId);
-        Task<IEnumerable<ProductQuestionsForShow>> GetProductQuestionsWithPaginationAsync(int productId, int skip = 1, int take = 30, string type = "news");
+        Task<IEnumerable<ProductQuestionsForShow>> GetProductQuestionsWithPaginationAsync(int productId, int skip = 1, int take = 30, string type = "news", string filter = "");
 
         Task<bool> IsUserQuestionAsync(string userId, int questionId);
 

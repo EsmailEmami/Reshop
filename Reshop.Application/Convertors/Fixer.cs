@@ -8,7 +8,14 @@ namespace Reshop.Application.Convertors
     {
         public static string FixedText(this string text)
         {
-            return text.Trim().ToLower();
+            try
+            {
+                return text.Trim().ToLower();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static string NumSplitter(this decimal value)
