@@ -39,7 +39,7 @@ namespace Reshop.Web.Controllers.Comment
         public async Task<IActionResult> AddComment(NewCommentViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "_NewComment", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "Comment/_NewComment", model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -65,7 +65,8 @@ namespace Reshop.Web.Controllers.Comment
                 ConstructionQuality = model.ConstructionQuality,
                 FeaturesAndCapabilities = model.FeaturesAndCapabilities,
                 OverallScore = average,
-                IsDelete = false
+                IsDelete = false,
+                DeleteDescription = "NULL"
             };
 
             if (!string.IsNullOrEmpty(isBought))
@@ -82,7 +83,7 @@ namespace Reshop.Web.Controllers.Comment
             else
             {
                 ModelState.AddModelError("", "متاسفانه هنگام افزودن بازخورد شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "_NewComment", model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "Comment/_NewComment", model) });
             }
         }
 

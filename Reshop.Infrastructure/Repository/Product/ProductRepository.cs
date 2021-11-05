@@ -376,7 +376,7 @@ namespace Reshop.Infrastructure.Repository.Product
             }
 
             return await products.OrderByDescending(c => c.Price)
-                .Select(c => c.Price).FirstAsync();
+                .Select(c => c.Price).FirstOrDefaultAsync();
         }
 
         public async Task<decimal> GetMaxPriceOfChildCategoryProductsAsync(int childCategoryId, string filter = null, List<int> brands = null)
@@ -409,7 +409,7 @@ namespace Reshop.Infrastructure.Repository.Product
             }
 
             return await products.OrderByDescending(c => c.Price)
-                            .Select(c => c.Price).FirstAsync();
+                            .Select(c => c.Price).FirstOrDefaultAsync();
         }
 
         public async Task<decimal> GetMaxPriceOfBrandProductsAsync(int brandId, string filter = null, List<int> officialBrandProducts = null)

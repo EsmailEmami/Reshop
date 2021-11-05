@@ -94,7 +94,10 @@
             }
             else
             {
-                <li><a href="/">@item.CategoryTitle</a></li>
+                <li><a asp-controller="Product"
+                       asp-action="ProductsOfCategory"
+                       asp-route-categoryId="@item.CategoryId"
+                       asp-route-categoryName="@item.CategoryTitle.Replace(" ","-")">@item.CategoryTitle</a></li>
             }
         }
 

@@ -1,0 +1,48 @@
+﻿@model AddReportConversationViewModel
+
+
+@inject IAntiforgery antiforgery
+@{
+    Layout = null;
+    var tokenSet = antiforgery.GetAndStoreTokens(Context);
+}
+
+
+<form asp-action="ReportQuestion" method="post" onsubmit="return ReportQuestion(this,'@tokenSet.FormFieldName','@tokenSet.RequestToken')">
+    <div class="row">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="col-12">
+            <div class="form-field">
+                <textarea asp-for="Description"></textarea>
+                <label><i class="far fa-list-alt"></i> توضیحات (اختیاری)</label>
+            </div>
+        </div>
+
+
+        <div class="col-12">
+            <select asp-for="SelectedType">
+                <option>عنوان گزارش</option>
+                @foreach (var item in Model.Types)
+                {
+                    @:<option value="@item.Item1" @(Model.SelectedType == item.Item1 ? "selected" : "")>@item.Item2</option>
+                }
+            </select>
+        </div>
+
+
+        <div class="form-field">
+            <button type="submit" class="btn btn-success">
+                ثبت
+            </button>
+        </div>
+
+    </div>
+</form>
+
+
+<script>
+    inputJs();
+    callSelect();
+</script>

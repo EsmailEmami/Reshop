@@ -216,8 +216,9 @@ function SubmitFormData(form) {
                         ShowToast('success', 'عملیات با موفقیت انجام شد.');
                     }
 
-                } else
+                } else {
                     $("#modal .modal-body").html(res.html);
+                }
             }
         });
         //to prevent default form submit event
@@ -253,6 +254,40 @@ function AddComment(form) {
 
 
                 $("#newComment").html(res.html);
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+function AddQuestion(form) {
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.isValid) {
+                    if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
+                        var loc = window.location.href;
+                        ShowToast('success', 'پرسش شما با موفقیت ثبت شد.', loc);
+                    } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
+                        ShowToast('success', 'پرسش شما با موفقیت ثبت شد.', res.returnUrl);
+                    } else {
+                        ShowToast('success', 'پرسش شما با موفقیت ثبت شد.');
+                    }
+                } else {
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                    $("#newQuestion").html(res.html);
+                }
             }
         });
         //to prevent default form submit event
@@ -329,6 +364,121 @@ function ReportComment(form, name, token) {
     }
 }
 
+function ReportQuestion(form, name, token) {
+    var questionId = form[0].defaultValue;
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.isValid) {
+                    // modal body 
+                    $("#modal .modal-body").html('');
+                    // title of modal
+                    $(".modal-header-custom .header-title").html('');
+                    document.getElementById('modal').style.display = 'none';
+
+                    ShowToast('success', 'گزارش شما با موفقیت ثبت شد');
+
+                    var reportBtn = 'report-question-btn' + questionId;
+
+                    var tag = document.createElement('form');
+
+                    tag.setAttribute('id', reportBtn);
+                    tag.setAttribute('action', '/Question/RemoveReportQuestion');
+                    tag.setAttribute('method', 'post');
+                    tag.setAttribute('onsubmit', 'return RemoveReportQuestion(this)');
+
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'hidden');
+                    input.setAttribute('name', 'questionId');
+                    input.value = questionId;
+
+                    var button = document.createElement('button');
+                    button.setAttribute('type', 'submit');
+                    button.classList.add('badge');
+                    button.innerHTML = "گزارش شده";
+
+                    var validation = document.createElement('input');
+                    validation.setAttribute('name', name);
+                    validation.setAttribute('type', 'hidden');
+                    validation.value = token;
+
+
+                    tag.appendChild(input);
+                    tag.appendChild(button);
+                    tag.appendChild(validation);
+
+
+                    document.getElementById(reportBtn).replaceWith(tag);
+
+                } else
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                $("#modal .modal-body").html(res.html);
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+function RemoveReportQuestion(form) {
+    var questionId = form[0].defaultValue;
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                var reportBtn = 'report-question-btn' + questionId;
+
+                if (res.isValid) {
+                    ShowToast('success', 'گزارش شما با موفقیت حذف شد.');
+
+                    var tag = document.createElement('a');
+
+                    tag.setAttribute('id', reportBtn);
+                    tag.innerHTML = "گزارش";
+                    tag.classList.add('badge');
+
+                    var origin = window.location.origin;
+
+                    var url = origin + '/Question/ReportQuestion?questionId=' + questionId;
+
+                    tag.onclick = function () {
+                        ShowModal(url, 'گزارش بازخورد');
+                    }
+
+
+
+                    document.getElementById(reportBtn).replaceWith(tag);
+
+                } else {
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                    ShowToast(res.errorType, res.errorText);
+                }
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
 function RemoveReportComment(form) {
     var commentId = form[0].defaultValue;
     try {
@@ -346,19 +496,19 @@ function RemoveReportComment(form) {
 
                     var tag = document.createElement('a');
 
-                    tag.setAttribute('id',reportBtn);
+                    tag.setAttribute('id', reportBtn);
                     tag.innerHTML = "گزارش";
                     tag.classList.add('badge');
 
                     var origin = window.location.origin;
 
-                    var url = origin + '/Product/ReportComment?commentId=' + commentId;
+                    var url = origin + '/Comment/ReportComment?commentId=' + commentId;
 
                     tag.onclick = function () {
                         ShowModal(url, 'گزارش بازخورد');
                     }
 
-                
+
 
                     document.getElementById(reportBtn).replaceWith(tag);
 
@@ -446,6 +596,238 @@ function LikeOrDisLikeComment(form) {
 
                                 spanDislike.innerHTML = dislikeCount + 1;
                                 spanLike.innerHTML = likeCount - 1;
+                                break;
+                            }
+                    }
+
+                    ShowToast(res.errorType, res.errorText);
+
+                } else {
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                    ShowToast(res.errorType, res.errorText);
+                }
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+function LikeOrDisLikeQuestionAnswer(form) {
+    var questionAnswerId = form[0].defaultValue;
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+
+                if (res.isValid) {
+                    var btnId = 'like-question-answer-btn' + questionAnswerId;
+
+                    debugger;
+
+                    var btn = document.getElementById(btnId);
+
+                    var spanLike = btn.querySelector('span');
+                    var likeCount = parseInt(spanLike.innerHTML);
+
+                    switch (res.where) {
+                        case "Added":
+                            {
+                                btn.classList.add('active');
+                                spanLike.innerHTML = likeCount + 1;
+
+                                break;
+                            }
+                        case "Deleted":
+                            {
+                                btn.classList.remove('active');
+                                spanLike.innerHTML = likeCount - 1;
+
+                                break;
+                            }
+                    }
+
+                    ShowToast(res.errorType, res.errorText);
+
+                } else {
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                    ShowToast(res.errorType, res.errorText);
+                }
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+function ReportQuestionAnswer(form, name, token) {
+    var questionAnswerId = form[0].defaultValue;
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.isValid) {
+                    // modal body 
+                    $("#modal .modal-body").html('');
+                    // title of modal
+                    $(".modal-header-custom .header-title").html('');
+                    document.getElementById('modal').style.display = 'none';
+
+                    ShowToast('success', 'گزارش شما با موفقیت ثبت شد');
+
+                    var reportBtn = 'report-question-answer-btn' + questionAnswerId;
+
+                    var tag = document.createElement('form');
+
+                    tag.setAttribute('id', reportBtn);
+                    tag.setAttribute('action', '/Question/RemoveReportQuestionAnswer');
+                    tag.setAttribute('method', 'post');
+                    tag.setAttribute('onsubmit', 'return RemoveReportQuestionAnswer(this)');
+
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'hidden');
+                    input.setAttribute('name', 'questionAnswerId');
+                    input.value = questionAnswerId;
+
+                    var button = document.createElement('button');
+                    button.setAttribute('type', 'submit');
+                    button.classList.add('report-answer','active');
+
+                    var icon = document.createElement('i');
+                    icon.classList.add('far','fa-flag');
+
+                    button.appendChild(icon);
+
+                    var validation = document.createElement('input');
+                    validation.setAttribute('name', name);
+                    validation.setAttribute('type', 'hidden');
+                    validation.value = token;
+
+
+                    tag.appendChild(input);
+                    tag.appendChild(button);
+                    tag.appendChild(validation);
+
+
+                    document.getElementById(reportBtn).replaceWith(tag);
+
+                } else
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                $("#modal .modal-body").html(res.html);
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+function RemoveReportQuestionAnswer(form) {
+    var questionAnswerId = form[0].defaultValue;
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                var reportBtn = 'report-question-answer-btn' + questionAnswerId;
+
+                if (res.isValid) {
+                    ShowToast('success', 'گزارش شما با موفقیت حذف شد.');
+
+                    var tag = document.createElement('a');
+
+                    tag.setAttribute('id', reportBtn);
+                    tag.classList.add('report-answer');
+
+                    var icon = document.createElement('i');
+                    icon.classList.add('far', 'fa-flag');
+
+                    tag.appendChild(icon);
+
+
+                    var origin = window.location.origin;
+
+                    var url = origin + '/Question/RemoveReportQuestionAnswer?questionAnswerId=' + questionAnswerId;
+
+                    tag.onclick = function () {
+                        ShowModal(url, 'گزارش پاسخ پرسش');
+                    }
+
+
+                    document.getElementById(reportBtn).replaceWith(tag);
+                } else {
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
+
+                    ShowToast(res.errorType, res.errorText);
+                }
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+function LikeOrDisLikeQuestion(form) {
+    var questionId = form[0].defaultValue;
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+
+                if (res.isValid) {
+                    var btnId = 'like-question-btn' + questionId;
+
+                    var btn = document.getElementById(btnId);
+
+                    var spanLike = btn.querySelector('span');
+                    var likeCount = parseInt(spanLike.innerHTML);
+
+                    switch (res.where) {
+                        case "Added":
+                            {
+                                btn.classList.add('active');
+                                spanLike.innerHTML = likeCount + 1;
+
+                                break;
+                            }
+                        case "Deleted":
+                            {
+                                btn.classList.remove('active');
+                                spanLike.innerHTML = likeCount - 1;
+
                                 break;
                             }
                     }
@@ -748,7 +1130,7 @@ function GetChildCategoriesOfBrand(brandId) {
         $.ajax({
             type: "GET",
             url: "/api/Product/GetChildCategoriesOfBrand/" + brandId,
-        }).done(function(res) {
+        }).done(function (res) {
 
             // make empty the select
             select.querySelectorAll('*').forEach(n => n.remove());
@@ -758,7 +1140,7 @@ function GetChildCategoriesOfBrand(brandId) {
 
 
             $.each(res,
-                function(index, value) {
+                function (index, value) {
 
                     addSelectList(select, selectDropDownList, value.item1, value.item2);
                 });

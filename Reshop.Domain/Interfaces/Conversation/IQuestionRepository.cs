@@ -16,11 +16,12 @@ namespace Reshop.Domain.Interfaces.Conversation
         Task<Question> GetQuestionByIdAsync(int questionId);
         Task<EditQuestionViewModel> GetQuestionDataForEditAsync(int questionId);
         Task<bool> IsQuestionRemovableAsync(int questionId);
-        Task<int> GetQuestionsCountOfProductWithTypeAsync(int productId);
-        IEnumerable<ProductQuestionsForShow> GetProductQuestionsWithPagination(int productId, int skip = 1, int take = 30, string type = "news");
+        Task<int> GetQuestionsCountOfProductAsync(int productId);
+        Task<IEnumerable<ProductQuestionsForShow>> GetProductQuestionsWithPaginationAsync(int productId, int skip = 1, int take = 30, string type = "news");
 
         Task<bool> IsUserQuestionAsync(string userId, int questionId);
 
+        Task<QuestionLike> GetQuestionLikeAsync(string userId, int questionId);
         Task AddQuestionLikeAsync(QuestionLike questionLike);
         void RemoveQuestionLike(QuestionLike questionLike);
         Task<bool> IsQuestionLikeExistAsync(string userId, int questionId);
@@ -31,6 +32,14 @@ namespace Reshop.Domain.Interfaces.Conversation
         void RemoveReportQuestion(ReportQuestion reportQuestion);
 
         IEnumerable<ReportQuestionType> GetReportQuestionTypes();
+
+
+        Task<IEnumerable<int>> GetUserQuestionLikesOfProductAsync(int productId, string userId);
+        Task<IEnumerable<int>> GetUserQuestionReportsOfProductAsync(int productId, string userId);
+
+        Task<IEnumerable<int>> GetUserQuestionAnswerLikesOfProductAsync(int productId, string userId);
+        Task<IEnumerable<int>> GetUserQuestionAnswerReportsOfProductAsync(int productId, string userId);
+
 
         // questionAnswer
         Task AddQuestionAnswerAsync(QuestionAnswer questionAnswer);

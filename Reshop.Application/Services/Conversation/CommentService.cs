@@ -49,10 +49,11 @@ namespace Reshop.Application.Services.Conversation
 
                 return ResultTypes.Successful;
             }
-            catch
-            {
+            catch 
+            { 
                 return ResultTypes.Failed;
             }
+
         }
 
         public IEnumerable<ShowQuestionOrCommentViewModel> GetUserCommentsForShow(string userId) =>

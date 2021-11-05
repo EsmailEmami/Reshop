@@ -1,0 +1,36 @@
+﻿@model AddQuestionViewModel
+
+<form asp-controller="Question" asp-action="AddQuestion" method="post" onsubmit="return AddQuestion(this)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <input type="hidden" asp-for="ProductId" />
+
+
+        <div class="col-sm-12">
+            <div class="form-field">
+                <input asp-for="QuestionTitle">
+                <label><i class="far fa-list-alt"></i> عنوان پرسش</label>
+                <span asp-validation-for="QuestionTitle" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+
+            <div class="form-field">
+                <textarea asp-for="QuestionText" style="min-height: 148px"></textarea>
+                <label><i class="far fa-list-alt"></i> متن پرسش</label>
+                <span asp-validation-for="QuestionText" class="text-danger"></span>
+            </div>
+        </div>
+
+
+        <div class="form-field">
+            <button type="submit" class="btn btn-success">ثبت نظر</button>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    inputJs();
+</script>

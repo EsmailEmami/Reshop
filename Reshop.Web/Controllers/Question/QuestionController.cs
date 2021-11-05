@@ -27,52 +27,42 @@ namespace Reshop.Web.Controllers.Question
             _questionService = questionService;
         }
 
+
+
+
         #region add question
 
-        [HttpGet]
-        public IActionResult AddQuestion(int productId)
-        {
-            if (productId == 0)
-                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
-
-
-            var model = new AddQuestionViewModel()
-            {
-                ProductId = productId,
-            };
-
-            return View(model);
-        }
 
         [HttpPost]
         public async Task<IActionResult> AddQuestion(AddQuestionViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "Question/_NewQuestion", model) });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var newQuestion = new Domain.Entities.Question.Question()
             {
                 UserId = userId,
+                ProductId = model.ProductId,
                 QuestionDate = DateTime.Now,
                 IsDelete = false,
+                DeleteDescription = "NULL",
                 QuestionTitle = model.QuestionTitle,
                 QuestionText = model.QuestionText,
-                ProductId = model.ProductId
             };
 
             var res = await _questionService.AddQuestionAsync(newQuestion);
 
             if (res == ResultTypes.Successful)
             {
-                return Json(new { isValid = true });
+                return Json(new { isValid = true, returnUrl = "current" });
             }
             else
             {
                 ModelState.AddModelError("", "متاسفانه هنگام ثبت سوال شما به مشکلی غیر منتظره برخوردیم! لطفا دوباره تلاش کنید.");
 
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "Question/_NewQuestion", model) });
             }
         }
 
@@ -290,14 +280,7 @@ namespace Reshop.Web.Controllers.Question
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
-            var like = new QuestionLike()
-            {
-                QuestionId = questionId,
-                UserId = userId
-            };
-
-            var res = await _questionService.LikeQuestionAsync(like);
+            var res = await _questionService.LikeQuestionAsync(userId, questionId);
 
             return res switch
             {
@@ -366,7 +349,7 @@ namespace Reshop.Web.Controllers.Question
 
             if (res == ResultTypes.Successful)
             {
-                return Json(new { isValid = true });
+                return Json(new { isValid = true, returnUrl = "current" });
             }
             else
             {

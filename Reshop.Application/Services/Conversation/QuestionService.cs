@@ -1,9 +1,11 @@
-﻿using Reshop.Application.Enums;
+﻿using Reshop.Application.Convertors;
+using Reshop.Application.Enums;
 using Reshop.Application.Enums.User;
 using Reshop.Application.Interfaces.Conversation;
 using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.Entities.Question;
 using Reshop.Domain.Interfaces.Conversation;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -66,6 +68,19 @@ namespace Reshop.Application.Services.Conversation
         public async Task<bool> IsUserQuestionAsync(string userId, int questionId) =>
             await _questionRepository.IsUserQuestionAsync(userId, questionId);
 
+        public async Task<Tuple<IEnumerable<ProductQuestionsForShow>, int, int>> GetProductQuestionsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news")
+        {
+            var questionsCount = await _questionRepository.GetQuestionsCountOfProductAsync(productId);
+
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int totalPages = (int)Math.Ceiling(1.0 * questionsCount / take);
+
+            var questions = await _questionRepository.GetProductQuestionsWithPaginationAsync(productId, skip, take, type.FixedText());
+
+            return new Tuple<IEnumerable<ProductQuestionsForShow>, int, int>(questions, pageId, totalPages);
+        }
+
         public async Task<ResultTypes> DeleteQuestionAsync(int questionId, string description)
         {
             try
@@ -103,12 +118,17 @@ namespace Reshop.Application.Services.Conversation
             }
         }
 
-        public async Task<QuestionAndAnswerResultTypes> LikeQuestionAsync(QuestionLike questionLike)
+        public async Task<QuestionAndAnswerResultTypes> LikeQuestionAsync(string userId, int questionId)
         {
             try
             {
-                if (await _questionRepository.IsQuestionLikeExistAsync(questionLike.UserId, questionLike.QuestionId))
+                if (await _questionRepository.IsQuestionLikeExistAsync(userId, questionId))
                 {
+                    var questionLike = await _questionRepository.GetQuestionLikeAsync(userId, questionId);
+
+                    if (questionLike == null)
+                        return QuestionAndAnswerResultTypes.Failed;
+
                     _questionRepository.RemoveQuestionLike(questionLike);
 
                     await _questionRepository.SaveChangesAsync();
@@ -117,6 +137,12 @@ namespace Reshop.Application.Services.Conversation
                 }
                 else
                 {
+                    var questionLike = new QuestionLike()
+                    {
+                        UserId =  userId,
+                        QuestionId = questionId
+                    };
+
                     await _questionRepository.AddQuestionLikeAsync(questionLike);
 
                     await _questionRepository.SaveChangesAsync();
@@ -172,6 +198,18 @@ namespace Reshop.Application.Services.Conversation
 
         public IEnumerable<ReportQuestionType> GetReportQuestionTypes() =>
             _questionRepository.GetReportQuestionTypes();
+
+        public async Task<IEnumerable<int>> GetUserQuestionLikesOfProductAsync(int productId, string userId) =>
+            await _questionRepository.GetUserQuestionLikesOfProductAsync(productId, userId);
+
+        public async Task<IEnumerable<int>> GetUserQuestionReportsOfProductAsync(int productId, string userId) =>
+            await _questionRepository.GetUserQuestionReportsOfProductAsync(productId, userId);
+
+        public async Task<IEnumerable<int>> GetUserQuestionAnswerLikesOfProductAsync(int productId, string userId) =>
+            await _questionRepository.GetUserQuestionAnswerLikesOfProductAsync(productId, userId);
+
+        public async Task<IEnumerable<int>> GetUserQuestionAnswerReportsOfProductAsync(int productId, string userId) =>
+            await _questionRepository.GetUserQuestionAnswerReportsOfProductAsync(productId, userId);
 
         public async Task<ResultTypes> AddQuestionAnswerAsync(QuestionAnswer questionAnswer)
         {

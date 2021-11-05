@@ -2,6 +2,7 @@
 using Reshop.Application.Enums.User;
 using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.Entities.Question;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,13 +18,24 @@ namespace Reshop.Application.Interfaces.Conversation
         Task<bool> IsQuestionRemovableAsync(int questionId);
         Task<bool> IsUserQuestionAsync(string userId, int questionId);
 
+        Task<Tuple<IEnumerable<ProductQuestionsForShow>, int, int>> GetProductQuestionsWithPaginationAsync(int productId, int pageId = 1, int take = 30, string type = "news");
+
         Task<ResultTypes> DeleteQuestionAsync(int questionId, string description);
 
-        Task<QuestionAndAnswerResultTypes> LikeQuestionAsync(QuestionLike questionLike);
+        Task<QuestionAndAnswerResultTypes> LikeQuestionAsync(string userId, int questionId);
 
         Task<ResultTypes> AddReportQuestionAsync(ReportQuestion reportQuestion);
         Task<ResultTypes> RemoveReportQuestionAsync(string userId, int questionId);
         IEnumerable<ReportQuestionType> GetReportQuestionTypes();
+
+
+        Task<IEnumerable<int>> GetUserQuestionLikesOfProductAsync(int productId, string userId);
+        Task<IEnumerable<int>> GetUserQuestionReportsOfProductAsync(int productId, string userId);
+
+        Task<IEnumerable<int>> GetUserQuestionAnswerLikesOfProductAsync(int productId, string userId);
+        Task<IEnumerable<int>> GetUserQuestionAnswerReportsOfProductAsync(int productId, string userId);
+
+
 
         // questionAnswer
         Task<ResultTypes> AddQuestionAnswerAsync(QuestionAnswer questionAnswer);

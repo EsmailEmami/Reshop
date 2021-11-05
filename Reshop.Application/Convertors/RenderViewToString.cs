@@ -37,8 +37,6 @@ namespace Reshop.Application.Convertors
         {
             string viewName = controller.ControllerContext.ActionDescriptor.ActionName;
 
-
-
             controller.ViewData.Model = model;
             using var sw = new StringWriter();
             IViewEngine viewEngine = controller.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;

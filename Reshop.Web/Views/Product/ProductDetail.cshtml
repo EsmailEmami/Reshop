@@ -240,7 +240,7 @@
             <div id="accordiong-section">
 
                 <h5>نقد و بررسی:</h5>
-                <p >
+                <p>
                     @Model.Product.Description
                 </p>
 
@@ -330,9 +330,9 @@
                 <button class="new-comment" type="button" data-toggle="collapse" data-target="#newComment" aria-expanded="false" aria-controls="newComment">
                     بازخورد جدید
                 </button>
-               
+
                 <div class="collapse mt-5 mb-3" id="newComment">
-                    @await Html.PartialAsync("/Comment/_NewComment", new NewCommentViewModel()
+                    @await Html.PartialAsync("Comment/_NewComment", new NewCommentViewModel()
                     {
                    ProductId = Model.Product.ProductId
                     })
@@ -343,6 +343,26 @@
                     @await Component.InvokeAsync("ProductCommentsComponent", new { productId = Model.Product.ProductId })
 
 
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="detail-questions">
+                <h5>پرسش و پاسخ:</h5>
+                <button class="new-question" type="button" data-toggle="collapse" data-target="#newQuestion" aria-expanded="false" aria-controls="newQuestion">
+                    سوال جدید
+                </button>
+
+                <div class="collapse mt-5 mb-3" id="newQuestion">
+                    @await Html.PartialAsync("Question/_NewQuestion", new AddQuestionViewModel()
+                    {
+                        ProductId = Model.Product.ProductId
+                    })
+                </div>
+
+                <div id="tableQuestions">
+                    @await Component.InvokeAsync("ProductQuestionsComponent", new { productId = Model.Product.ProductId })
                 </div>
             </div>
 

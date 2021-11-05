@@ -1,0 +1,250 @@
+﻿@model Tuple<IEnumerable<ProductQuestionsForShow>, int, int>
+@{
+    Layout = null;
+}
+<section class="question-filter">
+
+    <input type="hidden" value="@Model.Item2" id="pageId" />
+    <input type="hidden" id="type" value="@ViewBag.SelectedType.ToString()" />
+
+    <div class="mb-4">
+        @switch (ViewBag.SelectedType.ToString())
+        {
+            case "news":
+                {
+                    <div class="item">
+                        <input type="radio" name="filterQuestion" value="news" id="news-radio" checked onclick="changeType(this.value)">
+                        <label for="news-radio">جدید ترین ها</label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="filterQuestion" value="best" id="best-radio" onclick="changeType(this.value)">
+                        <label for="best-radio">مفید ترین</label>
+                    </div>
+                    break;
+                }
+            case "best":
+                {
+                    <div class="item">
+                        <input type="radio" name="filterQuestion" value="news" id="news-radio" onclick="changeType(this.value)">
+                        <label for="news-radio">جدید ترین ها</label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" name="filterQuestion" value="best" id="best-radio" checked onclick="changeType(this.value)">
+                        <label for="best-radio">مفید ترین</label>
+                    </div>
+                    break;
+                }
+        }
+    </div>
+
+
+    <div class="search-form">
+        <div class="form">
+            <input type="text" id="search" placeholder="سوال مورد نظر...">
+            <button onclick="submitForm()"><i class="far fa-search"></i></button>
+        </div>
+    </div>
+
+
+
+</section>
+
+<div class="row mt-4">
+    @{
+        var userQuestionLikes = ViewBag.UserQuestionLikes as List<int>;
+        var reportedQuestions = ViewBag.ReportedQuestions as List<int>;
+        var userQuestionAnswerLikes = ViewBag.UserQuestionAnswerLikes as List<int>;
+        var reportedQuestionAnswers = ViewBag.ReportedQuestionAnswers as List<int>;
+    }
+
+
+
+
+    @if (!Model.Item1.Any())
+    {
+        <div class="alert alert-warning text-muted m-0">
+            سوالی یافت نشد ...
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model.Item1)
+        {
+            <div class="col-sm-12">
+                <div class="question-area">
+
+                    <div class="ur-cm-img">
+                        <img src="/images/UserImages/@item.Image" alt="@item.FullName">
+                    </div>
+
+                    @{
+                        string reportQuestionBtn = "report-question-btn" + item.QuestionId;
+                        string likeQuestionBtn = "like-question-btn" + item.QuestionId;
+                    }
+
+                    <div class="question-header">
+                        <h4>@item.FullName</h4>
+                        <span>@item.QuestionDate.ToShamsiDate()</span>
+
+
+                        @if (reportedQuestions.Any(c => c == item.QuestionId))
+                        {
+                            <form id="@reportQuestionBtn" asp-controller="Question" asp-action="RemoveReportQuestion" onsubmit="return RemoveReportComment(this)">
+                                <input type="hidden" name="questionId" value="@item.QuestionId" />
+                                <button type="submit" class="badge">گزارش شده</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a id="@reportQuestionBtn" onclick="ShowModal('@Url.Action("ReportQuestion", "Question" ,new {questionId = item.QuestionId}, Context.Request.Scheme)', 'گزارش پرسش')" class="badge">گزارش</a>
+                        }
+
+                    </div>
+                    <div class="question-text">
+                        <h4 class="question-title">
+                            <i class="far fa-question"></i> @item.QuestionTitle
+                        </h4>
+
+                        <div class="question-asked">
+                            <span>سوال: </span><span>
+                                @item.QuestionText
+                            </span>
+                        </div>
+
+
+                        @foreach (var answer in item.Answers)
+                        {
+                            <div class="question-answer">
+                                <p>
+                                    <i class="fas fa-reply"></i> @answer.AnswerText
+                                </p>
+                                <div class="answer-footer">
+                                    @{
+                                        string reportQuestionAnswerBtn = "report-question-answer-btn" + answer.QuestionAnswerId;
+                                        string likeQuestionAnswerBtn = "like-question-answer-btn" + answer.QuestionAnswerId;
+                                    }
+
+                                    @if (reportedQuestionAnswers.Any(c => c == answer.QuestionAnswerId))
+                                    {
+                                        <form id="@reportQuestionAnswerBtn" asp-controller="Question" asp-action="RemoveReportQuestionAnswer"method="post"  onsubmit="return RemoveReportQuestionAnswer(this)">
+                                            <input type="hidden" name="questionAnswerId" value="@answer.QuestionAnswerId" />
+                                            <button  type="submit" class="report-answer active">
+                                                <i class="far fa-flag "></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a id="@reportQuestionAnswerBtn" onclick="ShowModal('@Url.Action("ReportQuestionAnswer", "Question" ,new {questionAnswerId = answer.QuestionAnswerId}, Context.Request.Scheme)', 'گزارش جواب پرسش')" class="report-answer"><i class="far fa-flag"></i></a>
+                                    }
+
+                                    @if (userQuestionAnswerLikes != null && userQuestionAnswerLikes.Any(c => c == answer.QuestionAnswerId))
+                                    {
+                                        <form asp-controller="Question" asp-action="LikeQuestionAnswer" onsubmit="return LikeOrDisLikeQuestionAnswer(this)">
+                                            <input type="hidden" name="questionAnswerId" value="@answer.QuestionAnswerId">
+                                            <button id="@likeQuestionAnswerBtn" type="submit" class="question-answer-feed-back active">
+                                                <i class="fal fa-thumbs-up"></i>
+                                                <span>@answer.Likes</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-controller="Question" asp-action="LikeQuestionAnswer" onsubmit="return LikeOrDisLikeQuestionAnswer(this)">
+                                            <input type="hidden" name="questionAnswerId" value="@answer.QuestionAnswerId">
+                                            <button id="@likeQuestionAnswerBtn" type="submit" class="question-answer-feed-back">
+                                                <i class="fal fa-thumbs-up"></i>
+                                                <span>@answer.Likes</span>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="question-footer">
+                        
+                        <a onclick="ShowModal('@Url.Action("AddQuestionAnswer", "Question" ,new {questionId = item.QuestionId}, Context.Request.Scheme)', 'پاسخ پرسش')" class="report-answer">پاسخ این پرسش</a>
+
+                        
+                        
+
+                        @if (userQuestionLikes != null && userQuestionLikes.Any(c => c == item.QuestionId))
+                        {
+                            <form asp-controller="Question" asp-action="LikeQuestion" onsubmit="return LikeOrDisLikeQuestion(this)">
+                                <input type="hidden" name="questionId" value="@item.QuestionId">
+                                <button id="@likeQuestionBtn" type="submit" class="question-feed-back active">
+                                    <span>@item.Likes</span>
+                                    <i class="fal fa-thumbs-up "></i>
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Question" asp-action="LikeQuestion" onsubmit="return LikeOrDisLikeQuestion(this)">
+                                <input type="hidden" name="questionId" value="@item.QuestionId">
+                                <button id="@likeQuestionBtn" type="submit" class="question-feed-back">
+                                    <span>@item.Likes</span>
+                                    <i class="fal fa-thumbs-up "></i>
+                                </button>
+                            </form>
+                        }
+                        
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>
+
+@if (Model.Item3 > 1)
+{
+    <ul class="pagination-custom">
+        <li class="@(Model.Item2<=1?"disabled":"")" onclick="pagination('@(Model.Item2 - 1)')">
+            <i class="far fa-angle-right"></i>
+        </li>
+
+        @for (var i = 1; i <= Model.Item3; i++)
+        {
+            <li class="@(Model.Item2 == i? "active":"")" onclick="pagination('@i')">
+                @i
+            </li>
+        }
+
+        <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="pagination('@(Model.Item2+1)')">
+            <i class="far fa-angle-left"></i>
+        </li>
+
+    </ul>
+}
+
+<script>
+    function pagination(pageId) {
+        $('#pageId').val(pageId);
+        changeList();
+    }
+
+    function changeType(inputValue) {
+        $('#type').val(inputValue);
+        changeList();
+    }
+
+    function changeList() {
+        let pageId = $('#pageId').val();
+        let type = $('#type').val();
+
+
+        $.ajax({
+            type: 'GET',
+                url: '/Comment/ProductCommentsList?productId=@ViewBag.ProductId.ToString()&pageId=' + pageId + '&type='+ type,
+            }).done(function (res) {
+
+
+                $("#tableComments").html(res);
+            });
+        }
+
+</script>

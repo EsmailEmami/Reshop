@@ -23,7 +23,7 @@ namespace Reshop.Domain.Entities.Comment
         public string UserId { get; set; }
 
         [ForeignKey("ShopperProductColor")]
-        public string ShopperProductColorId { get; set; }
+        public string? ShopperProductColorId { get; set; }
 
         [Display(Name = "عنوان متن")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
