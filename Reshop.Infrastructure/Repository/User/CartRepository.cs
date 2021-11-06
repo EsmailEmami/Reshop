@@ -106,6 +106,13 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task<bool> IsOrderExistsAsync(string orderId) =>
             await _context.Orders.AnyAsync(c => c.OrderId == orderId);
 
+        public async Task<bool> IsOpenOrderExistsAsync(string orderId) =>
+            await _context.Orders
+                .AnyAsync(c =>
+                    c.OrderId == orderId && 
+                    !c.IsReceived && 
+                    !c.IsPayed);
+
         public async Task<decimal> GetOrderDiscountAsync(string orderId) =>
             await _context.Orders.Where(c => c.OrderId == orderId)
                 .Select(c => c.OrderDiscount)

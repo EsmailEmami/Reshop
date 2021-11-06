@@ -53,19 +53,20 @@ namespace Reshop.Application.Services.User
         public async Task<Order> GetOrderByIdAsync(string orderId) =>
             await _cartRepository.GetOrderByIdAsync(orderId);
 
-        public async Task<ResultTypes> MakeFinalTheOrder(Order order)
+        public async Task<ResultTypes> MakeFinalTheOrder(string orderId)
         {
+            var order = await _cartRepository.GetOrderByIdAsync(orderId);
 
-            if (order.IsPayed || order.IsReceived || string.IsNullOrEmpty(order.OrderAddressId))
-            {
+            if (order == null)
                 return ResultTypes.Failed;
-            }
 
+            if (order.IsPayed && order.IsReceived)
+                return ResultTypes.Failed;
 
             try
             {
                 // update orderDetails
-                var orderDetails = _cartRepository.GetOrderDetailsOfOrder(order.OrderId);
+                var orderDetails = _cartRepository.GetOrderDetailsOfOrder(orderId);
 
                 await foreach (var orderDetail in orderDetails)
                 {
@@ -78,20 +79,21 @@ namespace Reshop.Application.Services.User
 
                     orderDetail.Price = shopperProductColor.Price;
 
-                    if (lastDiscount.EndDate > DateTime.Now)
+                    if (lastDiscount != null && lastDiscount.EndDate > DateTime.Now)
                     {
-                        order.OrderDiscount = CartCalculator.CalculatePrice(orderDetail.Price, lastDiscount.DiscountPercent, orderDetail.Count);
+                        orderDetail.ProductDiscountPrice = CartCalculator.CalculatePrice(orderDetail.Price, lastDiscount.DiscountPercent, orderDetail.Count);
                     }
 
                     orderDetail.Sum = (orderDetail.Count * orderDetail.Price) - orderDetail.ProductDiscountPrice;
                 }
 
-                await _cartRepository.SaveChangesAsync();
 
                 // update order
                 order.IsPayed = true;
                 order.PayDate = DateTime.Now;
                 order.Sum = _cartRepository.GetOrderDetailsSumOfOrder(order.OrderId);
+
+                await _cartRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
             }
@@ -398,7 +400,7 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<Tuple<string, decimal, bool, string>> GetOpenOrderForPaymentAsync(string userId)
+        public async Task<Tuple<string, decimal, string>> GetOpenOrderForPaymentAsync(string userId)
         {
             var orderId = await _cartRepository.GetUserOpenCartOrderIdAsync(userId);
 
@@ -408,6 +410,9 @@ namespace Reshop.Application.Services.User
             var order = await _cartRepository.GetOrderByIdAsync(orderId);
 
             if (order == null)
+                return null;
+
+            if (string.IsNullOrEmpty(order.OrderAddressId))
                 return null;
 
 
@@ -430,9 +435,7 @@ namespace Reshop.Application.Services.User
                 orderSum += CartCalculator.CalculatePrice(item.ProductPrice, discount, item.ProductsCount);
             }
 
-            bool anyAddress = !string.IsNullOrEmpty(order.OrderAddressId);
-
-            return new Tuple<string, decimal, bool, string>(order.OrderId, orderSum, anyAddress, order.TrackingCode);
+            return new Tuple<string, decimal, string>(order.OrderId, orderSum, order.TrackingCode);
         }
 
         public async Task<Tuple<IEnumerable<OrderForShowInListViewModel>, int, int>> GetUserOrdersForShowInListWithPaginationAsync(string userId, int pageId, int take, string type = "all", string orderBy = "payDate")

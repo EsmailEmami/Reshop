@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Reshop.Application.Convertors;
@@ -67,24 +68,25 @@ namespace Reshop.Web.Controllers
             {
                 string authority = HttpContext.Request.Query["Authority"];
 
-                var order = await _cartService.GetOrderByIdAsync(paymentId);
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (order is null)
-                {
+                var order = await _cartService.GetOpenOrderForPaymentAsync(userId);
+
+                if (order == null) 
                     return NotFound();
-                }
+                
 
-                if (order.IsPayed || order.IsReceived)
-                {
-                    return BadRequest();
-                }
+                var payment = new ZarinpalSandbox.Payment((int)order.Item2);
 
-                var payment = new ZarinpalSandbox.Payment((int)order.Sum);
                 var res = payment.Verification(authority).Result;
+
+                ViewBag.IsSuccess = false;
 
                 if (res.Status == 100)
                 {
-                    await _cartService.MakeFinalTheOrder(order);
+                    ViewBag.IsSuccess = true;
+
+                    await _cartService.MakeFinalTheOrder(order.Item1);
                 }
             }
 

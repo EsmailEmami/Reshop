@@ -30,7 +30,7 @@ namespace Reshop.Domain.Interfaces.User
 
         Task<bool> IsUserOrderAsync(string userId, string orderId);
         Task<bool> IsOrderExistsAsync(string orderId);
-
+        Task<bool> IsOpenOrderExistsAsync(string orderId);
         Task<decimal> GetOrderDiscountAsync(string orderId);
 
         Task<string> GetUserOpenCartOrderIdAsync(string userId);

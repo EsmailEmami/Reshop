@@ -13,7 +13,7 @@ namespace Reshop.Application.Interfaces.User
         Task<Order> GetUserOpenOrderAsync(string userId);
         Task EditOrderAsync(Order order);
         Task<Order> GetOrderByIdAsync(string orderId);
-        Task<ResultTypes> MakeFinalTheOrder(Order order);
+        Task<ResultTypes> MakeFinalTheOrder(string orderId);
         Task<ResultTypes> AddToCart(string userId, string shopperProductColorId);
         Task<bool> IsOrderDetailExistAsync(string orderDetailId);
         Task<string> IsUserBoughtProductAsync(string userId, int productId);
@@ -33,7 +33,7 @@ namespace Reshop.Application.Interfaces.User
 
 
         //orderId, sum , have any address , tracking code
-        Task<Tuple<string, decimal, bool, string>> GetOpenOrderForPaymentAsync(string userId);
+        Task<Tuple<string, decimal, string>> GetOpenOrderForPaymentAsync(string userId);
 
         // type = all , received , payed
         // order by = news , last , received-news , received-last , payed-news , payed-last

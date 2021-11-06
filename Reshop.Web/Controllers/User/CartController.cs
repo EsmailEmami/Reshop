@@ -15,13 +15,11 @@ namespace Reshop.Web.Controllers.User
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
-        private readonly IProductService _productService;
         private readonly IUserService _userService;
 
-        public CartController(ICartService cartService, IProductService productService, IUserService userService)
+        public CartController(ICartService cartService, IUserService userService)
         {
             _cartService = cartService;
-            _productService = productService;
             _userService = userService;
         }
 
@@ -158,12 +156,9 @@ namespace Reshop.Web.Controllers.User
             if (order == null)
                 return NotFound();
 
-            if (!order.Item3)
-                return BadRequest();
-
             var payment = new Payment((int)order.Item2);
 
-            var res = await payment.PaymentRequest($"خرید فاکتور {order.Item4}", "https://localhost:44312/OnlinePayment/" + order.Item1, "esmaeilemami84@gmail.com", "09903669556");
+            var res = await payment.PaymentRequest($"خرید فاکتور {order.Item3}", "https://localhost:44312/OnlinePayment/" + order.Item1, "esmaeilemami84@gmail.com", "09903669556");
 
             if (res.Status == 100)
             {
