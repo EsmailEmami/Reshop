@@ -1,0 +1,52 @@
+﻿@model FullOrderForShowViewModel
+@{
+    ViewData["Title"] = $"جزئیات سفارش {Model.TrackingCode}";
+}
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        @if (Model.IsReceived)
+        {
+            <a asp-controller="Account" asp-action="FinallyOrders">سفارش های تحویل شده</a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="UnFinallyOrders">سفارش های تحویل نشده</a>
+        }
+    </li>
+    <li>
+        <a asp-controller="Account" asp-action="OrderDetail" asp-route-trackingCode="@Model.TrackingCode">جزئیات سفارش @Model.TrackingCode</a>
+    </li>
+</ul>
+
+
+<div class="row">
+
+    <div class="col-sm-12 col-md-4 col-lg-3">
+
+        <partial name="Account/_MenuAccount" model="AccountMenuActivePage.Order" />
+
+    </div>
+
+
+    <div class="col-sm-12 col-md-8 col-lg-9">
+        <div class="row">
+            <div class="col-12">
+                <div class="profile-nav box-shadow">
+                    <ul>
+                        <li class="active"><a asp-action="UnFinallyOrders">تحویل نشده</a> </li>
+                        <li><a asp-action="FinallyOrders">تحویل شده</a> </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <div class="user-data box-shadow">
+
+                @Model.TrackingCode
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

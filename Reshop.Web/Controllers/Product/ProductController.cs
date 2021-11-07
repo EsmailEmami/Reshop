@@ -1,19 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
-using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
-using Reshop.Application.Enums.User;
-using Reshop.Application.Interfaces.Conversation;
 using Reshop.Application.Interfaces.Product;
-using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security.Attribute;
-using Reshop.Domain.DTOs.CommentAndQuestion;
-using Reshop.Domain.Entities.User;
-using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Domain.Entities.Comment;
 
 namespace Reshop.Web.Controllers.Product
 {
@@ -88,10 +80,17 @@ namespace Reshop.Web.Controllers.Product
                 new { productName = product.Item1.Replace(" ", "-"), sellerId = product.Item2 });
         }
 
-        [HttpGet]
         [Route("Category/{categoryId}/{categoryName}")]
+        [Route("Category/{categoryId}/{categoryName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]
+        [Route("Category/{categoryId}/{categoryName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}/{brands}/{search}")]
         public async Task<IActionResult> ProductsOfCategory(int categoryId, string categoryName, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
         {
+            if (brands != null && brands.ToLower() == "null")
+                brands = null;
+
+            if (search != null && search.ToLower() == "null")
+                search = null;
+
             var selectedBrands = Fixer.SplitToListInt(brands);
 
             if (selectedBrands == null)
@@ -118,8 +117,16 @@ namespace Reshop.Web.Controllers.Product
 
         [HttpGet]
         [Route("ChildCategory/{childCategoryId}/{childCategoryName}")]
+        [Route("ChildCategory/{childCategoryId}/{childCategoryName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]
+        [Route("ChildCategory/{childCategoryId}/{childCategoryName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}/{brands}/{search}")]
         public async Task<IActionResult> ProductsOfChildCategory(int childCategoryId, string childCategoryName, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
         {
+            if (brands != null && brands.ToLower() == "null")
+                brands = null;
+
+            if (search != null && search.ToLower() == "null")
+                search = null;
+
             var selectedBrands = Fixer.SplitToListInt(brands);
 
             if (selectedBrands == null)
@@ -127,24 +134,16 @@ namespace Reshop.Web.Controllers.Product
 
             var result = await _productService.GetChildCategoryProductsWithPaginationAsync(childCategoryId, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
 
-
-            ViewData["ChildCategoryName"] = childCategoryName;
-
-            if (result == null)
-            {
-
-            }
-
             ViewBag.SortBy = sortBy;
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SearchText = search;
 
-            ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : 0;
+            ViewBag.SelectedMinPrice = minPrice.ToDecimal();
             ViewBag.SelectedMaxPrice = 0;
 
             if (result != null)
             {
-                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? maxPrice.ToDecimal() : result.ProductsMaxPrice;
             }
 
             return View(result);
@@ -152,8 +151,16 @@ namespace Reshop.Web.Controllers.Product
 
         [HttpGet]
         [Route("Brand/{brandId}/{brandName}")]
+        [Route("Brand/{brandId}/{brandName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]
+        [Route("Brand/{brandId}/{brandName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}/{officialBrandProducts}/{search}")]
         public async Task<IActionResult> ProductsOfBrand(int brandId, string brandName, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string officialBrandProducts = null)
         {
+            if (officialBrandProducts != null && officialBrandProducts.ToLower() == "null")
+                officialBrandProducts = null;
+
+            if (search != null && search.ToLower() == "null")
+                search = null;
+
             var selectedOfficialBrandProducts = Fixer.SplitToListInt(officialBrandProducts);
 
             if (selectedOfficialBrandProducts == null)
@@ -168,12 +175,12 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SelectedOfficialBrandProducts = selectedOfficialBrandProducts;
             ViewBag.SearchText = search;
 
-            ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : 0;
+            ViewBag.SelectedMinPrice = minPrice.ToDecimal();
             ViewBag.SelectedMaxPrice = 0;
 
             if (result != null)
             {
-                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? maxPrice.ToDecimal() : result.ProductsMaxPrice;
             }
 
             return View(result);

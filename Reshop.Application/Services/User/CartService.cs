@@ -34,7 +34,7 @@ namespace Reshop.Application.Services.User
 
         #endregion
 
-        public IEnumerable<OpenCartViewModel> GetUserOpenOrderForShowCart(string userId)
+        public IEnumerable<OrderDetailForShowCartViewModel> GetUserOpenOrderForShowCart(string userId)
         {
             return _cartRepository.GetOrderInCartByUserIdForShowCart(userId);
         }
@@ -52,6 +52,9 @@ namespace Reshop.Application.Services.User
 
         public async Task<Order> GetOrderByIdAsync(string orderId) =>
             await _cartRepository.GetOrderByIdAsync(orderId);
+
+        public async Task<FullOrderForShowViewModel> GetFullOrderForShowAsync(string orderId) =>
+            await _cartRepository.GetFullOrderForShowAsync(orderId);
 
         public async Task<ResultTypes> MakeFinalTheOrder(string orderId)
         {
@@ -204,6 +207,9 @@ namespace Reshop.Application.Services.User
             }
         }
 
+        public async Task<bool> IsUserOrderAsync(string userId, string orderId) =>
+            await _cartRepository.IsUserOrderAsync(userId, orderId);
+
         public async Task<bool> IsOrderDetailExistAsync(string orderDetailId)
         {
             return await _cartRepository.IsOrderDetailExistAsync(orderDetailId);
@@ -214,6 +220,12 @@ namespace Reshop.Application.Services.User
 
         public async Task<string> GetUserOpenCartOrderIdAsync(string userId) =>
             await _cartRepository.GetUserOpenCartOrderIdAsync(userId);
+
+        public async Task<string> GetOrderIdByTrackingCodeAsync(string trackingCode) =>
+            await _cartRepository.GetOrderIdByTrackingCodeAsync(trackingCode);
+
+        public async Task<string> GetOrderDetailIdByTrackingCodeAsync(string trackingCode) =>
+            await _cartRepository.GetOrderDetailIdByTrackingCodeAsync(trackingCode);
 
         public async Task IncreaseOrderDetailCountAsync(string orderDetailId)
         {

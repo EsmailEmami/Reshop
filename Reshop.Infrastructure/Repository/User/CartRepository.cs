@@ -72,14 +72,13 @@ namespace Reshop.Infrastructure.Repository.User
             =>
                 _context.Orders.Where(c => !c.IsPayed && !c.IsReceived && c.CreateDate > time) as IAsyncEnumerable<Order>;
 
-        public IEnumerable<OpenCartViewModel> GetOrderInCartByUserIdForShowCart(string userId)
+        public IEnumerable<OrderDetailForShowCartViewModel> GetOrderInCartByUserIdForShowCart(string userId)
         {
             return _context.Orders
                 .Where(o => o.UserId == userId && !o.IsPayed && !o.IsReceived)
                 .SelectMany(c => c.OrderDetails)
-                .Select(o => new OpenCartViewModel()
+                .Select(o => new OrderDetailForShowCartViewModel()
                 {
-                    OrderDetailId = o.OrderDetailId,
                     ProductsCount = o.Count,
                     ProductPrice = o.ShopperProductColor.Price,
                     ColorName = o.ShopperProductColor.Color.ColorName,
@@ -109,8 +108,8 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task<bool> IsOpenOrderExistsAsync(string orderId) =>
             await _context.Orders
                 .AnyAsync(c =>
-                    c.OrderId == orderId && 
-                    !c.IsReceived && 
+                    c.OrderId == orderId &&
+                    !c.IsReceived &&
                     !c.IsPayed);
 
         public async Task<decimal> GetOrderDiscountAsync(string orderId) =>
@@ -140,7 +139,6 @@ namespace Reshop.Infrastructure.Repository.User
             _context.Orders.Where(c => c.UserId == userId && c.IsReceived && c.IsPayed)
                 .Select(c => new OrderForShowViewModel()
                 {
-                    OrderId = c.OrderId,
                     TrackingCode = c.TrackingCode,
                     PayDate = c.PayDate.Value,
                     Sum = c.Sum,
@@ -151,12 +149,49 @@ namespace Reshop.Infrastructure.Repository.User
             _context.Orders.Where(c => c.UserId == userId && !c.IsReceived && c.IsPayed)
                 .Select(c => new OrderForShowViewModel()
                 {
-                    OrderId = c.OrderId,
                     TrackingCode = c.TrackingCode,
                     PayDate = c.PayDate.Value,
                     Sum = c.Sum,
                     ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
                 });
+
+        public async Task<string> GetOrderIdByTrackingCodeAsync(string trackingCode) =>
+            await _context.Orders
+                .Where(c => c.TrackingCode == trackingCode)
+                .Select(c=> c.OrderId)
+                .SingleOrDefaultAsync();
+
+        public async Task<string> GetOrderDetailIdByTrackingCodeAsync(string trackingCode) =>
+            await _context.OrderDetails
+                .Where(c => c.TrackingCode == trackingCode)
+                .Select(c => c.OrderDetailId)
+                .SingleOrDefaultAsync();
+
+        public async Task<FullOrderForShowViewModel> GetFullOrderForShowAsync(string orderId) =>
+            await _context.Orders.Where(c => c.OrderId == orderId && c.IsPayed)
+                .Select(c => new FullOrderForShowViewModel()
+                {
+                    TrackingCode = c.TrackingCode,
+                    PayDate = c.PayDate.Value,
+                    Sum = c.Sum,
+                    ShoppingCost = c.ShippingCost,
+                    OrderDiscount = c.OrderDiscount,
+                    IsReceived = c.IsReceived,
+                    IsPayed = c.IsPayed,
+                    Details = c.OrderDetails.Select(a => new OrderDetailForShowViewModel()
+                    {
+                        OrderDetailId = a.OrderDetailId,
+                        ProductsCount = a.Count,
+                        ProductPrice = a.Price,
+                        ProductTitle = a.ShopperProductColor.ShopperProduct.Product.ProductTitle,
+                        ProductImg = a.ShopperProductColor.ShopperProduct.Product.ProductGalleries.OrderBy(i => i.OrderBy).FirstOrDefault().ImageName,
+                        Warranty = a.ShopperProductColor.ShopperProduct.Warranty,
+                        ShopperId = a.ShopperProductColor.ShopperProduct.ShopperId,
+                        ShopperStoreName = a.ShopperProductColor.ShopperProduct.Shopper.StoreName,
+                        ColorName = a.ShopperProductColor.Color.ColorName,
+                        TrackingCode = a.TrackingCode
+                    })
+                }).SingleOrDefaultAsync();
 
         public IEnumerable<OrderForShowInListViewModel> GetUserOrdersForShowInListWithPagination(string userId, string type, string orderBy, int skip, int take)
         {

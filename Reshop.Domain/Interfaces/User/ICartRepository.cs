@@ -25,7 +25,7 @@ namespace Reshop.Domain.Interfaces.User
         #region order
 
         IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time);
-        IEnumerable<OpenCartViewModel> GetOrderInCartByUserIdForShowCart(string userId);
+        IEnumerable<OrderDetailForShowCartViewModel> GetOrderInCartByUserIdForShowCart(string userId);
         Task<Order> GetOrderInCartByUserIdAsync(string userId);
 
         Task<bool> IsUserOrderAsync(string userId, string orderId);
@@ -39,6 +39,10 @@ namespace Reshop.Domain.Interfaces.User
 
         IEnumerable<OrderForShowViewModel> GetReceivedOrders(string userId);
         IEnumerable<OrderForShowViewModel> GetNotReceivedOrders(string userId);
+
+        Task<string> GetOrderIdByTrackingCodeAsync(string trackingCode);
+        Task<string> GetOrderDetailIdByTrackingCodeAsync(string trackingCode);
+        Task<FullOrderForShowViewModel> GetFullOrderForShowAsync(string orderId);
 
         // type = all , received , payed
         IEnumerable<OrderForShowInListViewModel> GetUserOrdersForShowInListWithPagination(string userId, string type, string orderBy, int skip, int take);

@@ -334,6 +334,7 @@ namespace Reshop.Infrastructure.Repository.Product
 
             return products.Select(c => new ProductViewModel()
             {
+
                 ProductTitle = c.ShopperProduct.Product.ProductTitle,
                 Image = c.ShopperProduct.Product.ProductGalleries
                     .First(i => i.OrderBy == 1).ImageName,

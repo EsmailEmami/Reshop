@@ -9,15 +9,19 @@ namespace Reshop.Application.Interfaces.User
 {
     public interface ICartService
     {
-        IEnumerable<OpenCartViewModel> GetUserOpenOrderForShowCart(string userId);
+        IEnumerable<OrderDetailForShowCartViewModel> GetUserOpenOrderForShowCart(string userId);
         Task<Order> GetUserOpenOrderAsync(string userId);
         Task EditOrderAsync(Order order);
         Task<Order> GetOrderByIdAsync(string orderId);
+        Task<FullOrderForShowViewModel> GetFullOrderForShowAsync(string orderId);
         Task<ResultTypes> MakeFinalTheOrder(string orderId);
         Task<ResultTypes> AddToCart(string userId, string shopperProductColorId);
+        Task<bool> IsUserOrderAsync(string userId, string orderId);
         Task<bool> IsOrderDetailExistAsync(string orderDetailId);
         Task<string> IsUserBoughtProductAsync(string userId, int productId);
         Task<string> GetUserOpenCartOrderIdAsync(string userId);
+        Task<string> GetOrderIdByTrackingCodeAsync(string trackingCode);
+        Task<string> GetOrderDetailIdByTrackingCodeAsync(string trackingCode);
         Task IncreaseOrderDetailCountAsync(string orderDetailId);
         Task ReduceOrderDetailAsync(string orderDetailId);
         IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time);

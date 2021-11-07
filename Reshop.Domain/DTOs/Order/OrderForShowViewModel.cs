@@ -8,8 +8,6 @@ namespace Reshop.Domain.DTOs.Order
 {
     public class OrderForShowViewModel
     {
-        public string OrderId { get; set; }
-
         public string TrackingCode { get; set; }
 
         public DateTime PayDate { get; set; }

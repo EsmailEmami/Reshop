@@ -57,8 +57,16 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddOrRemoveProduct(string orderDetailId, string actionType)
+        public async Task<IActionResult> AddOrRemoveProduct(string trackingCode, string actionType)
         {
+            if (string.IsNullOrEmpty(trackingCode))
+                return BadRequest();
+
+            var orderDetailId = await _cartService.GetOrderDetailIdByTrackingCodeAsync(trackingCode);
+
+            if (string.IsNullOrEmpty(orderDetailId))
+                return NotFound();
+
             if (!await _cartService.IsOrderDetailExistAsync(orderDetailId))
                 return NotFound();
 
@@ -84,8 +92,16 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveOrderDetail(string orderDetailId)
+        public async Task<IActionResult> RemoveOrderDetail(string trackingCode)
         {
+            if (string.IsNullOrEmpty(trackingCode))
+                return BadRequest();
+
+            var orderDetailId = await _cartService.GetOrderDetailIdByTrackingCodeAsync(trackingCode);
+
+            if (string.IsNullOrEmpty(orderDetailId))
+                return NotFound();
+
             var result = await _cartService.RemoveOrderDetailAsync(orderDetailId);
 
             if (result == ResultTypes.Failed) return BadRequest();

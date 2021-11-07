@@ -339,7 +339,22 @@
             }
 
 
-            var url = window.location.origin + "/Brand/@Model.BrandId/" + brandName + "?pageId=" + pageId + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&search=" + search + "&sortBy=" + sortBy + "&officialBrandProducts=" + officialBrandProductsArray;
+
+            var urlText = "/Brand/@Model.BrandId/" + brandName + "/" + pageId + "/" + sortBy + "/" + minPrice + "/" + maxPrice;
+
+            if (officialBrandProductsArray.length > 0) {
+                urlText = urlText + "/" + officialBrandProductsArray;
+            } else {
+                urlText = urlText + "/NULL";
+            }
+
+            if (search !== "") {
+                urlText = urlText + "/" + search;
+            } else {
+                urlText = urlText + "/NULL";
+            }
+
+            var url = window.location.origin + urlText;
 
             window.location = url;
         }

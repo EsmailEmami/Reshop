@@ -132,6 +132,7 @@ namespace Reshop.Application.Services.Product
 
             var products = _productRepository.GetProductsOfBrandWithPagination(brandId, sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), officialBrandProducts);
 
+            var brand = await _brandRepository.GetBrandByIdAsync(brandId);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
@@ -141,7 +142,8 @@ namespace Reshop.Application.Services.Product
 
             return new BrandProductsForShow()
             {
-                BrandId = brandId,
+                BrandId = brand.BrandId,
+                BrandName = brand.BrandName,
                 Products = products,
                 PageId = pageId,
                 TotalPages = totalPages,

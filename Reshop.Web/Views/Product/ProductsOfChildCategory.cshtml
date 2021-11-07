@@ -340,14 +340,27 @@
                 brandsArray.push(input.value);
             }
 
-            console.log(brandsArray);
 
-            var url = window.location.origin + "/ChildCategory/@Model.ChildCategoryId/" + categoryName + "?pageId=" + pageId + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&search=" + search + "&sortBy=" + sortBy + "&brands=" + brandsArray;
+            var urlText = "/ChildCategory/@Model.ChildCategoryId/" + categoryName + "/" + pageId + "/" + sortBy + "/" + minPrice + "/" + maxPrice;
+
+            if (brandsArray.length > 0) {
+                urlText = urlText + "/" + brandsArray;
+            } else {
+                urlText = urlText + "/NULL";
+            }
+
+            if (search !== "") {
+                urlText = urlText + "/" + search;
+            } else {
+                urlText = urlText + "/NULL";
+            }
+
+            var url = window.location.origin + urlText;
 
             window.location = url;
         }
 
-      
+
         $(function () {
             if (window.innerWidth > 767) {
                 let collapse = document.getElementsByClassName('collapse');

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OpenCartViewModel>
+﻿@model IEnumerable<OrderDetailForShowCartViewModel>
 @{
     ViewData["Title"] = "سبد خرید";
     int counter = 1;
@@ -73,15 +73,15 @@ else
                         </div>
 
                         <div class="quantity-selector">
-                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-orderDetailId="@item.OrderDetailId" asp-route-actionType="Plus">
+                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-trackingCode="@item.TrackingCode" asp-route-actionType="Plus">
                                 <button type="submit"><i class="far fa-plus"></i></button>
                             </form>
                             <span>@item.ProductsCount</span>
-                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-orderDetailId="@item.OrderDetailId" asp-route-actionType="Minus">
+                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-trackingCode="@item.TrackingCode" asp-route-actionType="Minus">
                                 <button type="submit"><i class="far fa-minus"></i></button>
                             </form>
 
-                            <form method="post" asp-action="RemoveOrderDetail" asp-route-orderDetailId="@item.OrderDetailId">
+                            <form method="post" asp-action="RemoveOrderDetail" asp-route-trackingCode="@item.TrackingCode">
                                 <button type="submit"><i class="fal fa-trash-alt"></i></button>
                             </form>
                         </div>

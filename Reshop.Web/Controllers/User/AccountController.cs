@@ -494,6 +494,30 @@ namespace Reshop.Web.Controllers.User
             return View(_cartService.GetReceivedOrders(userId));
         }
 
+        [Route("[action]/{trackingCode}")]
+        public async Task<IActionResult> OrderDetail(string trackingCode)
+        {
+            if (string.IsNullOrEmpty(trackingCode))
+                return BadRequest();
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var orderId = await _cartService.GetOrderIdByTrackingCodeAsync(trackingCode);
+
+            if (string.IsNullOrEmpty(orderId))
+                return NotFound();
+
+            if (!await _cartService.IsUserOrderAsync(userId, orderId))
+                return NotFound();
+
+            var order = await _cartService.GetFullOrderForShowAsync(orderId);
+
+            if (order == null)
+                return NotFound();
+
+            return View(order);
+        }
+
         #endregion
 
         #region question and comment

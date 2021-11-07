@@ -63,8 +63,8 @@
                                     }
                                 </div>
                                 <div class="more-detail-order">
-                                    <a href=""><i class="fal fa-file-invoice"></i> مشاهده بیشتر</a>
-                                    <a href=""><i class="fal fa-download"></i> مشاده فاکتور</a>
+                                    <a asp-controller="Account" asp-action="OrderDetail" asp-route-trackingCode="@item.TrackingCode"><i class="far fa-file-invoice"></i> مشاهده بیشتر</a>
+                                    <a href=""><i class="far fa-download"></i> دانلود فاکتور</a>
                                 </div>
                             </div>
                         }

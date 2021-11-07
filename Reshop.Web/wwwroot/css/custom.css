@@ -2650,11 +2650,12 @@ ul.breadcrumb {
 }
 
     .more-detail-order a {
-        font-size: 16px;
+        font-size: 15px;
         margin: 0;
-        padding: 4px 13px;
-        border-radius: 10px;
+        padding: 5 px 12 px;
+        border-radius: 4 px;
         color: #2f2c2c;
+        font-family: 'Kalameh','Sahel',sans-serif;
     }
 
         .more-detail-order a:first-child {

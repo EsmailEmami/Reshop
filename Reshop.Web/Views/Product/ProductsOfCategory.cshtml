@@ -1,6 +1,6 @@
 ﻿@model CategoryProductsForShow
 @{
-  
+
     ViewData["Title"] = $"کالاهای گروه {Model.CategoryName}";
 }
 
@@ -174,13 +174,13 @@
                         }
                         @foreach (var item in Model.Brands)
                         {
-                        <div>
-                            <input type="checkbox" name="brands" value="@item.Item1" @(selectedBrands!.Any(c => c == item.Item1) ? "checked" : "") onclick="submitForm()">
-                            <span>
-                                <span>@item.Item2</span>
-                                <span>@item.Item3</span>
-                            </span>
-                        </div>
+                            <div>
+                                <input type="checkbox" name="brands" value="@item.Item1" @(selectedBrands!.Any(c => c == item.Item1) ? "checked" : "") onclick="submitForm()">
+                                <span>
+                                    <span>@item.Item2</span>
+                                    <span>@item.Item3</span>
+                                </span>
+                            </div>
                         }
                     </div>
                 </div>
@@ -276,12 +276,12 @@
         });
 
 
-        $(function () {
+        $(function() {
             let radios = $(".sortBy-choice .item input");
 
             for (const item of radios) {
                 item.addEventListener('click',
-                    function () {
+                    function() {
 
                         $("#sortBy").val(item.value);
                         submitForm();
@@ -313,13 +313,26 @@
                 brandsArray.push(parseInt(input.value));
             }
 
+            var urlText = "/Category/@Model.CategoryId/" + categoryName + "/" + pageId + "/" + sortBy + "/" + minPrice + "/" + maxPrice;
 
-            var url = window.location.origin + "/Category/@Model.CategoryId/" + categoryName + "?pageId=" + pageId + "&minPrice=" + minPrice + "&maxPrice=" + maxPrice + "&search=" + search + "&sortBy=" + sortBy + "&brands=" + brandsArray;
+            if (brandsArray.length > 0) {
+                 urlText = urlText + "/" + brandsArray;
+            } else {
+                urlText = urlText + "/NULL";
+            }
+
+            if (search !== "") {
+                urlText = urlText + "/" + search;
+            } else {
+                urlText = urlText + "/NULL";
+            }
+
+            var url = window.location.origin + urlText;
 
             window.location = url;
         }
 
-        $(function () {
+        $(function() {
             if (window.innerWidth > 767) {
                 let collapse = document.getElementsByClassName('collapse');
                 for (let i = 0; i < collapse.length; i++) {
@@ -327,20 +340,21 @@
                 }
             }
 
-            window.addEventListener('resize', function () {
-                let collapse = document.getElementsByClassName('collapse');
+            window.addEventListener('resize',
+                function() {
+                    let collapse = document.getElementsByClassName('collapse');
 
-                if (window.innerWidth > 767) {
+                    if (window.innerWidth > 767) {
 
-                    for (let i = 0; i < collapse.length; i++) {
-                        collapse[i].classList.add("show");
+                        for (let i = 0; i < collapse.length; i++) {
+                            collapse[i].classList.add("show");
+                        }
+                    } else {
+                        for (let i = 0; i < collapse.length; i++) {
+                            collapse[i].classList.remove("show");
+                        }
                     }
-                } else {
-                    for (let i = 0; i < collapse.length; i++) {
-                        collapse[i].classList.remove("show");
-                    }
-                }
-            });
-});
+                });
+        });
     </script>
 }
