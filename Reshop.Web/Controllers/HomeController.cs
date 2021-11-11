@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.User;
+using System.IO;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers
 {
@@ -26,6 +24,15 @@ namespace Reshop.Web.Controllers
         {
             return View(statusCode);
         }
+
+        [Route("ErrorJs")]
+        [Route("ErrorJs/{statusCode}")]
+        [NoDirectAccess]
+        public IActionResult ErrorJs(int statusCode = 0)
+        {
+            return View("ErrorJs", statusCode);
+        }
+
 
         [Route("AboutUs")]
         public IActionResult AboutUs()
@@ -72,9 +79,9 @@ namespace Reshop.Web.Controllers
 
                 var order = await _cartService.GetOpenOrderForPaymentAsync(userId);
 
-                if (order == null) 
+                if (order == null)
                     return NotFound();
-                
+
 
                 var payment = new ZarinpalSandbox.Payment((int)order.Item2);
 

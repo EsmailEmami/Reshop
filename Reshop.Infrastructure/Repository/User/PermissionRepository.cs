@@ -108,17 +108,10 @@ namespace Reshop.Infrastructure.Repository.User
             _context.RolePermissions.Where(c => c.RoleId == roleId)
                 .Select(c => c.PermissionId);
 
-        public int GetPermissionIdByName(string permissionName)
-        {
-            try
-            {
-                return _context.Permissions.First(c => c.PermissionTitle == permissionName).PermissionId;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
+        public async Task<int> GetPermissionIdByNameAsync(string permissionName) =>
+            await _context.Permissions.Where(c => c.PermissionTitle == permissionName)
+                    .Select(c => c.PermissionId)
+                    .SingleOrDefaultAsync();
 
         public async Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(int permissionId) =>
             await _context.RolePermissions

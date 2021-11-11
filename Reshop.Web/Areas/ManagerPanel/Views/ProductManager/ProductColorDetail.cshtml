@@ -16,48 +16,49 @@
     </li>
 </ul>
 
+@if (ViewBag.IsValid)
+{
+    <div class="data">
+        <div>
+            <h3><i class="far fa-tags"></i> نام رنگ: </h3>
+            <span>@Model.ColorName</span>
+        </div>
+        <div>
+            <h3><i class="far fa-tags"></i> تعداد فروش کل: </h3>
+            <span>@Model.SellCount.NumSplitter()</span>
+        </div>
+        <div>
+            <h3><i class="far fa-tags"></i> تعداد فروش ماه اخیر: </h3>
+            <span>@Model.LastMonthSellCount.NumSplitter()</span>
+        </div>
+        <div>
+            <h3><i class="far fa-tags"></i> تعداد مرجوعی کل: </h3>
+            <span>@Model.ReturnedCount.NumSplitter()</span>
+        </div>
 
-<div class="data">
-    <div>
-        <h3><i class="far fa-tags"></i> نام رنگ: </h3>
-        <span>@Model.ColorName</span>
-    </div>
-    <div>
-        <h3><i class="far fa-tags"></i> تعداد فروش کل: </h3>
-        <span>@Model.SellCount.NumSplitter()</span>
-    </div>
-    <div>
-        <h3><i class="far fa-tags"></i> تعداد فروش ماه اخیر: </h3>
-        <span>@Model.LastMonthSellCount.NumSplitter()</span>
-    </div>
-    <div>
-        <h3><i class="far fa-tags"></i> تعداد مرجوعی کل: </h3>
-        <span>@Model.ReturnedCount.NumSplitter()</span>
-    </div>
-
-</div>
-
-<!-- chart -->
-<div class="scrollChart">
-    <h2 class="chartheader">بازدید و فروش ماه اخیر رنگ ابی</h2>
-    <div id="@lineChartId" style="overflow: hidden; width: 100%; min-width: 877px;"></div>
-</div>
-<div class="row">
-    <div class="col-sm-12 col-md-6">
-        <h2 class="chartheader">آمار فروش بین فروشنده ها</h2>
-        <div id="@bestShoppersPieChartId"></div>
     </div>
 
-
-    <div class="col-sm-12 col-md-6">
-        <h2 class="chartheader">بهترین فروشنده های ماه اخیر</h2>
-        <div id="@lastMonthPieChartId"></div>
+    <!-- chart -->
+    <div class="scrollChart">
+        <h2 class="chartheader">بازدید و فروش ماه اخیر رنگ ابی</h2>
+        <div id="@lineChartId" style="overflow: hidden; width: 100%; min-width: 877px;"></div>
     </div>
-</div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <h2 class="chartheader">آمار فروش بین فروشنده ها</h2>
+            <div id="@bestShoppersPieChartId"></div>
+        </div>
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-<script>
+        <div class="col-sm-12 col-md-6">
+            <h2 class="chartheader">بهترین فروشنده های ماه اخیر</h2>
+            <div id="@lastMonthPieChartId"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script>
         google.charts.load('current',
             {
                 'packages': ['corechart']
@@ -228,4 +229,9 @@
         window.addEventListener('resize', @drawLastMonthDataLineChart);
         window.addEventListener('resize', @drawLastMonthBestShoppersPieChart);
         window.addEventListener('resize', @drawBestShoppersPieChart);
-</script>
+    </script>
+}
+else
+{
+    @await Html.PartialAsync("ErrorJs", 403)
+}

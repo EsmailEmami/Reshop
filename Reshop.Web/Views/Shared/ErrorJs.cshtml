@@ -1,0 +1,33 @@
+﻿@model int
+@{
+    Layout = null;
+}
+
+
+@switch (Model)
+{
+    case 404:
+    {
+        <div class="error-page">
+            <img src="~/icons/404.svg" alt="صفحه مورد نظر یافت نشد." width="700"/>
+            <h1>ممکن است صفحه ای که به دنبال آن میگردید حذف شده باشد و یا آدرس آن را به درستی وارد نکرده باشید</h1>
+        </div>
+
+
+        break;
+    }
+    case 403:
+    {
+        <div class="error-page">
+            <img src="~/icons/403.svg" alt="شما به صفحه مورد نظر دسترسی ندارید" width="700" />
+            <h1>شما دسترسی این صفحه را ندارید</h1>
+        </div>
+
+        break;
+    }
+    default:
+    {
+        <h5>error</h5>
+        break;
+    }
+}

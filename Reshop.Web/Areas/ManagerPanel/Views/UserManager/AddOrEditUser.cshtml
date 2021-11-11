@@ -69,12 +69,12 @@
                 
                 <div class="col-sm-12">
      
-                    @if (Model.Roles.Any())
+                    @if (Model.Roles != null && Model.Roles.Any())
                     {
                         <select multiple asp-for="SelectedRoles" placeholder="انتخاب مقام ها">
                             @foreach (var item in Model.Roles)
                             {
-                                @: <option value="@item.RoleId" @(!string.IsNullOrEmpty(Model.UserId) && Model.SelectedRoles.Any(c => c == item.RoleId) ? "selected" : "")>@item.RoleTitle</option>
+                                @: <option value="@item.RoleId" @(Model.SelectedRoles != null && Model.SelectedRoles.Any(c => c == item.RoleId) ? "selected" : "")>@item.RoleTitle</option>
                             }
                         </select>
                     }
@@ -90,7 +90,7 @@
                     <div class="form-check">
                         <label>
                             ایا کاربر مسدود است.
-                            <input type="checkbox" asp-for="IsBlocked" checked />
+                            <input type="checkbox" asp-for="IsBlocked" />
                             <span></span>
                         </label>
                     </div>

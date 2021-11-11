@@ -15,7 +15,7 @@ namespace Reshop.Domain.Entities.Permission
 
         [Display(Name = "عنوان نقش")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string PermissionTitle { get; set; }
 
 

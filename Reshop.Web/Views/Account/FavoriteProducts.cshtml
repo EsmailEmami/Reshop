@@ -2,6 +2,11 @@
 @{
     ViewData["Title"] = "کالا های مورد علاقه";
 }
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+
+
 <ul class="breadcrumb">
     <li>
         <a href="/">ریشاپ</a>
@@ -35,23 +40,23 @@
                                 {
                                     case "news":
                                         {
-                                            <option value="news" selected>علی</option>
-                                            <option value="expensive">اکبر</option>
-                                            <option value="cheap">اصغر</option>
+                                            <option value="news" selected>جدید ترین</option>
+                                            <option value="expensive">گران ترین</option>
+                                            <option value="cheap">ارزان ترین</option>
                                             break;
                                         }
                                     case "expensive":
                                         {
-                                            <option value="news">علی</option>
-                                            <option value="expensive" selected>اکبر</option>
-                                            <option value="cheap">اصغر</option>
+                                            <option value="news">جدید ترین</option>
+                                            <option value="expensive" selected>گران ترین</option>
+                                            <option value="cheap">ارزان ترین</option>
                                             break;
                                         }
                                     case "cheap":
                                         {
-                                            <option value="news">علی</option>
-                                            <option value="expensive">اکبر</option>
-                                            <option value="cheap" selected>اصغر</option>
+                                            <option value="news">جدید ترین</option>
+                                            <option value="expensive">گران ترین</option>
+                                            <option value="cheap" selected>ارزان ترین</option>
                                             break;
                                         }
                                     default:
@@ -62,10 +67,6 @@
                                             break;
                                         }
                                 }
-                            </select>
-
-                            <select class="select" name="type" onchange="SubmitForm('filterFavoriteProduct')">
-                                <option value="Mobile">موبایل</option>
                             </select>
 
                         </section>
@@ -79,39 +80,35 @@
 
                         @if (!Model.Item1.Any())
                         {
-                            <div class="col-sm-12">
-                                <div class="alert alert-warning text-muted">
-                                    محصولی یافت نشد.
-                                </div>
+                            <div class="basket-empty">
+                                <img src="~/icons/search-site.svg" alt="کالای مورد نظر یافت نشد." />
+                                <h1>
+                                    کالایی یافت نشد
+                                </h1>
                             </div>
                         }
                         else
                         {
                             @await Html.PartialAsync("Product/_BoxProducts", Model.Item1)
 
-
                             @if (Model.Item3 > 1)
                             {
                                 <ul class="pagination-custom">
-                                    <li class="@(Model.Item2<=1?"disabled":"")">
-                                        <a onclick="Pagination('@(Model.Item2 - 1)')" href="#">
-                                            <i class="far fa-angle-right"></i>
-                                        </a>
+                                    <li class="@(Model.Item2<=1?"disabled":"")" onclick="pagination('@(Model.Item2 - 1)')">
+                                        <i class="far fa-angle-right"></i>
                                     </li>
+
                                     @for (var i = 1; i <= Model.Item3; i++)
                                     {
-                                        <li class="@(Model.Item2 == i? "active":"")">
-                                            <a onclick="Pagination('@i')" href="#">
-                                                @i
-                                            </a>
+                                        <li class="@(Model.Item2 == i? "active":"")" onclick="pagination('@i')">
+                                            @i
                                         </li>
                                     }
 
-                                    <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")">
-                                        <a onclick="Pagination('@(Model.Item2 + 1)')" href="#">
-                                            <i class="far fa-angle-left"></i>
-                                        </a>
+                                    <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="pagination('@(Model.Item2+1)')">
+                                        <i class="far fa-angle-left"></i>
                                     </li>
+
                                 </ul>
                             }
                         }
@@ -135,4 +132,5 @@
             document.getElementById('filterFavoriteProduct').submit();
         }
     </script>
+    <script src="~/js/select.js"></script>
 }

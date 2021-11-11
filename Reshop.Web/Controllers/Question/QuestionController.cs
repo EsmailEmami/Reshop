@@ -42,7 +42,11 @@ namespace Reshop.Web.Controllers.Question
         public async Task<IActionResult> AddQuestion(AddQuestionViewModel model)
         {
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "Question/_NewQuestion", model) });
+                return new ObjectResult(new
+                {
+                    isValid = false,
+                    html = RenderViewToString.RenderRazorViewToString(this, "Question/_NewQuestion", model)
+                });
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

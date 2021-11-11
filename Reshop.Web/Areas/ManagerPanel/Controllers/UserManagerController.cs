@@ -61,7 +61,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
 
-                return View();
+                return View(model);
             }
         }
 
@@ -149,7 +149,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
                     }
 
-                    if (model.SelectedRoles.Any())
+                    if (model.SelectedRoles != null && model.SelectedRoles.Any())
                     {
                         foreach (var roleId in model.SelectedRoles)
                         {

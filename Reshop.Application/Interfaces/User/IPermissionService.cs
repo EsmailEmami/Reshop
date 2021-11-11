@@ -37,7 +37,7 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> AddPermissionAsync(Permission permission);
         Task<ResultTypes> EditPermissionAsync(Permission permission);
 
-        Task<bool> PermissionCheckerAsync(string userId, string permissions);
+        Task<bool> PermissionCheckerAsync(string userId, params string[] permissions);
 
         #endregion
     }

@@ -12,7 +12,9 @@ using System;
 using System.Globalization;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Constants;
 using Reshop.Application.Interfaces.Discount;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
@@ -85,6 +87,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
+       
         public async Task<IActionResult> ShopperProductDetail(string shopperProductId)
         {
             if (shopperProductId == null)

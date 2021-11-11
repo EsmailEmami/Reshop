@@ -35,6 +35,25 @@ html {
     overflow-x: hidden;
 }
 
+.error-page {
+    display: block;
+    position: relative;
+    width: 100%;
+}
+
+    .error-page img {
+        display: block;
+        width: 530px;
+        margin: 0 auto 20px;
+    }
+
+    .error-page h1 {
+        text-align: center;
+        font-size: 18px;
+        line-height: 28px;
+    }
+
+
 .box-shadow {
     border: 1px solid #e9e8e8;
     border-radius: 8px;
@@ -210,6 +229,7 @@ table tr td {
     background: #fff;
     border-bottom-left-radius: 7px;
     border-bottom-right-radius: 7px;
+    height: auto;
     max-height: 500px;
     overflow-y: scroll;
 }

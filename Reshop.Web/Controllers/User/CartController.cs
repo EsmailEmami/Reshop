@@ -11,7 +11,6 @@ using ZarinpalSandbox;
 
 namespace Reshop.Web.Controllers.User
 {
-    [Authorize]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
@@ -44,6 +43,7 @@ namespace Reshop.Web.Controllers.User
 
         [HttpGet]
         [Route("Cart")]
+
         public IActionResult ShowCart()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

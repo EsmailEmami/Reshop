@@ -19,11 +19,14 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Conversation;
+using Reshop.Application.Security.Attribute;
 using Reshop.Application.Security.GoogleRecaptcha;
 
 namespace Reshop.Web.Controllers.User
 {
+  [Authorize]
     public class AccountController : Controller
     {
         #region constructor
@@ -55,6 +58,7 @@ namespace Reshop.Web.Controllers.User
 
         [Route("Register")]
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Register(string inviteCode = null)
         {
             ViewData["inviteCode"] = inviteCode;
@@ -63,6 +67,7 @@ namespace Reshop.Web.Controllers.User
 
         [Route("Register")]
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(IFormCollection form, RegisterViewModel model, string inviteCode = null)
         {
             #region recaptcha
@@ -126,8 +131,9 @@ namespace Reshop.Web.Controllers.User
 
         #region login
 
-        [Route("Login")]
         [HttpGet]
+        [Route("Login")]
+        [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
@@ -137,10 +143,9 @@ namespace Reshop.Web.Controllers.User
             return View();
         }
 
-
-
-        [Route("Login")]
         [HttpPost]
+        [Route("Login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(IFormCollection form, LoginViewModel model, string returnUrl = null)
         {
             if (User.Identity.IsAuthenticated)
@@ -208,9 +213,8 @@ namespace Reshop.Web.Controllers.User
 
         #region logout
 
-        [Route("Logout")]
-        [Authorize]
         [HttpPost]
+        [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -553,6 +557,39 @@ namespace Reshop.Web.Controllers.User
             return View(await _productService.GetUserFavoriteProductsWithPagination(userId, type, sortBy, pageId, 18));
         }
 
+        [HttpPost]
+        [NoDirectAccess]
+        [PermissionJs]
+        public async Task<IActionResult> AddToFavoriteProduct(string shopperProductColorId)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var result = await _productService.AddFavoriteProductAsync(userId, shopperProductColorId);
+
+            return result switch
+            {
+                FavoriteProductResultType.Successful => Json(new { success = true, resultType = "Successful" }),
+                FavoriteProductResultType.ProductReplaced => Json(new { success = true, resultType = "ProductReplaced" }),
+                FavoriteProductResultType.NotFound => Json(new { success = false, resultType = "NotFound" }),
+                FavoriteProductResultType.Available => Json(new { success = false, resultType = "Available" }),
+                _ => Json(new { success = false, resultType = "NotFound" })
+            };
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFavoriteProduct(string favoriteProductId)
+        {
+            var favoriteProduct = await _productService.GetFavoriteProductByIdAsync(favoriteProductId);
+            if (favoriteProduct != null)
+            {
+                await _productService.RemoveFavoriteProductAsync(favoriteProduct);
+                return Redirect("/");
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
         #endregion
     }
 }

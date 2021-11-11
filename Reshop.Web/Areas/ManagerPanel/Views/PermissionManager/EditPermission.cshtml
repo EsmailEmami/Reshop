@@ -19,7 +19,7 @@
 
         <div class="col-sm-12 col-lg-6">
             <select asp-for="ParentId">
-                <option>انتخاب پدر دسترسی</option>
+                <option value="0">انتخاب پدر دسترسی</option>
                 @if (Model.Permissions.Any())
                 {
                     foreach (var item in Model.Permissions)

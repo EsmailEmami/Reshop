@@ -14,61 +14,39 @@
     </li>
 </ul>
 
-<div class="data">
-    <div>
-        <h3><i class="far fa-tags"></i> تعداد تخفیف های کل: </h3>
-        <span>@Model.DiscountsCount</span>
-    </div>
-    <div>
-        <h3><i class="far fa-tags"></i> تعداد فروش در تخفیف: </h3>
-        <span>@Model.SellCount</span>
-    </div>
-    <div>
-        <h3><i class="far fa-tags"></i> مقدار سرمایه تخفیف داده شده: </h3>
-        <span>@Model.DiscountedAmount.NumSplitter() <span class="toman">تومان</span> </span>
-    </div>
-    <div>
-        <h3><i class="far fa-tags"></i> درامد کل: </h3>
-        <span>@Model.Income.NumSplitter() <span class="toman">تومان</span> </span>
-    </div>
-</div>
-
-@*<div class="action">
-    @if (Model.Discounts.Any() && Model.Discounts.First().Item2 >= DateTime.Now)
-    {
+@if (ViewBag.IsValid)
+{
+    <div class="data">
         <div>
-            <h3 class="ml-1"><i class="far fa-tags"></i> تاریخ:</h3>
-            <span>@Model.Discounts.First().Item1.ToShamsiDateTime() تا @Model.Discounts.First().Item2.ToShamsiDateTime() </span>
+            <h3><i class="far fa-tags"></i> تعداد تخفیف های کل: </h3>
+            <span>@Model.DiscountsCount</span>
         </div>
         <div>
-            <h3><i class="far fa-tags"></i> تعداد فروش: </h3>
-            <span>@Model.Discounts.First().Item3</span>
+            <h3><i class="far fa-tags"></i> تعداد فروش در تخفیف: </h3>
+            <span>@Model.SellCount</span>
         </div>
-
-        <button class="btn btn-warning text-white" onclick="ShowModal('@Url.Action("EditShopperProductColorDiscount", "ShoppersManager", new {shopperProductId = ViewBag.ShopperProductId,colorId = Model.ColorId}, Context.Request.Scheme)','ویرایش تخفیف')">ویرایش</button>
-    }
-    else
-    {
-        <div class="alert alert-warning m-0 mr-3 p-3">
-            تخفیف فعالی یافت نشد.
+        <div>
+            <h3><i class="far fa-tags"></i> مقدار سرمایه تخفیف داده شده: </h3>
+            <span>@Model.DiscountedAmount.NumSplitter() <span class="toman">تومان</span> </span>
         </div>
+        <div>
+            <h3><i class="far fa-tags"></i> درامد کل: </h3>
+            <span>@Model.Income.NumSplitter() <span class="toman">تومان</span> </span>
+        </div>
+    </div>
 
-        <button class="btn btn-success text-white" onclick="ShowModal('@Url.Action("AddShopperProductColorDiscount", "ShoppersManager", new {shopperProductId = ViewBag.ShopperProductId,colorId = Model.ColorId}, Context.Request.Scheme)', 'افزودن تخفیف')">افزودن تخفیف</button>
-    }
-</div>*@
+    <!-- chart -->
+    <div class="scrollChart">
+        <h2 class="chartheader">تخفیف های اخیر</h2>
+        <div id="@columnChartId" style="overflow: hidden; width: 100%; min-width: 877px;"></div>
+    </div>
+    <section class="table-list" id="tableList">
+        @await Component.InvokeAsync("ProductColorDiscountsComponent", new { productId = Model.ProductId, colorId = Model.ColorId })
+    </section>
 
-<!-- chart -->
-<div class="scrollChart">
-    <h2 class="chartheader">تخفیف های اخیر</h2>
-    <div id="@columnChartId" style="overflow: hidden; width: 100%; min-width: 877px;"></div>
-</div>
-<section class="table-list" id="tableList">
-    @await Component.InvokeAsync("ProductColorDiscountsComponent", new { productId = Model.ProductId,colorId = Model.ColorId })
-</section>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-<script>
+    <script>
         google.charts.load('current',
             {
                 'packages': ['corechart']
@@ -145,4 +123,9 @@
 
         window.addEventListener('resize', @drawLastDiscountColumnChartData);
 
-</script>
+    </script>
+}
+else
+{
+    @await Html.PartialAsync("ErrorJs", 403)
+}

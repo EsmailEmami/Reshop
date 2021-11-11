@@ -1,28 +1,30 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
+using Reshop.Application.Constants;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
-using Reshop.Application.Generator;
+using Reshop.Application.Interfaces.Category;
+using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
+using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Security;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Interfaces.Category;
-using Reshop.Application.Interfaces.Discount;
-using Reshop.Application.Interfaces.Shopper;
+using Reshop.Application.Interfaces.User;
+using Reshop.Domain.DTOs.Discount;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
+    [Permission(PermissionsConstants.ProductsPage)]
     public class ProductManagerController : Controller
     {
         #region constructor
@@ -32,16 +34,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IBrandService _brandService;
         private readonly IColorService _colorService;
         private readonly IDiscountService _discountService;
-        private readonly ICategoryService _categoryService;
+        private readonly IPermissionService _permissionService;
 
-        public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService, IColorService colorService, IDiscountService discountService, ICategoryService categoryService)
+        public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService, IColorService colorService, IDiscountService discountService, IPermissionService permissionService)
         {
             _productService = productService;
             _shopperService = shopperService;
             _brandService = brandService;
             _colorService = colorService;
             _discountService = discountService;
-            _categoryService = categoryService;
+            _permissionService = permissionService;
         }
 
         #endregion
@@ -61,6 +63,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
+        [Permission(PermissionsConstants.ProductDetail)]
         public async Task<IActionResult> ProductDetail(int productId)
         {
             if (productId == 0)
@@ -79,6 +82,25 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> ProductColorDetail(int productId, int colorId)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var permissionValid = await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.ColorDetailOfProduct);
+            ViewBag.IsValid = true;
+
+            if (!permissionValid)
+            {
+                ViewBag.IsValid = false;
+
+                return View(new ProductColorDetailViewModel()
+                {
+                    ColorId = colorId,
+                    ProductId = productId
+                });
+            }
+
             var data = await _colorService.GetProductColorDetailAsync(productId, colorId);
 
             if (data == null)
@@ -91,6 +113,25 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> ProductColorDiscountsDetail(int productId, int colorId)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var permissionValid = await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.DiscountDetailOfProduct);
+            ViewBag.IsValid = true;
+
+            if (!permissionValid)
+            {
+                ViewBag.IsValid = false;
+
+                return View(new DiscountsGeneralDataViewModel()
+                {
+                    ColorId = colorId,
+                    ProductId = productId
+                });
+            }
+
             var data = await _discountService.GetProductColorDiscountsGeneralDataAsync(productId, colorId);
 
             if (data == null)
@@ -2351,6 +2392,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
         [HttpGet]
+        [Permission(PermissionsConstants.AddAux, PermissionsConstants.EditAux)]
         public async Task<IActionResult> AddOrEditAUX(int productId = 0)
         {
             var newModel = new AddOrEditAUXViewModel()
@@ -2375,6 +2417,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [Permission(PermissionsConstants.AddAux, PermissionsConstants.EditAux)]
         public async Task<IActionResult> AddOrEditAUX(AddOrEditAUXViewModel model)
         {
             // data for select Product

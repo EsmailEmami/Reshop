@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
+using Reshop.Application.Constants;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.DTOs.Permission;
 using Reshop.Domain.Entities.Permission;
 using System.Collections.Generic;
@@ -29,6 +31,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region role
 
         [HttpGet]
+        [Permission(PermissionsConstants.RolesPage)]
         public async Task<IActionResult> RoleIndex()
         {
             return View(await _permissionService.GetRolesAsync());
@@ -36,6 +39,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddRole, PermissionsConstants.EditRole)]
         public async Task<IActionResult> AddOrEditRole(string roleId = "")
         {
             if (roleId == "")
@@ -58,6 +62,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddRole, PermissionsConstants.EditRole)]
         public async Task<IActionResult> AddOrEditRole(AddOrEditRoleViewModel model)
         {
             model.Permissions = await _permissionService.GetPermissionsAsync();
@@ -69,14 +74,14 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 var role = new Role()
                 {
-                    RoleTitle = model.RoleTitle.FixedText(),
+                    RoleTitle = model.RoleTitle,
                 };
 
                 var addRole = await _permissionService.AddRoleAsync(role);
 
                 if (addRole == ResultTypes.Successful)
                 {
-                    if (model.SelectedPermissions.Any())
+                    if (model.SelectedPermissions != null && model.SelectedPermissions.Any())
                     {
                         var addRolePermission = await _permissionService.AddRolePermissionByRoleAsync(role.RoleId, model.SelectedPermissions as List<int>);
                         if (addRolePermission == ResultTypes.Failed)
@@ -118,7 +123,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 }
 
 
-                if (model.SelectedPermissions.Any())
+                if (model.SelectedPermissions != null && model.SelectedPermissions.Any())
                 {
                     var addRolePermission = await _permissionService.AddRolePermissionByRoleAsync(role.RoleId, model.SelectedPermissions as List<int>);
                     if (addRolePermission == ResultTypes.Failed)
@@ -134,6 +139,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [Permission(PermissionsConstants.DeleteRole)]
         public async Task<IActionResult> RemoveRole(string roleId)
         {
             if (!await _permissionService.IsRoleExistAsync(roleId))
@@ -148,6 +154,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #region permission
 
+        [Permission(PermissionsConstants.PermissionsPage)]
         public async Task<IActionResult> PermissionIndex()
         {
             return View(await _permissionService.GetPermissionsAsync());
@@ -155,6 +162,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddPermission)]
         public async Task<IActionResult> AddPermission()
         {
             var model = new AddOrEditPermissionViewModel()
@@ -168,6 +176,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddPermission)]
         public async Task<IActionResult> AddPermission(AddOrEditPermissionViewModel model)
         {
             model.Roles = await _permissionService.GetRolesAsync();
@@ -194,8 +203,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             if (res == ResultTypes.Successful)
             {
-                await _permissionService.AddRolePermissionByPermissionAsync(permission.PermissionId, model.SelectedRoles.ToList());
-
+                if (model.SelectedRoles != null && model.SelectedRoles.Any())
+                {
+                    await _permissionService.AddRolePermissionByPermissionAsync(permission.PermissionId, model.SelectedRoles.ToList());
+                }
 
                 return Json(new { isValid = true, returnUrl = "current" });
             }
@@ -208,6 +219,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.EditPermission)]
         public async Task<IActionResult> EditPermission(int permissionId)
         {
             var permission = await _permissionService.GetPermissionDataAsync(permissionId);
@@ -220,6 +232,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.EditPermission)]
         public async Task<IActionResult> EditPermission(AddOrEditPermissionViewModel model)
         {
             model.Roles = await _permissionService.GetRolesAsync();
@@ -244,8 +257,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 });
             }
 
-            permission.ParentId = model.ParentId;
             permission.PermissionTitle = model.PermissionTitle;
+            permission.ParentId = null;
+
+            if (model.ParentId > 0)
+            {
+                permission.ParentId = model.ParentId;
+            }
 
             var res = await _permissionService.EditPermissionAsync(permission);
 
@@ -253,7 +271,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 await _permissionService.RemoveRolePermissionsByPermissionId(permission.PermissionId);
 
-                await _permissionService.AddRolePermissionByPermissionAsync(permission.PermissionId, model.SelectedRoles.ToList());
+                if (model.SelectedRoles != null && model.SelectedRoles.Any())
+                {
+                    await _permissionService.AddRolePermissionByPermissionAsync(permission.PermissionId, model.SelectedRoles.ToList());
+                }
 
                 return Json(new { isValid = true, returnUrl = "current" });
             }
@@ -270,9 +291,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [Permission(PermissionsConstants.DeletePermission)]
         public async Task<IActionResult> DeletePermission(int permissionId)
         {
-            if (await _permissionService.IsPermissionExistsAsync(permissionId))
+            if (!await _permissionService.IsPermissionExistsAsync(permissionId))
                 return NotFound();
 
             var delete = await _permissionService.DeletePermissionAsync(permissionId);

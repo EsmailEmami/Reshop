@@ -186,38 +186,6 @@ namespace Reshop.Web.Controllers.Product
             return View(result);
         }
 
-        [HttpPost]
-        [NoDirectAccess]
-        [PermissionJs]
-        public async Task<IActionResult> AddToFavoriteProduct(string shopperProductColorId)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var result = await _productService.AddFavoriteProductAsync(userId, shopperProductColorId);
-
-            return result switch
-            {
-                FavoriteProductResultType.Successful => Json(new { success = true, resultType = "Successful" }),
-                FavoriteProductResultType.ProductReplaced => Json(new { success = true, resultType = "ProductReplaced" }),
-                FavoriteProductResultType.NotFound => Json(new { success = false, resultType = "NotFound" }),
-                FavoriteProductResultType.Available => Json(new { success = false, resultType = "Available" }),
-                _ => Json(new { success = false, resultType = "NotFound" })
-            };
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RemoveFavoriteProduct(string favoriteProductId)
-        {
-            var favoriteProduct = await _productService.GetFavoriteProductByIdAsync(favoriteProductId);
-            if (favoriteProduct != null)
-            {
-                await _productService.RemoveFavoriteProductAsync(favoriteProduct);
-                return Redirect("/");
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+      
     }
 }

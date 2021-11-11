@@ -18,5 +18,7 @@ namespace Reshop.Domain.DTOs.Order
         public string ShopperStoreName { get; set; }
         public string ColorName { get; set; }
         public string TrackingCode { get; set; }
+        public string ShortKey { get; set; }
+        public decimal Discount { get; set; }
     }
 }

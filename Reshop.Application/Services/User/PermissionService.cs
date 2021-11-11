@@ -4,7 +4,6 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.Permission;
 using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Interfaces.User;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -395,38 +394,38 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<bool> PermissionCheckerAsync(string userId, string permissions)
+        public async Task<bool> PermissionCheckerAsync(string userId, params string[] permissions)
         {
-            string[] permission = permissions.Split(",");
-
-
-            var userRoles = await _permissionRepository.GetRolesIdOfUserAsync(userId);
-
-            if (userRoles == null)
-                return false;
-
-
-            List<string> permissionsRolesId = new List<string>();
-
-
-            foreach (var t in permission)
+            try
             {
-                var permissionId = _permissionRepository.GetPermissionIdByName(t);
+                var userRoles = await _permissionRepository.GetRolesIdOfUserAsync(userId) as List<string>;
 
-                if (permissionId != 0)
+                if (userRoles == null || !userRoles.Any())
+                    return false;
+
+                List<string> permissionsRolesId = new List<string>();
+
+
+                foreach (var t in permissions)
                 {
+                    var permissionId = await _permissionRepository.GetPermissionIdByNameAsync(t);
+
+                    if (permissionId == 0)
+                        continue;
+
                     var roles = await _permissionRepository.GetRolesIdOfPermissionAsync(permissionId);
 
-                    if (roles != null)
-                    {
-                        foreach (var role in roles)
-                        {
-                            permissionsRolesId.Add(role);
-                        }
-                    }
+                    if (roles == null)
+                        continue;
+
+                    permissionsRolesId.AddRange(roles);
                 }
+                return permissionsRolesId.Any(c => userRoles.Contains(c));
             }
-            return permissionsRolesId.Any(c => userRoles.Contains(c));
+            catch
+            {
+                return false;
+            }
         }
     }
 }

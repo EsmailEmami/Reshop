@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Application.Attribute;
+using Reshop.Application.Constants;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
+    [Permission(PermissionsConstants.OfficialBrandProductsPage)]
     public class OfficialProductManager : Controller
     {
         private readonly IBrandService _brandService;
@@ -38,6 +41,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.OfficialBrandProductDetail)]
         public IActionResult OfficialBrandProductDetail(int officialBrandProductId)
         {
             if (officialBrandProductId == 0)
@@ -56,6 +60,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddOfficialBrandProduct)]
         public IActionResult AddOfficialBrandProduct()
         {
             ViewBag.Brands = _brandService.GetBrandsForShow();
@@ -65,6 +70,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddOfficialBrandProduct)]
         public async Task<IActionResult> AddOfficialBrandProduct(OfficialBrandProduct model)
         {
             ViewBag.Brands = _brandService.GetBrandsForShow();
@@ -97,6 +103,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.EditOfficialBrandProduct)]
         public async Task<IActionResult> EditOfficialBrandProduct(int officialBrandProductId)
         {
             if (officialBrandProductId == 0)
@@ -115,6 +122,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.EditOfficialBrandProduct)]
         public async Task<IActionResult> EditOfficialBrandProduct(OfficialBrandProduct model)
         {
             ViewBag.Brands = _brandService.GetBrandsForShow();
@@ -147,6 +155,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AvailableOfficialBrandProduct)]
         public async Task<IActionResult> AvailableOfficialBrandProduct(int officialBrandProductId)
         {
             if (!await _brandService.IsOfficialBrandProductExistAsync(officialBrandProductId))
@@ -159,6 +168,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AvailableOfficialBrandProduct)]
         public async Task<IActionResult> AvailableOfficialBrandProduct(AvailableOfficialBrandProductViewModel model)
         {
             if (!ModelState.IsValid)
@@ -178,6 +188,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.UnAvailableOfficialBrandProduct)]
         public async Task<IActionResult> UnAvailableOfficialBrandProduct(int officialBrandProductId)
         {
             var res = await _brandService.UnAvailableOfficialBrandProductAsync(officialBrandProductId);

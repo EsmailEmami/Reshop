@@ -189,7 +189,9 @@ namespace Reshop.Infrastructure.Repository.User
                         ShopperId = a.ShopperProductColor.ShopperProduct.ShopperId,
                         ShopperStoreName = a.ShopperProductColor.ShopperProduct.Shopper.StoreName,
                         ColorName = a.ShopperProductColor.Color.ColorName,
-                        TrackingCode = a.TrackingCode
+                        TrackingCode = a.TrackingCode,
+                        ShortKey = a.ShopperProductColor.ShortKey,
+                        Discount = a.ProductDiscountPrice,
                     })
                 }).SingleOrDefaultAsync();
 

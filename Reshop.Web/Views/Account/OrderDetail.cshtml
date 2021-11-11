@@ -36,15 +36,106 @@
             <div class="col-12">
                 <div class="profile-nav box-shadow">
                     <ul>
-                        <li class="active"><a asp-action="UnFinallyOrders">تحویل نشده</a> </li>
-                        <li><a asp-action="FinallyOrders">تحویل شده</a> </li>
+                        @if (Model.IsReceived)
+                        {
+                            <li><a asp-action="UnFinallyOrders">تحویل نشده</a> </li>
+                            <li class="active"><a asp-action="FinallyOrders">تحویل شده</a> </li>
+                        }
+                        else
+                        {
+                            <li class="active"><a asp-action="UnFinallyOrders">تحویل نشده</a> </li>
+                            <li><a asp-action="FinallyOrders">تحویل شده</a> </li>
+                        }
                     </ul>
                 </div>
             </div>
             <div class="col-12 mt-3">
                 <div class="user-data box-shadow">
+                    <section class="order-data">
+                        <div>
+                            <span class="title">کد سفارش :</span>
+                            <span>@Model.TrackingCode</span>
+                        </div>
+                        <div>
+                            <span class="title">تاریخ پرداخت :</span>
+                            <span>@Model.PayDate.ToShamsiDateTime()</span>
+                        </div>
+                        <div>
+                            <span class="title">وضعیت :</span>
+                            <span>@(Model.IsReceived?"تحویل شده":"تحویل نشده")</span>
+                        </div>
 
-                @Model.TrackingCode
+                    </section>
+
+                    <section class="order-price">
+                        <div>
+                            <span class="title">هزینه ارسال :</span>
+                            <span class="value">@Model.ShoppingCost.NumSplitter() <span class="toman">تومان</span></span>
+                        </div>
+                        <div>
+                            <span class="title">تخفیف سفارش :</span>
+                            <span class="value">@Model.OrderDiscount.NumSplitter() <span class="toman">تومان</span></span>
+                        </div>
+                        <div>
+                            <span class="title">هزینه کل :</span>
+                            <span class="value">@Model.Sum.NumSplitter() <span class="toman">تومان</span></span>
+                        </div>
+                    </section>
+
+                    <div class="show-order-pics">
+                        @foreach (var image in Model.Details)
+                        {
+                            string imageId = $"#{image.TrackingCode}";
+                            
+
+                            <a href="@imageId">
+                                <img src="/images/ProductImages/@image.ProductImg" alt="@image.ProductTitle">
+                            </a>
+                        }
+                    </div>
+
+                    @foreach (var item in Model.Details)
+                    {
+                        <section class="order-detail" id="@item.TrackingCode">
+                            <a asp-controller="Product" asp-action="ShortKeyRedirect" asp-route-key="@item.ShortKey" class="product-title">@item.ProductTitle</a>
+                            <h3 class="product-price">56,455,000 <span class="toman">تومان</span></h3>
+
+
+                            <section class="order-price">
+                                <div>
+                                    <span class="title">کد سفارش :</span>
+                                    <span>@item.TrackingCode</span>
+                                </div>
+                                <div>
+                                    <span class="title">تعداد :</span>
+                                    <span>@item.ProductsCount</span>
+                                </div>
+                                <div>
+                                    <span class="title">تخفیف :</span>
+                                    <span class="value">@item.Discount.NumSplitter() <span class="toman">تومان</span></span>
+                                </div>
+
+
+                            </section>
+
+                            <section class="order-price">
+                                <div>
+                                    <span class="title">فروشگاه :</span>
+                                    <span><a href="#">@item.ShopperStoreName</a></span>
+                                </div>
+
+                                <div>
+                                    <span class="title">گارانتی :</span>
+                                    <span>@item.Warranty</span>
+                                </div>
+                                <div>
+                                    <span class="title">رنگ :</span>
+                                    <span>@item.ColorName</span>
+                                </div>
+                            </section>
+                        </section>
+                    }
+
                 </div>
             </div>
         </div>

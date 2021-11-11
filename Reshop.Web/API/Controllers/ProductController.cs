@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
+using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;

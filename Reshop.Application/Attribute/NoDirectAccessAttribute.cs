@@ -13,9 +13,7 @@ namespace Reshop.Application.Attribute
             if(context.HttpContext.Request.GetTypedHeaders().Referer == null ||
               context.HttpContext.Request.GetTypedHeaders().Host.Host.ToString() != context.HttpContext.Request.GetTypedHeaders().Referer.Host.ToString())
             {
-                var refererPath = context.HttpContext.Request.Headers["Referer"].ToString();
-
-                context.Result = string.IsNullOrEmpty(refererPath) ? new RedirectResult("/") : new RedirectResult(refererPath);
+                context.Result = new RedirectResult("/Error/404");
             }
         }
     }

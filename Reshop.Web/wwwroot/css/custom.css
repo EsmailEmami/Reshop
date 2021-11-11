@@ -69,6 +69,7 @@ table {
     margin: 0;
     font-weight: bold;
     color: #757575;
+    font-family: 'Sahel', sans-serif;
 }
 
 .max-width-1300 {
@@ -2437,9 +2438,9 @@ ul.breadcrumb {
         color: #222222;
         font-weight: 500;
         padding: 4px 13px;
-        font-size: 17px;
+        font-size: 16px;
         text-decoration: none;
-        border-radius: 10px;
+        border-radius: 6px;
         transition: 0.3s;
     }
 
@@ -2447,6 +2448,7 @@ ul.breadcrumb {
         .profile-nav li.active a {
             background-color: #FC5400;
             color: #fcfcfc;
+            box-shadow: 0 0 5px #fc5400;
         }
 
     .profile-nav .filter-box {
@@ -2455,17 +2457,9 @@ ul.breadcrumb {
         justify-content: space-between;
     }
 
-        .profile-nav .filter-box .select {
+        .profile-nav .filter-box .select-dropdown {
             width: 30%;
-            height: 50px;
-            line-height: 50px;
-            padding: 0 15px;
-            font-size: 14px;
-            border: 2px solid #edebeb;
-            border-radius: 5px;
-            -moz-border-radius: 5px;
-            -webkit-border-radius: 5px;
-            position: relative;
+            margin: 0;
         }
 
 .search-profile {
@@ -2608,7 +2602,7 @@ ul.breadcrumb {
     flex-direction: row;
     justify-content: end;
     position: relative;
-    height: 150px;
+    height: 165px;
     border-top: 1px solid #d1d1d1;
     padding: 8px 0;
     overflow-x: scroll;
@@ -2655,7 +2649,7 @@ ul.breadcrumb {
         padding: 5 px 12 px;
         border-radius: 4 px;
         color: #2f2c2c;
-        font-family: 'Kalameh','Sahel',sans-serif;
+        font-family: 'Kalameh', 'Sahel', sans-serif;
     }
 
         .more-detail-order a:first-child {
@@ -2666,6 +2660,93 @@ ul.breadcrumb {
         .more-detail-order a:hover {
             background-color: #e8e8e8;
             transition: ease .2s;
+        }
+
+.user-data .order-data {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-shrink: initial;
+}
+
+    .user-data .order-data div {
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+        .user-data .order-data div span.title {
+            color: #666;
+            font-weight: bold;
+            font-family: 'Kalameh';
+        }
+
+.user-data .order-price {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-shrink: initial;
+}
+
+    .user-data .order-price div {
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+        .user-data .order-price div span.title {
+            color: #666;
+            font-weight: bold;
+            font-family: 'Kalameh';
+        }
+
+        .user-data .order-price div span.value {
+            font-weight: bold;
+        }
+
+.user-data .order-detail {
+    border-top: 1px solid #e9e8e8;
+    display: block;
+    position: relative;
+    padding-top: 17px;
+    margin-top: 2.5rem;
+}
+
+    .user-data .order-detail .product-title {
+        position: absolute;
+        font-family: 'Kalameh', Sahel, sans-serif;
+        font-weight: bold;
+        font-size: 20px;
+        right: 0;
+        top: -16px;
+        background: #fff;
+        padding-left: 15px;
+        text-decoration: none;
+        color: #000;
+        cursor: pointer;
+    }
+
+    .user-data .order-detail .product-price {
+        position: absolute;
+        font-family: 'Kalameh', Sahel, sans-serif;
+        color: #0ca902;
+        font-size: 20px;
+        left: 0;
+        top: -16px;
+        background: #fff;
+        padding-right: 15px;
+    }
+
+    .user-data .order-detail .order-price {
+        margin-bottom: 0;
+        border-bottom: none;
+    }
+
+        .user-data .order-detail .order-price div span a {
+            color: #007bff;
+            font-weight: bold;
         }
 
 

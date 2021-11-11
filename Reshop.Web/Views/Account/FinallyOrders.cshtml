@@ -50,8 +50,8 @@
                             <div class="order-item">
                                 <div class="order-detail">
                                     <ul>
-                                        <li><a href=""><i class="fal fa-clock"></i> @item.PayDate.ToShamsiDateTime()</a></li>
-                                        <li><a href=""><i class="fal fa-barcode-read"></i> @item.TrackingCode</a></li>
+                                        <li><a asp-controller="Account" asp-action="OrderDetail" asp-route-trackingCode="@item.TrackingCode"><i class="fal fa-clock"></i> @item.PayDate.ToShamsiDateTime()</a></li>
+                                        <li><a asp-controller="Account" asp-action="OrderDetail" asp-route-trackingCode="@item.TrackingCode"><i class="fal fa-barcode-read"></i> @item.TrackingCode</a></li>
                                     </ul>
                                     <p>@item.Sum.NumSplitter() <span class="toman">تومان</span></p>
                                 </div>

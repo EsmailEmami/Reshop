@@ -1,38 +1,53 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Reshop.Application.Interfaces.User;
+using System;
+using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 
 namespace Reshop.Application.Security.Attribute
 {
-    // we can give list of permissionName like RoleManager,UserManager,...
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public class PermissionAttribute : AuthorizeAttribute, IAuthorizationFilter
     {
-        public string PermissionsName { get; set; }
-
+        private readonly string[] _permissionsName;
         private IPermissionService _roleService;
 
 
-        public async void OnAuthorization(AuthorizationFilterContext context)
+        public PermissionAttribute(params string[] permissions)
         {
-            _roleService = (IPermissionService)context.HttpContext.RequestServices.GetService(typeof(IPermissionService));
+            _permissionsName = permissions;
+        }
 
+        public void OnAuthorization(AuthorizationFilterContext context)
+        {
             if (context.HttpContext.User.Identity != null && context.HttpContext.User.Identity.IsAuthenticated)
             {
-                string userId = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value.ToString();
+                _roleService = (IPermissionService)context.HttpContext.RequestServices.GetService(typeof(IPermissionService));
 
+                string userId = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                if (!string.IsNullOrEmpty(PermissionsName))
+                if (string.IsNullOrEmpty(userId))
+                    context.Result = new RedirectResult("/Error/403");
+
+                if (!_permissionsName.Any())
+                    return;
+
+                if (_roleService != null && !_roleService.PermissionCheckerAsync(userId, _permissionsName).Result)
                 {
-                    if (_roleService != null && !await _roleService.PermissionCheckerAsync(userId, PermissionsName))
-                    {
-                        context.Result = new RedirectResult("/Error/404");
-                    }
+                    context.Result = new RedirectResult("/Error/403");
                 }
             }
             else
             {
+                var skipAuthorization = (context.ActionDescriptor as ControllerActionDescriptor)?.MethodInfo.GetCustomAttribute<AllowAnonymousAttribute>();
+
+                if (skipAuthorization != null)
+                    return;
+
                 context.Result = new RedirectResult("/Login");
             }
         }

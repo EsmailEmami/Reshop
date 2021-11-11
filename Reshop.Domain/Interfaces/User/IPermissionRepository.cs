@@ -42,7 +42,7 @@ namespace Reshop.Domain.Interfaces.User
         Task<IEnumerable<RolePermission>> GetRolePermissionsOfPermissionAsync(int permissionId);
         void RemoveRolePermission(RolePermission rolePermission);
         IEnumerable<int> GetPermissionsIdOfRole(string roleId);
-        int GetPermissionIdByName(string permissionName);
+        Task<int> GetPermissionIdByNameAsync(string permissionName);
         Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(int permissionId);
         Task<bool> IsPermissionExistsAsync(int permissionId);
 

@@ -1,19 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
+using Reshop.Application.Constants;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
+using Reshop.Application.Interfaces.Category;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
-using Reshop.Domain.Entities.Product;
-using System.Threading.Tasks;
-using Reshop.Application.Interfaces.Category;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.DTOs.Product;
+using Reshop.Domain.Entities.Product;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
+    [Permission(PermissionsConstants.BrandsPage)]
     public class BrandManagerController : Controller
     {
         private readonly IShopperService _shopperService;
@@ -42,6 +45,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.BrandDetail)]
         public IActionResult BrandDetail(int brandId)
         {
             if (brandId == 0)
@@ -59,6 +63,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddBrand)]
         public IActionResult AddBrand()
         {
             var model = new AddOrEditBrandViewModel()
@@ -72,6 +77,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddBrand)]
         public async Task<IActionResult> AddBrand(AddOrEditBrandViewModel model)
         {
             model.StoreTitles = _shopperService.GetStoreTitles();
@@ -121,6 +127,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.EditBrand)]
         public async Task<IActionResult> EditBrand(int brandId)
         {
             if (brandId == 0)
@@ -136,6 +143,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.EditBrand)]
         public async Task<IActionResult> EditBrand(AddOrEditBrandViewModel model)
         {
             model.StoreTitles = _shopperService.GetStoreTitles();
@@ -189,6 +197,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AvailableBrand)]
         public async Task<IActionResult> AvailableBrand(int brandId)
         {
             if (!await _brandService.IsBrandExistAsync(brandId))
@@ -201,6 +210,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AvailableBrand)]
         public async Task<IActionResult> AvailableBrand(AvailableBrandViewModel model)
         {
             if (!ModelState.IsValid)
@@ -219,6 +229,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.UnAvailableBrand)]
         public async Task<IActionResult> UnAvailableBrand(int brandId)
         {
             var res = await _brandService.UnAvailableBrand(brandId);

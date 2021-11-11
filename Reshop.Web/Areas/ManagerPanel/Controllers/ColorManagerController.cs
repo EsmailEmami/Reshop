@@ -1,14 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
+using Reshop.Application.Constants;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
+    [Permission(PermissionsConstants.ColorsPage)]
     public class ColorManagerController : Controller
     {
         private readonly IColorService _colorService;
@@ -35,6 +38,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddColor)]
         public IActionResult AddColor()
         {
             return View(new Color());
@@ -42,6 +46,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.AddColor)]
         public async Task<IActionResult> AddColor(Color model)
         {
             if (!ModelState.IsValid)
@@ -70,6 +75,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.EditColor)]
         public async Task<IActionResult> EditColor(int colorId)
         {
             if (colorId == 0)
@@ -86,6 +92,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(false, PermissionsConstants.EditColor)]
         public async Task<IActionResult> EditColor(Color model)
         {
             if (!ModelState.IsValid)
