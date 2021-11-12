@@ -18,6 +18,10 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         Task<string> GetShopperProductIdAsync(string shopperId, int productId);
 
+        Task<string> GetShopperStoreNameAsync(string shopperId);
+
+        Task<Tuple<string, string>> GetShopperIdAndStoreNameOfShopperProductColorAsync(string shopperProductColorId);
+
         // types = all,active,existed
         IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0, int take = 18, string filter = null);
         IEnumerable<ShoppersListForAdmin> GetProductShoppersWithPagination(int productId, string type = "all", int skip = 0, int take = 18, string filter = null);

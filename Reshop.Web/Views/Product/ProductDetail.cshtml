@@ -124,6 +124,12 @@
                        asp-route-brandId="@Model.Product.Brand.Item1"
                        asp-route-brandName="@Model.Product.Brand.Item2.Replace(" ","-")">@Model.Product.Brand.Item2</a>
                 </div>
+                <div>
+                    <h2><i class="far fa-store"></i><i class="far fa-store"></i> فروشگاه: </h2>
+                    <a asp-controller="Product" asp-action="ProductsOfShopper"
+                       asp-route-shopperId="@Model.Shopper.Item1"
+                       asp-route-storeName="@Model.Shopper.Item2.Replace(" ","-")">@Model.Shopper.Item2</a>
+                </div>
             </div>
 
             <hr />

@@ -240,16 +240,13 @@ namespace Reshop.Web.Controllers.Shopper
 
         #endregion
 
-
-
-
         [HttpGet]
         public async Task<IActionResult> ManageProducts(string type = "all", string sortBy = "news", int pageId = 1)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             string shopperId = await _shopperService.GetShopperIdOrUserAsync(userId);
-            return View(await _productService.GetShopperProductsWithPaginationAsync(shopperId, type, sortBy, pageId, 20));
+            return View();
         }
 
         [HttpGet]

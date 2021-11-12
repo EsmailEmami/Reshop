@@ -124,6 +124,35 @@ namespace Reshop.Application.Services.Product
             };
         }
 
+        public async Task<ShopperProductsForShow> GetShopperProductsWithPaginationAsync(string shopperId, string sortBy = "news", int pageId = 1, int take = 18,
+            string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null)
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int productsCount = await _productRepository.GetShopperProductsCountAsync(shopperId, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
+
+            var products = _productRepository.GetProductsOfShopperWithPagination(shopperId, sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
+
+            int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
+
+            var brandsShow = await _brandRepository.GetBrandsOfShopperAsync(shopperId);
+
+            decimal productMaxPrice = await _productRepository.GetMaxPriceOfShopperProductsAsync(shopperId, filter, brands);
+
+            var shopperStoreName = await _shopperRepository.GetShopperStoreNameAsync(shopperId);
+
+            return new ShopperProductsForShow()
+            {
+                ShopperId = shopperId,
+                StoreName = shopperStoreName,
+                Products = products,
+                PageId = pageId,
+                TotalPages = totalPages,
+                Brands = brandsShow,
+                ProductsMaxPrice = productMaxPrice
+            };
+        }
+
         public async Task<BrandProductsForShow> GetBrandProductsWithPaginationAsync(int brandId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> officialBrandProducts = null)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
@@ -152,19 +181,7 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetShopperProductsWithPaginationAsync(string shopperId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<string> brands = null)
-        {
-            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
-
-            int productsCount = await _shopperRepository.GetShopperProductsCountWithTypeAsync(shopperId, type.FixedText());
-
-            var products = _productRepository.GetShopperProductsWithPagination(shopperId, sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
-
-            int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
-
-            return new Tuple<IEnumerable<ProductViewModel>, int, int>(products, pageId, totalPages);
-        }
-
+    
         public async Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync()
         {
             int allProductsCount = await _productRepository.GetProductsCountWithTypeAsync();
@@ -321,6 +338,8 @@ namespace Reshop.Application.Services.Product
             var shoppers = _productRepository.GetProductShoppers(product.ProductId, product.SelectedColor);
             var colors = _colorRepository.GetProductColorsWithDetail(product.ProductId);
 
+            var shopper = await _shopperRepository.GetShopperIdAndStoreNameOfShopperProductColorAsync(shopperProductColorId);
+            
             return new ProductDetailViewModel()
             {
                 Product = product,
@@ -329,7 +348,8 @@ namespace Reshop.Application.Services.Product
                 Comments = comments,
                 ProductGalleries = productGalleries,
                 Shoppers = shoppers,
-                Colors = colors
+                Colors = colors,
+                Shopper = shopper
             };
         }
 

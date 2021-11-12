@@ -62,6 +62,17 @@ namespace Reshop.Infrastructure.Repository.Shopper
             await _context.ShopperProducts.Where(c => c.ShopperId == shopperId && c.ProductId == productId)
                 .Select(c => c.ShopperProductId).SingleOrDefaultAsync();
 
+        public async Task<string> GetShopperStoreNameAsync(string shopperId) =>
+            await _context.Shoppers.Where(c => c.ShopperId == shopperId)
+                .Select(c => c.StoreName)
+                .SingleOrDefaultAsync();
+
+        public async Task<Tuple<string, string>> GetShopperIdAndStoreNameOfShopperProductColorAsync(string shopperProductColorId) =>
+            await _context.ShopperProductColors.Where(c => c.ShopperProductColorId == shopperProductColorId)
+                .Select(c => c.ShopperProduct.Shopper)
+                .Select(c => new Tuple<string, string>(c.ShopperId, c.StoreName))
+                .SingleOrDefaultAsync();
+
 
         public IEnumerable<ShoppersListForAdmin> GetShoppersWithPagination(string type = "all", int skip = 0,
             int take = 18, string filter = null)

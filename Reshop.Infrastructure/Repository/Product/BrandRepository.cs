@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Infrastructure.Context;
@@ -6,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Domain.Entities.Category;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -35,6 +35,15 @@ namespace Reshop.Infrastructure.Repository.Product
             _context.BrandToChildCategories.Where(c => c.ChildCategoryId == childCategoryId)
                 .Select(c => c.Brand)
                 .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName));
+
+        public async Task<IEnumerable<Tuple<int, string, string>>> GetBrandsOfShopperAsync(string shopperId) =>
+            await _context.ShopperProducts
+                    .Where(c => c.ShopperId == shopperId && c.IsActive && c.ShopperProductColors.Any(s => s.IsActive))
+                    .Select(c => c.Product)
+                    .Select(c => c.OfficialBrandProduct.Brand)
+                    .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName))
+                    .Distinct()
+                    .ToListAsync();
 
         public IEnumerable<ChildCategory> GetChildCategoriesOfBrand(int brandId) =>
             _context.BrandToChildCategories.Where(c => c.BrandId == brandId)

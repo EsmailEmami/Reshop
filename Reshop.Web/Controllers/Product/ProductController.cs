@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
-using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Product;
-using Reshop.Application.Security.Attribute;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.Product
@@ -186,6 +183,38 @@ namespace Reshop.Web.Controllers.Product
             return View(result);
         }
 
-      
+        [HttpGet]
+        [Route("Shopper/{shopperId}/{storeName}")]
+        [Route("Shopper/{shopperId}/{storeName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]
+        [Route("Shopper/{shopperId}/{storeName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}/{brands}/{search}")]
+        public async Task<IActionResult> ProductsOfShopper(string shopperId, string storeName, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
+        {
+            if (brands != null && brands.ToLower() == "null")
+                brands = null;
+
+            if (search != null && search.ToLower() == "null")
+                search = null;
+
+            var selectedBrands = Fixer.SplitToListInt(brands);
+
+            if (selectedBrands == null)
+                return NotFound();
+
+            var result = await _productService.GetShopperProductsWithPaginationAsync(shopperId, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
+
+            ViewBag.SortBy = sortBy;
+            ViewBag.SelectedBrands = selectedBrands;
+            ViewBag.SearchText = search;
+
+            ViewBag.SelectedMinPrice = minPrice.ToDecimal();
+            ViewBag.SelectedMaxPrice = 0;
+
+            if (result != null)
+            {
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? maxPrice.ToDecimal() : result.ProductsMaxPrice;
+            }
+
+            return View(result);
+        }
     }
 }

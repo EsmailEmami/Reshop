@@ -121,7 +121,10 @@
                             <section class="order-price">
                                 <div>
                                     <span class="title">فروشگاه :</span>
-                                    <span><a href="#">@item.ShopperStoreName</a></span>
+                                    <span><a asp-controller="Product" 
+                                             asp-action="ProductsOfShopper"
+                                             asp-route-shopperId="@item.ShopperId"
+                                             asp-route-storeName="@item.ShopperStoreName.Replace(" ","-")">@item.ShopperStoreName</a></span>
                                 </div>
 
                                 <div>
