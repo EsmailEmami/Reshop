@@ -71,6 +71,9 @@ namespace Reshop.Application.Services.Shopper
             return new Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>(shoppers, pageId, totalPages, productId);
         }
 
+        public async Task<bool> IsShopperProductColorOfShopperAsync(string shopperId, string shopperProductColorId) =>
+            await _shopperRepository.IsShopperProductColorOfShopperAsync(shopperId, shopperProductColorId);
+
         public async Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper)
         {
             try
@@ -172,6 +175,9 @@ namespace Reshop.Application.Services.Shopper
 
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _shopperRepository.IsShopperExistAsync(shopperId);
+
+        public async Task<bool> IsShopperProductOfShopperAsync(string shopperId, string shopperProductId) =>
+            await _shopperRepository.IsShopperProductOfShopperAsync(shopperId, shopperProductId);
 
         public async Task<ResultTypes> UnAvailableShopperProductAsync(string shopperId, int productId)
         {

@@ -1,7 +1,16 @@
-﻿@model Tuple<IEnumerable<ProductViewModel>, int, int>
+﻿@model string
 @{
-    ViewData["Title"] = "ManageProducts";
+    ViewData["Title"] = "لیست کالا ها";
 }
+
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Shopper" asp-action="ManageProducts">لیست کالا ها</a>
+    </li>
+</ul>
 
 <div class="row">
 
@@ -25,54 +34,12 @@
             </div>
             <div class="col-12 mt-3">
                 <div class="user-data box-shadow">
-                    @if (!Model.Item1.Any())
-                    {
-                        <div class="alert alert-warning text-muted m-0">
-                            @User.FindFirstValue(ClaimTypes.Name) عزیز شما تا حالا محصولی ثبت نکرده اید.
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">نام محصول</th>
-                                        <th scope="col">قیمت</th>
-                                        @*<th scope="col">برند</th>
-                                        <th scope="col"></th>*@
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.Item1)
-                                    {
-
-                                        <tr>
-                                            <th scope="row">@item.ProductTitle</th>
-                                            <td>@item.ProductPrice</td>
-                                            @*<td>@item.BrandName</td>
-                                            <td>
-                                                <a class="btn btn-info text-white" 
-                                                   asp-controller="AccountManager"
-                                                   asp-action="ShopperProductDetail"
-                                                   asp-route-productId="@item.ProductId">جزئیات</a>
-                                            </td>*@
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-
-                    }
-
-
+                    <section class="table-list" id="tableList">
+                        @await Component.InvokeAsync("ShopperProductsForShowShopperComponent", new { shopperId = Model })
+                    </section>
                 </div>
 
             </div>
-
-
         </div>
     </div>
 </div>
-
-

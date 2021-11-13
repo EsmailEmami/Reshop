@@ -2,15 +2,14 @@
 using Reshop.Application.Convertors;
 using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Shopper;
+using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Infrastructure.Repository.Shopper
 {
@@ -57,6 +56,10 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
         public async Task<string> GetShopperIdOfUserByUserId(string userId) =>
             await _context.Shoppers.Where(c => c.UserId == userId).Select(c => c.ShopperId).SingleAsync();
+
+        public async Task<bool> IsShopperProductColorOfShopperAsync(string shopperId, string shopperProductColorId) =>
+            await _context.ShopperProductColors.AnyAsync(c => c.ShopperProductColorId == shopperProductColorId &&
+                                                              c.ShopperProduct.ShopperId == shopperId);
 
         public async Task<string> GetShopperProductIdAsync(string shopperId, int productId) =>
             await _context.ShopperProducts.Where(c => c.ShopperId == shopperId && c.ProductId == productId)
@@ -311,6 +314,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task<bool> IsShopperProductExistAsync(string shopperProductId) =>
             await _context.ShopperProducts.AnyAsync(c => c.ShopperProductId == shopperProductId);
 
+        public async Task<bool> IsShopperProductOfShopperAsync(string shopperId, string shopperProductId) =>
+            await _context.ShopperProducts.AnyAsync(c => c.ShopperProductId == shopperProductId && c.ShopperId == shopperId);
+
         public IEnumerable<StoreTitle> GetStoreTitles() => _context.StoreTitles;
 
         public async Task<StoreTitle> GetStoreTitleByIdAsync(int storeTitleId) =>
@@ -362,7 +368,7 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task<StoreAddress> GetStoreAddressByIdAsync(string storeAddressId) =>
             await _context.StoresAddress.FindAsync(storeAddressId);
 
-        
+
         public IEnumerable<Color> GetColors() =>
             _context.Colors;
 

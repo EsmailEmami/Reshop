@@ -16,6 +16,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         Task<EditShopperViewModel> GetShopperDataForEditAsync(string shopperId);
         Task<string> GetShopperIdOfUserByUserId(string userId);
 
+        Task<bool> IsShopperProductColorOfShopperAsync(string shopperId, string shopperProductColorId);
         Task<string> GetShopperProductIdAsync(string shopperId, int productId);
 
         Task<string> GetShopperStoreNameAsync(string shopperId);
@@ -53,6 +54,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         IEnumerable<ShopperProduct> GetShoppersOfProduct(int productId);
         Task<bool> IsShopperProductExistAsync(string shopperId, int productId);
         Task<bool> IsShopperProductExistAsync(string shopperProductId);
+        Task<bool> IsShopperProductOfShopperAsync(string shopperId, string shopperProductId);
 
         #endregion
 

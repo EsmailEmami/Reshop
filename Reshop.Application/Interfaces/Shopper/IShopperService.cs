@@ -16,12 +16,14 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<Tuple<IEnumerable<ShopperProductsListForShow>, int, int>> GetShopperProductsInformationWithPagination(string shopperId, string type = "all", string filter = "", int pageId = 1, int take = 18);
         Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>> GetProductShoppersInformationWithPagination(int productId, string type = "all", string filter = "", int pageId = 1, int take = 18);
 
+        Task<bool> IsShopperProductColorOfShopperAsync(string shopperId, string shopperProductColorId);
         Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> EditShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> AddShopperProductAsync(ShopperProduct shopperProduct);
         Task<ResultTypes> EditShopperProductAsync(ShopperProduct shopperProduct);
         Task<bool> IsShopperExistAsync(string shopperId);
 
+        Task<bool> IsShopperProductOfShopperAsync(string shopperId, string shopperProductId);
         Task<ResultTypes> UnAvailableShopperProductAsync(string shopperId, int productId);
         Task<string> GetShopperIdOrUserAsync(string userId);
         Task<string> GetShopperProductIdAsync(string shopperId, int productId);

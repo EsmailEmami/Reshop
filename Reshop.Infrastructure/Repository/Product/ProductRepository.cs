@@ -946,8 +946,10 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24)
         {
-            IQueryable<FavoriteProduct> favoriteProducts = _context.FavoriteProducts
-                .Where(c => c.UserId == userId);
+            IQueryable<ShopperProductColor> favoriteProducts = _context.FavoriteProducts
+                .Where(c => c.UserId == userId)
+                .Select(c=> c.ShopperProductColor)
+                .Where(c=> c.IsActive);
 
 
             #region filter product
@@ -956,30 +958,30 @@ namespace Reshop.Infrastructure.Repository.Product
             {
                 favoriteProducts = sortBy switch
                 {
-                    "news" => favoriteProducts.OrderByDescending(c => c.ShopperProductColor.CreateDate),
-                    "expensive" => favoriteProducts.OrderByDescending(c => c.ShopperProductColor.Price),
-                    "cheap" => favoriteProducts.OrderBy(c => c.ShopperProductColor.Price),
-                    "mostsale" => favoriteProducts.OrderByDescending(c => c.ShopperProductColor.SaleCount),
-                    "mostviews" => favoriteProducts.OrderByDescending(c => c.ShopperProductColor.ViewCount),
-                    _ => favoriteProducts.OrderByDescending(c => c.ShopperProductColor.CreateDate),
+                    "news" => favoriteProducts.OrderByDescending(c => c.CreateDate),
+                    "expensive" => favoriteProducts.OrderByDescending(c => c.Price),
+                    "cheap" => favoriteProducts.OrderBy(c => c.Price),
+                    "mostsale" => favoriteProducts.OrderByDescending(c => c.SaleCount),
+                    "mostviews" => favoriteProducts.OrderByDescending(c => c.ViewCount),
+                    _ => favoriteProducts.OrderByDescending(c => c.CreateDate),
                 };
             }
             else
             {
                 favoriteProducts = sortBy switch
                 {
-                    "news" => favoriteProducts.Where(c => c.ShopperProductColor.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.ShopperProductColor.CreateDate),
-                    "expensive" => favoriteProducts.Where(c => c.ShopperProductColor.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.ShopperProductColor.Price),
-                    "cheap" => favoriteProducts.Where(c => c.ShopperProductColor.ShopperProduct.Product.ProductType == type)
-                        .OrderBy(c => c.ShopperProductColor.Price),
-                    "mostsale" => favoriteProducts.Where(c => c.ShopperProductColor.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.ShopperProductColor.SaleCount),
-                    "mostviews" => favoriteProducts.Where(c => c.ShopperProductColor.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.ShopperProductColor.ViewCount),
-                    _ => favoriteProducts.Where(c => c.ShopperProductColor.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.ShopperProductColor.CreateDate),
+                    "news" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
+                        .OrderByDescending(c => c.CreateDate),
+                    "expensive" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
+                        .OrderByDescending(c => c.Price),
+                    "cheap" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
+                        .OrderBy(c => c.Price),
+                    "mostsale" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
+                        .OrderByDescending(c => c.SaleCount),
+                    "mostviews" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
+                        .OrderByDescending(c => c.ViewCount),
+                    _ => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
+                        .OrderByDescending(c => c.CreateDate),
                 };
             }
 
@@ -990,13 +992,14 @@ namespace Reshop.Infrastructure.Repository.Product
 
             return favoriteProducts.Select(c => new ProductViewModel()
             {
-                ProductTitle = c.ShopperProductColor.ShopperProduct.Product.ProductTitle,
-                LastDiscount = c.ShopperProductColor.Discounts
+                ProductTitle = c.ShopperProduct.Product.ProductTitle,
+                LastDiscount = c.Discounts
                     .OrderByDescending(e => e.EndDate)
                    .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
                    .FirstOrDefault(),
-                ProductPrice = c.ShopperProductColor.Price,
+                ProductPrice = c.Price,
                 ShopperProductColorId = c.ShopperProductColorId,
+                Image = c.ShopperProduct.Product.ProductGalleries.OrderBy(g=> g.OrderBy).First().ImageName
             });
         }
 
