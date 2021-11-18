@@ -30,7 +30,7 @@
             <button type="button" id="menu_button"><i class="far fa-bars"></i></button>
 
             <div class="user-img">
-                <a asp-controller="AccountManager" asp-action="Dashboard">
+                <a asp-area="" asp-controller="Account" asp-action="Dashboard">
                     <img src="/images/UserImages/@User.FindFirstValue(ClaimTypes.Actor)" alt="@User.FindFirstValue(ClaimTypes.Name)">
                     <span>@User.FindFirstValue(ClaimTypes.Name)</span>
                 </a>

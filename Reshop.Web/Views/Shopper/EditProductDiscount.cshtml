@@ -1,0 +1,46 @@
+﻿@model AddOrEditShopperProductDiscountViewModel
+@{
+    Layout = null;
+}
+
+<form asp-action="EditProductDiscount" method="post" onsubmit="return SubmitFormData(this)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+
+        <input type="hidden" asp-for="ShopperProductColorId" />
+
+        <div class="col-sm-12">
+            <div class="form-field">
+                <input asp-for="DiscountPercent">
+                <label><i class="far  fa-user"></i> درصد</label>
+                <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="StartDate" class="date-time-picker">
+                <label><i class="far fa-phone"></i> تاریخ شروع</label>
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="EndDate" class="date-time-picker">
+                <label><i class="far fa-phone"></i> تاریخ پایان</label>
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <button type="submit" class="btn btn-success">ثبت</button>
+</form>
+
+
+@{
+    await Html.RenderPartialAsync("_CalenderDatePickerPartial");
+}
+<script src="~/js/Input.js"></script>

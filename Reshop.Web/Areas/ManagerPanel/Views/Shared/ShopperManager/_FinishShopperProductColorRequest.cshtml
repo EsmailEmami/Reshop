@@ -1,0 +1,32 @@
+﻿@model FinishShopperRequestViewModel
+
+
+<form asp-controller="ShoppersManager" asp-action="FinishShopperProductColorRequest" method="post" onsubmit="return SubmitFinishRequest(this)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="RequestId" />
+
+    <div class="row">
+
+        <div class="col-sm-12">
+            <div class="form-field">
+                <textarea asp-for="Reason"></textarea>
+                <label><i class="far fa-box-open"></i> توضیحات</label>
+                <span asp-validation-for="Reason" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-check">
+                <label>
+                    موافقت شده است
+                    <input type="checkbox" checked asp-for="IsSuccess">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-success text-white">ثبت</button>
+    </div>
+</form>

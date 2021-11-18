@@ -1,0 +1,74 @@
+﻿@model ShopperProductRequestForShowViewModel
+@{
+    Layout = null;
+}
+
+<div class="general-data">
+
+    <div>
+        <h3>درخواست دهنده: </h3>
+        <span>   <a asp-area="ManagerPanel" asp-controller="UserManager"
+                    asp-action="UserDetail" asp-route-userId="@Model.UserId">@Model.UserFullName</a></span>
+        </div>
+   
+    <div>
+        <h3>فروشنده: </h3>
+        <span>  
+            <a asp-area="ManagerPanel" asp-controller="ShoppersManager"
+               asp-action="ShopperDetail" asp-route-shopperId="@Model.ShopperId">@Model.StoreName</a>
+            </span>
+    </div>
+    
+    <div>
+        <h3>کالا: </h3>
+        <span>   
+            <a asp-area="ManagerPanel" asp-controller="ProductManager"
+               asp-action="ProductDetail" asp-route-productId="@Model.ProductId">@Model.ProductName</a>
+        </span>
+    </div>
+    
+    <div>
+        <h3>نوع درخواست: </h3>
+        <span>   
+            @Model.RequestType.BoolToText("افزودن", "ویرایش")
+        </span>
+    </div>
+    
+    <div>
+        <h3>گارانتی: </h3>
+        <span>   
+            @Model.Warranty
+        </span>
+    </div>
+
+    <div>
+        <h3>تاریخ: </h3>
+        <span>
+            @Model.RequestDate.Date.ToShamsiDateTime()
+        </span>
+    </div>
+    
+    <div>
+        <h3>وضعیت: </h3>
+        <span>
+            @(!Model.IsRead ? "درحال بررسی" : Model.IsSuccess.BoolToText("تایید شده", "تایید نشده"))
+        </span>
+    </div>
+    
+    <div>
+        <h3>توضیحات: </h3>
+        <span>
+         @Model.Description
+        </span>
+    </div>
+</div>
+
+@if (!Model.IsRead)
+{
+    <section id="shopper-request-finish">
+        @await Html.PartialAsync("ShopperManager/_FinishShopperProductRequest", new FinishShopperRequestViewModel()
+        {
+            RequestId = Model.ShopperProductRequestId
+        })
+    </section>
+}

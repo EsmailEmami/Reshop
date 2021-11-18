@@ -1,7 +1,16 @@
-﻿@model Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>
+﻿@model string
 @{
-    ViewData["Title"] = "ShopperRequests";
+    ViewData["Title"] = "درخواست های شما";
 }
+
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Shopper" asp-action="ShopperRequests">درخواست ها</a>
+    </li>
+</ul>
 
 <div class="row">
 
@@ -18,80 +27,15 @@
                 <div class="profile-nav box-shadow">
                     <ul>
                         <li><a asp-action="ManageProducts">کالا های من</a> </li>
-                        <li><a asp-controller="AccountManager" asp-action="ProductsAccess">افزودن کالا</a> </li>
                         <li class="active"><a asp-action="ShopperRequests">درخواست ها</a> </li>
                     </ul>
                 </div>
             </div>
             <div class="col-12 mt-3">
                 <div class="user-data box-shadow">
-                    @if (!Model.Item1.Any())
-                    {
-                        <div class="alert alert-warning text-muted m-0">
-                            @User.FindFirstValue(ClaimTypes.Name) عزیز شما درخواستی ندارید.
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-striped responsive table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th scope="col">تاریخ درخواست</th>
-                                    <th scope="col">نوع درخواست</th>
-                                    <th scope="col">خوانده شده</th>
-                                    <th scope="col">نتیجه</th>
-                                    <th scope="col">دستورات</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach (var item in Model.Item1)
-                                {
-
-                                    <tr>
-                                        <th scope="row">@item.RequestDate.ToShamsiDateTime()</th>
-                                        <td>
-                                            @item.RequestType
-                                        </td>
-                                        <td>@item.IsRead</td>
-                                        <td>@item.IsSuccess</td>
-                                        <td>
-                                            <a>جزئیات</a>
-                                        </td>
-                                    </tr>
-                                }
-                                </tbody>
-                            </table>
-                        </div>
-
-
-                        @if (Model.Item3 > 1)
-                        {
-                            <ul class="pagination-custom">
-                                <li class="@(Model.Item2<=1?"disabled":"")">
-                                    <a onclick="Pagination('@(Model.Item2 - 1)')" href="#">
-                                        <i class="far fa-angle-right"></i>
-                                    </a>
-                                </li>
-                                @for (var i = 1; i <= Model.Item3; i++)
-                                {
-                                    <li class="@(Model.Item2 == i? "active":"")">
-                                        <a onclick="Pagination('@i')" href="#">
-                                            @i
-                                        </a>
-                                    </li>
-                                }
-
-                                <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")">
-                                    <a onclick="Pagination('@(Model.Item2 + 1)')" href="#">
-                                        <i class="far fa-angle-left"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        }
-                    }
-
-
+                    <section class="table-list" id="tableRequestList">
+                        @await Component.InvokeAsync("ShopperRequestsForShowShopperComponent", new { shopperId = Model })
+                    </section>
                 </div>
 
             </div>
@@ -100,3 +44,8 @@
         </div>
     </div>
 </div>
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}

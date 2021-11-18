@@ -1,5 +1,6 @@
 ﻿using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
+using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Shopper;
@@ -133,7 +134,7 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
-        public async Task<Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>> GetShopperRequestsForShowAsync(string shopperId, string type = "all", int pageId = 1, int take = 18)
+        public async Task<Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>> GetShopperRequestsForShowAsync(string shopperId, string type = "all", int pageId = 1, int take = 18, string filter = null)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
             int count = 0;
@@ -144,25 +145,25 @@ namespace Reshop.Application.Services.Shopper
             {
                 case "all":
                     {
-                        count += await _shopperRepository.GetShopperProductColorRequestsCountAsync(shopperId);
-                        count += await _shopperRepository.GetShopperProductRequestsCountAsync(shopperId);
+                        count += await _shopperRepository.GetShopperProductColorRequestsCountAsync(shopperId, filter);
+                        count += await _shopperRepository.GetShopperProductRequestsCountAsync(shopperId, filter);
 
-                        model.AddRange(_shopperRepository.GetShopperProductColorRequestsForShow(shopperId, skip, take));
-                        model.AddRange(_shopperRepository.GetShopperProductRequestsForShow(shopperId, skip, take));
+                        model.AddRange(_shopperRepository.GetShopperProductColorRequestsForShow(shopperId, skip, take, filter));
+                        model.AddRange(_shopperRepository.GetShopperProductRequestsForShow(shopperId, skip, take, filter));
                         break;
                     }
                 case "product":
                     {
-                        count += await _shopperRepository.GetShopperProductRequestsCountAsync(shopperId);
+                        count += await _shopperRepository.GetShopperProductRequestsCountAsync(shopperId, filter);
 
-                        model.AddRange(_shopperRepository.GetShopperProductRequestsForShow(shopperId, skip, take));
+                        model.AddRange(_shopperRepository.GetShopperProductRequestsForShow(shopperId, skip, take, filter));
                         break;
                     }
                 case "color":
                     {
-                        count += await _shopperRepository.GetShopperProductColorRequestsCountAsync(shopperId);
+                        count += await _shopperRepository.GetShopperProductColorRequestsCountAsync(shopperId, filter);
 
-                        model.AddRange(_shopperRepository.GetShopperProductColorRequestsForShow(shopperId, skip, take));
+                        model.AddRange(_shopperRepository.GetShopperProductColorRequestsForShow(shopperId, skip, take, filter));
                         break;
                     }
             }
@@ -171,6 +172,116 @@ namespace Reshop.Application.Services.Shopper
 
 
             return new Tuple<IEnumerable<ShopperRequestsForShowViewModel>, int, int>(model, pageId, totalPages);
+        }
+
+        public async Task<ShopperProductRequest> GetShopperProductRequestAsync(string shopperProductRequestId) =>
+            await _shopperRepository.GetShopperProductRequestAsync(shopperProductRequestId);
+
+        public async Task<ShopperProductColorRequest> GetShopperProductColorRequestAsync(string shopperProductColorRequestId) =>
+            await _shopperRepository.GetShopperProductColorRequestAsync(shopperProductColorRequestId);
+
+        public async Task<ShopperProductRequestForShowViewModel> GetShopperProductRequestForShowAsync(
+            string shopperProductRequestId) =>
+            await _shopperRepository.GetShopperProductRequestForShowAsync(shopperProductRequestId);
+
+        public async Task<ShopperProductColorRequestForShowViewModel> GetShopperProductColorRequestForShowAsync(
+            string shopperProductColorRequestId) =>
+            await _shopperRepository.GetShopperProductColorRequestForShowAsync(shopperProductColorRequestId);
+
+        public async Task<ShopperProductRequestForShowShopperViewModel> GetShopperProductRequestForShowShopperAsync(
+            string shopperProductRequestId) =>
+            await _shopperRepository.GetShopperProductRequestForShowShopperAsync(shopperProductRequestId);
+
+        public async Task<ShopperProductColorRequestForShowShopperViewModel>
+            GetShopperProductColorRequestForShowShopperAsync(string shopperProductColorRequestId) =>
+            await _shopperRepository.GetShopperProductColorRequestForShowShopperAsync(shopperProductColorRequestId);
+
+        public async Task<ResultTypes> FinishShopperProductRequestAsync(FinishShopperRequestViewModel model)
+        {
+            try
+            {
+                var shopperProductRequest = await _shopperRepository.GetShopperProductRequestAsync(model.RequestId);
+
+                if (shopperProductRequest == null)
+                    return ResultTypes.Failed;
+
+                if (await _shopperRepository.IsShopperProductExistAsync(shopperProductRequest.ShopperId, shopperProductRequest.ProductId))
+                    return ResultTypes.Failed;
+
+
+                shopperProductRequest.IsRead = true;
+                shopperProductRequest.IsSuccess = model.IsSuccess;
+                shopperProductRequest.Reason = model.Reason;
+
+                if (model.IsSuccess)
+                {
+                    var shopperProduct = new ShopperProduct()
+                    {
+                        CreateDate = DateTime.Now,
+                        IsActive = shopperProductRequest.IsActive,
+                        IsFinally = true,
+                        ProductId = shopperProductRequest.ProductId,
+                        ShopperId = shopperProductRequest.ShopperId,
+                        Warranty = shopperProductRequest.Warranty
+                    };
+                    await _shopperRepository.AddShopperProductAsync(shopperProduct);
+                }
+
+                _shopperRepository.UpdateShopperProductRequest(shopperProductRequest);
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> FinishShopperProductColorRequestAsync(FinishShopperRequestViewModel model)
+        {
+            try
+            {
+                var shopperProductColorRequest = await _shopperRepository.GetShopperProductColorRequestAsync(model.RequestId);
+
+                if (shopperProductColorRequest == null)
+                    return ResultTypes.Failed;
+
+                if (await _shopperRepository.IsShopperProductColorExistAsync(shopperProductColorRequest.ShopperProductId, shopperProductColorRequest.ColorId))
+                {
+                    return ResultTypes.Failed;
+                }
+
+
+                shopperProductColorRequest.IsRead = true;
+                shopperProductColorRequest.IsSuccess = model.IsSuccess;
+                shopperProductColorRequest.Reason = model.Reason;
+
+                if (model.IsSuccess)
+                {
+                    var shopperProductColor = new ShopperProductColor()
+                    {
+                        ColorId = shopperProductColorRequest.ColorId,
+                        CreateDate = DateTime.Now,
+                        IsActive = shopperProductColorRequest.IsActive,
+                        IsFinally = true,
+                        Price = shopperProductColorRequest.Price,
+                        QuantityInStock = shopperProductColorRequest.QuantityInStock,
+                        ShortKey = NameGenerator.GenerateShortKey(),
+                        ShopperProductId = shopperProductColorRequest.ShopperProductId
+                    };
+                    await _shopperRepository.AddShopperProductColorAsync(shopperProductColor);
+                }
+
+                _shopperRepository.UpdateShopperProductColorRequest(shopperProductColorRequest);
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
 
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
@@ -232,8 +343,22 @@ namespace Reshop.Application.Services.Shopper
         public async Task<ShopperDataForAdmin> GetShopperDataForAdminAsync(string shopperId) =>
             await _shopperRepository.GetShopperDataForAdminAsync(shopperId);
 
-        public async Task<AddOrEditShopperProductViewModel> GetShopperProductDataForEditAsync(string shopperProductId) =>
+        public async Task<EditShopperProductViewModel> GetShopperProductDataForEditAsync(string shopperProductId) =>
             await _shopperRepository.GetShopperProductDataForEditAsync(shopperProductId);
+
+        public async Task<bool> IsAnyActiveShopperProductRequestExistAsync(string shopperId, int productId, bool type) =>
+            await _shopperRepository.IsAnyActiveShopperProductRequestExistAsync(shopperId, productId, type);
+
+        public async Task<bool> IsAnyActiveShopperProductRequestExistAsync(string shopperProductId, bool type)
+        {
+            string shopperId = await _shopperRepository.GetShopperIdOfShopperProductAsync(shopperProductId);
+            int productId = await _shopperRepository.GetProductIdOfShopperProductAsync(shopperProductId);
+
+            if (string.IsNullOrEmpty(shopperId) || productId == 0)
+                return false;
+
+            return await _shopperRepository.IsAnyActiveShopperProductRequestExistAsync(shopperId, productId, type);
+        }
 
         public async Task<ResultTypes> AddShopperProductRequestAsync(ShopperProductRequest shopperProductRequest)
         {
@@ -461,8 +586,8 @@ namespace Reshop.Application.Services.Shopper
         public async Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId) =>
             await _shopperRepository.GetShopperProductColorDetailAsync(shopperProductColorId);
 
-        public async Task<bool> IsAnyActiveShopperProductColorRequestAsync(string shopperProductId, int colorId) =>
-            await _shopperRepository.IsAnyActiveShopperProductColorRequestAsync(shopperProductId, colorId);
+        public async Task<bool> IsAnyActiveShopperProductColorRequestExistAsync(string shopperProductId, int colorId, bool type) =>
+            await _shopperRepository.IsAnyActiveShopperProductColorRequestExistAsync(shopperProductId, colorId, type);
 
         public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(int productId, string shopperId)
         {

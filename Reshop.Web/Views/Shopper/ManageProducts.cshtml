@@ -27,13 +27,16 @@
                 <div class="profile-nav box-shadow">
                     <ul>
                         <li class="active"><a asp-action="ManageProducts">کالا های من</a> </li>
-                        <li><a asp-controller="AccountManager" asp-action="ProductsAccess">افزودن کالا</a> </li>
-                        <li class="active"><a asp-action="ShopperRequests">درخواست ها</a> </li>
+                        <li><a asp-action="ShopperRequests">درخواست ها</a> </li>
                     </ul>
                 </div>
             </div>
             <div class="col-12 mt-3">
                 <div class="user-data box-shadow">
+
+                    <a onclick="ShowModal('@Url.Action("AddShopperProduct","Shopper",null,Context.Request.Scheme)', 'افزودن کالا به فروشنده')"
+                       class="btn btn-success text-white mb-2">افزودن کالا</a>
+
                     <section class="table-list" id="tableList">
                         @await Component.InvokeAsync("ShopperProductsForShowShopperComponent", new { shopperId = Model })
                     </section>
@@ -43,3 +46,15 @@
         </div>
     </div>
 </div>
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -23,14 +23,14 @@
     @if (ViewBag.SearchText != null)
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filterRequest">
+            <input type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
             <button type="button" onclick="changeListRequest()"><i class="far fa-search"></i></button>
         </div>
     }
     else
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال کالا بگرد..." id="filterRequest">
+            <input type="text" placeholder="دنبال کالا بگرد..." id="filter">
             <button type="button" onclick="changeListRequest()"><i class="far fa-search"></i></button>
         </div>
     }
@@ -140,12 +140,12 @@
 
                             @if (item.RequestType == "product")
                             {
-                                <a onclick="ShowModal('@Url.Action("ShowShopperProductRequest", "ShoppersManager", new {shopperProductRequestId = item.RequestId}, Context.Request.Scheme)', 'افزودن عنوان')"
+                                <a onclick="ShowModal('@Url.Action("ShowShopperProductRequest", "Shopper", new {shopperProductRequestId = item.RequestId}, Context.Request.Scheme)', 'افزودن عنوان')"
                                    class="btn  btn-info text-white">مشاهده بیشتر</a>
                             }
                             else
                             {
-                                <a onclick="ShowModal('@Url.Action("ShowShopperProductColorRequest", "ShoppersManager", new {shopperProductColorRequestId = item.RequestId}, Context.Request.Scheme)', 'افزودن عنوان')"
+                                <a onclick="ShowModal('@Url.Action("ShowShopperProductColorRequest", "Shopper", new {shopperProductColorRequestId = item.RequestId}, Context.Request.Scheme)', 'افزودن عنوان')"
                                    class="btn  btn-info text-white">مشاهده بیشتر</a>
                             }
                         </td>
@@ -193,11 +193,11 @@
         function changeListRequest() {
             let pageId = $('#pageIdRequest').val();
             let type = $('#typeRequest').val();
-            var filter = $('#filterRequest').val();
+            var filter = $('#filter').val();
 
             $.ajax({
                 type: 'GET',
-                url: '/ManagerPanel/ShoppersManager/ShopperRequestsList/?shopperId=@ViewBag.ShopperId.ToString()&filter=' + filter + '&type=' + type + '&pageId=' + pageId
+                url: '/Shopper/ShopperRequestsList/?filter=' + filter + '&type=' + type + '&pageId=' + pageId
             }).done(function (res) {
                 $("#tableRequestList").html(res);
             });

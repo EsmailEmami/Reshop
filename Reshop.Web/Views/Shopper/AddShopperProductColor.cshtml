@@ -1,0 +1,68 @@
+﻿@model AddColorToShopperProductViewModel
+
+@{
+    Layout = null;
+}
+
+<form asp-action="AddShopperProductColor" method="post" onsubmit="return SubmitFormData(this)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+
+        <input type="hidden" asp-for="ShopperProductId" />
+
+
+        <div class="col-sm-12 col-lg-4">
+            <div class="form-field">
+                <input asp-for="QuantityInStock">
+                <label><i class="far  fa-user"></i> تعداد موجودی</label>
+                <span asp-validation-for="QuantityInStock" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-8">
+            <div class="form-field">
+                <input asp-for="Price">
+                <label><i class="far fa-phone"></i> قیمت</label>
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+        </div>
+
+        @* colors *@
+        @{
+            var colors = ViewBag.Colors as IEnumerable<Tuple<int, string>>;
+        }
+
+        <div class="col-sm-12">
+            <select id="city" asp-for="ColorId" select-search="true">
+                <option value="">رنگ</option>
+
+                @if (colors != null)
+                {
+                    @foreach (var item in colors)
+                    {
+                        @:<option value="@item.Item1" @((Model.ColorId != 0 && item.Item1 == Model.ColorId) ? "selected" : "" )>@item.Item2</option>
+                    }
+                }
+            </select>
+        </div>
+
+
+        <div class="col-sm-12">
+            <div class="form-check">
+                <label>
+                    این رنگ فعال است
+                    <input type="checkbox" checked asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+
+    <button type="submit" class="btn btn-success">ثبت</button>
+</form>
+
+<script src="~/js/select.js"></script>
+<script>
+    inputJs();
+</script>

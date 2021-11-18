@@ -140,8 +140,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return View(data);
         }
 
-
-
         [HttpGet]
         [NoDirectAccess]
         public IActionResult ShoppersOfProduct(int productId, string type, int pageId, string filter)

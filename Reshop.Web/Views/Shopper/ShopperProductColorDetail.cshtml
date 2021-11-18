@@ -9,10 +9,10 @@
 
 <ul class="content-header">
     <li class="active">
-        <a onclick="ColorsDetailData('colorDetail@(Model.ColorId)','@Model.ProductId','@Model.ColorId')">رنگ</a>
+        <a onclick="ColorsDetailData('colorDetail@(Model.ColorId)', '@Url.Action("ShopperProductColorDetail","Shopper",new{productId =Model.ProductId,colorId = Model.ColorId},Context.Request.Scheme)')">رنگ</a>
     </li>
     <li>
-        <a onclick="ColorsDiscountDetailData('colorDetail@(Model.ColorId)','@Model.ProductId','@Model.ColorId')">تخفیف</a>
+        <a onclick="ColorsDiscountDetailData('colorDetail@(Model.ColorId)','@Url.Action("ShopperProductDiscountDetail","Shopper",new{productId = Model.ProductId,colorId = Model.ColorId},Context.Request.Scheme)')">تخفیف</a>
     </li>
 </ul>
 

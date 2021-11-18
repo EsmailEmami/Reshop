@@ -3,13 +3,13 @@
     Layout = null;
 }
 
-<form asp-controller="ShoppersManager" asp-action="EditShopperProduct" method="post"
+<form asp-controller="Shopper" asp-action="EditShopperProduct" method="post"
       onsubmit="return SubmitFormData(this)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <input type="hidden" asp-for="ShopperId" />
     <input type="hidden" asp-for="ProductId" />
-
+ 
     <div class="row">
         <div class="col-sm-12">
             <div class="form-field">

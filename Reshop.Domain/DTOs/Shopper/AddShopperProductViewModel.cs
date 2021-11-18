@@ -8,7 +8,7 @@ using Reshop.Domain.Entities.Shopper;
 
 namespace Reshop.Domain.DTOs.Shopper
 {
-    public class AddOrEditShopperProductViewModel
+    public class AddShopperProductViewModel
     {
         public string ShopperId { get; set; }
 
@@ -22,7 +22,6 @@ namespace Reshop.Domain.DTOs.Shopper
         public string Warranty { get; set; }
 
         public bool IsActive { get; set; }
-
 
         public int SelectedStoreTitle { get; set; }
         public int SelectedBrand { get; set; }

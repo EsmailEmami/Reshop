@@ -41,9 +41,8 @@ namespace Reshop.Domain.Entities.Shopper
         public bool IsSuccess { get; set; }
 
         [Display(Name = "دلیل")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string Reason { get; set; } = "Null";
+        public string Reason { get; set; }
 
         public bool IsRead { get; set; }
 

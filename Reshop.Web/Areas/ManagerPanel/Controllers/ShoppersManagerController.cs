@@ -4,18 +4,14 @@ using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Generator;
+using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 using System;
-using System.Globalization;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Constants;
-using Reshop.Application.Interfaces.Discount;
-using Reshop.Application.Security.Attribute;
-using Reshop.Domain.Entities.Product;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -69,9 +65,79 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         // this method is for changing page or filter of shoppers list
         [HttpGet]
         [NoDirectAccess]
-        public IActionResult ShopperRequestsList(string shopperId, string type, int pageId)
+        public IActionResult ShopperRequestsList(string shopperId, string filter, string type, int pageId)
         {
-            return ViewComponent("ShopperRequestsComponent", new { shopperId, type, pageId });
+            return ViewComponent("ShopperRequestsComponent", new { shopperId, type, pageId, filter });
+        }
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> ShowShopperProductRequest(string shopperProductRequestId)
+        {
+            if (string.IsNullOrEmpty(shopperProductRequestId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var model = await _shopperService.GetShopperProductRequestForShowAsync(shopperProductRequestId);
+
+            if (model == null)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> ShowShopperProductColorRequest(string shopperProductColorRequestId)
+        {
+            if (string.IsNullOrEmpty(shopperProductColorRequestId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var model = await _shopperService.GetShopperProductColorRequestForShowAsync(shopperProductColorRequestId);
+
+            if (model == null)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> FinishShopperProductRequest(FinishShopperRequestViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "ShopperManager/_FinishShopperProductRequest", model) });
+
+            var res = await _shopperService.FinishShopperProductRequestAsync(model);
+
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه مشکلی پیش آمده است. لطفا دوباره تلاش کنید");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "ShopperManager/_FinishShopperProductRequest", model) });
+            }
+        }
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> FinishShopperProductColorRequest(FinishShopperRequestViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "ShopperManager/_FinishShopperProductRequest", model) });
+
+            var res = await _shopperService.FinishShopperProductColorRequestAsync(model);
+
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه مشکلی پیش آمده است. لطفا دوباره تلاش کنید");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "ShopperManager/_FinishShopperProductRequest", model) });
+            }
         }
 
         #endregion
@@ -87,7 +153,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
-       
+
         public async Task<IActionResult> ShopperProductDetail(string shopperProductId)
         {
             if (shopperProductId == null)
@@ -120,7 +186,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!await _shopperService.IsShopperExistAsync(shopperId))
                 return Json(new { isValid = false, errorType = "warning", errorText = "فروشنده یافت نشد! لطفا دوباره تلاش کنید." });
 
-            var model = new AddOrEditShopperProductViewModel()
+            var model = new AddShopperProductViewModel()
             {
                 ShopperId = shopperId,
             };
@@ -132,7 +198,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
-        public async Task<IActionResult> AddShopperProduct(AddOrEditShopperProductViewModel model)
+        public async Task<IActionResult> AddShopperProduct(AddShopperProductViewModel model)
         {
             // data for selectProduct
             ViewBag.StoreTitles = _shopperService.GetShopperStoreTitles(model.ShopperId);
@@ -141,7 +207,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             ViewBag.Products = _brandService.GetProductsOfOfficialProduct(model.SelectedOfficialProduct);
 
             if (!ModelState.IsValid)
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this,  model) });
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
 
             if (await _productService.IsShopperProductExistAsync(model.ShopperId, model.ProductId))
@@ -150,7 +216,11 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
-
+            if (await _shopperService.IsAnyActiveShopperProductRequestExistAsync(model.ShopperId, model.ProductId, true))
+            {
+                ModelState.AddModelError("", "فروشنده یک درخواست در حال بررسی دارد.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -163,7 +233,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 Warranty = model.Warranty,
                 RequestDate = DateTime.Now,
                 IsSuccess = true,
-                Reason = ShopperProductRequestReasons.AdminAddedProduct(),
                 IsRead = true,
             };
 
@@ -210,33 +279,25 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             var model = await _shopperService.GetShopperProductDataForEditAsync(shopperProductId);
 
-            // data for select Product
-            ViewBag.StoreTitles = _shopperService.GetShopperStoreTitles(model.ShopperId);
-            ViewBag.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
-            ViewBag.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
-            ViewBag.Products = _brandService.GetProductsOfOfficialProduct(model.SelectedOfficialProduct);
-            ViewBag.CurrentProductId = model.ProductId;
-
             return View(model);
         }
 
         [HttpPost]
         [NoDirectAccess]
-        public async Task<IActionResult> EditShopperProduct(AddOrEditShopperProductViewModel model, int lastProductId)
+        public async Task<IActionResult> EditShopperProduct(EditShopperProductViewModel model)
         {
-            // data for select Product
-            ViewBag.StoreTitles = _shopperService.GetShopperStoreTitles(model.ShopperId);
-            ViewBag.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
-            ViewBag.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
-            ViewBag.Products = _brandService.GetProductsOfOfficialProduct(model.SelectedOfficialProduct);
-            ViewBag.CurrentProductId = lastProductId;
-
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
-            if (lastProductId != model.ProductId && await _productService.IsShopperProductExistAsync(model.ShopperId, model.ProductId))
+            if (!await _productService.IsShopperProductExistAsync(model.ShopperId, model.ProductId))
             {
                 ModelState.AddModelError("", "این کالا قبلا توسط این فروشنده ثبت شده است. ");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+
+            if (await _shopperService.IsAnyActiveShopperProductRequestExistAsync(model.ShopperId, model.ProductId, false))
+            {
+                ModelState.AddModelError("", "فروشنده یک درخواست در حال بررسی دارد.");
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
             }
 
@@ -264,7 +325,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (shopperProduct != null)
                 {
                     shopperProduct.IsActive = model.IsActive;
-                    shopperProduct.ProductId = model.ProductId;
                     shopperProduct.Warranty = model.Warranty;
 
 
@@ -337,8 +397,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 IsRead = true,
                 IsActive = model.IsActive,
                 RequestUserId = userId,
-                ColorId = model.ColorId,
-                Reason = ShopperProductRequestReasons.AdminAddedColor()
+                ColorId = model.ColorId
             };
 
             var result = await _shopperService.AddShopperProductColorRequestAsync(shopperProductColorRequest);
@@ -377,9 +436,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> EditColorOfShopperProduct(string shopperProductId, int colorId)
         {
-            if (await _shopperService.IsAnyActiveShopperProductColorRequestAsync(shopperProductId, colorId))
-                return Json(new { isValid = false, errorType = "warning", errorText = "درخواست قبلی شما درحال بررسی است. لطفا منتظر بمانید." });
-
             var shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperProductId, colorId);
 
             var model = await _productService.GetShopperProductColorForEditAsync(shopperProductColorId);
@@ -432,7 +488,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 IsRead = true,
                 IsActive = model.IsActive,
                 RequestUserId = userId,
-                Reason = ShopperProductRequestReasons.AdminEditedColor(),
                 ColorId = shopperProductColor.ColorId
             };
 

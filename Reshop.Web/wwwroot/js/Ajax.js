@@ -106,6 +106,44 @@ $(function () {
     }
 });
 
+
+
+function SubmitFinishRequest(form) {
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.isValid) {
+                    if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
+                        var loc = window.location.href;
+                        ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.', loc);
+                    } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
+                        ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.', res.returnUrl);
+                    } else {
+                        ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.');
+                    }
+                } else
+
+                if (res.returnUrl != null) {
+                    window.location.href = res.returnUrl;
+                }
+
+
+                $("#shopper-request-finish").html(res.html);
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
+
 // this function is for add select option
 function addSelectList(select, selectDropdown, itemValue, itemText) {
 

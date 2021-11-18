@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Reshop.Application.Interfaces.Shopper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Interfaces.Shopper;
 
 namespace Reshop.Web.Components.Shopper
 {
-    public class ShopperRequestsComponent : ViewComponent
+    public class ShopperRequestsForShowShopperComponent : ViewComponent
     {
         private readonly IShopperService _shopperService;
 
-        public ShopperRequestsComponent(IShopperService shopperService)
+        public ShopperRequestsForShowShopperComponent(IShopperService shopperService)
         {
             _shopperService = shopperService;
         }
@@ -26,7 +29,7 @@ namespace Reshop.Web.Components.Shopper
             ViewBag.ShopperId = shopperId;
             ViewBag.TakeCount = take;
 
-            return View("/Views/Shared/Components/Shopper/ShopperRequests.cshtml", requests);
+            return View("/Views/Shared/Components/Shopper/ShopperRequestsForShowShopper.cshtml", requests);
         }
     }
 }

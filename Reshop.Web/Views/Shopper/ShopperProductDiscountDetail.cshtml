@@ -2,15 +2,15 @@
 
 @{
     Layout = null;
-    string columnChartId = "LastDiscountColumnChartData" + Model.ColorId.ToString();
+    string columnChartId = "LastDiscountColumnChartData" + Model.ColorId;
 }
 
 <ul class="content-header">
     <li>
-        <a onclick="ColorsDetailData('colorDetail@(Model.ColorId)', '@Url.Action("ShopperProductColorDetail","ShoppersManager",new{shopperProductId = ViewBag.ShopperProductId,colorId = Model.ColorId},Context.Request.Scheme)')">رنگ</a>
+        <a onclick="ColorsDetailData('colorDetail@(Model.ColorId)', '@Url.Action("ShopperProductColorDetail","Shopper",new{productId =Model.ProductId,colorId = Model.ColorId},Context.Request.Scheme)')">رنگ</a>
     </li>
     <li class="active">
-        <a onclick="ColorsDiscountDetailData('colorDetail@(Model.ColorId)','@Url.Action("ShopperProductDiscountDetail","ShoppersManager",new{shopperProductId = ViewBag.ShopperProductId,colorId = Model.ColorId},Context.Request.Scheme)')">تخفیف</a>
+        <a onclick="ColorsDiscountDetailData('colorDetail@(Model.ColorId)','@Url.Action("ShopperProductDiscountDetail","Shopper",new{productId = Model.ProductId,colorId = Model.ColorId},Context.Request.Scheme)')">تخفیف</a>
     </li>
 </ul>
 
@@ -33,66 +33,44 @@
     </div>
 </div>
 
-@*<div class="action">
-    @if (Model.Discounts.Any() && Model.Discounts.First().Item2 >= DateTime.Now)
+@{
+    var lastDiscount = ViewBag.LastDiscount as ShopperProductDiscount;
+}
+
+<div class="action">
+    @if (lastDiscount != null && lastDiscount.EndDate >= DateTime.Now)
     {
         <div>
-            <h3><i class="far fa-tags"></i> تاریخ </h3>
-            <span>@Model.Discounts.First().Item1 تا @Model.Discounts.First().Item2</span>
+            <h3><i class="far fa-tags"></i> درصد: </h3>
+            <span>
+                @lastDiscount.DiscountPercent
+            </span>
         </div>
         <div>
-            <h3><i class="far fa-tags"></i> تعداد فروش: </h3>
-            <span>@Model.Discounts.First().Item3</span>
+            <h3><i class="far fa-tags"></i> تاریخ: </h3>
+            <span>
+                @lastDiscount.EndDate.ToShamsiDateTime() تا @lastDiscount.StartDate.ToShamsiDateTime()
+            </span>
         </div>
 
-        <button class="btn btn-warning text-white" onclick="ShowModal('@Url.Action("EditProductOfShopper", "AccountManager", new {productId= Model.ProductId, colorId = Model.ColorId}, Context.Request.Scheme)','ویرایش رنگ')">ویرایش</button>
+        <button class="btn btn-warning text-white" onclick="ShowModal('@Url.Action("EditProductDiscount", "Shopper", new {productId = Model.ProductId, colorId = Model.ColorId}, Context.Request.Scheme)', 'ویرایش رنگ')">ویرایش</button>
     }
     else
     {
-        <div class="alert alert-warning m-0 ml-3 p-3">
+        <div class="alert alert-warning mr-3 p-3">
             تخفیف فعالی یافت نشد.
         </div>
 
-        <button class="btn btn-success text-white" onclick="ShowModal('@Url.Action("AddProductDiscount", "AccountManager", new {productId= Model.ProductId, colorId = Model.ColorId}, Context.Request.Scheme)','افزودن تخفیف')">افزودت تخفیف</button>
+        <button class="btn btn-success text-white" onclick="ShowModal('@Url.Action("AddProductDiscount", "Shopper", new {productId = Model.ProductId, colorId = Model.ColorId}, Context.Request.Scheme)', 'افزودن تخفیف')">افزودن تخفیف</button>
     }
-</div>*@
+</div>
 
 <!-- chart -->
 <div class="scrollChart">
     <h2 class="chartheader">تخفیف های اخیر</h2>
     <div id="@columnChartId" style="overflow: hidden; width: 100%; min-width: 877px;"></div>
 </div>
-<!-- table -->
-@*<div class="table-responsive" style="margin-bottom: 1rem;">
-    <table class="table responsive table-hover table-striped table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">تاریخ</th>
-                <th scope="col">تعداد فروش</th>
-                <th scope="col">درآمد</th>
-            </tr>
-        </thead>
-        <tbody>
 
-            @{
-                int counter = 1;
-            }
-
-            @foreach (var item in Model.Discounts)
-            {
-                <tr>
-                    <th scope="row">@counter</th>
-                    <td>@item.Item1.ToShamsiDateTime() تا @item.Item2.ToShamsiDateTime()</td>
-                    <td>@item.Item3</td>
-                    <td>@item.Item4.NumSplitter() <span class="toman">تومان</span> </td>
-                </tr>
-
-                counter++;
-            }
-        </tbody>
-    </table>
-</div>*@
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 

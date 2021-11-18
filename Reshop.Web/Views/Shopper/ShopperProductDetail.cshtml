@@ -9,6 +9,22 @@
     <link href="~/css/select.css" rel="stylesheet" />
 }
 
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Shopper" asp-action="ManageProducts">لیست کالا ها</a>
+    </li>
+    <li>
+        <a asp-controller="Shopper" asp-action="ShopperProductDetail"
+           asp-route-shopperProductId="@ViewBag.ShopperProductId.ToString()"
+           target="_blank" class="btn btn-info text-white">
+            جزئیات
+        </a>
+    </li>
+</ul>
+
 <section class="product-detail mb-3">
     <div class="row">
         <!-- img part -->
@@ -36,19 +52,25 @@
 
         <!-- product data part -->
         <div class="col-sm-12 col-md-8">
-            <div class="product-data box-shadow">
+            <div class="general-data box-shadow">
                 <span class="part-title">مشخصات محصول</span>
                 <div>
                     <h3><i class="far fa-tags"></i> نام کالا: </h3>
-                    <span>@Model.ProductName</span>
+                    <span>
+                        @Model.ProductName
+                    </span>
                 </div>
                 <div>
                     <h3><i class="far fa-tags"></i> نام برند: </h3>
-                    <span>@Model.BrandName</span>
+                    <span>
+                        @Model.BrandName
+                    </span>
                 </div>
                 <div>
                     <h3><i class="far fa-tags"></i> تعداد فروشنده ها: </h3>
-                    <span>@Model.ShoppersCount</span>
+                    <span>
+                        @Model.ShoppersCount
+                    </span>
                 </div>
             </div>
         </div>
@@ -94,7 +116,9 @@
 
 
     <button class="btn btn-success text-white mt-3 mb-3"
-            onclick="ShowModal('@Url.Action("AddProductOfShopper", "AccountManager", new {productId= Model.ProductId}, Context.Request.Scheme)','افزودن رنگ')">افزودن رنگ</button>
+            onclick="ShowModal('@Url.Action("AddShopperProductColor", "Shopper", new {productId= Model.ProductId}, Context.Request.Scheme)','افزودن رنگ')">
+        افزودن رنگ
+    </button>
 
 
     @foreach (var color in Model.Colors)
@@ -103,17 +127,13 @@
             <div class="title">
                 <h3>@color.Item2</h3>
             </div>
-            <button type="button" class="collapsible" onclick="ColorsDetailData('colorDetail@(color.Item1)','@Model.ProductId','@color.Item1')"></button>
+            <button type="button" class="collapsible" onclick="ColorCollapsibleOfManager(this,'colorDetail@(color.Item1)', '@Url.Action("ShopperProductColorDetail","Shopper",new{productId = Model.ProductId, colorId = color.Item1},Context.Request.Scheme)')"></button>
             <div class="content" id="colorDetail@(color.Item1)">
 
             </div>
         </div>
 
     }
-
-
-
-
 
 </section>
 

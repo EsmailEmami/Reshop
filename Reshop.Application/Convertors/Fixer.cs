@@ -156,6 +156,9 @@ namespace Reshop.Application.Convertors
         public static string BoolToText(this bool value) =>
              value ? "بله" : "خیر";
 
+        public static string BoolToText(this bool value, string trueText, string falseText) => 
+            value ? trueText : falseText;
+        
 
         public static string ListToString(this IEnumerable<object> list, string delimiter) =>
             string.Join(delimiter, list);

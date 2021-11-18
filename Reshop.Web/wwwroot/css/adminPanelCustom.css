@@ -22,6 +22,12 @@
     font-weight: 900;
 }
 
+@font-face {
+    font-family: Kalameh;
+    src: url("/Fonts/Kalameh/KalamehFaNumRegular.ttf") format('truetype');
+    font-weight: normal;
+}
+
 body,
 html {
     background: #fff;
@@ -128,6 +134,10 @@ table tr td {
     .table-responsive::-webkit-scrollbar-thumb:hover {
         background: #aea4a4;
     }
+
+table .btn {
+    margin: 0;
+}
 
 
 /* width */
@@ -949,6 +959,7 @@ ul.pagination-custom {
                     margin-right: 10px;
                     margin-left: 10px;
                     margin-bottom: 0;
+                    max-width: 240px;
                 }
 
 
@@ -958,12 +969,16 @@ ul.pagination-custom {
     position: relative;
 }
 
-    .general-detail .general-data {
-        width: 100%;
-        padding: 5px 15px 15px 15px;
-        display: flex;
-        flex-wrap: wrap;
-    }
+.general-data {
+    width: 100%;
+    padding: 5px 15px 15px 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-shrink: initial;
+}
 
 .part-title {
     display: block;
@@ -987,17 +1002,23 @@ ul.pagination-custom {
         z-index: 0;
     }
 
-.general-detail .general-data div {
-    margin-bottom: 20px;
-    width: 50%;
+.general-data div {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    min-width: 360px;
 }
 
-    .general-detail .general-data div h3 {
-        margin: 0;
+    .general-data div h3 {
+        color: #666;
         font-weight: bold;
-        font-size: 16px;
-        color: #3f3f3f;
-        display: inline-block;
+        font-family: 'Kalameh', Sahel,sans-serif;
+        font-size: 15px;
+        display: inline-block
+    }
+
+    .general-data div span a {
+        color: #007bff;
+        font-weight: bold;
     }
 
 .chart,
