@@ -4,6 +4,7 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.Permission;
 using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Interfaces.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -204,6 +205,19 @@ namespace Reshop.Application.Services.User
             {
                 return ResultTypes.Failed;
             }
+        }
+
+        public async Task<Tuple<IEnumerable<Role>, int, int>> GetRolesOfUserWithPaginationAsync(string userId, int pageId = 1, int take = 15, string filter = null)
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int count = await _permissionRepository.GetUserRolesCountAsync(userId, filter);
+
+            var roles = await _permissionRepository.GetRolesOfUserWithPaginationAsync(userId, skip, take, filter);
+
+            int totalPages = (int)Math.Ceiling(1.0 * count / take);
+
+            return new Tuple<IEnumerable<Role>, int, int>(roles, pageId, totalPages);
         }
 
         public async Task<Permission> GetPermissionByIdAsync(int permissionId) =>

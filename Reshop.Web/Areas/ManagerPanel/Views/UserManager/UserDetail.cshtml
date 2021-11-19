@@ -47,10 +47,6 @@
                     <h3><i class="far fa-tags"></i> تعداد سفارش ها: </h3>
                     <span>@Model.OrdersCount.NumSplitter()</span>
                 </div>
-                <div>
-                    <h3><i class="far fa-tags"></i> مقام ها: </h3>
-                    <span>@Model.RolesName.ListToString(" , ")</span>
-                </div>
             </div>
         </div>
     </div>
@@ -58,6 +54,11 @@
 
 <section class="table-list" id="tableList">
     @await Component.InvokeAsync("UserOrdersComponent", new { userId = Model.UserId })
+</section>
+
+
+<section class="table-list" id="tableRole">
+    @await Component.InvokeAsync("UserRolesComponent", new { userId = Model.UserId })
 </section>
 
 

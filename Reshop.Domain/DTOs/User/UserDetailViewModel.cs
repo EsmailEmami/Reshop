@@ -16,7 +16,6 @@ namespace Reshop.Domain.DTOs.User
         public int OrdersCount { get; set; }
         public string NationalCode { get; set; }
         public int AddressesCount { get; set; }
-        public IEnumerable<string> RolesName { get; set; }
         public DateTime RegisterDate { get; set; }
     }
 }

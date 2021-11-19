@@ -52,7 +52,7 @@
         <span>@Model.QuantityInStock</span>
     </div>
 
-    <button class="btn btn-warning text-white" onclick="ShowModal('@Url.Action("EditProductOfShopper", "AccountManager", new {productId= Model.ProductId, colorId = Model.ColorId}, Context.Request.Scheme)','ویرایش رنگ')">ویرایش</button>
+    <button class="btn btn-warning text-white" onclick="ShowModal('@Url.Action("EditShopperProductColor", "Shopper", new {productId= Model.ProductId, colorId = Model.ColorId}, Context.Request.Scheme)','ویرایش رنگ')">ویرایش</button>
 </div>
 
 <!-- chart -->

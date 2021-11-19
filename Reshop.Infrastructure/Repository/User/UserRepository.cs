@@ -63,7 +63,6 @@ namespace Reshop.Infrastructure.Repository.User
                   Email = c.Email,
                   OrdersCount = c.Orders.Count(o => o.IsReceived),
                   RegisterDate = c.RegisterDate,
-                  RolesName = c.UserRoles.Select(o=> o.Role.RoleTitle),
                 })
                 .SingleOrDefaultAsync();
 

@@ -1,0 +1,128 @@
+﻿@model Tuple<IEnumerable<Role>, int, int>
+
+@{
+    int counter;
+
+
+    if (Model.Item2 == 1)
+    {
+        counter = 1;
+    }
+    else
+    {
+        int skip = (Model.Item2 - 1) * Convert.ToInt32(ViewBag.TakeCount);
+
+        counter = skip + 1;
+    }
+}
+
+<div class="filter">
+    <input type="hidden" id="pageIdRole" value="@Model.Item2" />
+
+    @if (ViewBag.SearchText != null)
+    {
+        <div class="filter-input">
+            <input type="text" placeholder="دنبال مقام بگرد..." value="@ViewBag.SearchText.ToString()" id="filterRole">
+            <button type="button" onclick="changeListRole()"><i class="far fa-search"></i></button>
+        </div>
+    }
+    else
+    {
+        <div class="filter-input">
+            <input type="text" placeholder="دنبال مقام بگرد..." id="filterRole">
+            <button type="button" onclick="changeListRole()"><i class="far fa-search"></i></button>
+        </div>
+    }
+</div>
+
+
+
+
+@if (Model.Item1.Any())
+{
+    <div class="table-responsive">
+        <table class="table responsive table-hover table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">نام مقام</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Item1)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @counter
+                        </td>
+
+                        <td>
+                            @item.RoleTitle
+                        </td>
+
+                    </tr>
+
+                    counter++;
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+    @if (Model.Item3 > 1)
+    {
+        <ul class="pagination-custom">
+            <li class="@(Model.Item2<=1?"disabled":"")" onclick="paginationRole('@(Model.Item2 - 1)')">
+                <i class="far fa-angle-right"></i>
+            </li>
+
+            @for (var i = 1; i <= Model.Item3; i++)
+            {
+                <li class="@(Model.Item2 == i? "active":"")" onclick="paginationRole('@i')">
+                    @i
+                </li>
+            }
+
+            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="paginationRole('@(Model.Item2+1)')">
+                <i class="far fa-angle-left"></i>
+            </li>
+
+        </ul>
+    }
+
+
+    <script>
+        function paginationRole(pageId) {
+            $('#pageIdRole').val(pageId);
+            changeListRole();
+        }
+
+        function changeListRole() {
+            let pageId = $('#pageIdRole').val();
+            var filter = $('#filterRole').val();
+
+            $.ajax({
+                type: 'GET',
+                url: '/ManagerPanel/UserManager/UserRolesList/?userId=@ViewBag.UserId.ToString()&filter=' + filter + '&pageId=' + pageId
+            }).done(function (res) {
+                $("#tableRole").html(res);
+            });
+        }
+
+    </script>
+
+
+}
+else
+{
+    <div class="alert alert-warning">
+        مقامی یافت نشد
+    </div>
+}
+
+<script src="~/js/select.js"></script>

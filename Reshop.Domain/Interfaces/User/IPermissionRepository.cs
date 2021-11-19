@@ -28,6 +28,9 @@ namespace Reshop.Domain.Interfaces.User
         Task AddUserRoleAsync(UserRole userRole);
         void RemoveUserRole(UserRole userRole);
 
+        Task<IEnumerable<Role>> GetRolesOfUserWithPaginationAsync(string userId, int skip, int take, string filter);
+        Task<int> GetUserRolesCountAsync(string userId, string filter);
+
         #endregion
 
         #region permission

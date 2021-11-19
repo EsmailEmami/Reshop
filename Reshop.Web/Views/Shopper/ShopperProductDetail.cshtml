@@ -18,9 +18,8 @@
     </li>
     <li>
         <a asp-controller="Shopper" asp-action="ShopperProductDetail"
-           asp-route-shopperProductId="@ViewBag.ShopperProductId.ToString()"
-           target="_blank" class="btn btn-info text-white">
-            جزئیات
+           asp-route-shopperProductId="@ViewBag.ShopperProductId.ToString()">
+            جزئیات کالا @Model.ProductName
         </a>
     </li>
 </ul>

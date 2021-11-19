@@ -35,6 +35,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return View(_userService.GetUsersInformation());
         }
 
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult UserRolesList(string userId, string filter, int pageId)
+        {
+            return ViewComponent("UserRolesComponent", new { userId, pageId, filter });
+        }
+
         #region add or edit
 
         [HttpGet]
@@ -191,7 +198,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #region detail
 
-        [HttpGet]
+        [HttpGet("[action]/{userId}")]
         public async Task<IActionResult> UserDetail(string userId)
         {
             if (userId == null)

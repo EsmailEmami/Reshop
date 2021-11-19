@@ -1,4 +1,5 @@
-﻿using Reshop.Application.Enums;
+﻿using System;
+using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.Permission;
 using Reshop.Domain.Entities.Permission;
 using System.Collections.Generic;
@@ -21,6 +22,9 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> RemoveAllUserRolesByUserIdAsync(string userId);
 
         Task<ResultTypes> AddUserRoleAsync(UserRole userRole);
+
+
+        Task<Tuple<IEnumerable<Role>, int, int>> GetRolesOfUserWithPaginationAsync(string userId, int pageId = 1, int take = 15, string filter = null);
 
 
         #region Permission

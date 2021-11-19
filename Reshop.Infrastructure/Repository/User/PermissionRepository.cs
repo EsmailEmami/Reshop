@@ -70,6 +70,35 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task AddUserRoleAsync(UserRole userRole) => await _context.UserRoles.AddAsync(userRole);
 
         public void RemoveUserRole(UserRole userRole) => _context.UserRoles.Remove(userRole);
+        public async Task<IEnumerable<Role>> GetRolesOfUserWithPaginationAsync(string userId, int skip, int take, string filter)
+        {
+            IQueryable<Role> roles = _context.UserRoles
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Role);
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                roles = roles.Where(c => c.RoleTitle.Contains(filter));
+            }
+
+            roles = roles.Skip(skip).Take(take);
+
+            return await roles.ToListAsync();
+        }
+
+        public async Task<int> GetUserRolesCountAsync(string userId, string filter)
+        {
+            IQueryable<Role> roles = _context.UserRoles
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Role);
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                roles = roles.Where(c => c.RoleTitle.Contains(filter));
+            }
+
+            return await roles.CountAsync();
+        }
 
         public async Task<Permission> GetPermissionByIdAsync(int permissionId) =>
             await _context.Permissions.FindAsync(permissionId);

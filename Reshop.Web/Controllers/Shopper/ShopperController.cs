@@ -525,7 +525,7 @@ namespace Reshop.Web.Controllers.Shopper
         [NoDirectAccess]
         public async Task<IActionResult> AddShopperProductColor(AddColorToShopperProductViewModel model)
         {
-            ViewData["Colors"] = _shopperService.GetColors();
+            ViewBag.Colors = _shopperService.GetColorsIdAndName();
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
@@ -574,6 +574,7 @@ namespace Reshop.Web.Controllers.Shopper
                 IsRead = false,
                 RequestUserId = userId,
                 ColorId = model.ColorId,
+                IsActive = model.IsActive
             };
 
             var result = await _shopperService.AddShopperProductColorRequestAsync(shopperProductColorRequest);

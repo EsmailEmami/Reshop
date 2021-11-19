@@ -205,26 +205,41 @@ namespace Reshop.Application.Services.Shopper
                 if (shopperProductRequest == null)
                     return ResultTypes.Failed;
 
-                if (await _shopperRepository.IsShopperProductExistAsync(shopperProductRequest.ShopperId, shopperProductRequest.ProductId))
-                    return ResultTypes.Failed;
-
-
                 shopperProductRequest.IsRead = true;
                 shopperProductRequest.IsSuccess = model.IsSuccess;
                 shopperProductRequest.Reason = model.Reason;
 
-                if (model.IsSuccess)
+                // while add
+                if (shopperProductRequest.RequestType)
                 {
-                    var shopperProduct = new ShopperProduct()
+                    if (await _shopperRepository.IsShopperProductExistAsync(shopperProductRequest.ShopperId, shopperProductRequest.ProductId))
+                        return ResultTypes.Failed;
+
+                    if (model.IsSuccess)
                     {
-                        CreateDate = DateTime.Now,
-                        IsActive = shopperProductRequest.IsActive,
-                        IsFinally = true,
-                        ProductId = shopperProductRequest.ProductId,
-                        ShopperId = shopperProductRequest.ShopperId,
-                        Warranty = shopperProductRequest.Warranty
-                    };
-                    await _shopperRepository.AddShopperProductAsync(shopperProduct);
+                        var shopperProduct = new ShopperProduct()
+                        {
+                            CreateDate = DateTime.Now,
+                            IsActive = shopperProductRequest.IsActive,
+                            IsFinally = true,
+                            ProductId = shopperProductRequest.ProductId,
+                            ShopperId = shopperProductRequest.ShopperId,
+                            Warranty = shopperProductRequest.Warranty
+                        };
+                        await _shopperRepository.AddShopperProductAsync(shopperProduct);
+                    }
+                }
+                else
+                {
+                    var shopperProduct = await _productRepository.GetShopperProductAsync(shopperProductRequest.ShopperId, shopperProductRequest.ProductId);
+
+                    if (shopperProduct == null)
+                        return ResultTypes.Failed;
+
+                    shopperProduct.Warranty = shopperProductRequest.Warranty;
+                    shopperProduct.IsActive = shopperProductRequest.IsActive;
+                  
+                    _shopperRepository.UpdateShopperProduct(shopperProduct);
                 }
 
                 _shopperRepository.UpdateShopperProductRequest(shopperProductRequest);
@@ -247,30 +262,44 @@ namespace Reshop.Application.Services.Shopper
                 if (shopperProductColorRequest == null)
                     return ResultTypes.Failed;
 
-                if (await _shopperRepository.IsShopperProductColorExistAsync(shopperProductColorRequest.ShopperProductId, shopperProductColorRequest.ColorId))
-                {
-                    return ResultTypes.Failed;
-                }
-
-
                 shopperProductColorRequest.IsRead = true;
                 shopperProductColorRequest.IsSuccess = model.IsSuccess;
                 shopperProductColorRequest.Reason = model.Reason;
 
-                if (model.IsSuccess)
+                // while add
+                if (shopperProductColorRequest.RequestType)
                 {
-                    var shopperProductColor = new ShopperProductColor()
+                    if (await _shopperRepository.IsShopperProductColorExistAsync(shopperProductColorRequest.ShopperProductId, shopperProductColorRequest.ColorId))
+                        return ResultTypes.Failed;
+
+                    if (model.IsSuccess)
                     {
-                        ColorId = shopperProductColorRequest.ColorId,
-                        CreateDate = DateTime.Now,
-                        IsActive = shopperProductColorRequest.IsActive,
-                        IsFinally = true,
-                        Price = shopperProductColorRequest.Price,
-                        QuantityInStock = shopperProductColorRequest.QuantityInStock,
-                        ShortKey = NameGenerator.GenerateShortKey(),
-                        ShopperProductId = shopperProductColorRequest.ShopperProductId
-                    };
-                    await _shopperRepository.AddShopperProductColorAsync(shopperProductColor);
+                        var shopperProductColor = new ShopperProductColor()
+                        {
+                            ColorId = shopperProductColorRequest.ColorId,
+                            CreateDate = DateTime.Now,
+                            IsActive = shopperProductColorRequest.IsActive,
+                            IsFinally = true,
+                            Price = shopperProductColorRequest.Price,
+                            QuantityInStock = shopperProductColorRequest.QuantityInStock,
+                            ShortKey = NameGenerator.GenerateShortKey(),
+                            ShopperProductId = shopperProductColorRequest.ShopperProductId
+                        };
+                        await _shopperRepository.AddShopperProductColorAsync(shopperProductColor);
+                    }
+                }
+                else
+                {
+                    var shopperProductColor = await _shopperRepository.GetShopperProductColorAsync(shopperProductColorRequest.ShopperProductId, shopperProductColorRequest.ColorId);
+
+                    if (shopperProductColor == null)
+                        return ResultTypes.Failed;
+
+                    shopperProductColor.Price = shopperProductColor.Price;
+                    shopperProductColor.QuantityInStock = shopperProductColorRequest.QuantityInStock;
+                    shopperProductColor.IsActive = shopperProductColor.IsActive;
+
+                    _shopperRepository.UpdateShopperProductColor(shopperProductColor);
                 }
 
                 _shopperRepository.UpdateShopperProductColorRequest(shopperProductColorRequest);
