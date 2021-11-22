@@ -1021,6 +1021,145 @@ ul.pagination-custom {
         font-weight: bold;
     }
 
+.addresses {
+    margin-top: 40px;
+    padding-bottom: 40px;
+    border-bottom: 2px solid #cecece;
+    display: flex;
+}
+
+    .addresses .address {
+        width: 330px;
+        min-width: 330px;
+        height: 370px;
+        border: 2px solid #cecece;
+        border-radius: 8px;
+        padding: 10px;
+        position: relative;
+        margin: 10px
+    }
+
+        .addresses .address:hover {
+            transition: ease-in .3s;
+            border-color: #898686;
+        }
+
+        .addresses .address .header {
+            padding-bottom: 5px;
+            border-bottom: 1px solid #b6b6b6;
+            font-size: 12px;
+            font-size: .857rem;
+            line-height: 1.833;
+            color: #62666d;
+            position: relative;
+            direction: ltr;
+        }
+
+            .addresses .address .header .items a {
+                font-size: 19px;
+                color: #3f3f3f;
+                line-height: 1;
+                margin-right: 5px;
+                transition: ease .3s;
+            }
+
+                .addresses .address .header .items a:hover {
+                    color: #41a219;
+                }
+
+            .addresses .address .header .items form {
+                display: inline-block;
+            }
+
+                .addresses .address .header .items form button i:hover {
+                    color: crimson;
+                }
+
+                .addresses .address .header .items form button {
+                    margin-left: 0;
+                    outline: none;
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    font-size: 19px;
+                    color: #3f3f3f;
+                    line-height: 1;
+                }
+
+        .addresses .address .personal {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #b6b6b6;
+            padding-bottom: 12px;
+        }
+
+            .addresses .address .personal p {
+                margin: 0;
+                color: #3f3f3f;
+                font-size: 16px;
+                line-height: 1;
+            }
+
+                .addresses .address .personal p:first-of-type::before {
+                    content: "\f007";
+                    font-family: FontAwesome;
+                    padding-left: 5px;
+                    color: #cecece;
+                    font-size: 19px;
+                }
+
+                .addresses .address .personal p:last-of-type::after {
+                    content: "\f879";
+                    font-family: FontAwesome;
+                    padding-left: 5px;
+                    color: #cecece;
+                    font-size: 19px;
+                }
+
+        .addresses .address .address-text {
+            text-align: justify;
+            margin-top: 10px;
+            max-height: 204px;
+            overflow-y: scroll;
+            padding-left: 5px;
+        }
+
+            .addresses .address .address-text::-webkit-scrollbar {
+                width: 3px;
+            }
+
+            .addresses .address .address-text::-webkit-scrollbar-track {
+                background: #dddddd;
+                border-radius: 25px;
+            }
+
+            .addresses .address .address-text::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 25px;
+            }
+
+                .addresses .address .address-text::-webkit-scrollbar-thumb:hover {
+                    background: #555;
+                }
+
+        .addresses .address .postal-code {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border-top: 1px solid #b6b6b6;
+            width: 100%;
+            padding: 10px;
+            background: #e6e6e6;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+            .addresses .address .postal-code span {
+                color: #1a1a1a;
+                font-size: 15px;
+            }
+
 .chart,
 .colors {
     width: 100%;

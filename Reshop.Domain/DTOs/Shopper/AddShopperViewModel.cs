@@ -11,6 +11,9 @@ namespace Reshop.Domain.DTOs.Shopper
 {
     public class AddShopperViewModel
     {
+        [Required]
+        public string UserId { get; set; }
+
         [Display(Name = "نام و نام خانوادگی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
@@ -73,11 +76,6 @@ namespace Reshop.Domain.DTOs.Shopper
         [AllowFileSize(FileSize = 1.5, ErrorMessage = "لطفا حجم فایل بیشتر از 1.5 مگابایت نباشد.")]
         public IFormFile OnNationalCardImageName { get; set; }
 
-        [Display(Name = "تصویر پشت کارت ملی فروشنده")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [AllowFileSize(FileSize = 1.5, ErrorMessage = "لطفا حجم فایل بیشتر از 1.5 مگابایت نباشد.")]
-        public IFormFile BackNationalCardImageName { get; set; }
-
         [Display(Name = "جواز کسب و کار")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [AllowFileSize(FileSize = 1.5, ErrorMessage = "لطفا حجم فایل بیشتر از 1.5 مگابایت نباشد.")]
@@ -85,6 +83,6 @@ namespace Reshop.Domain.DTOs.Shopper
 
         public IEnumerable<StoreTitle> StoreTitles { get; set; }
         public IEnumerable<int> SelectedStoreTitles { get; set; }
-        public IEnumerable<State> States { get; set; }
+        public IEnumerable<Tuple<int, string>> States { get; set; }
     }
 }

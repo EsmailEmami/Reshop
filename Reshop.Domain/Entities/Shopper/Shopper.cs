@@ -36,11 +36,6 @@ namespace Reshop.Domain.Entities.Shopper
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string OnNationalCardImageName { get; set; }
 
-        [Display(Name = "تصویر پشت کارت ملی فروشنده")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string BackNationalCardImageName { get; set; }
-
         [Display(Name = "جواز کسب و کار")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]

@@ -4290,9 +4290,7 @@ ul.breadcrumb {
         }
 
         .shopping-page .addresses .address .header {
-            padding-bottom: 12px;
             border-bottom: 1px solid #b6b6b6;
-            font-size: 12px;
             font-size: .857rem;
             line-height: 1.833;
             color: #62666d;
@@ -4303,6 +4301,7 @@ ul.breadcrumb {
 
             .shopping-page .addresses .address .header label {
                 position: relative;
+                top: -5px;
                 padding-right: 27px;
                 margin: 0;
                 cursor: pointer;
@@ -4357,16 +4356,28 @@ ul.breadcrumb {
                 transition: ease .3s;
             }
 
-                .shopping-page .addresses .address .header .items a:first-of-type:hover {
+                .shopping-page .addresses .address .header .items a:hover {
                     color: #41a219;
                 }
 
-                .shopping-page .addresses .address .header .items a:last-of-type:hover {
+            .shopping-page .addresses .address .header .items form {
+                display: inline-block;
+            }
+
+
+                .shopping-page .addresses .address .header .items form button i:hover {
                     color: crimson;
                 }
 
-                .shopping-page .addresses .address .header .items a:last-of-type {
+                .shopping-page .addresses .address .header .items form button {
                     margin-left: 0;
+                    outline: none;
+                    background: none;
+                    border: none;
+                    padding: 0;
+                    font-size: 19px;
+                    color: #3f3f3f;
+                    line-height: 1;
                 }
 
         .shopping-page .addresses .address .personal {

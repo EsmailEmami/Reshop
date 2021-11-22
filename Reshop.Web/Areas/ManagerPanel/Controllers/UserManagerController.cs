@@ -3,11 +3,17 @@ using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Generator;
+using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security;
+using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.Permission;
+using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,11 +26,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         private readonly IUserService _userService;
         private readonly IPermissionService _permissionService;
+        private readonly IShopperService _shopperService;
+        private readonly IOriginService _originService;
 
-        public UserManagerController(IUserService userService, IPermissionService permissionService)
+        public UserManagerController(IUserService userService, IPermissionService permissionService, IShopperService shopperService, IOriginService originService)
         {
             _userService = userService;
             _permissionService = permissionService;
+            _shopperService = shopperService;
+            _originService = originService;
         }
 
         #endregion
@@ -209,6 +219,328 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return NotFound();
 
             return View(user);
+        }
+
+        #endregion
+
+        #region add user to shopper
+
+        [HttpGet]
+        public async Task<IActionResult> AddToShopper(string userId)
+        {
+            var userData = await _userService.GetUserDataForEditAsync(userId);
+
+            if (userData == null)
+                return NotFound();
+
+
+
+            var model = new AddShopperViewModel()
+            {
+                FullName = userData.FullName,
+                Email = userData.Email,
+                NationalCode = userData.NationalCode,
+                PhoneNumber = userData.PhoneNumber,
+                UserId = userData.UserId,
+                StoreTitles = _shopperService.GetStoreTitles(),
+                States = _originService.GetStates()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToShopper(AddShopperViewModel model)
+        {
+            model.States = _originService.GetStates();
+            model.StoreTitles = _shopperService.GetStoreTitles();
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+
+            //// check images is not script
+
+            if (!model.OnNationalCardImageName.IsImage() ||
+                !model.BusinessLicenseImageName.IsImage())
+            {
+                ModelState.AddModelError("", "فروشنده عزیز لطفا تصاویر خود را درست وارد کنید.");
+                return View(model);
+            }
+
+
+            var user = await _userService.GetUserByIdAsync(model.UserId);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت نام فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            // edit user data
+            user.FullName = model.FullName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Email = model.Email;
+            user.NationalCode = model.NationalCode;
+
+
+            if (await _shopperService.IsUserShopperAsync(user.UserId))
+            {
+                string shopperId = await _shopperService.GetShopperIdOrUserAsync(user.UserId);
+
+                var deleteShopper = await _shopperService.DeleteShopperAsync(shopperId);
+
+                if (deleteShopper != ResultTypes.Successful)
+                {
+                    ModelState.AddModelError("", "متاسفانه هنگام ثبت نام فروشنده به مشکلی غیر منتظره برخوردیم.");
+                    return View(model);
+                }
+            }
+
+            // new shopper
+            var shopper = new Shopper()
+            {
+                StoreName = model.StoreName,
+                BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate(),
+                RegisterShopper = DateTime.Now,
+                IsActive = true,
+                User = user,
+                UserId = user.UserId
+            };
+
+            // shopper images
+            if (model.OnNationalCardImageName.Length > 0)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "shoppersCardImages");
+                string imageName = await ImageConvertor.CreateNewImage(model.OnNationalCardImageName, path);
+                shopper.OnNationalCardImageName = imageName;
+            }
+
+            if (model.BusinessLicenseImageName.Length > 0)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "shoppersCardImages");
+                string imageName = await ImageConvertor.CreateNewImage(model.BusinessLicenseImageName, path);
+                shopper.BusinessLicenseImageName = imageName;
+            }
+
+            var addShopperRes = await _shopperService.AddShopperAsync(shopper);
+
+            if (addShopperRes != ResultTypes.Successful)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت نام فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            // shopper store titles
+            var addStoreTitle = await _shopperService.AddShopperStoreTitleAsync(shopper.ShopperId, model.SelectedStoreTitles as List<int>);
+
+            if (addStoreTitle != ResultTypes.Successful)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت نام فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            // add tore address
+            var storeAddress = new StoreAddress()
+            {
+                ShopperId = shopper.ShopperId,
+                CityId = model.CityId,
+                Plaque = model.Plaque,
+                PostalCode = model.PostalCode,
+                AddressText = model.AddressText,
+                LandlinePhoneNumber = model.LandlinePhoneNumber
+            };
+
+            var addStoreAddress = await _shopperService.AddStoreAddressAsync(storeAddress);
+
+            if (addStoreAddress == ResultTypes.Successful)
+            {
+                shopper.StoresAddress.Add(storeAddress);
+
+                await _shopperService.EditShopperAsync(shopper);
+            }
+            else
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت نام فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            // add user role
+            var addRole = await _permissionService.AddUserToRoleAsync(user.UserId, "Shopper");
+
+            if (addRole != ResultTypes.Successful)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ثبت نام فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            return RedirectToAction("UserDetail", new { userId = user.UserId });
+        }
+
+        #endregion
+
+
+        #region new address
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> NewAddress(string userId)
+        {
+            if (!await _userService.IsUserExistAsync(userId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            ViewBag.States = _originService.GetStates();
+
+            ViewData["selectedState"] = 0;
+
+            return View(new Address()
+            {
+                UserId = userId
+            });
+        }
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> NewAddress(Address model, int selectedState)
+        {
+            ViewBag.States = _originService.GetStates();
+            ViewBag.Cities = _originService.GetCitiesOfState(selectedState);
+
+            ViewData["selectedState"] = selectedState;
+
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+
+            var city = await _originService.GetCityByIdAsync(model.CityId);
+
+
+            // error while is problem from city
+            if (city == null)
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+            else if (city.StateId != selectedState)
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+
+
+            var address = new Address()
+            {
+                UserId = model.UserId,
+                FullName = model.FullName,
+                PhoneNumber = model.PhoneNumber,
+                CityId = model.CityId,
+                Plaque = model.Plaque,
+                PostalCode = model.PostalCode,
+                AddressText = model.AddressText
+            };
+
+            var result = await _userService.AddUserAddressAsync(address);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+        }
+
+        #endregion
+
+        #region edit address
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> EditAddress(string addressId)
+        {
+            if (string.IsNullOrEmpty(addressId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var address = await _userService.GetAddressByIdAsync(addressId);
+
+            if (address is null)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var stateId = await _originService.GetStateIdOfCityAsync(address.CityId);
+
+            if (stateId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            ViewData["selectedState"] = stateId;
+            ViewBag.States = _originService.GetStates();
+            ViewBag.Cities = _originService.GetCitiesOfState(stateId);
+
+            return View(address);
+        }
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> EditAddress(Address model, int selectedState)
+        {
+            ViewBag.States = _originService.GetStates();
+            ViewBag.Cities = _originService.GetCitiesOfState(selectedState);
+
+            ViewData["selectedState"] = selectedState;
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+
+            var address = await _userService.GetAddressByIdAsync(model.AddressId);
+
+            if (address is null)
+            {
+                ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+
+            address.FullName = model.FullName;
+            address.CityId = model.CityId;
+            address.Plaque = model.Plaque;
+            address.PhoneNumber = model.PhoneNumber;
+            address.PostalCode = model.PostalCode;
+            address.AddressText = model.AddressText;
+
+            var result = await _userService.EditUserAddressAsync(address);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+        }
+
+        #endregion
+
+        #region Delete address
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAddress(string addressId)
+        {
+            var deleteAddress = await _userService.DeleteUserAddressAsync(addressId);
+
+            if (deleteAddress == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+            }
         }
 
         #endregion

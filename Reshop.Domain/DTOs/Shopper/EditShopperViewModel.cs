@@ -47,9 +47,6 @@ namespace Reshop.Domain.DTOs.Shopper
         [Display(Name = "تصویر روی کارت ملی فروشنده")]
         public IFormFile OnNationalCardImage { get; set; }
 
-        [Display(Name = "تصویر پشت کارت ملی فروشنده")]
-        public IFormFile BackNationalCardImage { get; set; }
-
         [Display(Name = "جواز کسب و کار")]
         public IFormFile BusinessLicenseImage { get; set; }
 

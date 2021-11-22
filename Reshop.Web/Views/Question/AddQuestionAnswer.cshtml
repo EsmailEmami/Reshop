@@ -4,7 +4,7 @@
 }
 
 
-<form asp-action="AddQuestionAnswer" method="post" onsubmit="return SubmitFormData(form)">
+<form asp-action="AddQuestionAnswer" method="post" onsubmit="return SubmitFormData(form,true)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="QuestionId" />
 

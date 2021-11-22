@@ -5,7 +5,7 @@
 }
 
 
-<form asp-action="AddOrEditChildCategory" method="post" onsubmit="return SubmitFormData(this)">
+<form asp-action="AddOrEditChildCategory" method="post" onsubmit="return SubmitFormData(this,true)">
     <div class="row">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="ChildCategoryId" />

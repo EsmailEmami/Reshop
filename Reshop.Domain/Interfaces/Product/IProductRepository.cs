@@ -1,16 +1,12 @@
-﻿using System;
-using Reshop.Domain.Entities.Category;
-using Reshop.Domain.Entities.Product;
-using Reshop.Domain.Entities.User;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Reshop.Domain.DTOs.Chart;
-using Reshop.Domain.DTOs.CommentAndQuestion;
+﻿using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Product;
+using Reshop.Domain.DTOs.Shopper;
+using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
-using Reshop.Domain.DTOs.Shopper;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Reshop.Domain.Interfaces.Product
 {

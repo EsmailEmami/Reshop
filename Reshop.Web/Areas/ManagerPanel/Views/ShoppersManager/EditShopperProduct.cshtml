@@ -4,7 +4,7 @@
 }
 
 <form asp-controller="ShoppersManager" asp-action="EditShopperProduct" method="post"
-      onsubmit="return SubmitFormData(this)">
+      onsubmit="return SubmitFormData(this,true)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <input type="hidden" asp-for="ShopperId" />

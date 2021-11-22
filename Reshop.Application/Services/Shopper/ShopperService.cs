@@ -10,7 +10,9 @@ using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using Reshop.Domain.Interfaces.User;
 
 namespace Reshop.Application.Services.Shopper
 {
@@ -20,11 +22,15 @@ namespace Reshop.Application.Services.Shopper
 
         private readonly IProductRepository _productRepository;
         private readonly IShopperRepository _shopperRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IPermissionRepository _permissionRepository;
 
-        public ShopperService(IProductRepository productRepository, IShopperRepository shopperRepository)
+        public ShopperService(IProductRepository productRepository, IShopperRepository shopperRepository, IUserRepository userRepository, IPermissionRepository permissionRepository)
         {
             _productRepository = productRepository;
             _shopperRepository = shopperRepository;
+            _userRepository = userRepository;
+            _permissionRepository = permissionRepository;
         }
 
         #endregion
@@ -238,7 +244,7 @@ namespace Reshop.Application.Services.Shopper
 
                     shopperProduct.Warranty = shopperProductRequest.Warranty;
                     shopperProduct.IsActive = shopperProductRequest.IsActive;
-                  
+
                     _shopperRepository.UpdateShopperProduct(shopperProduct);
                 }
 
@@ -315,6 +321,78 @@ namespace Reshop.Application.Services.Shopper
 
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _shopperRepository.IsShopperExistAsync(shopperId);
+
+        public async Task<bool> IsUserShopperAsync(string userId) =>
+            await _shopperRepository.IsUserShopperAsync(userId);
+
+        public async Task<Domain.Entities.Shopper.Shopper> GetShopperByIdAsync(string shopperId) =>
+            await _shopperRepository.GetShopperByIdAsync(shopperId);
+
+        public async Task<ResultTypes> DeleteShopperAsync(string shopperId)
+        {
+            try
+            {
+                var shopper = await _shopperRepository.GetShopperByIdAsync(shopperId);
+
+                if (shopper == null)
+                    return ResultTypes.Failed;
+
+                var user = await _userRepository.GetUserByIdAsync(shopper.UserId);
+
+                if (user == null)
+                    return ResultTypes.Failed;
+
+                // delete images
+                string path = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "shoppersCardImages");
+
+                ImageConvertor.DeleteImage(path + shopper.BusinessLicenseImageName);
+                ImageConvertor.DeleteImage(path + shopper.OnNationalCardImageName);
+
+                // delete shopper storeTitles
+                var shopperStoreTitles = await _shopperRepository.GetShopperStoreTitlesAsync(shopper.ShopperId);
+
+                if (shopperStoreTitles != null)
+                {
+                    foreach (var shopperStoreTitle in  shopperStoreTitles)
+                    {
+                        _shopperRepository.RemoveShopperStoreTitle(shopperStoreTitle);
+                    }
+                }
+
+                // delete store addresses
+
+                var addresses = _shopperRepository.GetShopperStoreAddresses(shopper.ShopperId);
+
+                if (addresses != null)
+                {
+                    foreach (var storeAddress in addresses)
+                    {
+                        _shopperRepository.RemoveStoreAddress(storeAddress);
+                    }
+                }
+
+                // delete userRoles
+                var role =await _permissionRepository.GetRoleByNameAsync("Shopper");
+
+                var userRole = await _permissionRepository.GetUserRoleAsync(user.UserId, role.RoleId);
+
+                _permissionRepository.RemoveUserRole(userRole);
+
+                _shopperRepository.RemoveShopper(shopper);
+
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
 
         public async Task<bool> IsShopperProductOfShopperAsync(string shopperId, string shopperProductId) =>
             await _shopperRepository.IsShopperProductOfShopperAsync(shopperId, shopperProductId);

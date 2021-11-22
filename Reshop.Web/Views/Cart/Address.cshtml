@@ -1,12 +1,6 @@
-﻿@model IEnumerable<Address>
+﻿@model IEnumerable<AddressForShowViewModel>
 @{
     ViewData["Title"] = "نشانی سفارش";
-    string addressId = "";
-
-    if (ViewData["SelectedAddress"] != null)
-    {
-        addressId = ViewData["SelectedAddress"].ToString();
-    }
 }
 
 @section Css{
@@ -49,63 +43,70 @@
         <a onclick="ShowModal('@Url.Action("NewAddress", "Account", null, Context.Request.Scheme)', 'آدرس جدید')">ثبت نشانی جدید</a>
     </section>
 
-    <form asp-controller="Cart" asp-action="Address" method="post" onsubmit="return SetCartAddress(this, '@Url.Action("Payment","Cart",null,Context.Request.Scheme)');">
-
-        <section class="addresses">
+    <section class="addresses">
 
 
-            @if (!Model.Any())
-            {
-                <div class="alert alert-warning">
-                    کاربر عزیز شما ادرسی ثبت نکرده اید.
-                </div>
-            }
-            else
-            {
+        @if (!Model.Any())
+        {
+            <div class="alert alert-warning">
+                کاربر عزیز شما ادرسی ثبت نکرده اید.
+            </div>
+        }
+        else
+        {
 
-                <div class="owl-carousel owl-theme">
-                    @foreach (var item in Model)
-                    {
-                        <div class="address">
-                            <div class="header">
-                                <label>
-                                    به این آدرس ارسال شود
-                                    <input type="radio" value="@item.AddressId" name="addressId" @((!string.IsNullOrEmpty(addressId) && item.AddressId == addressId) ? "checked" : "")>
-                                    <span class="checkmark"></span>
-                                </label>
-
-                                <div class="items">
-                                    <a onclick="ShowModal('@Url.Action("EditAddress", "Account", new {addressId =item.AddressId}, Context.Request.Scheme)', 'ویرایش آدرس')"><i class="far fa-edit"></i></a>
-                                    <a href="#"><i class="far fa-trash-alt"></i></a>
-                                </div>
-                            </div>
-
-                            <div class="personal">
-                                <p>@item.FullName</p>
-                                <p>@item.PhoneNumber</p>
-                            </div>
-
-                            <p class="address-text">
-                                @item.City.State.StateName - @item.City.CityName @item.AddressText - پلاک: @item.Plaque
-                            </p>
-
-                            <div class="postal-code">
-
-                                <span><i class="fal fa-envelope"></i> کد پستی:</span>
-                                <span>@item.PostalCode</span>
+            <div class="owl-carousel owl-theme">
+                @foreach (var item in Model)
+                {
+                    <div class="address">
+                        <div class="header">
+                            <label>
+                                به این آدرس ارسال شود
+                                <input type="radio" value="@item.AddressId" name="selectAddress" onclick="changeAddress(this.value)">
+                                <span class="checkmark"></span>
+                            </label>
 
 
+                            <div class="items">
+                                <a onclick="ShowModal('@Url.Action("EditAddress", "Account", new {addressId = item.AddressId}, Context.Request.Scheme)', 'ویرایش آدرس')">
+                                    <i class="far fa-edit"></i>
+                                </a>
+
+                                <form asp-controller="Account" asp-action="DeleteAddress" asp-route-addressId="@item.AddressId" method="post" onsubmit="return SubmitFormData(this,false)">
+                                    <button type="submit">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                    }
-                </div>
-            }
+
+                        <div class="personal">
+                            <p>@item.FullName</p>
+                            <p>@item.PhoneNumber</p>
+                        </div>
+
+                        <p class="address-text">
+                            @item.StateName - @item.CityName @item.AddressText - پلاک: @item.Plaque
+                        </p>
+
+                        <div class="postal-code">
+
+                            <span><i class="fal fa-envelope"></i> کد پستی:</span>
+                            <span>@item.PostalCode</span>
+
+
+                        </div>
+                    </div>
+                }
+            </div>
+        }
 
 
 
-        </section>
+    </section>
 
-
+    <form asp-controller="Cart" asp-action="Address" method="post" onsubmit="return SubmitFormData(this, false)">
+        <input type="hidden" name="addressId" id="addressId" />
         <button type="submit" class="btn btn-next">
             پرداخت
         </button>
@@ -140,8 +141,17 @@
                 }
             }
         });
+
+
+
+        function changeAddress(addressId) {
+            document.getElementById('addressId').value = addressId;
+        }
+
+
     </script>
     <script src="~/js/select.js"></script>
+
 }
 
 

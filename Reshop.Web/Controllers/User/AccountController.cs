@@ -26,7 +26,7 @@ using Reshop.Application.Security.GoogleRecaptcha;
 
 namespace Reshop.Web.Controllers.User
 {
-  [Authorize]
+    [Authorize]
     public class AccountController : Controller
     {
         #region constructor
@@ -309,11 +309,11 @@ namespace Reshop.Web.Controllers.User
         #region address
 
         [HttpGet]
-        public IActionResult Address()
+        public async Task<IActionResult> Address()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var addresses = _userService.GetUserAddresses(userId);
+            var addresses = await _userService.GetUserAddressesForShowAsync(userId);
 
             return View(addresses);
         }
@@ -475,6 +475,36 @@ namespace Reshop.Web.Controllers.User
             {
                 ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+        }
+
+        #endregion
+
+        #region delete address
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAddress(string addressId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var address = await _userService.GetAddressByIdAsync(addressId);
+
+            if (address == null)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            if (address.UserId != userId)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+
+            var deleteAddress = await _userService.DeleteUserAddressAsync(address);
+
+            if (deleteAddress == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, errorType = "success", errorText = "نشانی شما با موفقیت حذف شد.", returnUrl = "current" });
+            }
+            else
+            {
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
             }
         }
 

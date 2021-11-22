@@ -11,8 +11,11 @@ namespace Reshop.Domain.Interfaces.Shopper
     public interface IShopperRepository
     {
         Task<bool> IsShopperExistAsync(string shopperId);
+        Task<bool> IsUserShopperAsync(string userId);
+        Task<Entities.Shopper.Shopper> GetShopperByIdAsync(string shopperId);
         Task AddShopperAsync(Entities.Shopper.Shopper shopper);
         void EditShopper(Entities.Shopper.Shopper shopper);
+        void RemoveShopper(Entities.Shopper.Shopper shopper);
         Task<EditShopperViewModel> GetShopperDataForEditAsync(string shopperId);
         Task<string> GetShopperIdOfUserByUserId(string userId);
 
@@ -83,6 +86,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         IEnumerable<string> GetShopperStoreTitlesName(string shopperId);
         IEnumerable<Tuple<int, string>> GetShopperStoreTitles(string shopperId);
 
+        Task<IEnumerable<ShopperStoreTitle>> GetShopperStoreTitlesAsync(string shopperId);
         #endregion
 
         #region address

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Domain.Interfaces.Conversation;
+using Reshop.Domain.Interfaces.Shopper;
 
 namespace Reshop.Application.Services.User
 {
@@ -21,12 +22,14 @@ namespace Reshop.Application.Services.User
         private readonly IUserRepository _userRepository;
         private readonly IPermissionRepository _roleRepository;
         private readonly IQuestionRepository _questionRepository;
+        private readonly IShopperRepository _shopperRepository;
 
-        public UserService(IUserRepository userRepository, IPermissionRepository roleRepository, IQuestionRepository questionRepository)
+        public UserService(IUserRepository userRepository, IPermissionRepository roleRepository, IQuestionRepository questionRepository, IShopperRepository shopperRepository)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _questionRepository = questionRepository;
+            _shopperRepository = shopperRepository;
         }
 
         #endregion
@@ -34,8 +37,8 @@ namespace Reshop.Application.Services.User
         public async Task<AddOrEditUserForAdminViewModel> GetUserDataForAdminAsync(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            var roles =await _roleRepository.GetRolesAsync();
-            var userRoles =await _roleRepository.GetRolesIdOfUserAsync(userId);
+            var roles = await _roleRepository.GetRolesAsync();
+            var userRoles = await _roleRepository.GetRolesIdOfUserAsync(userId);
 
             return new AddOrEditUserForAdminViewModel()
             {
@@ -55,8 +58,16 @@ namespace Reshop.Application.Services.User
         public async Task<EditUserViewModel> GetUserDataForEditAsync(string userId) =>
             await _userRepository.GetUserDataForEditAsync(userId);
 
-        public async Task<UserDetailViewModel> GetUserDetailAsync(string userId) =>
-            await _userRepository.GetUserDetailAsync(userId);
+        public async Task<UserDetailViewModel> GetUserDetailAsync(string userId)
+        {
+            var user = await _userRepository.GetUserDetailAsync(userId);
+
+            var shopperId = await _shopperRepository.GetShopperIdOfUserByUserId(user.UserId);
+
+            user.ShopperId = shopperId;
+
+            return user;
+        }
 
         public int GetUserWalletBalance(string userId)
         {
@@ -79,23 +90,12 @@ namespace Reshop.Application.Services.User
             =>
                 _userRepository.GetUsersInformation();
 
-
-        //public async Task<Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>> GetShoppersInformationWithPagination(int pageId = 1, int take = 18)
-        //{
-        //    int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
-
-        //    int productsCount = await _shopperRepository.GetShoppersCountAsync();
-
-        //    var shoppers = _userRepository.GetShoppersWithPagination(skip, take);
-
-        //    int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
-
-        //    return new Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>(shoppers, pageId, totalPages);
-        //}
-
         public IEnumerable<Address> GetUserAddresses(string userId)
             =>
                 _userRepository.GetUserAddresses(userId);
+
+        public async Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId) =>
+            await _userRepository.GetUserAddressesForShowAsync(userId);
 
         public async Task<bool> IsPhoneExistAsync(string phone)
         {
@@ -230,6 +230,43 @@ namespace Reshop.Application.Services.User
             try
             {
                 _userRepository.UpdateAddress(address);
+                await _userRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> DeleteUserAddressAsync(string addressId)
+        {
+            try
+            {
+                var address = await _userRepository.GetAddressByIdAsync(addressId);
+
+                if (address == null)
+                    return ResultTypes.Failed;
+
+                _userRepository.RemoveAddress(address);
+
+                await _userRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> DeleteUserAddressAsync(Address address)
+        {
+            try
+            {
+                _userRepository.RemoveAddress(address);
+
                 await _userRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;

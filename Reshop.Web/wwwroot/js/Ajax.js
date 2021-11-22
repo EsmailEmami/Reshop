@@ -128,9 +128,9 @@ function SubmitFinishRequest(form) {
                     }
                 } else
 
-                if (res.returnUrl != null) {
-                    window.location.href = res.returnUrl;
-                }
+                    if (res.returnUrl != null) {
+                        window.location.href = res.returnUrl;
+                    }
 
 
                 $("#shopper-request-finish").html(res.html);
@@ -229,7 +229,7 @@ function GetCitiesOfState(stateId) {
     selectRefresh(select, selectDropDown);
 }
 
-function SubmitFormData(form) {
+function SubmitFormData(form, isModal) {
     try {
         $.ajax({
             type: 'POST',
@@ -238,24 +238,64 @@ function SubmitFormData(form) {
             processData: false,
             contentType: false,
             success: function (res) {
+                var loc;
                 if (res.isValid) {
-                    // modal body 
-                    $("#modal .modal-body").html('');
-                    // title of modal
-                    $(".modal-header-custom .header-title").html('');
-                    document.getElementById('modal').style.display = 'none';
 
-                    if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
-                        var loc = window.location.href;
-                        ShowToast('success', 'عملیات با موفقیت انجام شد.', loc);
-                    } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
-                        ShowToast('success', 'عملیات با موفقیت انجام شد.', res.returnUrl);
-                    } else {
-                        ShowToast('success', 'عملیات با موفقیت انجام شد.');
+                    if (isModal) {
+                        // modal body 
+                        $("#modal .modal-body").html('');
+                        // title of modal
+                        $(".modal-header-custom .header-title").html('');
+                        document.getElementById('modal').style.display = 'none';
                     }
 
+                    if (res.errorType != null && res.errorText != null) {
+                        if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
+                            loc = window.location.href;
+                            ShowToast(res.errorType, res.errorText, loc);
+                        } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
+                            loc = window.location.origin + res.returnUrl;
+                            ShowToast(res.errorType, res.errorText, loc);
+                        } else {
+                            ShowToast(res.errorType, res.errorText);
+                        }
+                    } else {
+                        if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
+                            loc = window.location.href;
+                            ShowToast('success', 'عملیات با موفقیت انجام شد.', loc);
+                        } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
+                            ShowToast('success', 'عملیات با موفقیت انجام شد.', res.returnUrl);
+                        } else {
+                            ShowToast('success', 'عملیات با موفقیت انجام شد.');
+                        }
+                    }
+
+
+
                 } else {
-                    $("#modal .modal-body").html(res.html);
+                    if (isModal) {
+                        $("#modal .modal-body").html(res.html);
+                    }
+
+                    if (res.errorType != null && res.errorText != null) {
+                        if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
+                            loc = window.location.href;
+                            ShowToast(res.errorType, res.errorText, loc);
+                        } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
+                            ShowToast(res.errorType, res.errorText, res.returnUrl);
+                        } else {
+                            ShowToast(res.errorType, res.errorText);
+                        }
+                    } else {
+                        if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
+                            loc = window.location.href;
+                            ShowToast('warning', 'عملیات با موفقیت انجام نشد.', loc);
+                        } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
+                            ShowToast('warning', 'عملیات با موفقیت انجام نشد.', res.returnUrl);
+                        } else {
+                            ShowToast('warning', 'عملیات با موفقیت انجام نشد.');
+                        }
+                    }
                 }
             }
         });
@@ -747,10 +787,10 @@ function ReportQuestionAnswer(form, name, token) {
 
                     var button = document.createElement('button');
                     button.setAttribute('type', 'submit');
-                    button.classList.add('report-answer','active');
+                    button.classList.add('report-answer', 'active');
 
                     var icon = document.createElement('i');
-                    icon.classList.add('far','fa-flag');
+                    icon.classList.add('far', 'fa-flag');
 
                     button.appendChild(icon);
 
@@ -879,35 +919,6 @@ function LikeOrDisLikeQuestion(form) {
 
                     ShowToast(res.errorType, res.errorText);
                 }
-            }
-        });
-        //to prevent default form submit event
-        return false;
-    } catch (ex) {
-        console.log(ex);
-    }
-}
-
-function SetCartAddress(form, returnUrl) {
-    try {
-        $.ajax({
-            type: 'POST',
-            url: form.action,
-            data: new FormData(form),
-            cache: false,
-            processData: false,
-            contentType: false,
-            success: function (res) {
-                if (res.isValid) {
-                    ShowToast('success', 'ادرس شما با موفقیت انتخاب شد.', returnUrl);
-                } else if (!res.isValid && !res.isNull) {
-                    ShowToast('danger', 'متاسفانه هنگام ثبت نشانی مقصد شما به مشکلی غیر منتطره برخوردیم.');
-                } else if (!res.isValid && res.isNull) {
-                    ShowToast('warning', 'لطفا آدرس خود را انتخاب کنید.');
-                }
-            },
-            error: function (err) {
-                console.log(err);
             }
         });
         //to prevent default form submit event

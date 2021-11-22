@@ -22,6 +22,9 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> AddShopperProductAsync(ShopperProduct shopperProduct);
         Task<ResultTypes> EditShopperProductAsync(ShopperProduct shopperProduct);
         Task<bool> IsShopperExistAsync(string shopperId);
+        Task<bool> IsUserShopperAsync(string userId);
+        Task<Domain.Entities.Shopper.Shopper> GetShopperByIdAsync(string shopperId);
+        Task<ResultTypes> DeleteShopperAsync(string shopperId);
 
         Task<bool> IsShopperProductOfShopperAsync(string shopperId, string shopperProductId);
         Task<ResultTypes> UnAvailableShopperProductAsync(string shopperId, int productId);

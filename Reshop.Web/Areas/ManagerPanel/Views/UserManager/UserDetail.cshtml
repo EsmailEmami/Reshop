@@ -47,10 +47,85 @@
                     <h3><i class="far fa-tags"></i> تعداد سفارش ها: </h3>
                     <span>@Model.OrdersCount.NumSplitter()</span>
                 </div>
+                @if (!string.IsNullOrEmpty(Model.ShopperId))
+                {
+                    <div>
+                        <h3><i class="far fa-tags"></i> فروشنده: </h3>
+                        <span>
+                            <a asp-controller="ShoppersManager" asp-action="ShopperDetail" asp-route-shopperId="@Model.ShopperId">
+                                مدیریت فروشنده
+                            </a>
+                        </span>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </section>
+
+<a onclick="ShowModal('@Url.Action("AddOrEditUser", "UserManager" ,new {userId = Model.UserId}, Context.Request.Scheme)', 'ویرایش کاربر')"
+   class="btn btn-warning text-white"><i class="fal fa-user-plus"></i> ویرایش کاربر</a>
+
+@if (string.IsNullOrEmpty(Model.ShopperId))
+{
+    <a asp-action="AddToShopper" asp-route-userId="@Model.UserId"
+       class="btn btn-success text-white"><i class="fal fa-user-plus"></i> افزودن کاربر به فروشنده</a>
+}
+
+<a class="btn btn-success text-white"
+   onclick="ShowModal('@Url.Action("NewAddress", "UserManager", new{userId = Model.UserId}, Context.Request.Scheme)', 'آدرس جدید')">
+    افزودن ادرس  جدید
+</a>
+@* address part *@
+<section class="addresses">
+
+    @if (!Model.Addresses.Any())
+    {
+        <div class="alert alert-warning">
+            آدرسی از کاربر یافت نشد.
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model.Addresses)
+        {
+            <div class="address">
+                <div class="header">
+
+                    <div class="items">
+                        <a onclick="ShowModal('@Url.Action("EditAddress", "UserManager", new {addressId = item.AddressId}, Context.Request.Scheme)', 'ویرایش آدرس')"><i class="far fa-edit"></i></a>
+                        <form asp-action="DeleteAddress" asp-route-addressId="@item.AddressId" method="post" onsubmit="return  SubmitFormData(this,false)">
+                            <button type="submit">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="personal">
+                    <p>@item.FullName</p>
+                    <p>@item.PhoneNumber</p>
+                </div>
+
+                <p class="address-text">
+                    @item.StateName - @item.CityName @item.AddressText - پلاک: @item.Plaque
+                </p>
+
+                <div class="postal-code">
+
+                    <span><i class="fal fa-envelope"></i> کد پستی:</span>
+                    <span>@item.PostalCode</span>
+
+
+                </div>
+            </div>
+        }
+    }
+
+
+
+</section>
+
 
 <section class="table-list" id="tableList">
     @await Component.InvokeAsync("UserOrdersComponent", new { userId = Model.UserId })

@@ -59,7 +59,7 @@ namespace Reshop.Web.Controllers.Shopper
         {
             var model = new AddShopperViewModel()
             {
-                States = _originService.GetStates() as IEnumerable<State>,
+                States = _originService.GetStates(),
                 StoreTitles = _shopperService.GetStoreTitles(),
             };
 
@@ -72,7 +72,7 @@ namespace Reshop.Web.Controllers.Shopper
         public async Task<IActionResult> AddShopper(AddShopperViewModel model)
         {
             // this is states when page reload states is not null
-            model.States = _originService.GetStates() as IEnumerable<State>;
+            model.States = _originService.GetStates();
             model.StoreTitles = _shopperService.GetStoreTitles();
 
             if (!ModelState.IsValid)
@@ -85,7 +85,6 @@ namespace Reshop.Web.Controllers.Shopper
             #region imgValication
 
             if (!model.OnNationalCardImageName.IsImage() ||
-              !model.BackNationalCardImageName.IsImage() ||
               !model.BusinessLicenseImageName.IsImage())
             {
                 ModelState.AddModelError("", "فروشنده عزیز لطفا تصاویر خود را درست وارد کنید.");
@@ -156,16 +155,7 @@ namespace Reshop.Web.Controllers.Shopper
                     shopper.OnNationalCardImageName = imageName;
                 }
 
-                if (model.BackNationalCardImageName.Length > 0)
-                {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "shoppersCardImages");
-                    string imageName = await ImageConvertor.CreateNewImage(model.BackNationalCardImageName, path);
-                    shopper.BackNationalCardImageName = imageName;
-                }
-
+          
                 if (model.BusinessLicenseImageName.Length > 0)
                 {
                     var path = Path.Combine(Directory.GetCurrentDirectory(),

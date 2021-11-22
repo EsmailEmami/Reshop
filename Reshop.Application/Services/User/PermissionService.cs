@@ -123,13 +123,12 @@ namespace Reshop.Application.Services.User
         public async Task<bool> IsRoleExistAsync(string roleId) =>
                 await _permissionRepository.IsRoleExistAsync(roleId);
 
-        public async Task<ResultTypes> AddUserToRoleAsync(string userId, string rolesName)
+        public async Task<ResultTypes> AddUserToRoleAsync(string userId, params string[] rolesName)
         {
-            string[] roleName = rolesName.Split(",");
-
+            
             List<Role> roles = new List<Role>();
 
-            foreach (var item in roleName)
+            foreach (var item in rolesName)
             {
                 var role = await _permissionRepository.GetRoleByNameAsync(item.FixedText());
                 if (role is null)

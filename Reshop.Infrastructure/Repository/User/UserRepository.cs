@@ -58,20 +58,44 @@ namespace Reshop.Infrastructure.Repository.User
                     UserImage = c.UserAvatar,
                     FullName = c.FullName,
                     NationalCode = c.NationalCode,
-                  AddressesCount = c.Addresses.Count,
-                  PhoneNumber = c.PhoneNumber,
-                  Email = c.Email,
-                  OrdersCount = c.Orders.Count(o => o.IsReceived),
-                  RegisterDate = c.RegisterDate,
+                    AddressesCount = c.Addresses.Count,
+                    PhoneNumber = c.PhoneNumber,
+                    Email = c.Email,
+                    OrdersCount = c.Orders.Count(o => o.IsReceived),
+                    RegisterDate = c.RegisterDate,
+                    Addresses = c.Addresses.Select(a=> new AddressForShowViewModel()
+                    {
+                        AddressId = a.AddressId,
+                        CityName = a.City.CityName,
+                        StateName = a.City.State.StateName,
+                        Plaque = a.Plaque,
+                        AddressText = a.AddressText,
+                        PhoneNumber = a.PhoneNumber,
+                        PostalCode = a.PostalCode,
+                        FullName = a.FullName
+                    })
                 })
                 .SingleOrDefaultAsync();
 
 
-        public IEnumerable<Address> GetUserAddresses(string userId)
-            =>
+        public IEnumerable<Address> GetUserAddresses(string userId) =>
                 _context.Addresses.Where(c => c.UserId == userId)
                     .Include(c => c.City)
                     .ThenInclude(c => c.State);
+
+        public async Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId) =>
+            await _context.Addresses.Where(c => c.UserId == userId)
+                .Select(a => new AddressForShowViewModel()
+                {
+                    AddressId = a.AddressId,
+                    CityName = a.City.CityName,
+                    StateName = a.City.State.StateName,
+                    Plaque = a.Plaque,
+                    AddressText = a.AddressText,
+                    PhoneNumber = a.PhoneNumber,
+                    PostalCode = a.PostalCode,
+                    FullName = a.FullName
+                }).ToListAsync();
 
         public async Task AddUserAsync(Domain.Entities.User.User user) => await _context.Users.AddAsync(user);
 

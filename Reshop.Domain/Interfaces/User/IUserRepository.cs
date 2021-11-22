@@ -31,6 +31,7 @@ namespace Reshop.Domain.Interfaces.User
         void UpdateAddress(Address address);
         void RemoveAddress(Address address);
         IEnumerable<Address> GetUserAddresses(string userId);
+        Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId);
 
         #endregion
 

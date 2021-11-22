@@ -30,12 +30,21 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _context.Shoppers.AnyAsync(c => c.ShopperId == shopperId);
 
+        public async Task<bool> IsUserShopperAsync(string userId) =>
+            await _context.Shoppers.AnyAsync(c => c.UserId == userId);
+
+        public async Task<Domain.Entities.Shopper.Shopper> GetShopperByIdAsync(string shopperId) =>
+            await _context.Shoppers.FindAsync(shopperId);
+
         public async Task AddShopperAsync(Domain.Entities.Shopper.Shopper shopper)
             =>
                 await _context.Shoppers.AddAsync(shopper);
 
         public void EditShopper(Domain.Entities.Shopper.Shopper shopper) =>
             _context.Shoppers.Update(shopper);
+
+        public void RemoveShopper(Domain.Entities.Shopper.Shopper shopper) =>
+             _context.Shoppers.Remove(shopper);
 
         public async Task<EditShopperViewModel> GetShopperDataForEditAsync(string shopperId)
             =>
@@ -51,11 +60,10 @@ namespace Reshop.Infrastructure.Repository.Shopper
                         StoreName = c.StoreName,
                         BusinessLicenseImageName = c.BusinessLicenseImageName,
                         OnNationalCardImageName = c.OnNationalCardImageName,
-                        BackNationalCardImageName = c.BackNationalCardImageName
                     }).SingleOrDefaultAsync();
 
         public async Task<string> GetShopperIdOfUserByUserId(string userId) =>
-            await _context.Shoppers.Where(c => c.UserId == userId).Select(c => c.ShopperId).SingleAsync();
+            await _context.Shoppers.Where(c => c.UserId == userId).Select(c => c.ShopperId).SingleOrDefaultAsync();
 
         public async Task<bool> IsShopperProductColorOfShopperAsync(string shopperId, string shopperProductColorId) =>
             await _context.ShopperProductColors.AnyAsync(c => c.ShopperProductColorId == shopperProductColorId &&
@@ -488,6 +496,10 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 .Where(c => c.ShopperId == shopperId)
                 .Select(c => c.StoreTitle)
                 .Select(c => new Tuple<int, string>(c.StoreTitleId, c.StoreTitleName));
+
+        public async Task<IEnumerable<ShopperStoreTitle>> GetShopperStoreTitlesAsync(string shopperId) =>
+            await _context.ShopperStoreTitles
+                .Where(c => c.ShopperId == shopperId).ToListAsync();
 
         public IEnumerable<StoreAddress> GetShopperStoreAddresses(string shopperId) =>
             _context.StoresAddress.Where(c => c.ShopperId == shopperId);

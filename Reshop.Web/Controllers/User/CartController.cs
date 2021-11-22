@@ -111,18 +111,11 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpGet]
-        public IActionResult Address()
+        public async Task<IActionResult> Address()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            string addressId = _cartService.GetOpenOrderAddressId(userId);
-
-            if (!string.IsNullOrEmpty(addressId))
-            {
-                ViewData["SelectedAddress"] = addressId;
-            }
-
-            return View(_userService.GetUserAddresses(userId));
+            return View(await _userService.GetUserAddressesForShowAsync(userId));
         }
 
         [HttpPost]
@@ -131,15 +124,14 @@ namespace Reshop.Web.Controllers.User
         {
             if (addressId == null)
             {
-                return Json(new { isValid = false, isNull = true });
+                return Json(new { isValid = false, errorType = "warning", errorText = "لطفا نشانی خود را انتخاب کنید." });
             }
-
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (!await _userService.IsUserAddressExistAsync(addressId, userId))
             {
-                return Json(new { isValid = false, isNull = false });
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
             }
 
 
@@ -147,18 +139,18 @@ namespace Reshop.Web.Controllers.User
 
             if (string.IsNullOrEmpty(orderId))
             {
-                return Json(new { isValid = false, isNull = false });
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
             }
 
             var res = await _cartService.AddAddressToOrderAsync(orderId, addressId);
 
             if (res == ResultTypes.Successful)
             {
-                return Json(new { isValid = true, isNull = false });
+                return Json(new { isValid = true, errorType = "success", errorText = "نشانی شما با موفقیت انتخاب شد.", returnUrl = "/Payment" });
             }
             else
             {
-                return Json(new { isValid = false, isNull = false });
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
             }
         }
 

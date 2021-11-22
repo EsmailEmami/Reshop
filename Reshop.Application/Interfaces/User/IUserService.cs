@@ -22,6 +22,7 @@ namespace Reshop.Application.Interfaces.User
         IEnumerable<UserInformationForListViewModel> GetUsersInformation();
         //Task<Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>> GetShoppersInformationWithPagination(int pageId = 1, int take = 18);
         IEnumerable<Address> GetUserAddresses(string userId);
+        Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId);
         Task<bool> IsPhoneExistAsync(string phone);
         Task<bool> IsUserExistAsync(string userId);
         Task<ResultTypes> AddUserAsync(Domain.Entities.User.User user);
@@ -38,7 +39,10 @@ namespace Reshop.Application.Interfaces.User
 
         Task<ResultTypes> AddUserAddressAsync(Address address);
         Task<ResultTypes> EditUserAddressAsync(Address address);
+        Task<ResultTypes> DeleteUserAddressAsync(string addressId);
+        Task<ResultTypes> DeleteUserAddressAsync(Address address);
         Task<Address> GetAddressByIdAsync(string addressId);
+
         Task<bool> IsUserAddressExistAsync(string addressId, string userId);
 
         #endregion

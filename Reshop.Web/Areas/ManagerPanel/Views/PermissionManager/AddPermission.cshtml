@@ -5,7 +5,7 @@
 }
 
 
-<form asp-action="AddPermission" method="post" onsubmit="return SubmitFormData(this)">
+<form asp-action="AddPermission" method="post" onsubmit="return SubmitFormData(this,true)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="PermissionId" />
     <div class="row">

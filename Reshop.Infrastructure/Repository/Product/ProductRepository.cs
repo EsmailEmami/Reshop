@@ -138,9 +138,9 @@ namespace Reshop.Infrastructure.Repository.Product
                             c.ShopperProducts
                                   .Any(i => i.IsActive
                                           && i.ShopperProductColors.Any(s => s.IsActive)))
-                .Distinct()
                 .Select(c => c.ShopperProducts
-                    .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
+                    .OrderByDescending(b => b.ShopperProductColors
+                        .Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
                     .OrderByDescending(b => b.SaleCount)
@@ -211,7 +211,10 @@ namespace Reshop.Infrastructure.Repository.Product
                             c.ShopperProducts
                                 .Any(i => i.IsActive
                                           && i.ShopperProductColors.Any(s => s.IsActive)))
-                .SelectMany(c => c.ShopperProducts)
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(b => b.ShopperProductColors
+                        .Sum(s => s.SaleCount))
+                    .First())
                 .Select(c => c.ShopperProductColors
                     .OrderByDescending(b => b.SaleCount)
                     .First());
@@ -332,7 +335,6 @@ namespace Reshop.Infrastructure.Repository.Product
             });
         }
 
-
         public IEnumerable<ProductViewModel> GetProductsOfBrandWithPagination(int brandId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> officialBrandProducts = null)
         {
             IQueryable<ShopperProductColor> products = _context.Brands
@@ -342,7 +344,10 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.IsActive &&
                             c.ShopperProducts
                                 .Any(i => i.IsActive))
-                .SelectMany(c => c.ShopperProducts)
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(b => b.ShopperProductColors
+                        .Sum(s => s.SaleCount))
+                    .First())
                 .Select(c => c.ShopperProductColors
                     .OrderByDescending(b => b.SaleCount)
                     .First());
@@ -411,7 +416,6 @@ namespace Reshop.Infrastructure.Repository.Product
                             c.ShopperProducts
                                 .Any(i => i.IsActive
                                           && i.ShopperProductColors.Any(s => s.IsActive)))
-                .Distinct()
                 .Select(c => c.ShopperProducts
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
@@ -444,7 +448,6 @@ namespace Reshop.Infrastructure.Repository.Product
                             c.ShopperProducts
                                 .Any(i => i.IsActive
                                           && i.ShopperProductColors.Any(s => s.IsActive)))
-                .Distinct()
                 .Select(c => c.ShopperProducts
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
@@ -503,7 +506,6 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.IsActive &&
                             c.ShopperProducts
                                 .Any(i => i.IsActive))
-                .Distinct()
                 .Select(c => c.ShopperProducts
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
@@ -753,7 +755,10 @@ namespace Reshop.Infrastructure.Repository.Product
                             c.ShopperProducts
                                 .Any(i => i.IsActive
                                           && i.ShopperProductColors.Any(s => s.IsActive)))
-                .SelectMany(c => c.ShopperProducts)
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(b => b.ShopperProductColors
+                        .Sum(s => s.SaleCount))
+                    .First())
                 .Select(c => c.ShopperProductColors
                     .OrderByDescending(b => b.SaleCount)
                     .First());
@@ -773,93 +778,133 @@ namespace Reshop.Infrastructure.Repository.Product
                 products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
             }
 
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
             return await products.CountAsync();
         }
 
         public async Task<int> GetChildCategoryProductsCountAsync(int childCategoryId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null)
         {
-            IQueryable<ShopperProduct> products = _context.ChildCategories
+            IQueryable<ShopperProductColor> products = _context.ChildCategories
                 .Where(c => c.ChildCategoryId == childCategoryId)
                 .SelectMany(c => c.Products)
                 .Where(c => c.IsActive &&
                             c.ShopperProducts.Any(s => s.IsActive &&
                                                        s.ShopperProductColors.Any(i => i.IsActive)))
-                .SelectMany(c => c.ShopperProducts);
-
-            if (!string.IsNullOrEmpty(filter))
-            {
-                products = products.Where(c => c.Product.ProductTitle.Contains(filter));
-            }
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(b => b.ShopperProductColors
+                        .Sum(s => s.SaleCount))
+                    .First())
+                .Select(c => c.ShopperProductColors
+                    .OrderByDescending(b => b.SaleCount)
+                    .First());
 
             if (minPrice != 0)
             {
-                products = products.Where(c => c.ShopperProductColors
-                    .Select(s => s.Price).Min() >= minPrice);
-            }
-            if (maxPrice != 0)
-            {
-                products = products.Where(c => c.ShopperProductColors
-                    .Select(s => s.Price).Max() <= maxPrice);
+                products = products.Where(c => c.Price >= maxPrice);
             }
 
-            return await products.Select(c => c.Product).CountAsync();
+            if (maxPrice != 0)
+            {
+                products = products.Where(c => c.Price <= maxPrice);
+            }
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
+            return await products.CountAsync();
         }
 
         public async Task<int> GetShopperProductsCountAsync(string shopperId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0,
             List<int> brands = null)
         {
-            IQueryable<ShopperProduct> products = _context.ShopperProducts
+            IQueryable<ShopperProductColor> products = _context.ShopperProducts
                 .Where(c => c.ShopperId == shopperId && c.IsActive && c.ShopperProductColors
-                    .Any(s => s.IsActive));
+                    .Any(s => s.IsActive))
+                .Select(c => c.ShopperProductColors
+                    .OrderByDescending(b => b.SaleCount)
+                    .First());
 
-
-            if (!string.IsNullOrEmpty(filter))
-            {
-                products = products.Where(c => c.Product.ProductTitle.Contains(filter));
-            }
 
             if (minPrice != 0)
             {
-                products = products.Where(c => c.ShopperProductColors
-                    .Select(s => s.Price).Min() >= minPrice);
-            }
-            if (maxPrice != 0)
-            {
-                products = products.Where(c => c.ShopperProductColors
-                    .Select(s => s.Price).Max() <= maxPrice);
+                products = products.Where(c => c.Price >= maxPrice);
             }
 
-            return await products.Select(c => c.Product).CountAsync();
+            if (maxPrice != 0)
+            {
+                products = products.Where(c => c.Price <= maxPrice);
+            }
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
+            return await products.CountAsync();
         }
 
         public async Task<int> GetBrandProductsCountAsync(int brandId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> officialBrandProducts = null)
         {
-            IQueryable<ShopperProduct> products = _context.Brands
+            IQueryable<ShopperProductColor> products = _context.Brands
                 .Where(c => c.BrandId == brandId)
                 .SelectMany(c => c.OfficialBrandProducts)
                 .SelectMany(c => c.Products)
                 .Where(c => c.IsActive &&
                             c.ShopperProducts.Any(s => s.IsActive &&
                                                        s.ShopperProductColors.Any(i => i.IsActive)))
-                .SelectMany(c => c.ShopperProducts);
-
-            if (!string.IsNullOrEmpty(filter))
-            {
-                products = products.Where(c => c.Product.ProductTitle.Contains(filter));
-            }
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(b => b.ShopperProductColors
+                        .Sum(s => s.SaleCount))
+                    .First())
+                .Select(c => c.ShopperProductColors
+                    .OrderByDescending(b => b.SaleCount)
+                    .First());
 
             if (minPrice != 0)
             {
-                products = products.Where(c => c.ShopperProductColors
-                    .Select(s => s.Price).Min() >= minPrice);
-            }
-            if (maxPrice != 0)
-            {
-                products = products.Where(c => c.ShopperProductColors
-                    .Select(s => s.Price).Max() <= maxPrice);
+                products = products.Where(c => c.Price >= maxPrice);
             }
 
-            return await products.Select(c => c.Product).CountAsync();
+            if (maxPrice != 0)
+            {
+                products = products.Where(c => c.Price <= maxPrice);
+            }
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (officialBrandProducts != null && officialBrandProducts.Any())
+            {
+                products = products
+                    .Where(c => officialBrandProducts
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProductId));
+            }
+
+            return await products.CountAsync();
         }
 
         public async Task<ShopperProduct> GetShopperProductAsync(string shopperId, int productId) =>
