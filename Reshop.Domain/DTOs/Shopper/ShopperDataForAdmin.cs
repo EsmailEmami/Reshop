@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.User;
 
 namespace Reshop.Domain.DTOs.Shopper
 {
@@ -17,5 +18,6 @@ namespace Reshop.Domain.DTOs.Shopper
         public string IssuanceOfIdentityCard { get; set; }
         public string FullIdOfIdentityCard { get; set; }
         public bool IsActive { get; set; }
+        public IEnumerable<StoreAddressForShowViewModel> StoreAddresses { get; set; }
     }
 }

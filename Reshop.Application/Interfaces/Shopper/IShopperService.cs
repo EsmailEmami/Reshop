@@ -62,7 +62,8 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<IEnumerable<StoreAddress>> GetShopperStoreAddressesAsync(string shopperUserId);
         Task<ResultTypes> AddStoreAddressAsync(StoreAddress storeAddress);
         Task<ResultTypes> EditStoreAddressAsync(StoreAddress storeAddress);
-        Task<ResultTypes> RemoveStoreAddressAsync(string storeAddressId);
+        Task<ResultTypes> DeleteStoreAddressAsync(string storeAddressId);
+        Task<StoreAddress> GetStoreAddressByIdAsync(string storeAddressId);
 
         #endregion
 

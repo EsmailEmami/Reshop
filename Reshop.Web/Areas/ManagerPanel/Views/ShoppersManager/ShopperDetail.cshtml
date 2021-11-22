@@ -21,8 +21,8 @@
 
 
                     <div class="mini-pic-slider">
-                    
-                            <img src="/images/ProductImages/placeholder-image.png" alt="@Model.ShopperFullName">
+
+                        <img src="/images/ProductImages/placeholder-image.png" alt="@Model.ShopperFullName">
                     </div>
 
 
@@ -96,6 +96,61 @@
 
 
 </section>
+
+<a class="btn btn-success text-white"
+   onclick="ShowModal('@Url.Action("NewAddress", "UserManager", new{userId = Model}, Context.Request.Scheme)', 'آدرس جدید')">
+    افزودن ادرس  جدید
+</a>
+@* address part *@
+<section class="addresses">
+
+    @if (!Model.StoreAddresses.Any())
+    {
+        <div class="alert alert-warning">
+            آدرسی از کاربر یافت نشد.
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model.StoreAddresses)
+        {
+            <div class="address">
+                <div class="header">
+
+                    <div class="items">
+                        <a onclick="ShowModal('@Url.Action("EditStoreAddress", "ShoppersManager", new {storeAddressId = item.StoreAddressId}, Context.Request.Scheme)', 'ویرایش آدرس فروشگاه')"><i class="far fa-edit"></i></a>
+                        <form asp-action="DeleteStoreAddress" asp-route-storeAddressId="@item.StoreAddressId" method="post" onsubmit="return  SubmitFormData(this,false)">
+                            <button type="submit">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="personal">
+                    <p>@item.StoreName</p>
+                    <p>@item.LandlinePhoneNumber</p>
+                </div>
+
+                <p class="address-text">
+                    @item.StateName - @item.CityName @item.AddressText - پلاک: @item.Plaque
+                </p>
+
+                <div class="postal-code">
+
+                    <span><i class="fal fa-envelope"></i> کد پستی:</span>
+                    <span>@item.PostalCode</span>
+
+
+                </div>
+            </div>
+        }
+    }
+
+
+
+</section>
+
 
 <a onclick="ShowModal('@Url.Action("AddShopperProduct","ShoppersManager",new {shopperId = Model.ShopperId},Context.Request.Scheme)','افزودن کالا به فروشنده')"
    class="btn btn-success text-white mt-3 mb-2">افزودن کالا</a>

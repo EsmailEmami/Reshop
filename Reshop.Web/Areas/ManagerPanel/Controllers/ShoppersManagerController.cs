@@ -7,6 +7,7 @@ using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
+using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 using System;
@@ -23,13 +24,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IDataProtector _dataProtector;
         private readonly IBrandService _brandService;
         private readonly IDiscountService _discountService;
+        private readonly IOriginService _originService;
 
-        public ShoppersManager(IShopperService shopperService, IProductService productService, IDataProtectionProvider dataProtectionProvider, IBrandService brandService, IDiscountService discountService)
+        public ShoppersManager(IShopperService shopperService, IProductService productService, IDataProtectionProvider dataProtectionProvider, IBrandService brandService, IDiscountService discountService, IOriginService originService)
         {
             _shopperService = shopperService;
             _productService = productService;
             _brandService = brandService;
             _discountService = discountService;
+            _originService = originService;
             _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Areas.ManagerPanel.Controllers.ShoppersManager",
                 new string[] { "ShoppersManager" });
         }
@@ -715,7 +718,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #endregion
 
-
         #region storeTitleList
 
         [HttpGet]
@@ -808,6 +810,168 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #endregion
 
+        #region Add Store Address
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> AddStoreAddress(string shopperId)
+        {
+            if (shopperId == null)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            if (!await _shopperService.IsShopperExistAsync(shopperId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            ViewBag.States = _originService.GetStates();
+
+            ViewData["selectedState"] = 0;
+
+            return View(new StoreAddress()
+            {
+                ShopperId = shopperId
+            });
+        }
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> AddStoreAddress(StoreAddress model, int selectedState)
+        {
+            ViewBag.States = _originService.GetStates();
+            ViewBag.Cities = _originService.GetCitiesOfState(selectedState);
+
+            ViewData["selectedState"] = selectedState;
+
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+
+            var city = await _originService.GetCityByIdAsync(model.CityId);
+
+
+            // error while is problem from city
+            if (city == null)
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+            else if (city.StateId != selectedState)
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+
+
+            var storeAddress = new StoreAddress()
+            {
+                ShopperId = model.ShopperId,
+                StoreName = model.StoreName,
+                Plaque = model.Plaque,
+                CityId = model.CityId,
+                PostalCode = model.PostalCode,
+                AddressText = model.AddressText,
+                LandlinePhoneNumber = model.LandlinePhoneNumber
+            };
+
+            var result = await _shopperService.AddStoreAddressAsync(storeAddress);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+        }
+
+        #endregion
+
+        #region Edit Store Address
+
+        [HttpGet]
+        [NoDirectAccess]
+        public async Task<IActionResult> EditStoreAddress(string storeAddressId)
+        {
+            if (string.IsNullOrEmpty(storeAddressId))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var storeAddress = await _shopperService.GetStoreAddressByIdAsync(storeAddressId);
+
+            if (storeAddress is null)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var stateId = await _originService.GetStateIdOfCityAsync(storeAddress.CityId);
+
+            if (stateId == 0)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            ViewData["selectedState"] = stateId;
+            ViewBag.States = _originService.GetStates();
+            ViewBag.Cities = _originService.GetCitiesOfState(stateId);
+
+            return View(storeAddress);
+        }
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> EditStoreAddress(StoreAddress model, int selectedState)
+        {
+            ViewBag.States = _originService.GetStates();
+            ViewBag.Cities = _originService.GetCitiesOfState(selectedState);
+
+            ViewData["selectedState"] = selectedState;
+            if (!ModelState.IsValid)
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+
+            var storeAddress = await _shopperService.GetStoreAddressByIdAsync(model.StoreAddressId);
+
+            if (storeAddress is null)
+            {
+                ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+
+            storeAddress.StoreName = model.StoreName;
+            storeAddress.CityId = model.CityId;
+            storeAddress.Plaque = model.Plaque;
+            storeAddress.LandlinePhoneNumber = model.LandlinePhoneNumber;
+            storeAddress.PostalCode = model.PostalCode;
+            storeAddress.AddressText = model.AddressText;
+
+            var result = await _shopperService.EditStoreAddressAsync(storeAddress);
+
+            if (result == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                ModelState.AddModelError("", "هنگام ویرایش ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
+        }
+
+        #endregion
+
+        #region Delete Store Address
+
+        [HttpPost]
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteStoreAddress(string storeAddressId)
+        {
+            var deleteAddress = await _shopperService.DeleteStoreAddressAsync(storeAddressId);
+
+            if (deleteAddress == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, returnUrl = "current" });
+            }
+            else
+            {
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+            }
+        }
+
+        #endregion
 
         [HttpPost]
         [NoDirectAccess]

@@ -529,6 +529,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region Delete address
 
         [HttpPost]
+        [NoDirectAccess]
         public async Task<IActionResult> DeleteAddress(string addressId)
         {
             var deleteAddress = await _userService.DeleteUserAddressAsync(addressId);

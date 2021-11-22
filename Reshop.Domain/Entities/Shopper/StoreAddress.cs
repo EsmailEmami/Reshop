@@ -13,6 +13,11 @@ namespace Reshop.Domain.Entities.Shopper
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string StoreAddressId { get; set; }
 
+        [Display(Name = "پلاک")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string StoreName { get; set; }
+
         [ForeignKey("Shopper")]
         public string ShopperId { get; set; }
 
@@ -42,7 +47,6 @@ namespace Reshop.Domain.Entities.Shopper
         #region Relations
 
         public virtual Shopper Shopper { get; set; }
-        public virtual State State { get; set; }
         public virtual City City { get; set; }
 
         #endregion

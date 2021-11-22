@@ -234,7 +234,18 @@ namespace Reshop.Infrastructure.Repository.Shopper
                     IsActive = c.IsActive,
                     IssuanceOfIdentityCard = "be zodi ezafeh mikomnam",
                     NationalCode = c.User.NationalCode,
-                    PhoneNumber = c.User.PhoneNumber
+                    PhoneNumber = c.User.PhoneNumber,
+                    StoreAddresses = c.StoresAddress.Select(s=> new StoreAddressForShowViewModel()
+                    {
+                        CityName = s.City.CityName,
+                        StateName = s.City.State.StateName,
+                        AddressText = s.AddressText,
+                        LandlinePhoneNumber = s.LandlinePhoneNumber,
+                        Plaque = s.Plaque,
+                        PostalCode = s.PostalCode,
+                        StoreAddressId = s.StoreAddressId,
+                        StoreName = s.StoreName
+                    })
                 }).SingleOrDefaultAsync();
 
         public async Task<EditShopperProductViewModel> GetShopperProductDataForEditAsync(string shopperProductId) =>

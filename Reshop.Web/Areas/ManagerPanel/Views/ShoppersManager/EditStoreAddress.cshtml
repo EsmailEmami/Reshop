@@ -1,0 +1,89 @@
+﻿@model StoreAddress
+@{
+    Layout = null;
+
+    int selectedState = (int)ViewData["selectedState"];
+}
+
+<form asp-action="EditStoreAddress" method="post" onsubmit="return SubmitFormData(this,true)">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+
+        <input type="hidden" asp-for="StoreAddressId" />
+        <input type="hidden" asp-for="ShopperId" />
+
+        <div class="col-sm-12">
+            <div class="form-field">
+                <input asp-for="StoreName">
+                <label><i class="far  fa-user"></i> نام فروشگاه</label>
+                <span asp-validation-for="StoreName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="LandlinePhoneNumber">
+                <label><i class="far fa-phone"></i> شماره تلفن ثابت</label>
+                <span asp-validation-for="LandlinePhoneNumber" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="PostalCode">
+                <label><i class="far  fa-tag"></i> کد پستی</label>
+                <span asp-validation-for="PostalCode" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 ">
+            <div class="form-field">
+                <textarea asp-for="AddressText"></textarea>
+                <label><i class="far  fa-map-marker-alt"></i> نشانی پستی</label>
+                <span asp-validation-for="AddressText" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 col-lg-5">
+
+            @{
+                var states = ViewBag.States as IEnumerable<Tuple<int, string>>;
+            }
+
+            <select onchange="GetCitiesOfState(this.value)" name="selectedState">
+                <option value="0">استان</option>
+                @if (states != null)
+                {
+                    @foreach (var state in states)
+                    {
+                        @:<option value="@state.Item1" @((selectedState != 0 && state.Item1 == selectedState) ? "selected" : "")>@state.Item2</option>
+                    }
+                }
+            </select>
+
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-4">
+
+            <select id="city" asp-for="CityId">
+                <option value="0">لطفا استان را انتخاب کنید</option>
+            </select>
+
+        </div>
+        <div class="col-sm-12 col-lg-3">
+            <div class="form-field">
+                <input asp-for="Plaque">
+                <label><i class="fal fa-address-card"></i> پلاک</label>
+                <span asp-validation-for="Plaque" class="text-danger"></span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <button type="submit" class="btn btn-success">ثبت</button>
+</form>
+
+<script>
+    inputJs();
+    callSelect();
+</script>

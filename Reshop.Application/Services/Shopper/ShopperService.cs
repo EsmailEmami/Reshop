@@ -534,7 +534,7 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
-        public async Task<ResultTypes> RemoveStoreAddressAsync(string storeAddressId)
+        public async Task<ResultTypes> DeleteStoreAddressAsync(string storeAddressId)
         {
             var storeAddress = await _shopperRepository.GetStoreAddressByIdAsync(storeAddressId);
 
@@ -552,6 +552,9 @@ namespace Reshop.Application.Services.Shopper
                 return ResultTypes.Failed;
             }
         }
+
+        public async Task<StoreAddress> GetStoreAddressByIdAsync(string storeAddressId) =>
+            await _shopperRepository.GetStoreAddressByIdAsync(storeAddressId);
 
         public IEnumerable<StoreTitle> GetStoreTitles() => _shopperRepository.GetStoreTitles();
 
