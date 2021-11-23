@@ -92,6 +92,7 @@ namespace Reshop.Domain.Interfaces.Shopper
         #region address
 
         IEnumerable<StoreAddress> GetShopperStoreAddresses(string shopperId);
+        Task<IEnumerable<StoreAddressForShowViewModel>> GetShopperStoreAddressesForShowAsync(string shopperId);
         Task AddStoreAddressAsync(StoreAddress storeAddress);
         void EditStoreAddress(StoreAddress storeAddress);
         void RemoveStoreAddress(StoreAddress storeAddress);

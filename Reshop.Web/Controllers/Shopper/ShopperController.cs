@@ -252,18 +252,28 @@ namespace Reshop.Web.Controllers.Shopper
         }
 
         [HttpGet]
+        public async Task<IActionResult> StoreAddresses()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            string shopperId = await _shopperService.GetShopperIdOrUserAsync(userId);
+
+            if (string.IsNullOrEmpty(shopperId))
+                return NotFound();
+
+            var storeAddresses = await _shopperService.GetShopperStoreAddressesForShowAsync(shopperId);
+
+            if (storeAddresses == null)
+                return NotFound();
+
+            return View(storeAddresses);
+        }
+
+        [HttpGet]
         [NoDirectAccess]
         public IActionResult ShopperProductsList(string shopperId, string type = "all", int pageId = 1, string filter = "")
         {
             return ViewComponent("ShopperProductsForShowShopperComponent", new { shopperId, type, pageId, filter });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> StoreAddress()
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            return View(await _shopperService.GetShopperStoreAddressesAsync(userId));
         }
 
         [HttpGet]

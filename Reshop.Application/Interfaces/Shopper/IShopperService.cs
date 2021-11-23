@@ -59,7 +59,7 @@ namespace Reshop.Application.Interfaces.Shopper
 
         #region address
 
-        Task<IEnumerable<StoreAddress>> GetShopperStoreAddressesAsync(string shopperUserId);
+        Task<IEnumerable<StoreAddressForShowViewModel>> GetShopperStoreAddressesForShowAsync(string shopperId);
         Task<ResultTypes> AddStoreAddressAsync(StoreAddress storeAddress);
         Task<ResultTypes> EditStoreAddressAsync(StoreAddress storeAddress);
         Task<ResultTypes> DeleteStoreAddressAsync(string storeAddressId);

@@ -8,11 +8,11 @@ using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Interfaces.Product;
 using Reshop.Domain.Interfaces.Shopper;
+using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Reshop.Domain.Interfaces.User;
 
 namespace Reshop.Application.Services.Shopper
 {
@@ -319,6 +319,9 @@ namespace Reshop.Application.Services.Shopper
             }
         }
 
+        public async Task<IEnumerable<StoreAddressForShowViewModel>> GetShopperStoreAddressesForShowAsync(string shopperId) =>
+            await _shopperRepository.GetShopperStoreAddressesForShowAsync(shopperId);
+
         public async Task<bool> IsShopperExistAsync(string shopperId) =>
             await _shopperRepository.IsShopperExistAsync(shopperId);
 
@@ -356,7 +359,7 @@ namespace Reshop.Application.Services.Shopper
 
                 if (shopperStoreTitles != null)
                 {
-                    foreach (var shopperStoreTitle in  shopperStoreTitles)
+                    foreach (var shopperStoreTitle in shopperStoreTitles)
                     {
                         _shopperRepository.RemoveShopperStoreTitle(shopperStoreTitle);
                     }
@@ -375,7 +378,7 @@ namespace Reshop.Application.Services.Shopper
                 }
 
                 // delete userRoles
-                var role =await _permissionRepository.GetRoleByNameAsync("Shopper");
+                var role = await _permissionRepository.GetRoleByNameAsync("Shopper");
 
                 var userRole = await _permissionRepository.GetUserRoleAsync(user.UserId, role.RoleId);
 
@@ -495,13 +498,6 @@ namespace Reshop.Application.Services.Shopper
             {
                 return ResultTypes.Failed;
             }
-        }
-
-        public async Task<IEnumerable<StoreAddress>> GetShopperStoreAddressesAsync(string shopperUserId)
-        {
-            var shopperId = await _shopperRepository.GetShopperIdOfUserByUserId(shopperUserId);
-
-            return _shopperRepository.GetShopperStoreAddresses(shopperId);
         }
 
         public async Task<ResultTypes> AddStoreAddressAsync(StoreAddress storeAddress)

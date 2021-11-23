@@ -515,6 +515,21 @@ namespace Reshop.Infrastructure.Repository.Shopper
         public IEnumerable<StoreAddress> GetShopperStoreAddresses(string shopperId) =>
             _context.StoresAddress.Where(c => c.ShopperId == shopperId);
 
+        public async Task<IEnumerable<StoreAddressForShowViewModel>> GetShopperStoreAddressesForShowAsync(string shopperId) =>
+            await _context.StoresAddress.Where(c => c.ShopperId == shopperId)
+                .Select(c=> new StoreAddressForShowViewModel()
+                {
+                    StoreAddressId = c.StoreAddressId,
+                    StoreName = c.StoreName,
+                    StateName = c.City.State.StateName,
+                    CityName = c.City.CityName,
+                    AddressText = c.AddressText,
+                    Plaque = c.Plaque,
+                    LandlinePhoneNumber = c.LandlinePhoneNumber,
+                    PostalCode = c.PostalCode
+                })
+                .ToListAsync();
+
         public async Task AddStoreAddressAsync(StoreAddress storeAddress) =>
             await _context.StoresAddress.AddAsync(storeAddress);
 

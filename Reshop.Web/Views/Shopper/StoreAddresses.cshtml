@@ -1,0 +1,89 @@
+﻿@model IEnumerable<StoreAddressForShowViewModel>
+@{
+    ViewData["Title"] = "نشانی های فروشگاه";
+
+    int addressCounter = 1;
+}
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Shopper" asp-action="StoreAddresses">نشانی های فروشگاه</a>
+    </li>
+</ul>
+
+<div class="row">
+
+    <div class="col-sm-12 col-md-4 col-lg-3">
+
+        <partial name="Account/_MenuAccount" model="AccountMenuActivePage.ShopperProduct" />
+
+    </div>
+
+
+    <div class="col-sm-12 col-md-8 col-lg-9">
+        <div class="row">
+            <div class="col-12">
+                <div class="profile-nav box-shadow">
+                    <ul>
+                        <li><a asp-action="ManageProducts">کالا های من</a> </li>
+                        <li><a asp-action="ShopperRequests">درخواست ها</a> </li>
+                        <li class="active"><a asp-action="StoreAddresses">نشانی ها</a> </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <div class="user-data box-shadow">
+
+
+
+                    @if (!Model.Any())
+                    {
+                        <div class="basket-empty">
+                            <img src="/icons/Address.svg" alt="Address" />
+                            <h1>
+                                نشانی فروشگاهی یافت نشد.
+                            </h1>
+                        </div>
+                    }
+                    else
+                    { <div class="row">
+                            @foreach (var address in Model)
+                            {
+                                <div class="col-sm-12">
+                                    <div class="user-item-data">
+                                        <div>
+                                            <h5>ادرس شماره @addressCounter</h5>
+                                        </div>
+
+                                        <p>@address.AddressText</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+
+}
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script src="~/js/select.js"></script>
+}
