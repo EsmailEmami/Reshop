@@ -53,7 +53,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return ViewComponent("ShoppersListComponent", new { type, pageId, filter });
         }
 
-        [HttpGet]
+        [HttpGet("[action]/{shopperId}")]
         public async Task<IActionResult> ShopperDetail(string shopperId)
         {
             if (shopperId == null) return NotFound();
@@ -156,7 +156,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
-
         public async Task<IActionResult> ShopperProductDetail(string shopperProductId)
         {
             if (shopperProductId == null)

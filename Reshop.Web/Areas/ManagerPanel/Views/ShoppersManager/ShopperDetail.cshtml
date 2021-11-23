@@ -98,7 +98,7 @@
 </section>
 
 <a class="btn btn-success text-white"
-   onclick="ShowModal('@Url.Action("NewAddress", "UserManager", new{userId = Model}, Context.Request.Scheme)', 'آدرس جدید')">
+   onclick="ShowModal('@Url.Action("AddStoreAddress", "ShoppersManager", new{shopperId = Model.ShopperId}, Context.Request.Scheme)', 'آدرس جدید')">
     افزودن ادرس  جدید
 </a>
 @* address part *@
@@ -107,7 +107,7 @@
     @if (!Model.StoreAddresses.Any())
     {
         <div class="alert alert-warning">
-            آدرسی از کاربر یافت نشد.
+            ادرسی از فروشنده یافت نشد.
         </div>
     }
     else
