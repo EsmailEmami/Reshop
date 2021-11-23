@@ -28,12 +28,16 @@ using Reshop.Infrastructure.Repository.User;
 using System;
 using Reshop.Application.Interfaces.Conversation;
 using Reshop.Application.Interfaces.Discount;
+using Reshop.Application.Interfaces.Image;
 using Reshop.Application.Services.Conversation;
 using Reshop.Application.Services.Discount;
+using Reshop.Application.Services.Image;
 using Reshop.Domain.Interfaces.Conversation;
 using Reshop.Domain.Interfaces.Discount;
+using Reshop.Domain.Interfaces.Image;
 using Reshop.Infrastructure.Repository.Conversation;
 using Reshop.Infrastructure.Repository.Discount;
+using Reshop.Infrastructure.Repository.Image;
 
 namespace Reshop.Infrastructure
 {
@@ -63,6 +67,7 @@ namespace Reshop.Infrastructure
             services.AddScoped<IDiscountService, DiscountService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IQuestionService, QuestionService>();
+            services.AddScoped<IImageService, ImageService>();
 
             //repository
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -77,6 +82,7 @@ namespace Reshop.Infrastructure
             services.AddScoped<IDiscountRepository, DiscountRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
 
             services.AddSingleton<IMessageSender, MessageSender>();
 
