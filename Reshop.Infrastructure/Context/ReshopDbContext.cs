@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.Entities.Category;
 using Reshop.Domain.Entities.Comment;
+using Reshop.Domain.Entities.Image;
 using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
@@ -95,6 +96,13 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<ReportComment> ReportComments { get; set; }
         public virtual DbSet<ReportCommentType> ReportCommentTypes { get; set; }
         public virtual DbSet<CommentFeedback> CommentFeedBacks { get; set; }
+
+        #endregion
+
+        #region image
+
+        public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<ImagePlace> ImagesPlace { get; set; }
 
         #endregion
 
