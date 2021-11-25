@@ -929,9 +929,48 @@ function LikeOrDisLikeQuestion(form) {
 }
 
 function UpdateProductDetailShopper(productName, sellerId) {
-    $("#changeShopper").load('/Product/ChangeProductShopper?seller=' + sellerId);
-    let url = window.location.origin + "/Product/" + productName + '/' + sellerId;
-    window.history.replaceState(null, productName, url);
+
+    $.ajax({
+        type: 'GET',
+        url: '/Product/ChangeProductShopper?seller=' + sellerId,
+        processData: false,
+        contentType: false,
+        success: function (res) {
+            var htmlObject = document.createElement('div');
+            htmlObject.innerHTML = res;
+
+
+            /*change like btn*/
+            var realLike = document.getElementById('add-favorite');
+            var resLike = htmlObject.querySelector('#add-favorite');
+
+            realLike.replaceWith(resLike);
+
+
+            /*change shortKey*/
+            var realShortKey = document.getElementById('short-key');
+            var resShortKey = htmlObject.querySelector('#short-key-part');
+
+            realShortKey.innerHTML = resShortKey.innerHTML;
+
+            /*change shopper*/
+            var realShopperSection = document.getElementById('shopper');
+            var resShopperSection = htmlObject.querySelector('#shopper-part');
+            realShopperSection.innerHTML = resShopperSection.innerHTML;
+
+            /*change product data*/
+            var realProductData = document.getElementById('product-data');
+            var resProductData = htmlObject.querySelector('#product-data-part');
+
+            realProductData.innerHTML = resProductData.innerHTML;
+
+            callSelect();
+
+          /* change url */
+            var url = window.location.origin + "/Product/" + productName + '/' + sellerId;
+            window.history.replaceState(null, productName, url);
+        }
+    });
 }
 
 function ColorCollapsibleOfManager(btn, where, url) {

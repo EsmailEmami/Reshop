@@ -7,6 +7,8 @@ using Reshop.Domain.DTOs;
 using Reshop.Domain.Entities.Image;
 using System.IO;
 using System.Threading.Tasks;
+using Reshop.Application.Security;
+using Reshop.Domain.DTOs.Image;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -27,7 +29,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var images = await _imageService.GetImagesAsync();
+            var images = await _imageService.GetImagesForShowAsync();
 
             return View(images);
         }
@@ -52,6 +54,13 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+
+
+            if (!model.Image.IsImage())
+            {
+                ModelState.AddModelError("", "هنگام افزودن تصویر به مشکل خوردیم.");
+                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
+            }
 
             var image = new Image()
             {

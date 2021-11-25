@@ -1,0 +1,55 @@
+﻿@model IEnumerable<ImageForShowViewModel>
+@{
+    ViewData["Title"] = "مدیریت بنر ها";
+}
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.BannerPage); }
+}
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+
+<div class="display-6 text-center">
+    مدیریت بنر ها
+</div>
+
+<a onclick="ShowModal('@Url.Action("AddImage", "ImageManager" ,null, Context.Request.Scheme)', 'افزودن بنر')"
+   class="btn btn-success text-white"><i class="fal fa-user-plus"></i> رنگ جدید</a>
+
+
+@if (Model != null)
+{
+    <h3 class="title">تصاویر منو اسلایدر</h3>
+    <section class="images-part">
+        @foreach (var item in Model)
+        {
+            <div class="item">
+                <img src="~/images/banner/@item.ImageName" />
+                <div class="menu">
+                    <a href="@item.Url">مشاهده لینک</a>
+                    
+
+                    <a asp-action="EditImage" asp-route-imageId="@item.ImageId"
+                       class="btn btn-warning text-white m-0">ویرایش</a>
+                </div>
+            </div>
+        }
+    </section>
+}
+else
+{
+    <div class="alert alert-warning">
+        تصویری یافت نشد.
+    </div>
+}
+
+@section AfterMainOptions
+{
+    <partial name="_Modal" />
+}
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/select.js"></script>
+}

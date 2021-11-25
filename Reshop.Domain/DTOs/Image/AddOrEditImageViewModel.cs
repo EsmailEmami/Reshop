@@ -3,11 +3,10 @@ using Reshop.Domain.Entities.Image;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Reshop.Domain.DTOs
+namespace Reshop.Domain.DTOs.Image
 {
     public class AddOrEditImageViewModel
     {
-        [Required]
         public string ImageId { get; set; }
 
         public IFormFile Image { get; set; }

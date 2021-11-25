@@ -640,6 +640,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ShopperProductColorId == shopperProductColorId)
                 .Select(c => new EditProductDetailShopperViewModel()
                 {
+                    ShopperId = c.ShopperProduct.ShopperId,
+                    StoreName = c.ShopperProduct.Shopper.StoreName,
+                    ShortKey = c.ShortKey,
                     SelectedShopper = c.ShopperProductColorId,
                     SelectedColor = c.ColorId,
                     Price = c.Price,

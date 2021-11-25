@@ -1,5 +1,6 @@
 ﻿using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Image;
+using Reshop.Domain.DTOs.Image;
 using Reshop.Domain.Entities.Image;
 using Reshop.Domain.Interfaces.Image;
 using System.Collections.Generic;
@@ -71,8 +72,11 @@ namespace Reshop.Application.Services.Image
             }
         }
 
-        public async Task<IEnumerable<Domain.Entities.Image.Image>> GetImagesAsync() =>
-            await _imageRepository.GetImagesAsync();
+        public async Task<IEnumerable<ImageForShowViewModel>> GetImagesForShowAsync() =>
+            await _imageRepository.GetImagesForShowAsync();
+
+        public async Task<IEnumerable<ImagesForShowInSiteViewModel>> GetImagesOfPlaceAsync(string place) =>
+            await _imageRepository.GetImagesOfPlaceAsync(place);
 
         public async Task<Domain.Entities.Image.Image> GetImageByIdAsync(string imageId) =>
             await _imageRepository.GetImageByIdAsync(imageId);

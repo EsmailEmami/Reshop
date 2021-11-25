@@ -5,6 +5,9 @@ namespace Reshop.Domain.DTOs.Product
 {
     public class EditProductDetailShopperViewModel
     {
+        public string ShopperId { get; set; }
+        public string StoreName { get; set; }
+        public string ShortKey { get; set; }
         public string SelectedShopper { get; set; }
         public int SelectedColor { get; set; }
         public decimal Price { get; set; }

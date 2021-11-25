@@ -1,0 +1,15 @@
+﻿@model IEnumerable<ImagesForShowInSiteViewModel>
+@{
+    Layout = null;
+}
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-sm-12 col-md-6">
+            <a href="@item.Url">
+                <img class="img-ad" src="~/images/banner/@item.ImageName" alt="پیشنهادات" />
+            </a>
+        </div>
+    }
+</div>

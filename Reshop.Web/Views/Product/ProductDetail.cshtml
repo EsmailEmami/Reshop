@@ -1,4 +1,5 @@
-﻿@model ProductDetailViewModel
+﻿@using Microsoft.EntityFrameworkCore
+@model ProductDetailViewModel
 
 @{
     ViewData["Title"] = $"مشخصات کالای {Model.Product.Title.Replace(" ", "-")}";
@@ -41,31 +42,31 @@
 <div class="detail-header">
     <div class="right-side box-shadow">
 
-        <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)">
+        <form asp-controller="Account" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)" id="add-favorite">
             <input type="hidden" value="@Model.Product.ShopperProductColorId" name="shopperProductColorId" />
             <button type="submit"><i class="fal fa-heart"></i></button>
         </form>
 
 
-        <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)">
+        <form asp-controller="Account" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)">
             <input type="hidden" value="@Model.Product.ShopperProductColorId" name="shopperProductColorId" />
             <button type="submit"><i class="fal fa-analytics"></i></button>
         </form>
 
-        <form asp-controller="Product" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)">
+        <form asp-controller="Account" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)">
             <input type="hidden" value="@Model.Product.ShopperProductColorId" name="shopperProductColorId" />
             <button type="submit"><i class="fal fa-sync-alt"></i></button>
         </form>
 
     </div>
-    <div class="left-side box-shadow">
+    <div id="short-key" class="left-side box-shadow">
         <span class="title"> لینک کوتاه </span>
         <span class="link">@shortKeyUrl</span>
         <a onclick="CopyToClipboard(this)" class="copy-btn" data-clipboard-text="@shortKeyUrl"><i class="fal fa-copy"></i></a>
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12 col-lg-5 mb-3 mb-lg-0">
+    <div class="col-sm-12 col-lg-5 mb-3 mb-lg-0">
 
         <div class="img-detail box-shadow">
             <div class="show-img-product">
@@ -87,7 +88,7 @@
 
     </div>
 
-    <div class="col-xs-12 col-lg-7">
+    <div class="col-sm-12 col-lg-7">
         <div class="detail-info box-shadow">
             <div class="product-name">
                 <h1>@Model.Product.Title</h1>
@@ -124,8 +125,8 @@
                        asp-route-brandId="@Model.Product.Brand.Item1"
                        asp-route-brandName="@Model.Product.Brand.Item2.Replace(" ","-")">@Model.Product.Brand.Item2</a>
                 </div>
-                <div>
-                    <h2><i class="far fa-store"></i><i class="far fa-store"></i> فروشگاه: </h2>
+                <div id="shopper">
+                    <h2><i class="far fa-store"></i> فروشگاه: </h2>
                     <a asp-controller="Product" asp-action="ProductsOfShopper"
                        asp-route-shopperId="@Model.Shopper.Item1"
                        asp-route-storeName="@Model.Shopper.Item2.Replace(" ","-")">@Model.Shopper.Item2</a>
@@ -136,7 +137,7 @@
 
             @* change *@
 
-            <div id="changeShopper">
+            <div id="product-data">
                 <div class="color-selector">
                     <h5><i class="far fa-paint-brush-alt"></i> رنگ:</h5>
 

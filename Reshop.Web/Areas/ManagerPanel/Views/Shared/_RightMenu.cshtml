@@ -120,5 +120,10 @@
                 </li>
             </ul>
         </li>
-    </ul>
+        <li class="@(Model == RightMenuActivePage.BannerPage? "active":"")">
+            <a asp-area="ManagerPanel" asp-controller="ImageManager" asp-action="Index">
+                <i class="far fa-home"></i> <span>بنر ها</span>
+            </a>
+        </li>
+        </ul>
 </div>

@@ -8,6 +8,7 @@
         OriginPage,
         CategoryPage,
         ProductPage,
-        PermissionPage
+        PermissionPage,
+        BannerPage
     }
 }

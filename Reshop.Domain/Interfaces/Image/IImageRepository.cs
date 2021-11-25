@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.DTOs.Image;
 using Reshop.Domain.Entities.Image;
 
 namespace Reshop.Domain.Interfaces.Image
@@ -10,8 +11,8 @@ namespace Reshop.Domain.Interfaces.Image
         void UpdateImage(Entities.Image.Image image);
         void RemoveImage(Entities.Image.Image image);
         Task<Entities.Image.Image> GetImageByIdAsync(string imageId);
-        Task<IEnumerable<Entities.Image.Image>> GetImagesAsync();
-
+        Task<IEnumerable<ImageForShowViewModel>> GetImagesForShowAsync();
+        Task<IEnumerable<ImagesForShowInSiteViewModel>> GetImagesOfPlaceAsync(string place);
 
 
 

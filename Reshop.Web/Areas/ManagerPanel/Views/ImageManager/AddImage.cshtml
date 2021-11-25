@@ -1,0 +1,64 @@
+﻿@model AddOrEditImageViewModel
+@{
+    Layout = null;
+}
+
+<form asp-action="AddImage" method="post" enctype="multipart/form-data" onsubmit="return SubmitFormData(this,true)">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ImageId" />
+    <input type="hidden" asp-for="SelectedImage" />
+
+    <div class="row">
+        <div class="col-sm-12 col-lg-5">
+
+            @if (Model.Places != null)
+            {
+                <select asp-for="SelectedPlace">
+                    <option value="0">انتخاب مکان بنر</option>
+                    @foreach (var item in Model.Places)
+                    {
+                        @:<option value="@item.ImagePlaceId" @(Model.SelectedPlace == item.ImagePlaceId ? "selected" : "")>@item.Place</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    گروهی یافت نشد.
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row justify-content-around">
+
+
+        <div class="col-auto">
+            <div class="image-field">
+                <div class="image-area">
+                    <img src="~/images/pattern/placeholder-image.png" alt="تصویر بنر" id="img">
+                </div>
+                <div class="file-field">
+                    <input asp-for="Image" onchange="readURL(this, 'img')">
+                </div>
+                <div class="form-field">
+                    <input asp-for="ImageUrl">
+                    <label><i class="far fa-list-alt"></i> آدرس عکس شماره 1</label>
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-success text-white">ثبت</button>
+    </div>
+
+</form>
+
+<script>
+    inputJs();
+    callSelect();
+</script>
