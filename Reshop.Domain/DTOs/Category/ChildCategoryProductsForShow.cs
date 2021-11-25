@@ -15,5 +15,6 @@ namespace Reshop.Domain.DTOs.Category
         public Tuple<int, string> Category { get; set; }
 
         public decimal ProductsMaxPrice { get; set; }
+        public decimal ProductsMinPrice { get; set; }
     }
 }

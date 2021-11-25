@@ -36,6 +36,12 @@ namespace Reshop.Domain.Interfaces.Product
         Task<decimal> GetMaxPriceOfShopperProductsAsync(string shopperId, string filter = null, List<int> brands = null);
         Task<decimal> GetMaxPriceOfBrandProductsAsync(int brandId, string filter = null, List<int> officialBrandProducts = null);
 
+
+        Task<decimal> GetMinPriceOfCategoryProductsAsync(int categoryId, string filter = null, List<int> brands = null);
+        Task<decimal> GetMinPriceOfChildCategoryProductsAsync(int childCategoryId, string filter = null, List<int> brands = null);
+        Task<decimal> GetMinPriceOfShopperProductsAsync(string shopperId, string filter = null, List<int> brands = null);
+        Task<decimal> GetMinPriceOfBrandProductsAsync(int brandId, string filter = null, List<int> officialBrandProducts = null);
+
         #endregion
 
         #region product gallery

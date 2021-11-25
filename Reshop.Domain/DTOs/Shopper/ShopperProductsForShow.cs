@@ -17,5 +17,6 @@ namespace Reshop.Domain.DTOs.Shopper
         public IEnumerable<Tuple<int, string, string>> Brands { get; set; }
 
         public decimal ProductsMaxPrice { get; set; }
+        public decimal ProductsMinPrice { get; set; }
     }
 }

@@ -529,6 +529,129 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.Price).FirstAsync();
         }
 
+        public async Task<decimal> GetMinPriceOfCategoryProductsAsync(int categoryId, string filter = null, List<int> brands = null)
+        {
+            IQueryable<ShopperProductColor> products = _context.Categories
+                .Where(c => c.CategoryId == categoryId)
+                .SelectMany(c => c.ChildCategories)
+                .SelectMany(c => c.Products)
+                .Where(c => c.IsActive &&
+                            c.ShopperProducts
+                                .Any(i => i.IsActive
+                                          && i.ShopperProductColors.Any(s => s.IsActive)))
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
+                    .First())
+                .Select(c => c.ShopperProductColors
+                    .OrderByDescending(b => b.SaleCount)
+                    .First());
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
+            return await products.OrderBy(c => c.Price)
+                .Select(c => c.Price).FirstOrDefaultAsync();
+        }
+
+        public async Task<decimal> GetMinPriceOfChildCategoryProductsAsync(int childCategoryId, string filter = null, List<int> brands = null)
+        {
+            IQueryable<ShopperProductColor> products = _context.ChildCategories
+                .Where(c => c.ChildCategoryId == childCategoryId)
+                .SelectMany(c => c.Products)
+                .Where(c => c.IsActive &&
+                            c.ShopperProducts
+                                .Any(i => i.IsActive
+                                          && i.ShopperProductColors.Any(s => s.IsActive)))
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
+                    .First())
+                .Select(c => c.ShopperProductColors
+                    .OrderByDescending(b => b.SaleCount)
+                    .First());
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
+            return await products.OrderBy(c => c.Price)
+                            .Select(c => c.Price).FirstOrDefaultAsync();
+        }
+
+        public async Task<decimal> GetMinPriceOfShopperProductsAsync(string shopperId, string filter = null, List<int> brands = null)
+        {
+            IQueryable<ShopperProductColor> products = _context.ShopperProducts
+                .Where(c => c.ShopperId == shopperId && c.IsActive &&
+                            c.ShopperProductColors
+                                .Any(i => i.IsActive))
+                .SelectMany(c => c.ShopperProductColors)
+                .Distinct()
+                .OrderByDescending(c => c.SaleCount);
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
+            return await products.OrderBy(c => c.Price)
+                .Select(c => c.Price).FirstOrDefaultAsync();
+        }
+
+        public async Task<decimal> GetMinPriceOfBrandProductsAsync(int brandId, string filter = null, List<int> officialBrandProducts = null)
+        {
+            IQueryable<ShopperProductColor> products = _context.Brands
+                .Where(c => c.BrandId == brandId)
+                .SelectMany(c => c.OfficialBrandProducts)
+                .SelectMany(c => c.Products)
+                .Where(c => c.IsActive &&
+                            c.ShopperProducts
+                                .Any(i => i.IsActive))
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
+                    .First())
+                .Select(c => c.ShopperProductColors
+                    .OrderByDescending(b => b.SaleCount)
+                    .First());
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (officialBrandProducts != null && officialBrandProducts.Any())
+            {
+                products = products
+                    .Where(c => officialBrandProducts
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProductId));
+            }
+
+            return await products.OrderBy(c => c.Price)
+                .Select(c => c.Price).FirstAsync();
+        }
+
         public async Task<string> GetProductFirstPictureName(int productId)
         {
             return await _context.ProductGalleries

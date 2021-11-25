@@ -101,12 +101,13 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SearchText = search;
 
-            ViewBag.SelectedMinPrice = minPrice.ToDecimal();
+            ViewBag.SelectedMinPrice = 0;
             ViewBag.SelectedMaxPrice = 0;
 
             if (result != null)
             {
                 ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+                ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : result.ProductsMinPrice;
             }
 
             return View(result);
@@ -135,12 +136,13 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SearchText = search;
 
-            ViewBag.SelectedMinPrice = minPrice.ToDecimal();
+            ViewBag.SelectedMinPrice = 0;
             ViewBag.SelectedMaxPrice = 0;
 
             if (result != null)
             {
-                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? maxPrice.ToDecimal() : result.ProductsMaxPrice;
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+                ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : result.ProductsMinPrice;
             }
 
             return View(result);
@@ -172,12 +174,13 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SelectedOfficialBrandProducts = selectedOfficialBrandProducts;
             ViewBag.SearchText = search;
 
-            ViewBag.SelectedMinPrice = minPrice.ToDecimal();
+            ViewBag.SelectedMinPrice = 0;
             ViewBag.SelectedMaxPrice = 0;
 
             if (result != null)
             {
-                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? maxPrice.ToDecimal() : result.ProductsMaxPrice;
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+                ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : result.ProductsMinPrice;
             }
 
             return View(result);
@@ -206,12 +209,13 @@ namespace Reshop.Web.Controllers.Product
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SearchText = search;
 
-            ViewBag.SelectedMinPrice = minPrice.ToDecimal();
+            ViewBag.SelectedMinPrice = 0;
             ViewBag.SelectedMaxPrice = 0;
 
             if (result != null)
             {
-                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? maxPrice.ToDecimal() : result.ProductsMaxPrice;
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+                ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : result.ProductsMinPrice;
             }
 
             return View(result);

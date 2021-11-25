@@ -79,6 +79,7 @@ namespace Reshop.Application.Services.Product
             var brandsShow = _brandRepository.GetBrandsOfCategory(categoryId);
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfCategoryProductsAsync(categoryId, filter, brands);
+            decimal productMinPrice = await _productRepository.GetMinPriceOfCategoryProductsAsync(categoryId, filter, brands);
 
             return new CategoryProductsForShow()
             {
@@ -88,7 +89,8 @@ namespace Reshop.Application.Services.Product
                 PageId = pageId,
                 TotalPages = totalPages,
                 Brands = brandsShow,
-                ProductsMaxPrice = productMaxPrice
+                ProductsMaxPrice = productMaxPrice,
+                ProductsMinPrice = productMinPrice
             };
         }
 
@@ -110,6 +112,7 @@ namespace Reshop.Application.Services.Product
             var brandsShow = _brandRepository.GetBrandsOfChildCategory(childCategoryId);
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfChildCategoryProductsAsync(childCategoryId, filter, brands);
+            decimal productMinPrice = await _productRepository.GetMinPriceOfChildCategoryProductsAsync(childCategoryId, filter, brands);
 
             return new ChildCategoryProductsForShow()
             {
@@ -120,7 +123,8 @@ namespace Reshop.Application.Services.Product
                 PageId = pageId,
                 TotalPages = totalPages,
                 Brands = brandsShow,
-                ProductsMaxPrice = productMaxPrice
+                ProductsMaxPrice = productMaxPrice,
+                ProductsMinPrice = productMinPrice
             };
         }
 
@@ -138,6 +142,7 @@ namespace Reshop.Application.Services.Product
             var brandsShow = await _brandRepository.GetBrandsOfShopperAsync(shopperId);
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfShopperProductsAsync(shopperId, filter, brands);
+            decimal productMinPrice = await _productRepository.GetMinPriceOfShopperProductsAsync(shopperId, filter, brands);
 
             var shopperStoreName = await _shopperRepository.GetShopperStoreNameAsync(shopperId);
 
@@ -149,7 +154,8 @@ namespace Reshop.Application.Services.Product
                 PageId = pageId,
                 TotalPages = totalPages,
                 Brands = brandsShow,
-                ProductsMaxPrice = productMaxPrice
+                ProductsMaxPrice = productMaxPrice,
+                ProductsMinPrice = productMinPrice
             };
         }
 
@@ -168,6 +174,8 @@ namespace Reshop.Application.Services.Product
             var officialBrandProductsForShow = _brandRepository.GetFullBrandOfficialProducts(brandId);
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfBrandProductsAsync(brandId, filter, officialBrandProducts);
+            decimal productMinPrice = await _productRepository.GetMinPriceOfBrandProductsAsync(brandId, filter, officialBrandProducts);
+
 
             return new BrandProductsForShow()
             {
@@ -177,7 +185,8 @@ namespace Reshop.Application.Services.Product
                 PageId = pageId,
                 TotalPages = totalPages,
                 OfficialBrandProducts = officialBrandProductsForShow,
-                ProductsMaxPrice = productMaxPrice
+                ProductsMaxPrice = productMaxPrice,
+                ProductsMinPrice = productMinPrice
             };
         }
 
