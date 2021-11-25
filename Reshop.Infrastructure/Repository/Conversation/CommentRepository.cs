@@ -122,7 +122,8 @@ namespace Reshop.Infrastructure.Repository.Conversation
          _context.Comments.Where(c => c.UserId == userId)
              .Select(c => new ShowQuestionOrCommentViewModel()
              {
-                 QuestionOrCommentId = c.CommentId,
+                 ProductId = c.ProductId,
+                 ProductName = c.Product.ProductTitle,
                  QuestionOrCommentTitle = c.CommentTitle,
                  SentDate = c.CommentDate
              });

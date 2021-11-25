@@ -59,6 +59,9 @@ namespace Reshop.Application.Interfaces.Product
 
         // productName , sellerId
         Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key);
+
+
+        Task<Tuple<string, string>> GetBestSellerOfProductAsync(int productId);
         // get product types
         Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId);
         Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId);

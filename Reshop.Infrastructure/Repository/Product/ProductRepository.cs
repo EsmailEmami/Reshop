@@ -722,6 +722,21 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => new Tuple<string, string>(c.ShopperProduct.Product.ProductTitle, c.ShopperProductColorId))
                 .SingleOrDefaultAsync();
 
+        public async Task<Tuple<string, string>> GetBestSellerOfProductAsync(int productId) =>
+            await _context.Products.Where(c => c.ProductId == productId && c.IsActive &&
+                                               c.ShopperProducts
+                                                   .Any(i => i.IsActive
+                                                             && i.ShopperProductColors.Any(s => s.IsActive)))
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(v => v.ShopperProductColors
+                        .Sum(s => s.SaleCount))
+                    .First())
+                .Select(c => c.ShopperProductColors
+                    .OrderByDescending(v => v.SaleCount)
+                    .First())
+                .Select(c => new Tuple<string, string>(c.ShopperProduct.Product.ProductTitle, c.ShopperProductColorId))
+                .FirstOrDefaultAsync();
+
         public async Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId) =>
             await _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
                 .Select(c => new ProductDetailForShow()
@@ -1119,8 +1134,8 @@ namespace Reshop.Infrastructure.Repository.Product
         {
             IQueryable<ShopperProductColor> favoriteProducts = _context.FavoriteProducts
                 .Where(c => c.UserId == userId)
-                .Select(c=> c.ShopperProductColor)
-                .Where(c=> c.IsActive);
+                .Select(c => c.ShopperProductColor)
+                .Where(c => c.IsActive);
 
 
             #region filter product
@@ -1170,7 +1185,7 @@ namespace Reshop.Infrastructure.Repository.Product
                    .FirstOrDefault(),
                 ProductPrice = c.Price,
                 ShopperProductColorId = c.ShopperProductColorId,
-                Image = c.ShopperProduct.Product.ProductGalleries.OrderBy(g=> g.OrderBy).First().ImageName
+                Image = c.ShopperProduct.Product.ProductGalleries.OrderBy(g => g.OrderBy).First().ImageName
             });
         }
 

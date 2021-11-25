@@ -689,6 +689,9 @@ namespace Reshop.Application.Services.Shopper
         public async Task<bool> IsShopperProductColorExistAsync(string shopperProductId, int colorId) =>
             await _shopperRepository.IsShopperProductColorExistAsync(shopperProductId, colorId);
 
+        public async Task<bool> IsShopperProductColorExistAsync(string shopperProductColorId) =>
+            await _shopperRepository.IsShopperProductExistAsync(shopperProductColorId);
+
         public async Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId) =>
             await _shopperRepository.GetShopperProductColorDetailAsync(shopperProductColorId);
 

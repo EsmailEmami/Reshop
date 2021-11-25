@@ -384,6 +384,9 @@ namespace Reshop.Application.Services.Product
             =>
                 await _productRepository.GetProductRedirectionByShortKeyAsync(key);
 
+        public async Task<Tuple<string, string>> GetBestSellerOfProductAsync(int productId) =>
+            await _productRepository.GetBestSellerOfProductAsync(productId);
+
         public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId)
             =>
                 await _productRepository.GetTypeMobileProductDataForEditAsync(productId);

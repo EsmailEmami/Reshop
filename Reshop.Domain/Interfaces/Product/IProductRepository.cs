@@ -128,6 +128,8 @@ namespace Reshop.Domain.Interfaces.Product
 
         Task<Tuple<string, string>> GetProductRedirectionByShortKeyAsync(string key);
 
+        Task<Tuple<string, string>> GetBestSellerOfProductAsync(int productId);
+
 
         IEnumerable<Tuple<string, string, string>> GetProductShoppers(int productId, int colorId);
         Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId);

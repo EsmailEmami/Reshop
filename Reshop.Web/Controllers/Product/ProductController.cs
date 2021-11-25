@@ -3,6 +3,7 @@ using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.Product;
 using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Shopper;
 
 namespace Reshop.Web.Controllers.Product
 {
@@ -11,10 +12,12 @@ namespace Reshop.Web.Controllers.Product
         #region constructor
 
         private readonly IProductService _productService;
+        private readonly IShopperService _shopperService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IShopperService shopperService)
         {
             _productService = productService;
+            _shopperService = shopperService;
         }
 
         #endregion
@@ -33,6 +36,9 @@ namespace Reshop.Web.Controllers.Product
             {
                 return BadRequest();
             }
+
+            if (!await _shopperService.IsShopperProductColorExistAsync(sellerId))
+                return NotFound();
 
             var product = await _productService.GetProductDetailAsync(sellerId);
 
@@ -76,6 +82,25 @@ namespace Reshop.Web.Controllers.Product
             return RedirectToAction("ProductDetail", "Product",
                 new { productName = product.Item1.Replace(" ", "-"), sellerId = product.Item2 });
         }
+
+
+        // redirect to product detail
+        [HttpGet]
+        public async Task<IActionResult> ProductRedirect(int productId)
+        {
+            if (productId == 0)
+                return NotFound();
+
+
+            var product = await _productService.GetBestSellerOfProductAsync(productId);
+
+            if (product == null)
+                return NotFound();
+
+            return RedirectToAction("ProductDetail", "Product",
+                new { productName = product.Item1.Replace(" ", "-"), sellerId = product.Item2 });
+        }
+
 
         [Route("Category/{categoryId}/{categoryName}")]
         [Route("Category/{categoryId}/{categoryName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]

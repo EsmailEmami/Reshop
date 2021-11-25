@@ -91,6 +91,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> AddShopperProductColorAsync(ShopperProductColor shopperProductColor);
         Task<ResultTypes> EditShopperProductColorAsync(ShopperProductColor shopperProductColor);
         Task<bool> IsShopperProductColorExistAsync(string shopperProductId, int colorId);
+        Task<bool> IsShopperProductColorExistAsync(string shopperProductColorId);
 
         Task<ShopperProductColorDetailViewModel> GetShopperProductColorDetailAsync(string shopperProductColorId);
         Task<bool> IsAnyActiveShopperProductColorRequestExistAsync(string shopperProductId, int colorId, bool type);
