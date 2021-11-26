@@ -545,5 +545,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         #endregion
+
+        public IActionResult ListFavoriteProducts(string userId, int pageId, string sortBy)
+        {
+            return ViewComponent("UserFavoriteProductsComponent", new { userId, pageId, sortBy });
+        }
+
+
     }
 }

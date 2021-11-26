@@ -1,0 +1,111 @@
+﻿@model Tuple<IEnumerable<ProductViewModel>, int, int>
+
+@{
+
+}
+
+<link href="~/css/select.css" rel="stylesheet" />
+<div class="filter">
+    <input type="hidden" id="pageIdFavoriteProducts" value="@Model.Item2" />
+
+    <select name="sortBy" id="sortByFavoriteProducts" onchange="changeListFavoriteProducts()">
+        <option>فیلتر بر اساس مرتب سازی</option>
+        @switch (ViewBag.SelectedSortBy.ToString())
+        {
+            case "news":
+                {
+                    <option value="news" selected>جدید ترین</option>
+                    <option value="expensive">گران ترین</option>
+                    <option value="cheap">ارزان ترین</option>
+                    break;
+                }
+            case "expensive":
+                {
+                    <option value="news">جدید ترین</option>
+                    <option value="expensive" selected>گران ترین</option>
+                    <option value="cheap">ارزان ترین</option>
+                    break;
+                }
+            case "cheap":
+                {
+                    <option value="news">جدید ترین</option>
+                    <option value="expensive">گران ترین</option>
+                    <option value="cheap" selected>ارزان ترین</option>
+                    break;
+                }
+            default:
+                {
+                    <option value="news" selected>جدید ترین</option>
+                    <option value="expensive">گران ترین</option>
+                    <option value="cheap">ارزان ترین</option>
+                    break;
+                }
+        }
+    </select>
+</div>
+
+
+
+
+@if (Model.Item1.Any())
+{
+    <div class="products-item-section">
+        @await Html.PartialAsync("Product/_BoxProducts", Model.Item1)
+    </div>
+
+
+
+
+    @if (Model.Item3 > 1)
+    {
+        <ul class="pagination-custom">
+            <li class="@(Model.Item2<=1?"disabled":"")" onclick="paginationFavoriteProducts('@(Model.Item2 - 1)')">
+                <i class="far fa-angle-right"></i>
+            </li>
+
+            @for (var i = 1; i <= Model.Item3; i++)
+            {
+                <li class="@(Model.Item2 == i? "active":"")" onclick="paginationFavoriteProducts('@i')">
+                    @i
+                </li>
+            }
+
+            <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="paginationFavoriteProducts('@(Model.Item2+1)')">
+                <i class="far fa-angle-left"></i>
+            </li>
+
+        </ul>
+    }
+
+
+    <script>
+        function paginationFavoriteProducts(pageId) {
+            $('#pageIdFavoriteProducts').val(pageId);
+            changeListFavoriteProducts();
+        }
+
+        function changeListFavoriteProducts() {
+            let pageId = $('#pageIdFavoriteProducts').val();
+            let sortBy = $('#sortByFavoriteProducts').val();
+
+
+            $.ajax({
+                type: 'GET',
+                url: '/ManagerPanel/UserManager/ListFavoriteProducts?userId=@ViewBag.UserId&pageId=' + pageId + '&sortBy=' + sortBy
+        }).done(function (res) {
+                $("#favoriteProductsList").html(res);
+            });
+        }
+
+    </script>
+
+
+}
+else
+{
+    <div class="alert alert-warning">
+        محصول مورد علاقه ای یافت نشد.
+    </div>
+}
+
+<script src="~/js/select.js"></script>

@@ -30,11 +30,10 @@
 
                         @{
                             string sortBy = ViewBag.SortBy.ToString();
-                            string type = ViewBag.Type.ToString();
                         }
 
                         <section class="filter-box">
-                            <select class="select" name="sortBy" onchange="SubmitForm('filterFavoriteProduct')">
+                            <select name="sortBy" onchange="SubmitForm('filterFavoriteProduct')">
                                 <option>فیلتر بر اساس مرتب سازی</option>
                                 @switch (sortBy)
                                 {
@@ -61,9 +60,9 @@
                                         }
                                     default:
                                         {
-                                            <option value="news">علی</option>
-                                            <option value="expensive">اکبر</option>
-                                            <option value="cheap">اصغر</option>
+                                            <option value="news" selected>جدید ترین</option>
+                                            <option value="expensive">گران ترین</option>
+                                            <option value="cheap">ارزان ترین</option>
                                             break;
                                         }
                                 }
@@ -75,7 +74,7 @@
             </div>
             <div class="col-12 mt-3">
                 <div class="user-data box-shadow">
-                    <div class="row">
+                    <div class="products-item-section">
 
 
                         @if (!Model.Item1.Any())

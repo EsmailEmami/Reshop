@@ -975,13 +975,13 @@ namespace Reshop.Application.Services.Product
         public async Task<bool> IsShopperProductExistAsync(string shopperId, int productId) =>
             await _shopperRepository.IsShopperProductExistAsync(shopperId, productId);
 
-        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string type = "all", string sortBy = "news", int pageId = 1, int take = 18)
+        public async Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string sortBy = "news", int pageId = 1, int take = 18)
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
-            int productsCount = await _productRepository.GetUserFavoriteProductsCountWithTypeAsync(userId, type.FixedText());
+            int productsCount = await _productRepository.GetUserFavoriteProductsCountWithTypeAsync(userId);
 
-            var products = _productRepository.GetUserFavoriteProductsWithPagination(userId, type.FixedText(), sortBy.FixedText(), skip, take);
+            var products = _productRepository.GetUserFavoriteProductsWithPagination(userId, sortBy.FixedText(), skip, take);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 

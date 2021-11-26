@@ -35,11 +35,11 @@ namespace Reshop.Infrastructure.Repository.Product
                             c.ShopperProducts
                                 .Any(i => i.IsActive
                                           && i.ShopperProductColors.Any(s => s.IsActive)))
-                .Distinct()
                 .Select(c => c.ShopperProducts
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i=> i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -143,6 +143,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -216,6 +217,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -280,6 +282,7 @@ namespace Reshop.Infrastructure.Repository.Product
                             c.ShopperProductColors
                                 .Any(i => i.IsActive))
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(c => c.SaleCount)
                     .First());
 
@@ -349,6 +352,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -420,6 +424,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -452,6 +457,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -510,6 +516,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -543,6 +550,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -575,6 +583,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -633,6 +642,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -732,6 +742,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(v => v.SaleCount)
                     .First())
                 .Select(c => new Tuple<string, string>(c.ShopperProduct.Product.ProductTitle, c.ShopperProductColorId))
@@ -875,16 +886,12 @@ namespace Reshop.Infrastructure.Repository.Product
             };
         }
 
-        public async Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId, string type)
-        {
-            if (type == "all")
-            {
-                return await _context.FavoriteProducts.Where(c => c.UserId == userId).CountAsync();
-            }
-
-            return await _context.FavoriteProducts.Where(c => c.UserId == userId)
-                .Where(c => c.ShopperProductColor.ShopperProduct.Product.ProductType == type).CountAsync();
-        }
+        public async Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId) =>
+            await _context.FavoriteProducts.Where(c => c.UserId == userId)
+                .Select(c => c.ShopperProductColor)
+                .Where(c => c.IsActive)
+                .CountAsync();
+        
 
         public async Task<int> GetCategoryProductsCountAsync(int categoryId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null)
         {
@@ -901,6 +908,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -942,6 +950,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -977,6 +986,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Where(c => c.ShopperId == shopperId && c.IsActive && c.ShopperProductColors
                     .Any(s => s.IsActive))
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -1020,6 +1030,7 @@ namespace Reshop.Infrastructure.Repository.Product
                         .Sum(s => s.SaleCount))
                     .First())
                 .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
                     .OrderByDescending(b => b.SaleCount)
                     .First());
 
@@ -1130,7 +1141,7 @@ namespace Reshop.Infrastructure.Repository.Product
         }
 
 
-        public IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24)
+        public IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string sortBy, int skip = 0, int take = 24)
         {
             IQueryable<ShopperProductColor> favoriteProducts = _context.FavoriteProducts
                 .Where(c => c.UserId == userId)
@@ -1140,36 +1151,15 @@ namespace Reshop.Infrastructure.Repository.Product
 
             #region filter product
 
-            if (type == "all")
+            favoriteProducts = sortBy switch
             {
-                favoriteProducts = sortBy switch
-                {
-                    "news" => favoriteProducts.OrderByDescending(c => c.CreateDate),
-                    "expensive" => favoriteProducts.OrderByDescending(c => c.Price),
-                    "cheap" => favoriteProducts.OrderBy(c => c.Price),
-                    "mostsale" => favoriteProducts.OrderByDescending(c => c.SaleCount),
-                    "mostviews" => favoriteProducts.OrderByDescending(c => c.ViewCount),
-                    _ => favoriteProducts.OrderByDescending(c => c.CreateDate),
-                };
-            }
-            else
-            {
-                favoriteProducts = sortBy switch
-                {
-                    "news" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.CreateDate),
-                    "expensive" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.Price),
-                    "cheap" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
-                        .OrderBy(c => c.Price),
-                    "mostsale" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.SaleCount),
-                    "mostviews" => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.ViewCount),
-                    _ => favoriteProducts.Where(c => c.ShopperProduct.Product.ProductType == type)
-                        .OrderByDescending(c => c.CreateDate),
-                };
-            }
+                "news" => favoriteProducts.OrderByDescending(c => c.CreateDate),
+                "expensive" => favoriteProducts.OrderByDescending(c => c.Price),
+                "cheap" => favoriteProducts.OrderBy(c => c.Price),
+                "mostsale" => favoriteProducts.OrderByDescending(c => c.SaleCount),
+                "mostviews" => favoriteProducts.OrderByDescending(c => c.ViewCount),
+                _ => favoriteProducts.OrderByDescending(c => c.CreateDate),
+            };
 
             #endregion
 

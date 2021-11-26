@@ -4,13 +4,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
+using Reshop.Application.Enums.Product;
 using Reshop.Application.Generator;
+using Reshop.Application.Interfaces.Conversation;
 using Reshop.Application.Interfaces.Product;
-using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security.Attribute;
+using Reshop.Application.Security.GoogleRecaptcha;
 using Reshop.Application.Validations.Google;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
@@ -18,11 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using Reshop.Application.Enums.Product;
-using Reshop.Application.Interfaces.Conversation;
-using Reshop.Application.Security.Attribute;
-using Reshop.Application.Security.GoogleRecaptcha;
 
 namespace Reshop.Web.Controllers.User
 {
@@ -577,14 +576,13 @@ namespace Reshop.Web.Controllers.User
         #region favorite products
 
         [HttpGet]
-        public async Task<IActionResult> FavoriteProducts(string type = "all", string sortBy = "news", int pageId = 1)
+        public async Task<IActionResult> FavoriteProducts(string sortBy = "news", int pageId = 1)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             ViewBag.SortBy = sortBy.ToLower();
-            ViewBag.Type = type.ToLower();
 
-            return View(await _productService.GetUserFavoriteProductsWithPagination(userId, type, sortBy, pageId, 18));
+            return View(await _productService.GetUserFavoriteProductsWithPagination(userId, sortBy, pageId, 24));
         }
 
         [HttpPost]

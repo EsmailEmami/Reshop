@@ -144,7 +144,7 @@ namespace Reshop.Domain.Interfaces.Product
         #region count
 
         Task<int> GetProductsCountWithTypeAsync(string type = "all");
-        Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId, string type);
+        Task<int> GetUserFavoriteProductsCountWithTypeAsync(string userId);
         Task<int> GetCategoryProductsCountAsync(int categoryId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         Task<int> GetChildCategoryProductsCountAsync(int childCategoryId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         Task<int> GetShopperProductsCountAsync(string shopperId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
@@ -164,7 +164,7 @@ namespace Reshop.Domain.Interfaces.Product
 
         #region favorite product
 
-        IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string type, string sortBy, int skip = 0, int take = 24);
+        IEnumerable<ProductViewModel> GetUserFavoriteProductsWithPagination(string userId, string sortBy, int skip = 0, int take = 24);
         Task AddToFavoriteProductAsync(FavoriteProduct favoriteProduct);
         void RemoveFavoriteProduct(FavoriteProduct favoriteProduct);
         void UpdateFavoriteProduct(FavoriteProduct favoriteProduct);

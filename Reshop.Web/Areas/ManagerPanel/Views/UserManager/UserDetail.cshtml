@@ -136,6 +136,10 @@
     @await Component.InvokeAsync("UserRolesComponent", new { userId = Model.UserId })
 </section>
 
+<section class="table-list" id="favoriteProductsList">
+    @await Component.InvokeAsync("UserFavoriteProductsComponent", new { userId = Model.UserId })
+</section>
+
 
 @section AfterMainOptions
 {
