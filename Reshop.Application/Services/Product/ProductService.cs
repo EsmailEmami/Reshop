@@ -190,7 +190,7 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-    
+
         public async Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync()
         {
             int allProductsCount = await _productRepository.GetProductsCountWithTypeAsync();
@@ -348,7 +348,7 @@ namespace Reshop.Application.Services.Product
             var colors = _colorRepository.GetProductColorsWithDetail(product.ProductId);
 
             var shopper = await _shopperRepository.GetShopperIdAndStoreNameOfShopperProductColorAsync(shopperProductColorId);
-            
+
             return new ProductDetailViewModel()
             {
                 Product = product,
@@ -992,6 +992,26 @@ namespace Reshop.Application.Services.Product
         public async Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId)
         {
             return await _productRepository.GetFavoriteProductAsync(favoriteProductId);
+        }
+
+        public async Task<ResultTypes> DeleteFavoriteProductAsync(string userId, string shopperProductColorId)
+        {
+            try
+            {
+                var favoriteProduct = await _productRepository.GetFavoriteProductAsync(userId, shopperProductColorId);
+
+                if (favoriteProduct == null)
+                    return ResultTypes.Failed;
+
+                _productRepository.RemoveFavoriteProduct(favoriteProduct);
+                await _productRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
         }
 
         public async Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, string shopperProductColorId)

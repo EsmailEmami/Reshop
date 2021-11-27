@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Product;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -28,13 +29,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IPermissionService _permissionService;
         private readonly IShopperService _shopperService;
         private readonly IOriginService _originService;
+        private readonly IProductService _productService;
 
-        public UserManagerController(IUserService userService, IPermissionService permissionService, IShopperService shopperService, IOriginService originService)
+        public UserManagerController(IUserService userService, IPermissionService permissionService, IShopperService shopperService, IOriginService originService, IProductService productService)
         {
             _userService = userService;
             _permissionService = permissionService;
             _shopperService = shopperService;
             _originService = originService;
+            _productService = productService;
         }
 
         #endregion
@@ -546,11 +549,25 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #endregion
 
+        [HttpGet]
         public IActionResult ListFavoriteProducts(string userId, int pageId, string sortBy)
         {
             return ViewComponent("UserFavoriteProductsComponent", new { userId, pageId, sortBy });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteFavoriteProduct(string userId,string shopperProductColorId)
+        {
+            var res = await _productService.DeleteFavoriteProductAsync(userId, shopperProductColorId);
 
+            if (res == ResultTypes.Successful)
+            {
+                return Json(new { isValid = true, errorType = "success", errorText = "کالا با موفقیت از علاقه مندی ها حذف شد.", returnUrl = "current" });
+            }
+            else
+            {
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+            }
+        }
     }
 }

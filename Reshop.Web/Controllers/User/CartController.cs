@@ -43,7 +43,6 @@ namespace Reshop.Web.Controllers.User
 
         [HttpGet]
         [Route("Cart")]
-
         public IActionResult ShowCart()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

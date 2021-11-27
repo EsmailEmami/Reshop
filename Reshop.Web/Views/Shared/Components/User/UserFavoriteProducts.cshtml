@@ -50,7 +50,7 @@
 @if (Model.Item1.Any())
 {
     <div class="products-item-section">
-        @await Html.PartialAsync("Product/_BoxProducts", Model.Item1)
+        @await Html.PartialAsync("Product/_FavoriteBoxProductAdminPanel", new Tuple<IEnumerable<ProductViewModel>,string>(Model.Item1,ViewBag.UserId))
     </div>
 
 
