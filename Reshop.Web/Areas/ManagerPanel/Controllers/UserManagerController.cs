@@ -3,6 +3,7 @@ using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Generator;
+using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security;
@@ -15,8 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Interfaces.Product;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -30,14 +31,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IShopperService _shopperService;
         private readonly IOriginService _originService;
         private readonly IProductService _productService;
+        private readonly ICartService _cartService;
 
-        public UserManagerController(IUserService userService, IPermissionService permissionService, IShopperService shopperService, IOriginService originService, IProductService productService)
+        public UserManagerController(IUserService userService, IPermissionService permissionService, IShopperService shopperService, IOriginService originService, IProductService productService, ICartService cartService)
         {
             _userService = userService;
             _permissionService = permissionService;
             _shopperService = shopperService;
             _originService = originService;
             _productService = productService;
+            _cartService = cartService;
         }
 
         #endregion
@@ -550,13 +553,15 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #endregion
 
         [HttpGet]
+        [NoDirectAccess]
         public IActionResult ListFavoriteProducts(string userId, int pageId, string sortBy)
         {
             return ViewComponent("UserFavoriteProductsComponent", new { userId, pageId, sortBy });
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteFavoriteProduct(string userId,string shopperProductColorId)
+        [NoDirectAccess]
+        public async Task<IActionResult> DeleteFavoriteProduct(string userId, string shopperProductColorId)
         {
             var res = await _productService.DeleteFavoriteProductAsync(userId, shopperProductColorId);
 
@@ -569,5 +574,39 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
             }
         }
+
+        #region order
+
+        [HttpGet]
+        [NoDirectAccess]
+        public IActionResult UserOrdersList(string userId, string type, int pageId)
+        {
+            return ViewComponent("UserOrdersComponent", new { userId, type, pageId, orderBy = "news" });
+        }
+
+        [HttpGet]
+        [Route("[action]/{userId}/{trackingCode}")]
+        public async Task<IActionResult> UserOrderDetail(string userId, string trackingCode)
+        {
+            if (string.IsNullOrEmpty(trackingCode))
+                return BadRequest();
+
+            var orderId = await _cartService.GetOrderIdByTrackingCodeAsync(trackingCode);
+
+            if (string.IsNullOrEmpty(orderId))
+                return NotFound();
+
+            if (!await _cartService.IsUserOrderAsync(userId, orderId))
+                return NotFound();
+
+            var order = await _cartService.GetFullOrderForShowAsync(orderId);
+
+            if (order == null)
+                return NotFound();
+
+            return View(order);
+        }
+
+        #endregion
     }
 }

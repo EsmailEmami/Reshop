@@ -22,6 +22,7 @@ namespace Reshop.Web.Components.User
             ViewBag.TakeCount = take;
             ViewBag.SelectedType = type;
             ViewBag.SelectedOrderBy = orderBy;
+            ViewBag.UserId = userId;
 
 
             return View("/Views/Shared/Components/User/UserOrders.cshtml", orders);
