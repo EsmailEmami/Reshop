@@ -5,12 +5,13 @@ using Reshop.Application.Constants;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
-using Reshop.Application.Interfaces.Category;
 using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
+using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security;
 using Reshop.Application.Security.Attribute;
+using Reshop.Domain.DTOs.Discount;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
@@ -18,8 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Interfaces.User;
-using Reshop.Domain.DTOs.Discount;
+using AddOrEditAUXViewModel = Reshop.Domain.DTOs.Product.AddOrEditAUXViewModel;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -220,7 +220,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View(new AddOrEditMobileProductViewModel());
+                var newModel = new AddOrEditMobileProductViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -241,7 +246,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!ModelState.IsValid) return View(model);
 
             // in this section we check that all images are ok
-         
+
             #region images security
 
             if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -502,7 +507,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View(new AddOrEditLaptopProductViewModel());
+                var newModel = new AddOrEditLaptopProductViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -758,7 +768,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View(new AddOrEditTabletViewModel());
+                var newModel = new AddOrEditTabletViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -1038,7 +1053,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View(new AddOrEditMobileCoverViewModel());
+                var newModel = new AddOrEditMobileCoverViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -1210,7 +1230,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View();
+                var newModel = new AddOrEditLaptopProductViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -1233,7 +1258,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View(new AddOrEditSpeakerViewModel());
+                var newModel = new AddOrEditSpeakerViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -1438,7 +1468,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View();
+                var newModel = new AddOrEditPowerBankViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -1634,7 +1669,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View();
+                var newModel = new AddOrEdirWristWatchViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -1799,7 +1839,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View();
+                var newModel = new AddOrEditSmartWatchViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -2026,7 +2071,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View(new AddOrEditFlashMemoryViewModel());
+                var newModel = new AddOrEditFlashMemoryViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -2041,7 +2091,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
-
         public async Task<IActionResult> AddOrEditFlashMemory(AddOrEditFlashMemoryViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -2224,7 +2273,12 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             if (productId == 0)
             {
-                return View(new AddOrEditFlashMemoryViewModel());
+                var newModel = new AddOrEditMemoryCardViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
+                return View(newModel);
             }
             else
             {
@@ -2396,20 +2450,19 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #endregion
 
-        #region AUX 
-
+        #region AUX
 
         [HttpGet]
         [Permission(PermissionsConstants.AddAux, PermissionsConstants.EditAux)]
         public async Task<IActionResult> AddOrEditAUX(int productId = 0)
         {
-            var newModel = new AddOrEditAUXViewModel()
-            {
-                StoreTitles = _shopperService.GetStoreTitles()
-            };
-
             if (productId == 0)
             {
+                var newModel = new AddOrEditAUXViewModel()
+                {
+                    StoreTitles = _shopperService.GetStoreTitles()
+                };
+
                 return View(newModel);
             }
             else

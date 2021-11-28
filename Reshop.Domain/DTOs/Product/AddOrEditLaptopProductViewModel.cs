@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using Reshop.Domain.Entities.Category;
+using Reshop.Domain.Entities.Shopper;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
 
 namespace Reshop.Domain.DTOs.Product
 {
