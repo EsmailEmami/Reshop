@@ -1,17 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Reshop.Domain.Entities.Category;
+using Reshop.Domain.Entities.Shopper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace Reshop.Domain.DTOs.Product
 {
     public class AddOrEditSpeakerViewModel
     {
         // product 
-
         public int ProductId { get; set; }
 
         [Display(Name = "نام کالا")]
@@ -30,6 +28,15 @@ namespace Reshop.Domain.DTOs.Product
         [Display(Name = "وضعیت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsActive { get; set; }
+
+        public IEnumerable<StoreTitle> StoreTitles { get; set; }
+        public IEnumerable<Tuple<int, string>> Brands { get; set; }
+        public IEnumerable<Tuple<int, string>> OfficialProducts { get; set; }
+        public IEnumerable<ChildCategory> ChildCategories { get; set; }
+
+        public int SelectedStoreTitle { get; set; }
+        public int SelectedBrand { get; set; }
+        public int SelectedChildCategory { get; set; }
 
         // --------------------------------------------------------------------------- ITEMS
 

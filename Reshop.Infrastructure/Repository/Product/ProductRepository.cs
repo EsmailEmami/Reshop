@@ -1257,7 +1257,9 @@ namespace Reshop.Infrastructure.Repository.Product
                     Description = c.Description,
                     OfficialBrandProductId = c.OfficialBrandProductId,
                     IsActive = c.IsActive,
-
+                    SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                    SelectedBrand = c.OfficialBrandProduct.BrandId,
+                    SelectedChildCategory = c.ChildCategoryId,
                     //img
                     SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                     SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
@@ -1335,7 +1337,9 @@ namespace Reshop.Infrastructure.Repository.Product
                      Description = c.Description,
                      OfficialBrandProductId = c.OfficialBrandProductId,
                      IsActive = c.IsActive,
-
+                     SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                     SelectedBrand = c.OfficialBrandProduct.BrandId,
+                     SelectedChildCategory = c.ChildCategoryId,
                      //img
                      SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                      SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
@@ -1401,7 +1405,9 @@ namespace Reshop.Infrastructure.Repository.Product
                      Description = c.Description,
                      OfficialBrandProductId = c.OfficialBrandProductId,
                      IsActive = c.IsActive,
-
+                     SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                     SelectedBrand = c.OfficialBrandProduct.BrandId,
+                     SelectedChildCategory = c.ChildCategoryId,
                      //img
                      SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                      SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
@@ -1437,7 +1443,9 @@ namespace Reshop.Infrastructure.Repository.Product
                         Description = c.Description,
                         OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
-
+                        SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                        SelectedBrand = c.OfficialBrandProduct.BrandId,
+                        SelectedChildCategory = c.ChildCategoryId,
                         //img
                         SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                         SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
@@ -1463,7 +1471,9 @@ namespace Reshop.Infrastructure.Repository.Product
                         Description = c.Description,
                         OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
-
+                        SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                        SelectedBrand = c.OfficialBrandProduct.BrandId,
+                        SelectedChildCategory = c.ChildCategoryId,
                         //img
                         SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                         SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
@@ -1501,7 +1511,9 @@ namespace Reshop.Infrastructure.Repository.Product
                         Description = c.Description,
                         OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
-
+                        SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                        SelectedBrand = c.OfficialBrandProduct.BrandId,
+                        SelectedChildCategory = c.ChildCategoryId,
                         //img
                         SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                         SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
@@ -1580,7 +1592,9 @@ namespace Reshop.Infrastructure.Repository.Product
                         Description = c.Description,
                         OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
-
+                        SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                        SelectedBrand = c.OfficialBrandProduct.BrandId,
+                        SelectedChildCategory = c.ChildCategoryId,
                         //img
                         SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                         SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
@@ -1622,7 +1636,9 @@ namespace Reshop.Infrastructure.Repository.Product
                         Description = c.Description,
                         OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
-
+                        SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                        SelectedBrand = c.OfficialBrandProduct.BrandId,
+                        SelectedChildCategory = c.ChildCategoryId,
                         //img
                         SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                         SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
@@ -1643,7 +1659,9 @@ namespace Reshop.Infrastructure.Repository.Product
                         Description = c.Description,
                         OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
-
+                        SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                        SelectedBrand = c.OfficialBrandProduct.BrandId,
+                        SelectedChildCategory = c.ChildCategoryId,
                         //img
                         SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                         SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
@@ -1697,7 +1715,9 @@ namespace Reshop.Infrastructure.Repository.Product
                         Description = c.Description,
                         OfficialBrandProductId = c.OfficialBrandProductId,
                         IsActive = c.IsActive,
-
+                        SelectedStoreTitle = c.OfficialBrandProduct.Brand.StoreTitleId,
+                        SelectedBrand = c.OfficialBrandProduct.BrandId,
+                        SelectedChildCategory = c.ChildCategoryId,
                         //img
                         SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
                         SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,

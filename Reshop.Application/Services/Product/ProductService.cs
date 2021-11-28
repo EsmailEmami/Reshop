@@ -388,40 +388,113 @@ namespace Reshop.Application.Services.Product
             await _productRepository.GetBestSellerOfProductAsync(productId);
 
         public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeMobileProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypeMobileProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+            return model;
+        }
 
         public async Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypePowerBankProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypePowerBankProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+            return model;
+        }
 
         public async Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeMobileCoverProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypeMobileCoverProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+            return model;
+        }
 
         public async Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeLaptopProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypeLaptopProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+            return model;
+        }
 
         public async Task<AddOrEditTabletViewModel> GetTypeTabletProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeTabletProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypeTabletProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+            return model;
+        }
 
         public async Task<AddOrEditSpeakerViewModel> GetTypeSpeakerProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeSpeakerProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypeSpeakerProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+            return model;
+        }
 
         public async Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeWristWatchProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypeWristWatchProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+            return model;
+        }
 
         public async Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeSmartWatchProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypeSmartWatchProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+            return model;
+        }
+
 
         public async Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId)
-            =>
-                await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId);
+        {
+            var model = await _productRepository.GetTypeMemoryCardProductDataForEditAsync(productId);
+
+            model.StoreTitles = _shopperRepository.GetStoreTitles();
+            model.Brands = _brandRepository.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+            return model;
+        }
 
         public async Task<AddOrEditAUXViewModel> GetTypeAUXProductDataAsync(int productId)
         {
@@ -434,7 +507,6 @@ namespace Reshop.Application.Services.Product
 
             return model;
         }
-
 
         public async Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail)
         {

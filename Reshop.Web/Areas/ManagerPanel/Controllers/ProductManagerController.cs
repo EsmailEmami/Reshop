@@ -232,9 +232,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         public async Task<IActionResult> AddOrEditMobile(AddOrEditMobileProductViewModel model)
         {
+            // data for select Product
+            model.StoreTitles = _shopperService.GetStoreTitles();
+            model.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+            model.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
+            model.ChildCategories = _brandService.GetChildCategoriesOfBrand(model.SelectedBrand);
+
             if (!ModelState.IsValid) return View(model);
 
             // in this section we check that all images are ok
+         
             #region images security
 
             if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -290,9 +297,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     ProductTitle = model.ProductTitle,
                     Description = model.Description,
-                    ProductType = ProductTypes.Mobile.ToString(),
+                    ProductType = ProductTypes.AUX.ToString(),
                     OfficialBrandProductId = model.OfficialBrandProductId,
-                    IsActive = model.IsActive
+                    IsActive = model.IsActive,
+                    ChildCategoryId = model.SelectedChildCategory
                 };
 
                 var mobileDetail = new MobileDetail()
@@ -366,6 +374,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                         model.SelectedImage5, model.SelectedImage6
                     }, product.ProductId);
 
+
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -395,6 +404,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 product.Description = model.Description;
                 product.OfficialBrandProductId = model.OfficialBrandProductId;
                 product.IsActive = model.IsActive;
+                product.ChildCategoryId = model.SelectedChildCategory;
 
 
                 // update mobile detail
