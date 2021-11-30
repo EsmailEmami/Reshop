@@ -10,6 +10,7 @@ namespace Reshop.Domain.Interfaces.Product
     {
         #region brand
 
+        Task<IEnumerable<Tuple<int, string, string>>> GetBrandsOfProductsAsync(string type);
         IEnumerable<Tuple<int, string, string>> GetBrandsOfCategory(int categoryId);
         IEnumerable<Tuple<int, string, string>> GetBrandsOfChildCategory(int childCategoryId);
         Task<IEnumerable<Tuple<int, string, string>>> GetBrandsOfShopperAsync(string shopperId);

@@ -45,10 +45,8 @@ namespace Reshop.Application.Services.Product
 
         #endregion
 
-        public IEnumerable<ProductViewModel> GetProductsWithType(ProductTypes type = ProductTypes.All, SortTypes sortBy = SortTypes.News, int take = 18)
-        {
-            return _productRepository.GetProductsWithPagination(Fixer.FixedToString(type), Fixer.FixedToString(sortBy), 0, take);
-        }
+        public async Task<IEnumerable<ProductViewModel>> GetProductsForShowAsync(string type = "all", string sortBy = "news", int take = 18, List<int> brands = null) =>
+            await _productRepository.GetProductsWithPaginationAsync(type.FixedText(), sortBy.FixedText(), take: take, brands: brands);
 
         public async Task<Tuple<IEnumerable<ProductDataForAdmin>, int, int>> GetProductsWithPaginationForAdminAsync(string type = "all", int pageId = 1, int take = 18, string filter = "")
         {
@@ -85,6 +83,34 @@ namespace Reshop.Application.Services.Product
             {
                 CategoryId = categoryId,
                 CategoryName = category.CategoryTitle,
+                Products = products,
+                PageId = pageId,
+                TotalPages = totalPages,
+                Brands = brandsShow,
+                ProductsMaxPrice = productMaxPrice,
+                ProductsMinPrice = productMinPrice
+            };
+        }
+
+        public async Task<ProductsForShow> GetProductsWithPaginationAsync(string type = "all", string sortBy = "news", int pageId = 1, int take = 18,
+            string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null)
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+            int productsCount = await _productRepository.GetProductsCountAsync(type.FixedText(), filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
+
+            var products = await _productRepository.GetProductsWithPaginationAsync(type.FixedText(), sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
+
+            int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
+
+            var brandsShow = await _brandRepository.GetBrandsOfProductsAsync(type.FixedText());
+
+            decimal productMaxPrice = await _productRepository.GetMaxPriceOfProductsAsync(type.FixedText(), filter, brands);
+            decimal productMinPrice = await _productRepository.GetMinPriceOfProductsAsync(type.FixedText(), filter, brands);
+
+            return new ProductsForShow()
+            {
+                Type = type,
                 Products = products,
                 PageId = pageId,
                 TotalPages = totalPages,

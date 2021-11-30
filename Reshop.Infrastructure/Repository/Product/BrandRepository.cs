@@ -23,6 +23,31 @@ namespace Reshop.Infrastructure.Repository.Product
 
         #endregion
 
+        public async Task<IEnumerable<Tuple<int, string, string>>> GetBrandsOfProductsAsync(string type)
+        {
+            if (type == "all")
+            {
+               return await _context.Products
+                    .Select(c => c.OfficialBrandProduct)
+                    .Distinct()
+                    .Select(c => c.Brand)
+                    .Distinct()
+                    .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName))
+                    .ToListAsync();
+            }
+            else
+            {
+                return await _context.Products
+                    .Where(c=> c.ProductType.ToLower() == type)
+                    .Select(c => c.OfficialBrandProduct)
+                    .Distinct()
+                    .Select(c => c.Brand)
+                    .Distinct()
+                    .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName))
+                    .ToListAsync();
+            }
+        }
+
         public IEnumerable<Tuple<int, string, string>> GetBrandsOfCategory(int categoryId) =>
             _context.Categories
                 .Where(c => c.CategoryId == categoryId)

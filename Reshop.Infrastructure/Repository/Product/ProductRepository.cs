@@ -28,7 +28,7 @@ namespace Reshop.Infrastructure.Repository.Product
 
         #endregion
 
-        public IEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip, int take)
+        public async Task<IEnumerable<ProductViewModel>> GetProductsWithPaginationAsync(string type, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null)
         {
             IQueryable<ShopperProductColor> products = _context.Products
                 .Where(c => c.IsActive &&
@@ -76,13 +76,34 @@ namespace Reshop.Infrastructure.Repository.Product
                 };
             }
 
-            #endregion
+            if (minPrice != 0)
+            {
+                products = products.Where(c => c.Price >= minPrice);
+            }
 
+            if (maxPrice != 0)
+            {
+                products = products.Where(c => c.Price <= maxPrice);
+            }
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
+            #endregion
 
             products = products.Skip(skip).Take(take);
 
 
-            return products.Select(c => new ProductViewModel()
+            return await products.Select(c => new ProductViewModel()
             {
                 ProductTitle = c.ShopperProduct.Product.ProductTitle,
                 Image = c.ShopperProduct.Product.ProductGalleries
@@ -93,7 +114,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     .FirstOrDefault(),
                 ShopperProductColorId = c.ShopperProductColorId,
                 ProductId = c.ShopperProduct.ProductId
-            });
+            }).ToListAsync();
         }
 
         public IEnumerable<ProductDataForAdmin> GetProductsWithPaginationForAdmin(string type, int skip, int take, string filter)
@@ -415,6 +436,58 @@ namespace Reshop.Infrastructure.Repository.Product
             });
         }
 
+        public async Task<decimal> GetMaxPriceOfProductsAsync(string type, string filter = null, List<int> brands = null)
+        {
+            IQueryable<ShopperProductColor> products;
+
+            if (type == "all")
+            {
+                products = _context.Products
+                    .Where(c => c.IsActive &&
+                                c.ShopperProducts
+                                    .Any(i => i.IsActive
+                                              && i.ShopperProductColors.Any(s => s.IsActive)))
+                    .Select(c => c.ShopperProducts
+                        .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
+                        .First())
+                    .Select(c => c.ShopperProductColors
+                        .Where(i => i.IsActive)
+                        .OrderByDescending(b => b.SaleCount)
+                        .First());
+            }
+            else
+            {
+                products = _context.Products
+                    .Where(c => c.IsActive &&
+                                c.ProductType.ToLower() == type &&
+                                c.ShopperProducts
+                                    .Any(i => i.IsActive
+                                              && i.ShopperProductColors.Any(s => s.IsActive)))
+                    .Select(c => c.ShopperProducts
+                        .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
+                        .First())
+                    .Select(c => c.ShopperProductColors
+                        .Where(i => i.IsActive)
+                        .OrderByDescending(b => b.SaleCount)
+                        .First());
+            }
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
+            return await products.OrderByDescending(c => c.Price)
+                .Select(c => c.Price).FirstOrDefaultAsync();
+        }
+
         public async Task<decimal> GetMaxPriceOfCategoryProductsAsync(int categoryId, string filter = null, List<int> brands = null)
         {
             IQueryable<ShopperProductColor> products = _context.Categories
@@ -539,6 +612,58 @@ namespace Reshop.Infrastructure.Repository.Product
 
             return await products.OrderByDescending(c => c.Price)
                 .Select(c => c.Price).FirstAsync();
+        }
+
+        public async Task<decimal> GetMinPriceOfProductsAsync(string type, string filter = null, List<int> brands = null)
+        {
+            IQueryable<ShopperProductColor> products;
+
+            if (type == "all")
+            {
+                products = _context.Products
+                    .Where(c => c.IsActive &&
+                                c.ShopperProducts
+                                    .Any(i => i.IsActive
+                                              && i.ShopperProductColors.Any(s => s.IsActive)))
+                    .Select(c => c.ShopperProducts
+                        .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
+                        .First())
+                    .Select(c => c.ShopperProductColors
+                        .Where(i => i.IsActive)
+                        .OrderByDescending(b => b.SaleCount)
+                        .First());
+            }
+            else
+            {
+                products = _context.Products
+                    .Where(c => c.IsActive &&
+                                c.ProductType.ToLower() == type &&
+                                c.ShopperProducts
+                                    .Any(i => i.IsActive
+                                              && i.ShopperProductColors.Any(s => s.IsActive)))
+                    .Select(c => c.ShopperProducts
+                        .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
+                        .First())
+                    .Select(c => c.ShopperProductColors
+                        .Where(i => i.IsActive)
+                        .OrderByDescending(b => b.SaleCount)
+                        .First());
+            }
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
+            return await products.OrderBy(c => c.Price)
+                .Select(c => c.Price).FirstOrDefaultAsync();
         }
 
         public async Task<decimal> GetMinPriceOfCategoryProductsAsync(int categoryId, string filter = null, List<int> brands = null)
@@ -863,6 +988,47 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.ShopperProductColor)
                 .Where(c => c.IsActive)
                 .CountAsync();
+
+        public async Task<int> GetProductsCountAsync(string type = "all", string filter = null, decimal minPrice = 0, decimal maxPrice = 0,
+            List<int> brands = null)
+        {
+            IQueryable<ShopperProductColor> products = _context.Products
+                .Where(c => c.IsActive &&
+                            c.ShopperProducts
+                                .Any(i => i.IsActive
+                                          && i.ShopperProductColors.Any(s => s.IsActive)))
+                .Select(c => c.ShopperProducts
+                    .OrderByDescending(b => b.ShopperProductColors.Sum(s => s.SaleCount))
+                    .First())
+                .Select(c => c.ShopperProductColors
+                    .Where(i => i.IsActive)
+                    .OrderByDescending(b => b.SaleCount)
+                    .First());
+
+            if (minPrice != 0)
+            {
+                products = products.Where(c => c.Price >= minPrice);
+            }
+
+            if (maxPrice != 0)
+            {
+                products = products.Where(c => c.Price <= maxPrice);
+            }
+
+            if (filter != null)
+            {
+                products = products.Where(c => c.ShopperProduct.Product.ProductTitle.Contains(filter));
+            }
+
+            if (brands != null && brands.Any())
+            {
+                products = products
+                    .Where(c => brands
+                        .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
+            }
+
+            return await products.CountAsync();
+        }
 
 
         public async Task<int> GetCategoryProductsCountAsync(int categoryId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null)

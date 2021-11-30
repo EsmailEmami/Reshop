@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Reshop.Application.Enums.Product;
 
 namespace Reshop.Application.Convertors
 {
@@ -156,11 +157,29 @@ namespace Reshop.Application.Convertors
         public static string BoolToText(this bool value) =>
              value ? "بله" : "خیر";
 
-        public static string BoolToText(this bool value, string trueText, string falseText) => 
+        public static string BoolToText(this bool value, string trueText, string falseText) =>
             value ? trueText : falseText;
-        
+
 
         public static string ListToString(this IEnumerable<int> list, string delimiter) =>
             string.Join(delimiter, list);
+
+        public static bool EnumContainValue<T>(string value) where T : Enum
+        {
+            var values = Enum.GetValues(typeof(T)).Cast<T>();
+
+            return values.Any(c => string.Equals(c.ToString(), value, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        public static string ProductTypesValueToPersian(this string text)
+        {
+            Dictionary<string, string> lettersDictionary = new Dictionary<string, string>
+            {
+                ["mobile"] = "موبایل",
+                ["aux"] = "ای یو ایکس",
+            };
+            return lettersDictionary.Aggregate(text, (current, item) =>
+                current.Replace(item.Key, item.Value));
+        }
     }
 }

@@ -987,12 +987,10 @@ ul.breadcrumb {
     margin: 0 10px 30px 10px;
     border: 1px solid #f0f0f0;
     width: 250px;
-    min-width: 250px;
     box-shadow: 0 0 8px #d6d6d6;
     background: #fff;
     border-radius: 8px;
     overflow: hidden;
-    flex: 1;
 }
 
     .product-item .product-img {
@@ -2921,7 +2919,7 @@ ul.breadcrumb {
             font-weight: bold;
         }
 
-.user-data .order-detail {
+.user-data .order-product-detail {
     border-top: 1px solid #e9e8e8;
     display: block;
     position: relative;
@@ -2929,7 +2927,7 @@ ul.breadcrumb {
     margin-top: 2.5rem;
 }
 
-    .user-data .order-detail .product-title {
+    .user-data .order-product-detail .product-title {
         position: absolute;
         font-family: 'Kalameh', Sahel, sans-serif;
         font-weight: bold;
@@ -2943,7 +2941,7 @@ ul.breadcrumb {
         cursor: pointer;
     }
 
-    .user-data .order-detail .product-price {
+    .user-data .order-product-detail .product-price {
         position: absolute;
         font-family: 'Kalameh', Sahel, sans-serif;
         color: #0ca902;
@@ -2954,12 +2952,12 @@ ul.breadcrumb {
         padding-right: 15px;
     }
 
-    .user-data .order-detail .order-price {
+    .user-data .order-product-detail .order-price {
         margin-bottom: 0;
         border-bottom: none;
     }
 
-        .user-data .order-detail .order-price div span a {
+        .user-data .order-product-detail .order-price div span a {
             color: #007bff;
             font-weight: bold;
         }

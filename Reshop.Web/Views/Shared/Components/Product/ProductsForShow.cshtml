@@ -3,7 +3,7 @@
 
 
 <section class="product-section box-shadow">
-    @if (Model != null && !Model.Any())
+    @if (Model != null && Model.Any())
     {
 
         <div class="shape-divider">
@@ -25,7 +25,8 @@
 
 
         <div class="btn-more-and-nav-slider">
-            <button class="btn btn-more-info">مشاهده ی همه</button>
+            <a asp-controller="Product" asp-action="GetProducts" asp-route-type="@ViewBag.SelectedType.ToString()" 
+                class="btn btn-more-info">مشاهده ی همه</a>
         </div>
 
 

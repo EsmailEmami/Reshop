@@ -96,7 +96,7 @@
 
                     @foreach (var item in Model.Details)
                     {
-                        <section class="order-detail" id="@item.TrackingCode">
+                        <section class="order-product-detail" id="@item.TrackingCode">
                             <a asp-controller="Product" asp-action="ShortKeyRedirect" asp-route-key="@item.ShortKey" class="product-title">@item.ProductTitle</a>
                             <h3 class="product-price">56,455,000 <span class="toman">تومان</span></h3>
 

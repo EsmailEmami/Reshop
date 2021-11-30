@@ -37,6 +37,6 @@
         Heater,
         SolderingSystem,
         Loupe,
-NotFound,
+        NotFound,
     }
 }

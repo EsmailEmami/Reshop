@@ -6,6 +6,7 @@ using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using System.Threading.Tasks;
+using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Category;
 using Reshop.Domain.DTOs.Product;
 
@@ -33,6 +34,8 @@ namespace Reshop.Web.Controllers.Product
         {
             return View();
         }
+
+        #region product detail
 
         [HttpGet]
         [Route("Product/{productName}/{sellerId}")]
@@ -71,6 +74,10 @@ namespace Reshop.Web.Controllers.Product
             return View(product);
         }
 
+        #endregion
+
+        #region redirect
+
         [HttpGet]
         [Route("p/{key}")]
         public async Task<IActionResult> ShortKeyRedirect(string key)
@@ -89,7 +96,6 @@ namespace Reshop.Web.Controllers.Product
                 new { productName = product.Item1.Replace(" ", "-"), sellerId = product.Item2 });
         }
 
-
         // redirect to product detail
         [HttpGet]
         public async Task<IActionResult> ProductRedirect(int productId)
@@ -107,6 +113,9 @@ namespace Reshop.Web.Controllers.Product
                 new { productName = product.Item1.Replace(" ", "-"), sellerId = product.Item2 });
         }
 
+        #endregion
+
+        #region products 
 
         [Route("Category/{categoryId}/{categoryName}")]
         [Route("Category/{categoryId}/{categoryName}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]
@@ -253,6 +262,49 @@ namespace Reshop.Web.Controllers.Product
         }
 
         [HttpGet]
+        [Route("Products/{type}")]
+        [Route("Products/{type}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]
+        [Route("Products/{type}/{pageId}/{sortBy}/{minPrice}/{maxPrice}/{brands}/{search}")]
+        public async Task<IActionResult> GetProducts(string type, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
+        {
+            if (!Fixer.EnumContainValue<ProductTypes>(type))
+                return NotFound();
+
+
+            if (brands != null && brands.ToLower() == "null")
+                brands = null;
+
+            if (search != null && search.ToLower() == "null")
+                search = null;
+
+            var selectedBrands = Fixer.SplitToListInt(brands);
+
+            if (selectedBrands == null)
+                return NotFound();
+
+            var result = await _productService.GetProductsWithPaginationAsync(type, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
+
+            ViewBag.SortBy = sortBy;
+            ViewBag.SelectedBrands = selectedBrands;
+            ViewBag.SearchText = search;
+
+            ViewBag.SelectedMinPrice = 0;
+            ViewBag.SelectedMaxPrice = 0;
+
+            if (result != null)
+            {
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+                ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : result.ProductsMinPrice;
+            }
+
+            return View(result);
+        }
+
+        #endregion
+
+        #region compare
+
+        [HttpGet]
         [Route("Compare/{products}")]
         public async Task<IActionResult> Compare(string products)
         {
@@ -344,5 +396,7 @@ namespace Reshop.Web.Controllers.Product
 
             return View(result);
         }
+
+        #endregion
     }
 }
