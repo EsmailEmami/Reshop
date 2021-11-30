@@ -1006,6 +1006,131 @@ ul.pagination-custom {
                         font-weight: bold;
                     }
 
+        .content-page .content-main .order-data {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            flex-shrink: initial;
+        }
+
+            .content-page .content-main .order-data div {
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+
+                .content-page .content-main .order-data div span.title {
+                    color: #666;
+                    font-weight: bold;
+                    font-family: 'Kalameh';
+                }
+
+        .content-page .content-main .order-price {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            flex-shrink: initial;
+        }
+
+            .content-page .content-main .order-price div {
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+
+                .content-page .content-main .order-price div span.title {
+                    color: #666;
+                    font-weight: bold;
+                    font-family: 'Kalameh';
+                }
+
+                .content-page .content-main .order-price div span.value {
+                    font-weight: bold;
+                }
+
+        .content-page .content-main .order-detail {
+            border-top: 1px solid #e9e8e8;
+            display: block;
+            position: relative;
+            padding-top: 17px;
+            margin-top: 2.5rem;
+        }
+
+            .content-page .content-main .order-detail .product-title {
+                position: absolute;
+                font-family: 'Kalameh', Sahel, sans-serif;
+                font-weight: bold;
+                font-size: 20px;
+                right: 0;
+                top: -16px;
+                background: #fff;
+                padding-left: 15px;
+                text-decoration: none;
+                color: #000;
+                cursor: pointer;
+            }
+
+            .content-page .content-main .order-detail .product-price {
+                position: absolute;
+                font-family: 'Kalameh', Sahel, sans-serif;
+                color: #0ca902;
+                font-size: 20px;
+                left: 0;
+                top: -16px;
+                background: #fff;
+                padding-right: 15px;
+            }
+
+            .content-page .content-main .order-detail .order-price {
+                margin-bottom: 0;
+                border-bottom: none;
+            }
+
+                .content-page .content-main .order-detail .order-price div span a {
+                    color: #007bff;
+                    font-weight: bold;
+                }
+
+.show-order-pics {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    position: relative;
+    height: 165px;
+    border-top: 1px solid #d1d1d1;
+    padding: 8px 0;
+    overflow-x: scroll;
+}
+
+    .show-order-pics::-webkit-scrollbar {
+        height: 3px;
+    }
+
+    .show-order-pics::-webkit-scrollbar-track {
+        background: #dddddd;
+        border-radius: 25px;
+    }
+
+    .show-order-pics::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 25px;
+    }
+
+        .show-order-pics::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .show-order-pics img {
+        border-radius: 5px;
+        width: 132px;
+        margin-left: 20px;
+    }
+
+        .show-order-pics img:last-of-type {
+            margin-left: 0;
+        }
 
 .products-item-section {
     display: flex;
