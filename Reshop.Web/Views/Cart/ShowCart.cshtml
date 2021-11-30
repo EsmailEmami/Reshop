@@ -12,14 +12,12 @@
     </li>
 </ul>
 
-@if (Model == null)
+@if (!Model.Any())
 {
     <div class="basket-empty">
         <img src="/icons/basket.svg" alt="basket" />
         <h1>سبد خرید شما خالیست!</h1>
     </div>
-
-
 }
 else
 {
@@ -180,34 +178,34 @@ else
 
 @section Scripts
 {
-    <script>
-        $(function () {
-            let collapse = document.getElementsByClassName('collapse');
-            if (window.innerWidth > 991) {
-                for (let i = 0; i < collapse.length; i++) {
-                    collapse[i].classList.add("show");
-                }
-            } else {
-                for (let i = 0; i < collapse.length; i++) {
-                    collapse[i].classList.remove("show");
-                }
+<script>
+    $(function () {
+        let collapse = document.getElementsByClassName('collapse');
+        if (window.innerWidth > 991) {
+            for (let i = 0; i < collapse.length; i++) {
+                collapse[i].classList.add("show");
             }
+        } else {
+            for (let i = 0; i < collapse.length; i++) {
+                collapse[i].classList.remove("show");
+            }
+        }
 
-            window.addEventListener('resize',
-                function () {
-                    let collapse = document.getElementsByClassName('collapse');
+        window.addEventListener('resize',
+            function () {
+                let collapse = document.getElementsByClassName('collapse');
 
-                    if (window.innerWidth > 991) {
+                if (window.innerWidth > 991) {
 
-                        for (let i = 0; i < collapse.length; i++) {
-                            collapse[i].classList.add("show");
-                        }
-                    } else {
-                        for (let i = 0; i < collapse.length; i++) {
-                            collapse[i].classList.remove("show");
-                        }
+                    for (let i = 0; i < collapse.length; i++) {
+                        collapse[i].classList.add("show");
                     }
-                });
-        });
-    </script>
+                } else {
+                    for (let i = 0; i < collapse.length; i++) {
+                        collapse[i].classList.remove("show");
+                    }
+                }
+            });
+    });
+</script>
 }

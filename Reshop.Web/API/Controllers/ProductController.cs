@@ -6,6 +6,7 @@ using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Security.Attribute;
+using Reshop.Domain.DTOs.Chart;
 
 namespace Reshop.Web.API.Controllers
 {
@@ -33,12 +34,19 @@ namespace Reshop.Web.API.Controllers
         {
             var res = _productService.GetLastThirtyDayProductDataChart(productId);
 
-            if (res is null)
-            {
-                return NotFound();
-            }
+            var finalRes = res.GroupBy(c => c.Date)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Key,
+                    SellCount = c.Sum(g => g.SellCount),
+                    ViewCount = 10
+                });
 
-            return new ObjectResult(res);
+            if (!finalRes.Any())
+                return NotFound();
+
+
+            return new ObjectResult(finalRes);
         }
 
         [HttpGet("GetLastThirtyDayProductsDataChart")]
@@ -47,12 +55,19 @@ namespace Reshop.Web.API.Controllers
         {
             var res = _productService.GetLastThirtyDayProductsDataChart();
 
-            if (res is null)
-            {
-                return NotFound();
-            }
+            var finalRes = res.GroupBy(c => c.Date)
+                .Select(c=> new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Key,
+                    SellCount = c.Sum(g=> g.SellCount),
+                    ViewCount = 10
+                });
 
-            return new ObjectResult(res);
+            if (!finalRes.Any())
+                return NotFound();
+            
+
+            return new ObjectResult(finalRes);
         }
 
         [HttpGet("GetColorsOfProductData/{productId}")]
@@ -76,12 +91,19 @@ namespace Reshop.Web.API.Controllers
         {
             var res = _colorService.GetLastThirtyDayColorProductDataChart(productId, colorId);
 
-            if (res is null)
-            {
-                return NotFound();
-            }
+            var finalRes = res.GroupBy(c => c.Date)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Key,
+                    SellCount = c.Sum(g => g.SellCount),
+                    ViewCount = 10
+                });
 
-            return new ObjectResult(res);
+            if (!finalRes.Any())
+                return NotFound();
+
+
+            return new ObjectResult(finalRes);
         }
 
         // store title

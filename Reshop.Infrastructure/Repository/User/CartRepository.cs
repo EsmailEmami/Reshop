@@ -82,12 +82,13 @@ namespace Reshop.Infrastructure.Repository.User
                     ProductsCount = o.Count,
                     ProductPrice = o.ShopperProductColor.Price,
                     ColorName = o.ShopperProductColor.Color.ColorName,
+                    TrackingCode = o.TrackingCode,
                     Discount = o.ShopperProductColor.Discounts
                         .OrderByDescending(c => c.EndDate)
                         .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate))
                         .FirstOrDefault(),
                     ProductTitle = o.ShopperProductColor.ShopperProduct.Product.ProductTitle,
-                    ProductImg = o.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName,
+                    ProductImg = o.ShopperProductColor.ShopperProduct.Product.ProductGalleries.OrderBy(g=> g.OrderBy).First().ImageName,
                     Warranty = o.ShopperProductColor.ShopperProduct.Warranty,
                     ShopperStoreName = o.ShopperProductColor.ShopperProduct.Shopper.StoreName
                 });

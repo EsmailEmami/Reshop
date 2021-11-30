@@ -1363,7 +1363,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     c.ShopperProductColor.ShopperProduct.ProductId == productId &&
                     c.Order.IsPayed &&
                     c.Order.PayDate >= DateTime.Now.AddDays(-30))
-                .OrderBy(c => c.Order.PayDate)
+                .OrderBy(c=> c.Order.PayDate)
                 .Select(c => new LastThirtyDayProductDataChart()
                 {
                     Date = c.Order.PayDate.Value.ToShamsiDate(),
