@@ -1,17 +1,15 @@
 ﻿using Reshop.Application.Enums;
 using Reshop.Application.Enums.Product;
+using Reshop.Domain.DTOs.Category;
+using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
-using Reshop.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reshop.Domain.DTOs.Category;
-using Reshop.Domain.DTOs.Chart;
-using Reshop.Domain.DTOs.CommentAndQuestion;
 
 namespace Reshop.Application.Interfaces.Product
 {
@@ -23,9 +21,8 @@ namespace Reshop.Application.Interfaces.Product
         Task<Tuple<IEnumerable<ProductDataForAdmin>, int, int>> GetProductsWithPaginationForAdminAsync(string type = "all", int pageId = 1, int take = 18, string filter = "");
         Task<CategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null);
         Task<ChildCategoryProductsForShow> GetChildCategoryProductsWithPaginationAsync(int childCategoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null);
-        Task<ShopperProductsForShow> GetShopperProductsWithPaginationAsync(string shopperId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null);
+       Task<ShopperProductsForShow> GetShopperProductsWithPaginationAsync(string shopperId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null);
         Task<BrandProductsForShow> GetBrandProductsWithPaginationAsync(int brandId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> officialBrandProducts = null);
-
 
         // this is for list of shopper products
         Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync();
@@ -34,6 +31,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(int productId, string shopperId);
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId);
         Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId);
+        Task<ProductDataForCompareViewModel> GetProductDataForCompareAsync(int productId);
         Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId);
         Task<ShopperProduct> GetShopperProductAsync(int productId, string shopperId);
         Task<ShopperProduct> GetShopperProductAsync(string shopperProductId);
@@ -113,7 +111,7 @@ namespace Reshop.Application.Interfaces.Product
         // product , pageId , totalPages
         Task<Tuple<IEnumerable<ProductViewModel>, int, int>> GetUserFavoriteProductsWithPagination(string userId, string sortBy = "news", int pageId = 1, int take = 18);
         Task<FavoriteProduct> GetFavoriteProductByIdAsync(string favoriteProductId);
-        Task<ResultTypes> DeleteFavoriteProductAsync(string userId,string shopperProductColorId);
+        Task<ResultTypes> DeleteFavoriteProductAsync(string userId, string shopperProductColorId);
         Task<FavoriteProductResultType> AddFavoriteProductAsync(string userId, string shopperProductColorId);
         Task RemoveFavoriteProductAsync(FavoriteProduct favoriteProduct);
 

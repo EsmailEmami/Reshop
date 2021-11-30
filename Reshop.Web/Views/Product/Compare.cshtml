@@ -1,0 +1,53 @@
+﻿@model List<ProductDataForCompareViewModel>
+@{
+    ViewData["Title"] = "مقایسه کالا";
+    int childCategoryId = Convert.ToInt32(ViewBag.ChildCategoryId.ToString());
+    string currentProducts = Model.Select(c => c.ProductId).ToList().ListToString(",");
+}
+
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Product" asp-action="Compare" asp-route-products="@currentProducts">مقایسه کالا</a>
+    </li>
+</ul>
+
+@if (Model.Count < 4)
+{
+    <div class="text-center">
+        <a asp-controller="Product" asp-action="AddProductToCompare" asp-route-currentProducts="@currentProducts" asp-route-childCategoryId="@childCategoryId"
+       class="btn btn-success text-white">افزودن کالا</a>
+    </div>
+}
+
+<!-- products -->
+<div class="row products-show-compare">
+    @foreach (var product in Model)
+    {
+        <div class="col-auto">
+            <div class="product-compare">
+                <a class="image-box" asp-controller="Product" asp-action="ProductRedirect" asp-route-productId="@product.ProductId">
+                    <img class="product-image" src="~/images/ProductImages/@product.ImageName" alt="@product.Title" />
+                </a>
+                <a class="product-title" asp-controller="Product" asp-action="ProductRedirect" asp-route-productId="@product.ProductId">@product.Title</a>
+            </div>
+        </div>
+    }
+</div>
+
+<ul class="compare-detail">
+    <li class="title">
+        <div>ابعاد</div>
+    </li>
+    <li class="value">
+      @foreach (var item in Model)
+      {
+          <div>
+              سلام و عرض ادب
+          </div>
+      }
+    </li>
+
+</ul>

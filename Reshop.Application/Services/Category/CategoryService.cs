@@ -151,6 +151,9 @@ namespace Reshop.Application.Services.Category
             };
         }
 
+        public async Task<int> GetChildCategoryIdOfProductAsync(int productId) =>
+            await _categoryRepository.GetChildCategoryIdOfProductAsync(productId);
+
         public async Task<ResultTypes> AddCategoryAsync(Domain.Entities.Category.Category category)
         {
             try

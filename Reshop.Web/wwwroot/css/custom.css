@@ -1256,7 +1256,8 @@ ul.breadcrumb {
         height: 56px;
     }
 
-        .detail-header .right-side form {
+        .detail-header .right-side form,
+        .detail-header .right-side a {
             width: 60px;
             line-height: 36px;
             height: 100%;
@@ -3876,6 +3877,83 @@ ul.breadcrumb {
     color: #3f3f3f;
     font-size: 20px;
 }
+
+
+.products-show-compare {
+    justify-content: space-between;
+    overflow: auto;
+    flex-wrap: nowrap;
+}
+
+.product-compare {
+    padding: 15px 10px 10px 10px;
+    border: 2px solid #edebeb;
+    border-radius: 7px;
+    box-shadow: 0 0 7px 0 #dcdcdcc4;
+    width: 290px;
+}
+
+    .product-compare .image-box {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        height: 250px;
+    }
+
+        .product-compare .image-box .product-image {
+            border-radius: 6px 6px 0 0;
+            height: 100%;
+            max-height: 250px;
+        }
+
+    .product-compare .product-title {
+        text-decoration: none;
+        color: #434343;
+        font-size: 14px;
+        margin: 10px 0;
+        width: 100%;
+        display: block;
+    }
+
+.compare-detail {
+    list-style: none;
+    padding: 0;
+    margin: 47px 0;
+    background: #fff;
+    overflow: auto;
+}
+
+    .compare-detail .title div {
+        width: 100%;
+        font-size: 13px;
+        line-height: 1.692;
+        padding: 9px 26px;
+        background-color: #eaeaea;
+        font-weight: 700;
+        border-radius: 6px;
+    }
+
+    .compare-detail .title {
+        background-color: #eaeaea;
+        border-radius: 6px;
+    }
+
+    .compare-detail li.value {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+    }
+
+        .compare-detail li.value div {
+            width: 290px;
+            min-width: 200px;
+            padding: 14px 18px 12px;
+            text-align: center;
+            margin: 10px 0;
+            border: 2px solid #edebeb;
+            border-radius: 6px;
+            box-shadow: 0 0 7px 0 #dcdcdcc4;
+        }
 
 
 /* -------------------------------------- categoryBox -------------------------------------- */

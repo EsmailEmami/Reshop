@@ -21,7 +21,7 @@
 
                         </li>
                         <li>
-                            <a href="#" title="مقایسه"><i class="fal fa-sync-alt"></i></a>
+                            <a asp-controller="Product" asp-action="Compare" asp-route-products="@item.ProductId" title="مقایسه"><i class="fal fa-sync-alt"></i></a>
                         </li>
                         <li>
                             <form asp-controller="Cart" asp-action="AddToCart" onsubmit="return  AddProductToCart(this)">

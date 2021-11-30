@@ -20,6 +20,7 @@ namespace Reshop.Application.Interfaces.Category
         Task<ChildCategory> GetChildCategoryByIdAsync(int childCategoryId);
         Task<AddOrEditChildCategoryViewModel> GetChildCategoryDataAsync(int childCategoryId);
         Task<AddOrEditCategoryViewModel> GetCategoryDataAsync(int categoryId);
+        Task<int> GetChildCategoryIdOfProductAsync(int productId);
 
 
         // insert

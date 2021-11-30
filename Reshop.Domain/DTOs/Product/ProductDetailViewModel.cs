@@ -32,6 +32,7 @@ namespace Reshop.Domain.DTOs.Product
         public Tuple<int, string> Brand { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public string Type { get; set; }
         public object Detail { get; set; }
         public decimal Price { get; set; }
         public Tuple<byte, DateTime> LastDiscount { get; set; }

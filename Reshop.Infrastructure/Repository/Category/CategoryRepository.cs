@@ -74,6 +74,10 @@ namespace Reshop.Infrastructure.Repository.Category
             return await _context.ChildCategories.SingleOrDefaultAsync(c => c.ChildCategoryId == childCategoryId);
         }
 
+        public async Task<int> GetChildCategoryIdOfProductAsync(int productId) =>
+            await _context.Products.Where(c => c.ProductId == productId)
+                .Select(c => c.ChildCategoryId).SingleOrDefaultAsync();
+
         public async Task<Tuple<int, string>> GetProductChildCategoryAsync(int productId) =>
             await _context.Products.Where(c => c.ProductId == productId)
                .Select(c => c.ChildCategory)

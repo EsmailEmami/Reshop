@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.Product;
-using System.Threading.Tasks;
 using Reshop.Application.Interfaces.Shopper;
+using System.Threading.Tasks;
+using Reshop.Application.Interfaces.Category;
+using Reshop.Domain.DTOs.Product;
 
 namespace Reshop.Web.Controllers.Product
 {
@@ -13,11 +17,13 @@ namespace Reshop.Web.Controllers.Product
 
         private readonly IProductService _productService;
         private readonly IShopperService _shopperService;
+        private readonly ICategoryService _categoryService;
 
-        public ProductController(IProductService productService, IShopperService shopperService)
+        public ProductController(IProductService productService, IShopperService shopperService, ICategoryService categoryService)
         {
             _productService = productService;
             _shopperService = shopperService;
+            _categoryService = categoryService;
         }
 
         #endregion
@@ -229,6 +235,99 @@ namespace Reshop.Web.Controllers.Product
                 return NotFound();
 
             var result = await _productService.GetShopperProductsWithPaginationAsync(shopperId, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
+
+            ViewBag.SortBy = sortBy;
+            ViewBag.SelectedBrands = selectedBrands;
+            ViewBag.SearchText = search;
+
+            ViewBag.SelectedMinPrice = 0;
+            ViewBag.SelectedMaxPrice = 0;
+
+            if (result != null)
+            {
+                ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+                ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : result.ProductsMinPrice;
+            }
+
+            return View(result);
+        }
+
+        [HttpGet]
+        [Route("Compare/{products}")]
+        public async Task<IActionResult> Compare(string products)
+        {
+            if (string.IsNullOrEmpty(products))
+                return NotFound();
+
+            var listProducts = Fixer.SplitToListInt(products);
+
+            if (listProducts == null || !listProducts.Any())
+                return NotFound();
+
+            if (listProducts.Distinct().Count() != listProducts.Count)
+            {
+                string listProductString = listProducts.Distinct().ToList().ListToString(",");
+
+                return RedirectToAction("Compare", new
+                {
+                    products = listProductString
+                });
+            }
+
+            if (listProducts.Count > 4)
+            {
+                return NotFound();
+            }
+
+            var model = new List<ProductDataForCompareViewModel>();
+
+            foreach (var productId in listProducts)
+            {
+                var data = await _productService.GetProductDataForCompareAsync(productId);
+
+                if (data == null)
+                    return NotFound();
+
+                model.Add(data);
+            }
+
+            if (!model.Any())
+                return NotFound();
+
+            if (model.Select(c => c.Type).Distinct().Skip(1).Any())
+                return BadRequest();
+
+
+            ViewBag.ChildCategoryId = await _categoryService.GetChildCategoryIdOfProductAsync(model.First().ProductId);
+
+            return View("Compare", model);
+        }
+
+        [HttpGet]
+        [Route("AddProductToCompare/{childCategoryId}/{currentProducts}")]
+        [Route("AddProductToCompare/{childCategoryId}/{currentProducts}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]
+        [Route("AddProductToCompare/{childCategoryId}/{currentProducts}/{pageId}/{sortBy}/{minPrice}/{maxPrice}/{brands}/{search}")]
+        public async Task<IActionResult> AddProductToCompare(int childCategoryId, string currentProducts, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
+        {
+            var listProducts = Fixer.SplitToListInt(currentProducts);
+
+            if (listProducts == null || !listProducts.Any())
+                return NotFound();
+
+            ViewBag.CurrentProducts = listProducts.ListToString(","); ;
+
+            if (brands != null && brands.ToLower() == "null")
+                brands = null;
+
+            if (search != null && search.ToLower() == "null")
+                search = null;
+
+            var selectedBrands = Fixer.SplitToListInt(brands);
+
+            if (selectedBrands == null)
+                return NotFound();
+
+            var result = await _productService.GetChildCategoryProductsWithPaginationAsync(childCategoryId, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
 
             ViewBag.SortBy = sortBy;
             ViewBag.SelectedBrands = selectedBrands;

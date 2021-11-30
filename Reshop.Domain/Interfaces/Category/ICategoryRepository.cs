@@ -19,7 +19,7 @@ namespace Reshop.Domain.Interfaces.Category
         // get by id
         Task<Entities.Category.Category> GetCategoryByIdAsync(int categoryId);
         Task<ChildCategory> GetChildCategoryByIdAsync(int childCategoryId);
-
+        Task<int> GetChildCategoryIdOfProductAsync(int productId);
         Task<Tuple<int, string>> GetProductChildCategoryAsync(int productId);
         Task<Tuple<int, string>> GetProductCategoryAsync(int productId);
         IEnumerable<ChildCategory> GetChildCategoriesOfCategory(int categoryId);

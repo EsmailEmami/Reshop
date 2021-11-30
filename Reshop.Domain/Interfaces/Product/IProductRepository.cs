@@ -123,6 +123,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId);
         Task<ProductDataForDetailViewModel> GetProductDataForDetailAsync(string shopperProductColorId);
         Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId);
+        Task<ProductDataForCompareViewModel> GetProductDataForCompareAsync(int productId);
 
         #endregion
 
@@ -135,11 +136,6 @@ namespace Reshop.Domain.Interfaces.Product
         Task<EditProductDetailShopperViewModel> EditProductDetailShopperAsync(string shopperProductColorId);
 
         Task<int> GetProductIdOfShopperProductColorIdAsync(string shopperProductColorId);
-
-        #region shopper product
-
-        IEnumerable<ProductViewModel> GetShopperProductsWithPagination(string shopperId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<string> brands = null);
-        #endregion
 
         #region count
 

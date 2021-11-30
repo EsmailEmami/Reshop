@@ -160,7 +160,7 @@ namespace Reshop.Application.Convertors
             value ? trueText : falseText;
         
 
-        public static string ListToString(this IEnumerable<object> list, string delimiter) =>
+        public static string ListToString(this IEnumerable<int> list, string delimiter) =>
             string.Join(delimiter, list);
     }
 }

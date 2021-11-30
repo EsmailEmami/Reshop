@@ -230,6 +230,9 @@ namespace Reshop.Application.Services.Product
             return model;
         }
 
+        public async Task<ProductDataForCompareViewModel> GetProductDataForCompareAsync(int productId) =>
+            await _productRepository.GetProductDataForCompareAsync(productId);
+
         public async Task<Domain.Entities.Product.Product> GetProductByIdAsync(int productId) =>
             await _productRepository.GetProductByIdAsync(productId);
 

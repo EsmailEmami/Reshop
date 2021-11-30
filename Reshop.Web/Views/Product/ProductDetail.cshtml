@@ -48,14 +48,13 @@
         </form>
 
 
-        <form asp-controller="Account" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)">
-            <input type="hidden" value="@Model.Product.ShopperProductColorId" name="shopperProductColorId" />
-            <button type="submit"><i class="fal fa-analytics"></i></button>
-        </form>
+        <a asp-controller="Product" asp-action="Compare" asp-route-products="@Model.Product.ProductId">
+            <i class="fal fa-sync-alt"></i>
+        </a>
 
         <form asp-controller="Account" asp-action="AddToFavoriteProduct" onsubmit="return  AddProductToFavorites(this)">
             <input type="hidden" value="@Model.Product.ShopperProductColorId" name="shopperProductColorId" />
-            <button type="submit"><i class="fal fa-sync-alt"></i></button>
+            <button type="submit"><i class="fal fa-analytics"></i></button>
         </form>
 
     </div>
