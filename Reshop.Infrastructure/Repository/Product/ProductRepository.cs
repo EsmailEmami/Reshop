@@ -119,16 +119,29 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public IEnumerable<ProductDataForAdmin> GetProductsWithPaginationForAdmin(string type, int skip, int take, string filter)
         {
-            IQueryable<Domain.Entities.Product.Product> products = _context.Products
-                .Where(c => c.IsActive)
-                .Skip(skip).Take(take);
+            IQueryable<Domain.Entities.Product.Product> products = _context.Products;
 
 
             #region filter product
 
-            if (type != "all")
+            switch (type)
             {
-                products = products.Where(c => c.ProductType.ToLower() == type);
+                case "all":
+                    {
+                        break;
+                    }
+                case "active":
+                    {
+                        products = products.Where(c => c.IsActive);
+                        break;
+                    }
+                case "existed":
+                    {
+                        products = products.Where(c => !c.IsActive);
+                        break;
+                    }
+                default:
+                    break;
             }
 
             if (filter != null)
@@ -138,6 +151,7 @@ namespace Reshop.Infrastructure.Repository.Product
 
             #endregion
 
+            products = products.Skip(skip).Take(take);
 
             return products.Select(c => new ProductDataForAdmin()
             {
@@ -203,8 +217,6 @@ namespace Reshop.Infrastructure.Repository.Product
                     .Where(c => brands
                         .Any(b => b == c.ShopperProduct.Product.OfficialBrandProduct.BrandId));
             }
-
-
 
             #endregion
 
@@ -1363,7 +1375,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     c.ShopperProductColor.ShopperProduct.ProductId == productId &&
                     c.Order.IsPayed &&
                     c.Order.PayDate >= DateTime.Now.AddDays(-30))
-                .OrderBy(c=> c.Order.PayDate)
+                .OrderBy(c => c.Order.PayDate)
                 .Select(c => new LastThirtyDayProductDataChart()
                 {
                     Date = c.Order.PayDate.Value.ToShamsiDate(),

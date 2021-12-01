@@ -72,8 +72,8 @@ namespace Reshop.Web.API.Controllers
             return new ObjectResult(res);
         }
 
-        [HttpGet("GetColorsOfShopperProductData/{productId}")]  
-        [ResponseCache(Duration = 30,Location = ResponseCacheLocation.Client)]  
+        [HttpGet("GetColorsOfShopperProductData/{productId}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> GetColorsOfShopperProductDataChart(int productId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -95,19 +95,22 @@ namespace Reshop.Web.API.Controllers
             return new ObjectResult(res);
         }
 
+        // this is for shopper and shopperId come from shopperUserId automatically
         //color
         [HttpGet("GetLastThirtyDayColorProductData/{productId}/{colorId}")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetLastThirtyDayColorProductDataChart(int productId,int colorId)
+        public async Task<IActionResult> GetLastThirtyDayColorProductDataChart(int productId, int colorId)
         {
-            string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            string shopperId =
+                await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (shopperId is null)
             {
                 return NotFound();
             }
 
-            string shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperId, productId, colorId);
+            string shopperProductColorId =
+                await _shopperService.GetShopperProductColorIdAsync(shopperId, productId, colorId);
 
             if (shopperProductColorId is null)
             {
@@ -124,25 +127,12 @@ namespace Reshop.Web.API.Controllers
             return new ObjectResult(res);
         }
 
+        // here we donot need shoppe id
         [HttpGet("GetLastThirtyDayBestShoppersOfColorProduct/{productId}/{colorId}")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetLastThirtyDayBestShoppersOfColorProductChart(int productId, int colorId)
+        public IActionResult GetLastThirtyDayBestShoppersOfColorProductChart(int productId, int colorId)
         {
-            string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            if (shopperId is null)
-            {
-                return NotFound();
-            }
-
-            string shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperId, productId, colorId);
-
-            if (shopperProductColorId is null)
-            {
-                return NotFound();
-            }
-
-            var res = _shopperService.GetLastThirtyDayBestShoppersOfColorProductChart(shopperProductColorId);
+            var res = _shopperService.GetLastThirtyDayBestShoppersOfColorProductChart(productId, colorId);
 
             if (res is null)
             {
@@ -151,27 +141,14 @@ namespace Reshop.Web.API.Controllers
 
             return new ObjectResult(res);
         }
-
+        
+        // we do not need shopperId here
         [HttpGet("GetBestShoppersOfColorProduct/{productId}/{colorId}")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetBestShoppersOfColorProductChart(int productId,int colorId)
+        public IActionResult GetBestShoppersOfColorProductChart(int productId, int colorId)
         {
-            string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (shopperId is null)
-            {
-                return NotFound();
-            }
-
-            string shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperId, productId, colorId);
-
-            if (shopperProductColorId is null)
-            {
-                return NotFound();
-            }
-
-
-            var res = _shopperService.GetBestShoppersOfColorProductChart(shopperProductColorId);
+            var res = _shopperService.GetBestShoppersOfColorProductChart(productId, colorId);
 
             if (res is null)
             {

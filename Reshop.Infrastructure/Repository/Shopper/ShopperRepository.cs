@@ -235,7 +235,7 @@ namespace Reshop.Infrastructure.Repository.Shopper
                     IssuanceOfIdentityCard = "be zodi ezafeh mikomnam",
                     NationalCode = c.User.NationalCode,
                     PhoneNumber = c.User.PhoneNumber,
-                    StoreAddresses = c.StoresAddress.Select(s=> new StoreAddressForShowViewModel()
+                    StoreAddresses = c.StoresAddress.Select(s => new StoreAddressForShowViewModel()
                     {
                         CityName = s.City.CityName,
                         StateName = s.City.State.StateName,
@@ -517,7 +517,7 @@ namespace Reshop.Infrastructure.Repository.Shopper
 
         public async Task<IEnumerable<StoreAddressForShowViewModel>> GetShopperStoreAddressesForShowAsync(string shopperId) =>
             await _context.StoresAddress.Where(c => c.ShopperId == shopperId)
-                .Select(c=> new StoreAddressForShowViewModel()
+                .Select(c => new StoreAddressForShowViewModel()
                 {
                     StoreAddressId = c.StoreAddressId,
                     StoreName = c.StoreName,
@@ -630,9 +630,10 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 .GroupBy(c => c.ShopperProductColor.ShopperProduct.Shopper.StoreName)
                 .Select(c => new Tuple<string, int>(c.Key, c.Sum(s => s.Count))).Take(20);
 
-        public IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(string shopperProductColorId) =>
+        public IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(int productId, int colorId) =>
             _context.OrderDetails.Where(c =>
-                    c.ShopperProductColor.ShopperProductColorId == shopperProductColorId &&
+                    c.ShopperProductColor.ColorId == colorId &&
+                    c.ShopperProductColor.ShopperProduct.ProductId == productId &&
                     c.Order.IsPayed &&
                     c.Order.PayDate >= DateTime.Now.AddDays(-30))
                 .GroupBy(c => c.ShopperProductColor.ShopperProduct.Shopper.StoreName)
@@ -645,9 +646,10 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 .GroupBy(c => c.ShopperProductColor.ShopperProduct.Shopper.StoreName)
                 .Select(c => new Tuple<string, int>(c.Key, c.Sum(s => s.Count))).Take(20);
 
-        public IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(string shopperProductColorId) =>
+        public IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(int productId, int colorId) =>
             _context.OrderDetails.Where(c =>
-                    c.ShopperProductColor.ShopperProductColorId == shopperProductColorId &&
+                    c.ShopperProductColor.ColorId == colorId &&
+                    c.ShopperProductColor.ShopperProduct.ProductId == productId &&
                     c.Order.IsPayed)
                 .GroupBy(c => c.ShopperProductColor.ShopperProduct.Shopper.StoreName)
                 .Select(c => new Tuple<string, int>(c.Key, c.Sum(s => s.Count))).Take(20);

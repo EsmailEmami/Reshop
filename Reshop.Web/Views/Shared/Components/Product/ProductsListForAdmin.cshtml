@@ -10,14 +10,14 @@
     {
         <div class="filter-input">
             <input type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
-            <button type="button"><i class="far fa-search"></i></button>
+            <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
         </div>
     }
     else
     {
         <div class="filter-input">
             <input type="text" placeholder="دنبال کالا بگرد..." id="filter">
-            <button type="button"><i class="far fa-search"></i></button>
+            <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
         </div>
     }
     <select select-search="true" id="type" onchange="changeList()">

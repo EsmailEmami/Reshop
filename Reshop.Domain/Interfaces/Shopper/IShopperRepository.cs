@@ -123,9 +123,9 @@ namespace Reshop.Domain.Interfaces.Shopper
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(string shopperProductId);
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId);
         IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfProductChart(int productId);
-        IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(string shopperProductColorId);
+        IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(int productId, int colorId);
         IEnumerable<Tuple<string, int>> GetBestShoppersOfProductChart(int productId);
-        IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(string shopperProductColorId);
+        IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(int productId, int colorId);
         // colorName , view , sell , returned
         IEnumerable<Tuple<string, int, int, int>> GetColorsOfShopperProductDataChart(string shopperProductId);
         #endregion

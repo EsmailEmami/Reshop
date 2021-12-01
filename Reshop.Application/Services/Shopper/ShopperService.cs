@@ -715,14 +715,14 @@ namespace Reshop.Application.Services.Shopper
         public IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfProductChart(int productId) =>
             _shopperRepository.GetLastThirtyDayBestShoppersOfProductChart(productId);
 
-        public IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(string shopperProductColorId) =>
-            _shopperRepository.GetLastThirtyDayBestShoppersOfColorProductChart(shopperProductColorId);
+        public IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(int productId, int colorId) =>
+            _shopperRepository.GetLastThirtyDayBestShoppersOfColorProductChart(productId, colorId);
 
         public IEnumerable<Tuple<string, int>> GetBestShoppersOfProductChart(int productId) =>
             _shopperRepository.GetBestShoppersOfProductChart(productId);
 
-        public IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(string shopperProductColorId) =>
-            _shopperRepository.GetBestShoppersOfColorProductChart(shopperProductColorId);
+        public IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(int productId, int colorId) =>
+            _shopperRepository.GetBestShoppersOfColorProductChart(productId, colorId);
 
         public async Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(int productId, string shopperId)
         {

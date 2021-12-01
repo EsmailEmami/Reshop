@@ -98,7 +98,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     _context.OrderDetails
                         .Where(o => o.ShopperProductColorId == c.ShopperProductColorId)
                         .Sum(s => s.Count), 10));
-
+        
         public async Task AddColorAsync(Color color) =>
             await _context.Colors.AddAsync(color);
 

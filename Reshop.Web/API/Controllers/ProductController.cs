@@ -56,16 +56,16 @@ namespace Reshop.Web.API.Controllers
             var res = _productService.GetLastThirtyDayProductsDataChart();
 
             var finalRes = res.GroupBy(c => c.Date)
-                .Select(c=> new LastThirtyDayProductDataChart()
+                .Select(c => new LastThirtyDayProductDataChart()
                 {
                     Date = c.Key,
-                    SellCount = c.Sum(g=> g.SellCount),
+                    SellCount = c.Sum(g => g.SellCount),
                     ViewCount = 10
                 });
 
             if (!finalRes.Any())
                 return NotFound();
-            
+
 
             return new ObjectResult(finalRes);
         }
@@ -76,12 +76,19 @@ namespace Reshop.Web.API.Controllers
         {
             var res = _colorService.GetColorsOfProductDataChart(productId);
 
-            if (res is null)
-            {
-                return NotFound();
-            }
+            var finalResult = res.GroupBy(c => c.Item1)
+                .Select(c => new Tuple<string, int, int, int>(
+                    c.Key,
+                    10,
+                    c.Sum(g => g.Item3),
+                    5))
+                .ToList();
 
-            return new ObjectResult(res);
+            if (!finalResult.Any())
+                return NotFound();
+
+
+            return new ObjectResult(finalResult);
         }
 
         //color

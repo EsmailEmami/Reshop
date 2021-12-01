@@ -18,6 +18,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<IEnumerable<ProductViewModel>> GetProductsForShowAsync(string type = "all", string sortBy = "news", int take = 18, List<int> brands = null);
 
         // product , pageId , totalPages
+        // type = all, active, existed
         Task<Tuple<IEnumerable<ProductDataForAdmin>, int, int>> GetProductsWithPaginationForAdminAsync(string type = "all", int pageId = 1, int take = 18, string filter = "");
         Task<CategoryProductsForShow> GetCategoryProductsWithPaginationAsync(int categoryId, string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null);
         Task<ProductsForShow> GetProductsWithPaginationAsync(string type = "all", string sortBy = "news", int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null, List<int> brands = null);
