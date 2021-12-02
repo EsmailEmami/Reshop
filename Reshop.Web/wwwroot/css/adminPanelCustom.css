@@ -980,6 +980,7 @@ ul.pagination-custom {
                 position: relative;
                 display: block;
                 max-width: 500px;
+                min-width: 245px;
                 width: 100%;
                 border-radius: 8px;
                 margin: 0 10px;
@@ -996,15 +997,31 @@ ul.pagination-custom {
                 .content-page .content-main .images-part .item .menu {
                     width: 100%;
                     display: flex;
-                    padding-top: 20px;
-                    justify-content: space-between;
+                    padding-top: 10px;
                     align-items: center;
+                    flex-direction: column;
                 }
 
                     .content-page .content-main .images-part .item .menu a:first-of-type {
                         color: #007bff;
                         font-weight: bold;
                     }
+
+                    .content-page .content-main .images-part .item .menu div {
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+                        margin-top: 10px;
+                    }
+
+                        .content-page .content-main .images-part .item .menu div a,
+                        .content-page .content-main .images-part .item .menu div form {
+                            display: inline-block;
+                        }
+
+                            .content-page .content-main .images-part .item .menu div form button {
+                                margin: 0;
+                            }
 
         .content-page .content-main .order-data {
             display: flex;

@@ -89,7 +89,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
         }
 
-
         #endregion
 
         #region edit image
