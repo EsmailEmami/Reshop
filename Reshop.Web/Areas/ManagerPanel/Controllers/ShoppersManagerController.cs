@@ -8,14 +8,15 @@ using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Security;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -277,17 +278,19 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             await _permissionService.DeleteAllUserRolesByUserIdAsync(user.UserId);
 
             // add user role
-            var addRole = await _permissionService.AddUserToRoleAsync(user.UserId, model.SelectedRoles as List<string>);
-
-            if (addRole != ResultTypes.Successful)
+            if (model.SelectedRoles != null && model.SelectedRoles.Any())
             {
-                ModelState.AddModelError("", "متاسفانه هنگام ویرایش فروشنده به مشکلی غیر منتظره برخوردیم.");
-                return View(model);
+                var addRole = await _permissionService.AddUserToRoleAsync(user.UserId, model.SelectedRoles as List<string>);
+
+                if (addRole != ResultTypes.Successful)
+                {
+                    ModelState.AddModelError("", "متاسفانه هنگام ویرایش فروشنده به مشکلی غیر منتظره برخوردیم.");
+                    return View(model);
+                }
             }
 
             return RedirectToAction("ShopperDetail", new { shopperId = shopper.ShopperId });
         }
-
 
         #endregion
 

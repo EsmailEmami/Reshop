@@ -118,18 +118,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (addUser == ResultTypes.Successful)
                 {
-                    if (model.SelectedRoles != null)
+                    if (model.SelectedRoles != null && model.SelectedRoles.Any())
                     {
-                        foreach (var role in model.SelectedRoles)
-                        {
-                            var userRole = new UserRole()
-                            {
-                                UserId = user.UserId,
-                                RoleId = role
-                            };
-
-                            await _permissionService.AddUserRoleAsync(userRole);
-                        }
+                        await _permissionService.AddUserToRoleAsync(user.UserId, model.SelectedRoles as List<string>);
                     }
                 }
                 else
@@ -174,15 +165,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                     if (model.SelectedRoles != null && model.SelectedRoles.Any())
                     {
-                        foreach (var roleId in model.SelectedRoles)
-                        {
-                            var userRole = new UserRole()
-                            {
-                                UserId = user.UserId,
-                                RoleId = roleId
-                            };
-                            await _permissionService.AddUserRoleAsync(userRole);
-                        }
+                        await _permissionService.AddUserToRoleAsync(user.UserId, model.SelectedRoles as List<string>);
                     }
                 }
                 else
