@@ -98,16 +98,22 @@
             </div>
 
             <!-- start slider product picture -->
-            <div id="mini-pic-slider" class="owl-carousel owl-theme">
+            <div class="swiper" id="images-swiper">
+                <div class="swiper-wrapper">
+            
+                    @foreach (var item in Model.ProductGalleries)
+                    {
+                        <div class="swiper-slide mini-pic-slider">
+                            <img src="/images/ProductImages/@item.ImageName" alt="@Model.Product.Title" onclick="changeDetailImg(this.src)">
+                        </div>
+                    }
 
-                @foreach (var item in Model.ProductGalleries)
-                {
-                    <div class="mini-pic-slider">
-                        <img src="/images/ProductImages/@item.ImageName" alt="@Model.Product.Title" onclick="changeDetailImg(this.src)">
-                    </div>
-                }
-
+                </div>
+                
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
             </div>
+            
         </div>
 
     </div>
@@ -421,13 +427,13 @@
 
     <script src="~/js/select.js"></script>
     <script>
-        $("#mini-pic-slider").owlCarousel({
-            rtl: true,
-            loop: false,
-            nav: false,
-            dots: false,
-            autoWidth: true,
-            stagePadding: 0,
+        const imagesSwiper = new Swiper('#images-swiper', {
+            slidesPerView: 'auto',
+            centeredSlides: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
         });
     </script>
 }

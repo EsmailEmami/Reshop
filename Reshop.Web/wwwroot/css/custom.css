@@ -1375,10 +1375,6 @@ ul.breadcrumb {
         border-radius: 11px;
     }
 
-#mini-pic-slider .owl-stage-outer {
-    padding-top: 0;
-}
-
 .mini-pic-slider:hover {
     border: 1px solid #fc5400;
 }
@@ -2820,7 +2816,7 @@ ul.breadcrumb {
     margin: 0 10px 10px;
     transition: 0.2s;
     padding: 5px;
-    width: 120px;
+    width: 83px;
     height: 83px;
 }
 
