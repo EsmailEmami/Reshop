@@ -1,0 +1,179 @@
+﻿@model EditShopperViewModel
+@{
+    ViewData["Title"] = $"ویرایش فروشنده {Model.FullName}";
+}
+
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+}
+
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ShopperPage); }
+}
+
+<form asp-action="EditShopper" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ShopperId" />
+    <input type="hidden" asp-for="OnNationalCardImageName" />
+    <input type="hidden" asp-for="BusinessLicenseImageName" />
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <h5 class="menu-title">اطلاعات شخصی</h5>
+
+            <div class="row mt-2">
+
+                <div class="col-sm-12">
+                    <div class="form-field">
+                        <input asp-for="FullName">
+                        <label><i class="far  fa-user"></i> نام و نام خانوادگی</label>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-field">
+                        <input asp-for="BirthDay" class="date-picker" readonly>
+                        <label><i class="far fa-user"></i> تاریخ تولد</label>
+                        <span asp-validation-for="BirthDay" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-lg-6">
+                    <div class="form-field">
+                        <input asp-for="NationalCode">
+                        <label><i class="fal fa-address-card"></i> کد ملی</label>
+                        <span asp-validation-for="NationalCode" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-lg-6">
+                    <div class="form-field">
+                        <input asp-for="PhoneNumber">
+                        <label><i class="far fa-phone"></i> شماره تلفن</label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 ">
+                    <div class="form-field">
+                        <input asp-for="Email">
+                        <label><i class="far  fa-envelope"></i> ایمیل</label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-6 mt-md-0">
+            <h5 class="menu-title">اطلاعات فروشنده</h5>
+
+            <div class="row mt-2">
+                <div class="col-sm-12 col-lg-6">
+                    <div class="form-field">
+                        <input asp-for="StoreName">
+                        <label><i class="far  fa-store"></i> نام فروشگاه</label>
+                        <span asp-validation-for="StoreName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-lg-6">
+
+                    @if (Model.Roles != null && Model.Roles.Any())
+                    {
+                        <select multiple placeholder="انتخاب عناوین" asp-for="SelectedStoreTitles">
+                            @foreach (var item in Model.StoreTitles)
+                            {
+                                @:<option value="@item.StoreTitleId" @((Model.SelectedStoreTitles != null && Model.SelectedStoreTitles.Any(c=> c == item.StoreTitleId))? "selected" : "")>@item.StoreTitleName</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                           عنوانی برای نمایش یافت نشد
+                        </div>
+                    }
+
+                </div>
+       
+                <div class="col-sm-12">
+     
+                    @if (Model.Roles != null && Model.Roles.Any())
+                    {
+                        <select multiple asp-for="SelectedRoles" placeholder="انتخاب مقام ها">
+                            @foreach (var item in Model.Roles)
+                            {
+                                @: <option value="@item.RoleId" @(Model.SelectedRoles != null && Model.SelectedRoles.Any(c => c == item.RoleId) ? "selected" : "")>@item.RoleTitle</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            مقامی برای نمایش یافت نشد
+                        </div>
+                    }
+                </div>
+               
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row justify-content-around">
+        <div class="col-auto">
+            <label>تصویر مجور کسب و کار</label>
+            <div class="image-field">
+                <div class="image-area">
+                    <img src="~/images/shoppersCardImages/@Model.BusinessLicenseImageName" alt="تصویر مجوز کسب و کار" id="businessLicenseImage">
+                </div>
+                <div class="file-field">
+                    <input asp-for="BusinessLicenseImage" onchange="readURL(this, 'businessLicenseImage')">
+                </div>
+            </div>
+            <span asp-validation-for="BusinessLicenseImageName" class="text-danger"></span>
+        </div>
+        
+        <div class="col-auto">
+            <label>تصویر روی کارت ملی</label>
+            <div class="image-field">
+                <div class="image-area">
+                    <img src="~/images/shoppersCardImages/@Model.OnNationalCardImageName" alt="تصویر کارت ملی" id="onNationalCardImage">
+                </div>
+                <div class="file-field">
+                    <input asp-for="OnNationalCardImage" onchange="readURL(this, 'onNationalCardImage')">
+                </div>
+            </div>
+            <span asp-validation-for="OnNationalCardImageName" class="text-danger"></span>
+        </div>
+
+    </div>
+
+
+    <hr>
+
+    <div class="form-check">
+        <label>
+            آیا فروشنده فعال است
+            <input asp-for="IsActive">
+            <span></span>
+        </label>
+    </div>
+    
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-success text-white">ثبت</button>
+    </div>
+
+
+</form>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_CalenderDatePickerPartial");
+    }
+    <script src="~/js/select.js"></script>
+}

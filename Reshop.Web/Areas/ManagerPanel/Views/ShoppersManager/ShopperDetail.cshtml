@@ -26,7 +26,7 @@
                         <div class="swiper-slide mini-pic-slider">
                             <img src="/images/shoppersCardImages/@Model.OnNationalCardImageName" alt="@Model.ShopperFullName" onclick="changeDetailImg(this.src)">
                         </div>
-                        
+
                         <div class="swiper-slide mini-pic-slider">
                             <img src="/images/shoppersCardImages/@Model.BusinessLicenseImageName" alt="@Model.ShopperFullName" onclick="changeDetailImg(this.src)">
                         </div>
@@ -75,6 +75,10 @@
         </div>
     </div>
 </section>
+
+<a class="btn btn-warning text-white" asp-action="EditShopper" asp-route-shopperId="@Model.ShopperId">
+    ویرایش فروشنده
+</a>
 
 <section class="chart box-shadow mb-3">
     <span class="part-title">آمار کلی</span>

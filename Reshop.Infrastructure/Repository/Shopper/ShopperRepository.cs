@@ -51,7 +51,7 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 await _context.Shoppers.Where(c => c.ShopperId == shopperId)
                     .Select(c => new EditShopperViewModel()
                     {
-                        ShoppeId = c.ShopperId,
+                        ShopperId = c.ShopperId,
                         FullName = c.User.FullName,
                         Email = c.User.Email,
                         PhoneNumber = c.User.PhoneNumber,

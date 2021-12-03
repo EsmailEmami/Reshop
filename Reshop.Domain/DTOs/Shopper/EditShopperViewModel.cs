@@ -12,7 +12,7 @@ namespace Reshop.Domain.DTOs.Shopper
     public class EditShopperViewModel
     {
         [Required]
-        public string ShoppeId { get; set; }
+        public string ShopperId { get; set; }
 
         [Display(Name = "نام و نام خانوادگی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]

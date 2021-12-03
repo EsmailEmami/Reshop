@@ -185,7 +185,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return View(model);
             }
 
-            var shopper = await _shopperService.GetShopperByIdAsync(model.ShoppeId);
+            var shopper = await _shopperService.GetShopperByIdAsync(model.ShopperId);
 
             if (shopper == null)
             {
