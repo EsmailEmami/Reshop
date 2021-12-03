@@ -164,7 +164,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 if (editUser == ResultTypes.Successful)
                 {
                     // remove user roles
-                    var removeUserRoles = await _permissionService.RemoveAllUserRolesByUserIdAsync(user.UserId);
+                    var removeUserRoles = await _permissionService.DeleteAllUserRolesByUserIdAsync(user.UserId);
 
                     if (removeUserRoles != ResultTypes.Successful)
                     {

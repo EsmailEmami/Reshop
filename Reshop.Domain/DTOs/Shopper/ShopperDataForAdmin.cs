@@ -18,6 +18,9 @@ namespace Reshop.Domain.DTOs.Shopper
         public string IssuanceOfIdentityCard { get; set; }
         public string FullIdOfIdentityCard { get; set; }
         public bool IsActive { get; set; }
+        public string OnNationalCardImageName { get; set; }
+        public string BusinessLicenseImageName { get; set; }
+
         public IEnumerable<StoreAddressForShowViewModel> StoreAddresses { get; set; }
     }
 }

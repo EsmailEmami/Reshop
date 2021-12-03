@@ -78,6 +78,16 @@ namespace Reshop.Application.Services.Shopper
             return new Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>(shoppers, pageId, totalPages, productId);
         }
 
+        public async Task<EditShopperViewModel> GetShopperDataForEditAsync(string shopperId)
+        {
+            var data = await _shopperRepository.GetShopperDataForEditAsync(shopperId);
+
+            data.StoreTitles = _shopperRepository.GetStoreTitles();
+            data.Roles = await _permissionRepository.GetRolesAsync();
+
+            return data;
+        }
+
         public async Task<bool> IsShopperProductColorOfShopperAsync(string shopperId, string shopperProductColorId) =>
             await _shopperRepository.IsShopperProductColorOfShopperAsync(shopperId, shopperProductColorId);
 
@@ -596,6 +606,30 @@ namespace Reshop.Application.Services.Shopper
             try
             {
                 _shopperRepository.RemoveStoreTitle(storeTitle);
+                await _shopperRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
+        public async Task<ResultTypes> DeleteShopperStoreTitlesAsync(string shopperId)
+        {
+            try
+            {
+                var shopperStoreTitles = await _shopperRepository.GetShopperStoreTitlesAsync(shopperId);
+
+                if (shopperStoreTitles != null)
+                {
+                    foreach (var storeTitle in shopperStoreTitles)
+                    {
+                        _shopperRepository.RemoveShopperStoreTitle(storeTitle);
+                    }
+                }
+
                 await _shopperRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;

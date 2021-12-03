@@ -18,8 +18,9 @@ namespace Reshop.Application.Interfaces.User
         Task<bool> IsRoleExistAsync(string roleId);
 
         Task<ResultTypes> AddUserToRoleAsync(string userId, params string[] rolesName);
+        Task<ResultTypes> AddUserToRoleAsync(string userId, List<string> rolesId);
         Task<ResultTypes> RemoveUserFromRoleAsync(string userId, string roleName);
-        Task<ResultTypes> RemoveAllUserRolesByUserIdAsync(string userId);
+        Task<ResultTypes> DeleteAllUserRolesByUserIdAsync(string userId);
 
         Task<ResultTypes> AddUserRoleAsync(UserRole userRole);
 

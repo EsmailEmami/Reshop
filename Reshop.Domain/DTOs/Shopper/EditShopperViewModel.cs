@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Reshop.Domain.Attribute;
+using Reshop.Domain.Entities.Permission;
 
 namespace Reshop.Domain.DTOs.Shopper
 {
     public class EditShopperViewModel
     {
-        public string UserId { get; set; }
-
+        [Required]
+        public string ShoppeId { get; set; }
 
         [Display(Name = "نام و نام خانوادگی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -37,26 +36,28 @@ namespace Reshop.Domain.DTOs.Shopper
 
         [Display(Name = "تاریخ تولد")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public string BirthDay { get; set; }
+        public string BirthDay { get; set; }  
 
         [Display(Name = "نام فروشگاه")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string StoreName { get; set; }
 
+        [Display(Name = "فروشنده فعال")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        public bool IsActive { get; set; }
+
         [Display(Name = "تصویر روی کارت ملی فروشنده")]
+        [AllowFileSize(FileSize = 1.5, ErrorMessage = "لطفا حجم فایل بیشتر از 1.5 مگابایت نباشد.")]
         public IFormFile OnNationalCardImage { get; set; }
 
         [Display(Name = "جواز کسب و کار")]
+        [AllowFileSize(FileSize = 1.5, ErrorMessage = "لطفا حجم فایل بیشتر از 1.5 مگابایت نباشد.")]
         public IFormFile BusinessLicenseImage { get; set; }
 
         [Display(Name = "تصویر روی کارت ملی فروشنده")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public string OnNationalCardImageName { get; set; }
-
-        [Display(Name = "تصویر پشت کارت ملی فروشنده")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        public string BackNationalCardImageName { get; set; }
 
         [Display(Name = "جواز کسب و کار")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -64,6 +65,8 @@ namespace Reshop.Domain.DTOs.Shopper
 
         public IEnumerable<StoreTitle> StoreTitles { get; set; }
         public IEnumerable<int> SelectedStoreTitles { get; set; }
-        public IEnumerable<State> States { get; set; }
+
+        public IEnumerable<Role> Roles { get; set; }
+        public IEnumerable<string> SelectedRoles { get; set; }
     }
 }

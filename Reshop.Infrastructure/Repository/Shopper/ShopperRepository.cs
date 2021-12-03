@@ -51,15 +51,18 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 await _context.Shoppers.Where(c => c.ShopperId == shopperId)
                     .Select(c => new EditShopperViewModel()
                     {
-                        UserId = c.UserId,
+                        ShoppeId = c.ShopperId,
                         FullName = c.User.FullName,
                         Email = c.User.Email,
                         PhoneNumber = c.User.PhoneNumber,
                         NationalCode = c.User.NationalCode,
                         BirthDay = c.BirthDay.ToString(),
                         StoreName = c.StoreName,
+                        IsActive = c.IsActive,
                         BusinessLicenseImageName = c.BusinessLicenseImageName,
                         OnNationalCardImageName = c.OnNationalCardImageName,
+                        SelectedStoreTitles = c.ShopperTitles.Select(s=> s.StoreTitleId),
+                        SelectedRoles = c.User.UserRoles.Select(s=> s.RoleId)
                     }).SingleOrDefaultAsync();
 
         public async Task<string> GetShopperIdOfUserByUserId(string userId) =>
@@ -235,6 +238,8 @@ namespace Reshop.Infrastructure.Repository.Shopper
                     IssuanceOfIdentityCard = "be zodi ezafeh mikomnam",
                     NationalCode = c.User.NationalCode,
                     PhoneNumber = c.User.PhoneNumber,
+                    OnNationalCardImageName = c.OnNationalCardImageName,
+                    BusinessLicenseImageName = c.BusinessLicenseImageName,
                     StoreAddresses = c.StoresAddress.Select(s => new StoreAddressForShowViewModel()
                     {
                         CityName = s.City.CityName,

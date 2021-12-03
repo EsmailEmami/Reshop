@@ -16,6 +16,8 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<Tuple<IEnumerable<ShopperProductsListForShow>, int, int>> GetShopperProductsInformationWithPagination(string shopperId, string type = "all", string filter = "", int pageId = 1, int take = 18);
         Task<Tuple<IEnumerable<ShoppersListForAdmin>, int, int, int>> GetProductShoppersInformationWithPagination(int productId, string type = "all", string filter = "", int pageId = 1, int take = 18);
 
+        Task<EditShopperViewModel> GetShopperDataForEditAsync(string shopperId);
+
         Task<bool> IsShopperProductColorOfShopperAsync(string shopperId, string shopperProductColorId);
         Task<ResultTypes> AddShopperAsync(Domain.Entities.Shopper.Shopper shopper);
         Task<ResultTypes> EditShopperAsync(Domain.Entities.Shopper.Shopper shopper);
@@ -74,6 +76,7 @@ namespace Reshop.Application.Interfaces.Shopper
         Task<ResultTypes> AddStoreTitleAsync(StoreTitle storeTitle);
         Task<ResultTypes> EditStoreTitleAsync(StoreTitle storeTitle);
         Task<ResultTypes> DeleteStoreTitleAsync(int storeTitleId);
+        Task<ResultTypes> DeleteShopperStoreTitlesAsync(string shopperId);
         Task<ResultTypes> AddShopperStoreTitleAsync(string shopperId, List<int> storeTitlesId);
 
         IEnumerable<string> GetShopperStoreTitlesName(string shopperId);

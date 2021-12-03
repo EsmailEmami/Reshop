@@ -61,6 +61,7 @@ function readURL(input, imgId) {
     }
 }
 
+function changeDetailImg(imgSrc) { document.getElementById("zoom").src = imgSrc; }
 
 $(function () {
     let modal = document.getElementById('modal');

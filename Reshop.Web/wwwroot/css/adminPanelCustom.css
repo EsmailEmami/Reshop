@@ -265,6 +265,53 @@ table .btn {
 
 /* -------------------------------------- modal -------------------------------------- */
 
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    font-size: 20px;
+}
+
+.swiper-button-next:hover:after {
+    transition: ease .3s;
+    margin-left: 4px;
+}
+
+.swiper-button-prev:hover:after {
+    transition: ease .3s;
+    margin-right: 4px;
+}
+
+.swiper-pagination-bullet {
+    background-color: #fff;
+    opacity: 1;
+    box-shadow: 0 1px 1px 0 rgb(0 0 0 / 30%);
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: #fff;
+    text-shadow: 0 2px 4px #616161;
+}
+
+    .swiper-button-next:hover:after {
+        transition: ease .3s;
+        margin-left: 4px;
+    }
+
+    .swiper-button-prev:hover:after {
+        transition: ease .3s;
+        margin-right: 4px;
+    }
+
+.swiper-pagination-bullet {
+    background-color: #fff;
+    opacity: 1;
+    box-shadow: 0 1px 1px 0 rgb(0 0 0 / 30%);
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #FC5400;
+}
+
 /* -------------------------------------- collapse -------------------------------------- */
 
 .collapsible:after {
@@ -450,7 +497,7 @@ ul.pagination-custom {
     margin: 10px 10px 0 10px;
     transition: 0.2s;
     padding: 5px;
-    width: 120px;
+    width: 83px;
     height: 83px;
 }
 

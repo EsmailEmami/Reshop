@@ -4,7 +4,9 @@
 }
 @section RightMenu
 {
-    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ProductPage); }
+    @{
+    await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ProductPage);
+ }
 }
 
 
@@ -14,21 +16,24 @@
         <div class="col-sm-12 col-md-4 mb-3 mb-md-0">
             <div class="box-shadow">
                 <div class="show-img-box">
-                    <img src="/images/ProductImages/@Model.ProductImages.First()" alt="@Model.ProductName">
+                    <img id="zoom" src="/images/ProductImages/@Model.ProductImages.First()" alt="@Model.ProductName">
                 </div>
 
                 <!-- start slider pictures -->
-                <div id="images" class="owl-carousel owl-theme" style="border-top: 1px solid #eee;">
+                <div class="swiper" id="images-swiper">
+                    <div class="swiper-wrapper">
 
-                    @foreach (var item in Model.ProductImages)
-                    {
-                        <div class="mini-pic-slider">
-                            <a href="#">
-                                <img src="/images/ProductImages/@item" alt="@Model.ProductName">
-                            </a>
-                        </div>
-                    }
+                        @foreach (var item in Model.ProductImages)
+                        {
+                            <div class="swiper-slide mini-pic-slider">
+                                <img src="/images/ProductImages/@item" alt="@Model.ProductImages" onclick="changeDetailImg(this.src)">
+                            </div>
+                        }
 
+                    </div>
+
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
                 </div>
             </div>
         </div>
@@ -115,7 +120,6 @@
                 </div>
                 <button type="button" class="collapsible" onclick="ColorCollapsibleOfManager(this,'colorDetail@(color.Item1)', '@Url.Action("ProductColorDetail","ProductManager",new{productId = Model.ProductId,colorId = color.Item1},Context.Request.Scheme)')"></button>
                 <div class="content" id="colorDetail@(color.Item1)">
-
                 </div>
             </div>
 
@@ -134,265 +138,257 @@ else
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 
 
-    <script>
-        google.charts.load('current',
-            {
-                'packages': ['corechart']
-            });
-        google.charts.setOnLoadCallback(drawLastMonthDataLineChart);
-        google.charts.setOnLoadCallback(drawLastMonthBestShoppersPieChart);
-        google.charts.setOnLoadCallback(drawBestShoppersPieChart);
+<script>
+    google.charts.load('current',
+        {
+            'packages': ['corechart']
+        });
+    google.charts.setOnLoadCallback(drawLastMonthDataLineChart);
+    google.charts.setOnLoadCallback(drawLastMonthBestShoppersPieChart);
+    google.charts.setOnLoadCallback(drawBestShoppersPieChart);
 
-        function drawLastMonthDataLineChart() {
-            $.ajax({
-                type: 'GET',
-                url: '/api/Product/GetLastThirtyDayProductData/' + @Model.ProductId,
-            }).done(function(res) {
-                var data = new google.visualization.DataTable();
+    function drawLastMonthDataLineChart() {
+        $.ajax({
+            type: 'GET',
+            url: '/api/Product/GetLastThirtyDayProductData/' + @Model.ProductId,
+        }).done(function(res) {
+            var data = new google.visualization.DataTable();
 
-                data.addColumn('string', 'تاریخ');
-                data.addColumn('number', 'بازدید');
-                data.addColumn('number', 'فروش');
+            data.addColumn('string', 'تاریخ');
+            data.addColumn('number', 'بازدید');
+            data.addColumn('number', 'فروش');
 
 
-                $.each(res,
-                    function(index, value) {
-                        data.addRow([value.date, value.viewCount, value.sellCount]);
-                    });
+            $.each(res,
+                function(index, value) {
+                    data.addRow([value.date, value.viewCount, value.sellCount]);
+                });
 
-                var options = {
+            var options = {
+                width: '100%',
+                height: '100%',
+                isStacked: 'relative',
+                fontName: 'Sahel, sans-serif',
+                color: '#4d4d4d',
+                fontSize: 17,
+                height: 400,
+                curveType: 'function',
+                colors: ['#FC5400', '#3366cc', '#f95d6a', '#58508d'],
+                pointSize: 3,
+                chartArea: {
+                    right: 0,
+                    top: 20,
+                    left: 100,
+                    width: '95%',
+                },
+
+
+                hAxis: {
+                    direction: 1,
+                    slantedText: true,
+                    slantedTextAngle: 50,
+                },
+
+                vAxis: {
+                    format: 'short',
+                    title: 'تعداد',
+                    titleTextStyle: {
+                        color: '#333',
+                    },
+                    minValue: 0,
+                    scaleType: 'Linear',
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('LastMonthDataLineChart'));
+
+            chart.draw(data, options);
+        });
+    }
+
+    function drawLastMonthBestShoppersPieChart() {
+        $.ajax({
+            type: 'GET',
+            url: '/api/Shopper/GetLastThirtyDayBestShoppersOfProduct/' + @Model.ProductId,
+        }).done(function(res) {
+
+            var data = new google.visualization.DataTable();
+
+            data.addColumn('string', 'نام فروشگاه');
+            data.addColumn('number', 'تعداد فروش');
+
+            $.each(res,
+                function(index, value) {
+                    data.addRow([value.item1, value.item2]);
+                });
+
+            var options = {
+                width: '100%',
+                height: '100%',
+                isStacked: 'relative',
+                fontName: 'Sahel, sans-serif',
+                color: '#4d4d4d',
+                fontSize: 17,
+                height: 400,
+                pieHole: 0.2,
+                pieStartAngle: 100,
+                chartArea: {
+                    left: 0,
+                    top: 20,
                     width: '100%',
-                    height: '100%',
-                    isStacked: 'relative',
-                    fontName: 'Sahel, sans-serif',
-                    color: '#4d4d4d',
-                    fontSize: 17,
-                    height: 400,
-                    curveType: 'function',
-                    colors: ['#FC5400', '#3366cc', '#f95d6a', '#58508d'],
-                    pointSize: 3,
-                    chartArea: {
-                        right: 0,
-                        top: 20,
-                        left: 100,
-                        width: '95%',
-                    },
+                },
+                legend: {
+                    position: 'bottom',
+                    maxLines: 4
+                }
+            };
 
+            var chart = new google.visualization.PieChart(document.getElementById('LastMonthBestShoppersPieChart'));
 
-                    hAxis: {
-                        direction: 1,
-                        slantedText: true,
-                        slantedTextAngle: 50,
-                    },
+            chart.draw(data, options);
+        });
+    }
 
-                    vAxis: {
-                        format: 'short',
-                        title: 'تعداد',
-                        titleTextStyle: {
-                            color: '#333',
-                        },
-                        minValue: 0,
-                        scaleType: 'Linear',
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                };
+    function drawBestShoppersPieChart() {
 
-                var chart = new google.visualization.LineChart(document.getElementById('LastMonthDataLineChart'));
+        $.ajax({
+            type: 'GET',
+            url: '/api/Shopper/GetBestShoppersOfProduct/' + @Model.ProductId,
+        }).done(function(res) {
 
-                chart.draw(data, options);
-            });
-        }
+            var data = new google.visualization.DataTable();
 
-        function drawLastMonthBestShoppersPieChart() {
-            $.ajax({
-                type: 'GET',
-                url: '/api/Shopper/GetLastThirtyDayBestShoppersOfProduct/' + @Model.ProductId,
-            }).done(function(res) {
+            data.addColumn('string', 'نام فروشگاه');
+            data.addColumn('number', 'تعداد فروش');
 
-                var data = new google.visualization.DataTable();
+            $.each(res,
+                function(index, value) {
+                    data.addRow([value.item1, value.item2]);
+                });
 
-                data.addColumn('string', 'نام فروشگاه');
-                data.addColumn('number', 'تعداد فروش');
-
-                $.each(res,
-                    function(index, value) {
-                        data.addRow([value.item1, value.item2]);
-                    });
-
-                var options = {
+            var options = {
+                width: '100%',
+                height: '100%',
+                isStacked: 'relative',
+                fontName: 'Sahel, sans-serif',
+                color: '#4d4d4d',
+                fontSize: 17,
+                height: 400,
+                pieHole: 0.2,
+                pieStartAngle: 100,
+                chartArea: {
+                    left: 0,
+                    top: 20,
                     width: '100%',
-                    height: '100%',
-                    isStacked: 'relative',
-                    fontName: 'Sahel, sans-serif',
-                    color: '#4d4d4d',
-                    fontSize: 17,
-                    height: 400,
-                    pieHole: 0.2,
-                    pieStartAngle: 100,
-                    chartArea: {
-                        left: 0,
-                        top: 20,
-                        width: '100%',
-                    },
-                    legend: {
-                        position: 'bottom',
-                        maxLines: 4
-                    }
-                };
+                },
+                legend: {
+                    position: 'bottom',
+                    maxLines: 4
+                }
+            };
 
-                var chart = new google.visualization.PieChart(document.getElementById('LastMonthBestShoppersPieChart'));
+            var chart = new google.visualization.PieChart(document.getElementById('BestShoppersPieChart'));
 
-                chart.draw(data, options);
-            });
-        }
-
-        function drawBestShoppersPieChart() {
-
-            $.ajax({
-                type: 'GET',
-                url: '/api/Shopper/GetBestShoppersOfProduct/' + @Model.ProductId,
-            }).done(function(res) {
-
-                var data = new google.visualization.DataTable();
-
-                data.addColumn('string', 'نام فروشگاه');
-                data.addColumn('number', 'تعداد فروش');
-
-                $.each(res,
-                    function(index, value) {
-                        data.addRow([value.item1, value.item2]);
-                    });
-
-                var options = {
-                    width: '100%',
-                    height: '100%',
-                    isStacked: 'relative',
-                    fontName: 'Sahel, sans-serif',
-                    color: '#4d4d4d',
-                    fontSize: 17,
-                    height: 400,
-                    pieHole: 0.2,
-                    pieStartAngle: 100,
-                    chartArea: {
-                        left: 0,
-                        top: 20,
-                        width: '100%',
-                    },
-                    legend: {
-                        position: 'bottom',
-                        maxLines: 4
-                    }
-                };
-
-                var chart = new google.visualization.PieChart(document.getElementById('BestShoppersPieChart'));
-
-                chart.draw(data, options);
-            });
-        }
+            chart.draw(data, options);
+        });
+    }
 
 
 
-        window.onresize = drawLastMonthDataLineChart;
-        window.onresize = drawLastMonthBestShoppersPieChart;
-        window.onresize = drawBestShoppersPieChart;
+    window.onresize = drawLastMonthDataLineChart;
+    window.onresize = drawLastMonthBestShoppersPieChart;
+    window.onresize = drawBestShoppersPieChart;
 
-    </script>
+</script>
 
     @if (Model.Colors.Any())
     {
 
-        <script>
-            google.charts.setOnLoadCallback(drawColorsColumnChart);
+<script>
+    google.charts.setOnLoadCallback(drawColorsColumnChart);
 
-            function drawColorsColumnChart()
-            {
-                $.ajax({
-                    type: 'GET',
-                    url: '/api/Product/GetColorsOfProductData/' + @Model.ProductId,
-                }).done(function(res) {
-                    var data = new google.visualization.DataTable();
+    function drawColorsColumnChart()
+    {
+        $.ajax({
+            type: 'GET',
+            url: '/api/Product/GetColorsOfProductData/' + @Model.ProductId,
+        }).done(function(res) {
+            var data = new google.visualization.DataTable();
 
-                    data.addColumn('string', 'رنگ');
-                    data.addColumn('number', 'بازدید');
-                    data.addColumn('number', 'فروش');
-                    data.addColumn('number', 'مرجوعی');
+            data.addColumn('string', 'رنگ');
+            data.addColumn('number', 'بازدید');
+            data.addColumn('number', 'فروش');
+            data.addColumn('number', 'مرجوعی');
 
-                    $.each(res,
-                        function(index, value) {
-                            data.addRow([value.item1, value.item2, value.item3, value.item4]);
-                        });
-
-                    var options = {
-                        width: '100%',
-                        height: '100%',
-                        fontName: 'Sahel, sans-serif',
-                        color: '#4d4d4d',
-                        fontSize: 17,
-                        height: 400,
-                        colors:['#FC5400', '#3366cc', '#f95d6a', '#58508d'],
-                        chartArea:
-                        {
-                            right: 0,
-                            top: 20,
-                            left: 100,
-                            width: '95%',
-                        },
-                        hAxis:
-                        {
-                            direction: 1,
-                            slantedText: true,
-                            slantedTextAngle: 50,
-                        },
-                        vAxis:
-                        {
-                            format: 'short',
-                            title: 'تعداد',
-                            titleTextStyle:
-                            {
-                                color: '#333',
-                            },
-                            minValue: 0,
-                            scaleType: 'Linear',
-                        },
-                        legend:
-                        {
-                            position: 'bottom'
-                        }
-                    };
-
-                    var chart = new google.visualization.ColumnChart(document.getElementById('ColorsColumnChart'));
-
-                    chart.draw(data, options);
+            $.each(res,
+                function(index, value) {
+                    data.addRow([value.item1, value.item2, value.item3, value.item4]);
                 });
-            }
 
+            var options = {
+                width: '100%',
+                height: '100%',
+                fontName: 'Sahel, sans-serif',
+                color: '#4d4d4d',
+                fontSize: 17,
+                height: 400,
+                colors:['#FC5400', '#3366cc', '#f95d6a', '#58508d'],
+                chartArea:
+                {
+                    right: 0,
+                    top: 20,
+                    left: 100,
+                    width: '95%',
+                },
+                hAxis:
+                {
+                    direction: 1,
+                    slantedText: true,
+                    slantedTextAngle: 50,
+                },
+                vAxis:
+                {
+                    format: 'short',
+                    title: 'تعداد',
+                    titleTextStyle:
+                    {
+                        color: '#333',
+                    },
+                    minValue: 0,
+                    scaleType: 'Linear',
+                },
+                legend:
+                {
+                    position: 'bottom'
+                }
+            };
 
-            window.onresize = drawColorsColumnChart;
-        </script>
+            var chart = new google.visualization.ColumnChart(document.getElementById('ColorsColumnChart'));
+
+            chart.draw(data, options);
+        });
     }
 
 
-    <script>
-        $("#images").owlCarousel({
-            rtl: true,
-            loop: false,
-            nav: false,
-            dots: true,
-            items: 4,
-            responsive: {
-                0: {
-                    items: 4
-                },
-                600: {
-                    items: 3
-                }
-            },
-        });
-    </script>
+    window.onresize = drawColorsColumnChart;
+</script>
+    }
+
+
+<script>
+    const imagesSwiper = new Swiper('#images-swiper', {
+        slidesPerView: 'auto',
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+</script>
 }

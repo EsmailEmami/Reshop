@@ -149,6 +149,33 @@ namespace Reshop.Application.Services.User
             return ResultTypes.Successful;
         }
 
+        public async Task<ResultTypes> AddUserToRoleAsync(string userId, List<string> rolesId)
+        {
+            try
+            {
+                if (!await _userRepository.IsUserExistAsync(userId))
+                    return ResultTypes.Failed;
+
+                foreach (var roleId in rolesId)
+                {
+                    if (await _permissionRepository.IsRoleExistAsync(roleId))
+                    {
+                        var userRole = new UserRole(userId, roleId);
+
+                        await _permissionRepository.AddUserRoleAsync(userRole);
+                    }
+                }
+
+                await _permissionRepository.SaveChangesAsync();
+
+                return ResultTypes.Successful;
+            }
+            catch
+            {
+                return ResultTypes.Failed;
+            }
+        }
+
         public async Task<ResultTypes> RemoveUserFromRoleAsync(string userId, string roleName)
         {
             var role = await _permissionRepository.GetRoleByNameAsync(roleName);
@@ -172,7 +199,7 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<ResultTypes> RemoveAllUserRolesByUserIdAsync(string userId)
+        public async Task<ResultTypes> DeleteAllUserRolesByUserIdAsync(string userId)
         {
             if (!await _userRepository.IsUserExistAsync(userId)) return ResultTypes.Failed;
 

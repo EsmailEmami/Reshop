@@ -11,8 +11,11 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Shopper;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Security;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -25,14 +28,18 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         private readonly IBrandService _brandService;
         private readonly IDiscountService _discountService;
         private readonly IOriginService _originService;
+        private readonly IPermissionService _permissionService;
+        private readonly IUserService _userService;
 
-        public ShoppersManager(IShopperService shopperService, IProductService productService, IDataProtectionProvider dataProtectionProvider, IBrandService brandService, IDiscountService discountService, IOriginService originService)
+        public ShoppersManager(IShopperService shopperService, IProductService productService, IDataProtectionProvider dataProtectionProvider, IBrandService brandService, IDiscountService discountService, IOriginService originService, IPermissionService permissionService, IUserService userService)
         {
             _shopperService = shopperService;
             _productService = productService;
             _brandService = brandService;
             _discountService = discountService;
             _originService = originService;
+            _permissionService = permissionService;
+            _userService = userService;
             _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Areas.ManagerPanel.Controllers.ShoppersManager",
                 new string[] { "ShoppersManager" });
         }
@@ -142,6 +149,145 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, "ShopperManager/_FinishShopperProductRequest", model) });
             }
         }
+
+        #endregion
+
+        #region edit shopper
+
+        [HttpGet]
+        public async Task<IActionResult> EditShopper(string shopperId)
+        {
+            var shopperData = await _shopperService.GetShopperDataForEditAsync(shopperId);
+
+            if (shopperData == null)
+                return NotFound();
+
+
+            return View(shopperData);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditShopper(EditShopperViewModel model)
+        {
+            model.StoreTitles = _shopperService.GetStoreTitles();
+            model.Roles = await _permissionService.GetRolesAsync();
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+
+            //// check images is not script
+            if (model.OnNationalCardImage != null && !model.OnNationalCardImage.IsImage() ||
+                model.BusinessLicenseImage != null && !model.BusinessLicenseImage.IsImage())
+            {
+                ModelState.AddModelError("", "فروشنده عزیز لطفا تصاویر خود را درست وارد کنید.");
+                return View(model);
+            }
+
+            var shopper = await _shopperService.GetShopperByIdAsync(model.ShoppeId);
+
+            if (shopper == null)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ویرایش فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            var user = await _userService.GetUserByIdAsync(shopper.UserId);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ویرایش فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            // edit user data
+            user.FullName = model.FullName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Email = model.Email;
+            user.NationalCode = model.NationalCode;
+
+            // edit shopper data
+            shopper.StoreName = model.StoreName;
+            shopper.BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate();
+            shopper.IsActive = model.IsActive;
+
+
+            // shopper images
+            if (shopper.OnNationalCardImageName == model.OnNationalCardImageName && model.OnNationalCardImage != null)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "shoppersCardImages");
+
+
+                // delete image
+                ImageConvertor.DeleteImage($"{path}/{shopper.OnNationalCardImageName}");
+
+                // add new image
+                string imageName = await ImageConvertor.CreateNewImage(model.OnNationalCardImage, path);
+                shopper.OnNationalCardImageName = imageName;
+            }
+
+            if (shopper.BusinessLicenseImageName == model.BusinessLicenseImageName && model.BusinessLicenseImage != null)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "shoppersCardImages");
+
+
+                // delete image
+                ImageConvertor.DeleteImage($"{path}/{shopper.BusinessLicenseImageName}");
+
+                // add new image
+                string imageName = await ImageConvertor.CreateNewImage(model.BusinessLicenseImage, path);
+                shopper.BusinessLicenseImageName = imageName;
+            }
+
+            var editUser = await _userService.EditUserAsync(user);
+
+            if (editUser != ResultTypes.Successful)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ویرایش فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            var editShopper = await _shopperService.EditShopperAsync(shopper);
+
+            if (editShopper != ResultTypes.Successful)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ویرایش فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            // delete shopper store titles
+            await _shopperService.DeleteShopperStoreTitlesAsync(shopper.ShopperId);
+
+            // add new shopper store titles
+            var addStoreTitle = await _shopperService.AddShopperStoreTitleAsync(shopper.ShopperId, model.SelectedStoreTitles as List<int>);
+
+            if (addStoreTitle != ResultTypes.Successful)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ویرایش فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            // delete user roles
+            await _permissionService.DeleteAllUserRolesByUserIdAsync(user.UserId);
+
+            // add user role
+            var addRole = await _permissionService.AddUserToRoleAsync(user.UserId, model.SelectedRoles as List<string>);
+
+            if (addRole != ResultTypes.Successful)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ویرایش فروشنده به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            return RedirectToAction("ShopperDetail", new { shopperId = shopper.ShopperId });
+        }
+
 
         #endregion
 
