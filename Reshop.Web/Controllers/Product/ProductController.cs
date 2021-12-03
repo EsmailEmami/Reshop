@@ -265,7 +265,7 @@ namespace Reshop.Web.Controllers.Product
         [Route("Products/{type}")]
         [Route("Products/{type}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]
         [Route("Products/{type}/{pageId}/{sortBy}/{minPrice}/{maxPrice}/{brands}/{search}")]
-        public async Task<IActionResult> GetProducts(string type, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
+        public async Task<IActionResult> GetProducts(string type , int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
         {
             if (!Fixer.EnumContainValue<ProductTypes>(type))
                 return NotFound();

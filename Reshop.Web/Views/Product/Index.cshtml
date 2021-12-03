@@ -1,15 +1,14 @@
-﻿@using Reshop.Application.Enums.Product
-@{
+﻿@{
     ViewData["Title"] = "صفحه اصلی";
 }
 @section Css
 {
-    <link href="~/css/animate.min.css" rel="stylesheet" />
+<link href="~/css/animate.min.css" rel="stylesheet" />
 }
 
-<cache expires-after="TimeSpan.FromMinutes(15)">
-    @await Component.InvokeAsync("SliderImagesComponent")
-</cache>
+@*<cache expires-after="TimeSpan.FromMinutes(15)">*@
+@await Component.InvokeAsync("SliderImagesComponent")
+@*</cache>*@
 
 <section class="Category-shortcut">
 
@@ -60,14 +59,14 @@
 <cache expires-after="TimeSpan.FromMinutes(15)">
     @await Component.InvokeAsync("ProductsForShowComponent",new
     {
-        type = ProductTypes.All.ToString(),
-        sortBy = SortTypes.MostSale.ToString()
+    type = ProductTypes.All.ToString(),
+    sortBy = SortTypes.MostSale.ToString()
     })
 
     @await Component.InvokeAsync("ProductsForShowComponent",new
     {
-        type = ProductTypes.All.ToString(),
-        sortBy = SortTypes.MostSale.ToString()
+    type = ProductTypes.All.ToString(),
+    sortBy = SortTypes.MostSale.ToString()
     })
 </cache>
 
@@ -75,57 +74,85 @@
 
 @section Scripts
 {
-    <script type="text/javascript">
-        var countDownDate = new Date("Jan 5, 2025 00:00:00").getTime();
-        // Update the count down every 1 second
-        var x = setInterval(function () {
-
-            // Get today's date and time
-            var now = new Date().getTime();
-
-            // Find the distance between now and the count down date
-            var distance = countDownDate - now;
-
-            // Time calculations for days, hours, minutes and seconds
-            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Display the result in the element with id="demo"
-            document.getElementById("timer").innerHTML = "<span>" + seconds + "</span>" + " : " + "<span>" + minutes + "</span>" + " : " + "<span>" + hours + "</span>";
-
-            // If the count down is finished, write some text
-            if (distance < 0) {
-                clearInterval(x);
-                document.getElementById("timer").innerHTML = "EXPIRED";
+<script type="text/javascript">
+    const sliderSwiper = new Swiper('.slider-swiper', {
+        effect: 'creative',
+        creativeEffect: {
+            prev: {
+                shadow: true,
+                translate: [0, 0, -400],
+            },
+            next: {
+                translate: ['100%', 0, 0]
             }
-        }, 1000);
+        },
+        spaceBetween: 30,
+        centeredSlides: true,
+        loop: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            dynamicBullets: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+
+    const sliderDropdown = new Swiper('.slider-dropdown-menu', {
+        effect: 'creative',
+        creativeEffect: {
+            prev: {
+                shadow: true,
+                translate: [0, 0, -400],
+            },
+            next: {
+                translate: ['100%', 0, 0]
+            }
+        },
+        spaceBetween: 30,
+        centeredSlides: true,
+        loop: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            dynamicBullets: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+
+    const products = new Swiper('.products-swiper', {
+        spaceBetween: 30,
+        centeredSlides: true,
+        loop: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
 
 
-
-        $('#header-slider').carousel({
-            interval: 10000
-        });
-        $('.carousel-product').owlCarousel({
-            rtl: true,
-            loop: true,
-            dots: false,
-            nav: true,
-            autoWidth:true,
-            margin: 30,
-            autoplay: true,
-            autoplayTimeout: 3000,
-            autoplayHoverPause: true,
-            animateOut: 'slideOutDown',
-            animateIn: 'flipInX',
-            smartSpeed: 1000,
-        });
-
-    </script>
+</script>
 }
 
 
 @section AfterMainOptions
 {
-    <partial name="_toast" />
+<partial name="_toast" />
 }

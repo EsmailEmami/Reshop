@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<CategoriesDropdownViewModel>
 
-
 <nav class="main-nav d-none d-lg-block text-center mx-auto">
     <ul>
         <li><a href="/">خانه</a></li>
@@ -55,38 +54,28 @@
                         }
 
                         <div class="slider-dropdown">
-
-                            <div id="header-menu-slider" class="carousel" data-ride="carousel">
-
-                                <ol class="carousel-indicators">
-                                    @for (int i = 0; i < item.CategoryImages.Count(); i++)
-                                    {
-                                        <li data-target="#header-menu-slider" data-slide-to="@i" class="@(i == 0?"active":"")"></li>
-                                    }
-                                </ol>
-
-                                <div class="carousel-inner">
-
+                            <div class="swiper slider-dropdown-menu">
+                                <div class="swiper-wrapper">
+            
                                     @foreach (var image in item.CategoryImages)
                                     {
-                                        if (Equals(item.CategoryImages.First(), image))
-                                        {
-                                            <div class="carousel-item active">
+                                        <div class="swiper-slide">
+                                            <a>
                                                 <a href="@image.Item2">
                                                     <img class="d-block w-100" src="~/images/categoryImages/@image.Item1" alt="@item.CategoryTitle">
                                                 </a>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <div class="carousel-item">
-                                                <a href="@image.Item2">
-                                                    <img class="d-block w-100" src="~/images/categoryImages/@image.Item1" alt="@item.CategoryTitle">
-                                                </a>
-                                            </div>
-                                        }
+                                            </a>
+                                        </div>
                                     }
+          
+
+
                                 </div>
+
+                                <div class="swiper-pagination"></div>
+        
+                                <div class="swiper-button-prev"></div>
+                                <div class="swiper-button-next"></div>
                             </div>
                         </div>
                     </div>

@@ -10,8 +10,7 @@
     <link href="~/Fonts/awesome/Font-awesome.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/css/bootstrap-reboot.rtl.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/css/bootstrap.rtl.min.css" rel="stylesheet" />
-    <link href="~/css/owl.carousel.min.css" rel="stylesheet" />
-    <link href="~/css/owl.theme.default.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
 
     @await RenderSectionAsync("Css", required: false)
     <link href="~/css/custom.css" rel="stylesheet" />
@@ -29,8 +28,8 @@
                 <a class="logo" href="/">Reshop</a>
 
 
-                <form action="#" class="search-header mx-auto mx-lg-0">
-                    <input type="text" placeholder="دنبال چی میگردی ...">
+                <form autocomplete="off" action="/Products/All" class="search-header mx-auto mx-lg-0" id="header-filter-form">
+                    <input type="text" id="header-filter" name="search"  placeholder="دنبال چی میگردی ...">
                     <button type="submit"><i class="far fa-search"></i></button>
                 </form>
 
@@ -42,19 +41,19 @@
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a asp-area="" asp-controller="Account" asp-action="Dashboard">
-                            <i class="far fa-user"></i>
-                        </a>
+                                    <a asp-area="" asp-controller="Account" asp-action="Dashboard">
+                                        <i class="far fa-user"></i>
+                                    </a>
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login">
-                            <i class="far fa-user"></i> ورود
-                        </a>
+                                    <a asp-controller="Account" asp-action="Login">
+                                        <i class="far fa-user"></i> ورود
+                                    </a>
 
-                        <a asp-controller="Account" asp-action="Register">
-                            <i class="far fa-user"></i> ثبت نام
-                        </a>
+                                    <a asp-controller="Account" asp-action="Register">
+                                        <i class="far fa-user"></i> ثبت نام
+                                    </a>
                     }
                     <a asp-controller="Cart" asp-action="ShowCart">
                         <i class="far fa-shopping-cart"></i>
@@ -65,7 +64,7 @@
 
         </div>
         @*<cache expires-after="@TimeSpan.FromHours(3)">*@
-            @await Component.InvokeAsync(nameof(DropDownComponent))
+        @await Component.InvokeAsync(nameof(DropDownComponent))
         @*</cache>*@
 
     </header>
@@ -78,12 +77,12 @@
     @*------------------------------ preload ------------------------------*@
 
     @*<div class="loader">
-            <div class="loader-main">
-                <div class="wrapper">
-                    <span></span><span></span><span></span><span></span><span></span>
-                </div>
-                <p>Reshop</p>
-            </div>
+        <div class="loader-main">
+        <div class="wrapper">
+        <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <p>Reshop</p>
+        </div>
         </div>*@
 
     @*------------------------------ preload ------------------------------*@
@@ -151,8 +150,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/js/owl.carousel.min.js"></script>
-   @* <script src="~/js/CarouselSettings.js"></script>*@
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/js/Ajax.js"></script>
     @await RenderSectionAsync("Scripts", required: false)

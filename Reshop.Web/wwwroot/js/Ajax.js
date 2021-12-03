@@ -106,8 +106,6 @@ $(function () {
     }
 });
 
-
-
 function SubmitFinishRequest(form) {
     try {
         $.ajax({
@@ -142,7 +140,6 @@ function SubmitFinishRequest(form) {
         console.log(ex);
     }
 }
-
 
 // this function is for add select option
 function addSelectList(select, selectDropdown, itemValue, itemText) {

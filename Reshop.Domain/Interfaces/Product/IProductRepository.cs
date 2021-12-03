@@ -19,6 +19,8 @@ namespace Reshop.Domain.Interfaces.Product
         Task<Entities.Product.Product> GetProductByIdAsync(int productId);
         Task<string> GetProductTypeAsync(int productId);
 
+        Task<IEnumerable<SearchProductViewModel>> SearchProductsAsync(string filter);
+
         #endregion
 
         #region get with pagination

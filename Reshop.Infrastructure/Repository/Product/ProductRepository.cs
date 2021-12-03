@@ -28,6 +28,22 @@ namespace Reshop.Infrastructure.Repository.Product
 
         #endregion
 
+        public async Task<IEnumerable<SearchProductViewModel>> SearchProductsAsync(string filter) =>
+            await _context.Products
+                .Where(c => c.IsActive &&
+                            c.ShopperProducts
+                                .Any(i => i.IsActive
+                                          && i.ShopperProductColors.Any(s => s.IsActive)) &&
+                            c.ProductTitle.Contains(filter))
+                .Select(c => c.ChildCategory)
+                .Distinct()
+                .Select(c => new SearchProductViewModel()
+                {
+                    Title = c.ChildCategoryTitle,
+                    Url = $"/ChildCategory/{c.ChildCategoryId}/{c.ChildCategoryTitle.Replace(" ", "-")}?search={filter}"
+                }).ToListAsync();
+
+
         public async Task<IEnumerable<ProductViewModel>> GetProductsWithPaginationAsync(string type, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null)
         {
             IQueryable<ShopperProductColor> products = _context.Products

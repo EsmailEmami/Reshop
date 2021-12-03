@@ -973,6 +973,7 @@ ul.pagination-custom {
             align-items: center;
             justify-content: flex-start;
             flex-wrap: nowrap;
+            overflow: auto
         }
 
             .content-page .content-main .images-part .item {

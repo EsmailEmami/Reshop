@@ -17,16 +17,23 @@
         </div>
 
 
+        <div class="swiper products-swiper">
+            <div class="swiper-wrapper">
 
-        <div class="carousel-product owl-carousel owl-theme">
-            @await Html.PartialAsync("Product/_CarouselBoxProducts", Model)
+                @await Html.PartialAsync("Product/_CarouselBoxProducts", Model)
+
+
+
+            </div>
+
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
         </div>
 
 
-
         <div class="btn-more-and-nav-slider">
-            <a asp-controller="Product" asp-action="GetProducts" asp-route-type="@ViewBag.SelectedType.ToString()" 
-                class="btn btn-more-info">مشاهده ی همه</a>
+            <a asp-controller="Product" asp-action="GetProducts" asp-route-type="@ViewBag.SelectedType.ToString()"
+           class="btn btn-more-info">مشاهده ی همه</a>
         </div>
 
 

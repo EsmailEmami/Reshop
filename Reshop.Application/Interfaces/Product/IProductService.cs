@@ -29,6 +29,9 @@ namespace Reshop.Application.Interfaces.Product
         // this is for list of shopper products
         Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync();
 
+        Task<IEnumerable<SearchProductViewModel>> SearchProductsAsync(string filter);
+
+
         // get by id 
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(int productId, string shopperId);
         Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId);

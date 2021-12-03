@@ -272,6 +272,157 @@ function SubmitForm(formId) {
 }
 
 
+var headerFilter = document.getElementById('header-filter');
+var headerFilterForm = document.getElementById('header-filter-form');
+
+headerFilter.onkeydown = function (e) {
+    if (e.keyCode == 13) {
+        headerFilterForm.submit();
+    }
+}
+
+headerFilter.oninput = function () {
+    $.ajax({
+        type: 'GET',
+        url: '/api/product/SearchFilterMenu?filter=' + headerFilter.value,
+        success: function (res) {
+            AutoComplete(headerFilter, res, headerFilterForm);
+        }
+    });
+}
+
+function AutoComplete(input, itemsList, form) {
+
+        form.classList.add('active');
+    
+
+   
+    if (itemsList == null) {
+        closeAllLists();
+        return false;
+    }
+
+
+    if (itemsList.length <= 0) {
+        closeAllLists();
+        return false;
+    }
+
+    
+    var currentFocus, autoCompleteList;
+    var inputValue = input.value;
+
+    closeAllLists();
+
+    if (!inputValue) {
+        return false;
+    }
+
+
+    currentFocus = -1;
+    /*create a DIV element that will contain the items*/
+    autoCompleteList = document.createElement("DIV");
+    autoCompleteList.setAttribute("id", input.id + "autocomplete-list");
+    autoCompleteList.setAttribute("class", "autocomplete-items");
+
+
+    /*append the DIV element as a child of the autocomplete container:*/
+    input.parentNode.appendChild(autoCompleteList);
+
+    /*for each item in the array...*/
+    for (var i = 0; i < itemsList.length; i++) {
+
+        // create tag a
+        var itemValue = document.createElement("A");
+        itemValue.setAttribute('href', itemsList[i].url);
+
+        // searched value
+        var span = document.createElement("span");
+        span.innerHTML = inputValue + " در دسته ";
+
+
+
+        // create tag strong
+        var itemValueStrong = document.createElement("strong");
+        itemValueStrong.innerHTML = itemsList[i].title;
+
+        itemValue.appendChild(span);
+        itemValue.appendChild(itemValueStrong);
+
+
+        itemValue.addEventListener("click", function (e) {
+
+            window.location.href = itemValue.href;
+
+            closeAllLists();
+        });
+
+        autoCompleteList.appendChild(itemValue);
+
+    }
+
+    /*execute a function presses a key on the keyboard:*/
+    input.addEventListener("keydown", function (e) {
+        var x = document.getElementById(this.id + "autocomplete-list");
+        if (x) x = x.getElementsByTagName("a");
+        if (e.keyCode == 40) {
+            /*If the arrow DOWN key is pressed,
+            increase the currentFocus variable:*/
+            currentFocus++;
+            /*and and make the current item more visible:*/
+            addActive(x);
+        } else if (e.keyCode == 38) { //up
+            /*If the arrow UP key is pressed,
+            decrease the currentFocus variable:*/
+            currentFocus--;
+            /*and and make the current item more visible:*/
+            addActive(x);
+        } else if (e.keyCode == 13) {
+            /*If the ENTER key is pressed, prevent the form from being submitted,*/
+            e.preventDefault();
+            if (currentFocus > -1) {
+                /*and simulate a click on the "active" item:*/
+                if (x) x[currentFocus].click();
+            }
+        }
+    });
+
+    function addActive(x) {
+        /*a function to classify an item as "active":*/
+        if (!x) return false;
+        /*start by removing the "active" class on all items:*/
+        removeActive(x);
+        if (currentFocus >= x.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = (x.length - 1);
+        /*add class "autocomplete-active":*/
+        x[currentFocus].classList.add("autocomplete-active");
+    }
+
+    function removeActive(x) {
+        /*a function to remove the "active" class from all autocomplete items:*/
+        for (var i = 0; i < x.length; i++) {
+            x[i].classList.remove("autocomplete-active");
+        }
+    }
+
+    function closeAllLists(elements) {
+        if (itemsList == null || itemsList.length <= 0) {
+            form.classList.remove('active');
+        }
+        var autoCompleteList = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < autoCompleteList.length; i++) {
+            if (elements != autoCompleteList[i] && elements != input) {
+                autoCompleteList[i].parentNode.removeChild(autoCompleteList[i]);
+            }
+        }
+    }
+    /*execute a function when someone clicks in the document:*/
+    document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+    });
+}
+
+
 $(function () {
     let modal = document.getElementById('modal');
     $(".close").click(function () {
@@ -283,7 +434,6 @@ $(function () {
         }
     }
 });
-
 
 function changeDetailImg(imgSrc) { document.getElementById("zoom").src = imgSrc; }
 

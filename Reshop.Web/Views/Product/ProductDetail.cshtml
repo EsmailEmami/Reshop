@@ -1,10 +1,35 @@
-﻿@using Microsoft.EntityFrameworkCore
-@model ProductDetailViewModel
+﻿@model ProductDetailViewModel
 
 @{
     ViewData["Title"] = $"مشخصات کالای {Model.Product.Title.Replace(" ", "-")}";
 
     string shortKeyUrl = $"https://localhost:44312/p/{Model.Product.ShortKey}";
+
+
+    AUXDetail auxDetail = null;
+    MobileDetail mobileDetail = null;
+    LaptopDetail laptopDetail = null;
+
+    switch (Model.Product.Type)
+    {
+        case ProductConstants.Aux:
+        {
+            auxDetail = Model.Product.Detail as AUXDetail;
+            break;  
+        }
+        case ProductConstants.Mobile:
+        {
+            mobileDetail = Model.Product.Detail as MobileDetail;
+            break;
+        }
+        case ProductConstants.Laptop:
+        {
+            laptopDetail = Model.Product.Detail as LaptopDetail;
+            break;
+        }
+    }
+
+
 }
 
 @section Css{
@@ -198,30 +223,31 @@
                             <button type="submit" class="btn">افزودن به سبد خرید</button>
                         </form>
 
-
-
                     </div>
                 </div>
             </div>
 
+            @switch (Model.Product.Type)
+                    {
+                        case ProductConstants.Aux:
+                        {
+                            break;
+                        }
+                        case ProductConstants.Mobile:
+                        {
+                            <hr />
 
+                            <div class="feature">
+                                <h5>ویژگی های محصول:</h5>
+                                <ul>
+                                    <li>حافظه داخلی @mobileDetail. گیگ</li>
+                                </ul>
+                            </div>
 
+                            break;
+                        }
+                    }
 
-
-            <hr />
-
-            <div class="feature">
-                <h5>ویژگی های محصول:</h5>
-                <ul>
-                    <li>حافظه ۱۲۸ گیگ</li>
-                    <li>ios 12</li>
-                    <li>صفحه نمایش :۵ اینچ</li>
-                    <li>شبکه تلفن:3g/4g</li>
-                    <li>دوربین:۲عدد</li>
-                    <li>ویژگی</li>
-                    <li>ویژگی</li>
-                </ul>
-            </div>
             <hr>
             <span class="satisfaction">
                 <i class="far fa-award"></i> <span>@Model.Comments.SuggestedBuyersCounts خریدار</span> از این محصول رضایت داشتند.
@@ -266,31 +292,39 @@
                 <h5>مشخصات محصول:</h5>
 
                 <ul>
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
-                    <li>
-                        <span>سلام</span>
-                        <span>سلام</span>
-                    </li>
+                    @switch (Model.Product.Type)
+                    {
+                        case ProductConstants.Aux:
+                        {
+                            @if (auxDetail != null)
+                            {
+                                <li>
+                                    <span>نوع کابل</span>
+                                    <span>
+                                        @auxDetail.CableMaterial
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>طول کابل</span>
+                                    <span>
+                                        @auxDetail.CableLenght سانتی متر
+            
+                                    </span>
+                                </li>
+                            }
+                            break;
+                        }
+                        case ProductConstants.Mobile:
+                        {
+                            <li>حافظه داخلی: @mobileDetail.InternalStorage گیگابایت</li>
+                            <li>اندازه صفحه نمایش: @mobileDetail.DisplaySize</li>
+                            <li>شبکه های ارتباطی: @mobileDetail.ConnectionsNetwork</li> 
+                          
+                            break;
+                        }
+                    }
 
+              
                 </ul>
             </div>
 

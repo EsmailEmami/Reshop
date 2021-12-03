@@ -233,6 +233,9 @@ namespace Reshop.Application.Services.Product
             return model;
         }
 
+        public async Task<IEnumerable<SearchProductViewModel>> SearchProductsAsync(string filter) =>
+            await _productRepository.SearchProductsAsync(filter);
+
         public async Task<ProductDetailForShow> GetProductDetailForShopperAsync(int productId, string shopperId)
         {
             string shopperProductId = await _shopperRepository.GetShopperProductIdAsync(shopperId, productId);

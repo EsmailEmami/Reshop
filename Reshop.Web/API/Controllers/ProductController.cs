@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Convertors;
@@ -27,6 +28,18 @@ namespace Reshop.Web.API.Controllers
             _colorService = colorService;
             _discountService = discountService;
         }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> SearchFilterMenu(string filter = null)
+        {
+            if (string.IsNullOrEmpty(filter))
+                return new JsonResult(null);
+
+            var menu = await _productService.SearchProductsAsync(filter);
+            
+            return new JsonResult(menu);
+        }
+
 
         [HttpGet("GetLastThirtyDayProductData/{productId}")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]

@@ -38,16 +38,54 @@
 </div>
 
 <ul class="compare-detail">
-    <li class="title">
-        <div>ابعاد</div>
-    </li>
-    <li class="value">
-      @foreach (var item in Model)
-      {
-          <div>
-              سلام و عرض ادب
-          </div>
-      }
-    </li>
+
+
+
+    @switch (Model.First().Type)
+    {
+        case ProductConstants.Aux:
+        {
+            <li class="title">
+                    <div>نوع کابل</div>
+                </li>
+            <li class="value">
+                @foreach (var item in Model)
+                {
+                    if (item.Detail is AUXDetail auxDetail)
+                    {
+                        <div>
+                            @auxDetail.CableMaterial
+                        </div>
+                    }
+                }
+            </li>
+
+            <li class="title">
+                <div>طول کابل</div>
+            </li>
+            <li class="value">
+                @foreach (var item in Model)
+                {
+                    if (item.Detail is AUXDetail auxDetail)
+                    {
+                        <div>
+                            @auxDetail.CableLenght سانتی متر
+                        </div>
+                    }
+                }
+            </li>
+                break;
+            }
+        case ProductConstants.Mobile:
+            {
+
+                break;
+            }
+        case ProductConstants.Laptop:
+            {
+
+                break;
+            }
+    }
 
 </ul>

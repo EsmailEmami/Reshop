@@ -392,7 +392,6 @@ table {
     color: #222;
 }
 
-
 table.responsive {
     overflow-x: auto;
     min-width: 800px;
@@ -401,7 +400,6 @@ table.responsive {
 table tr th {
     white-space: nowrap;
 }
-
 
 table tr td {
     vertical-align: middle;
@@ -437,6 +435,7 @@ table .btn {
     padding-right: 15px;
 }
 
+
 /* -------------------------------------- header -------------------------------------- */
 
 header .top-menu {
@@ -451,6 +450,79 @@ header .top-menu {
     font-family: sans-serif;
     font-style: oblique;
     font-weight: 500;
+}
+
+.autocomplete {
+    position: relative;
+    display: inline-block;
+}
+
+.autocomplete-items {
+    position: absolute;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    left: 0;
+    right: 0;
+    top: 95%;
+    border: 2px solid #e4e4e4;
+    font-size: 16px;
+    background: #ffffff;
+    border-radius: 0 0 8px 8px;
+    border-top: none;
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: 0;
+}
+
+    .autocomplete-items::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .autocomplete-items::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .autocomplete-items::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 5px
+    }
+
+        .autocomplete-items::-webkit-scrollbar-thumb:hover {
+            background: #fff;
+        }
+
+    .autocomplete-items a {
+        width: 100%;
+        display: block;
+        padding: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        color: #000;
+    }
+
+        .autocomplete-items a:last-of-type {
+            border-radius: 0 0 10px 10px;
+        }
+
+        .autocomplete-items a strong {
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+
+        /*when hovering an item:*/
+
+        .autocomplete-items a:hover {
+            background-color: #f4f4f4;
+        }
+
+
+/*when navigating through the items using the arrow keys:*/
+
+.autocomplete-active {
+    background-color: #f4f4f4;
 }
 
 .search-header {
@@ -480,10 +552,6 @@ header .top-menu {
             color: #eaeaea;
         }
 
-        .search-header input:focus {
-            border: 2px solid #fc5400
-        }
-
     .search-header button {
         position: absolute;
         left: 5px;
@@ -496,6 +564,18 @@ header .top-menu {
         font-size: 18px;
         color: #eaeaea;
     }
+
+
+    /* search header active */
+
+    .search-header.active {
+        border-radius: 8px 8px 0 0;
+    }
+
+        .search-header.active input {
+            border-radius: 8px 8px 0 0;
+            border-bottom: none;
+        }
 
 .top-menu .header-icons {
     display: block;
@@ -930,35 +1010,98 @@ ul.breadcrumb {
 
 /* -------------------------------------- slider -------------------------------------- */
 
-.carousel-inner {
-    border-radius: 8px;
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    font-size: 20px;
 }
 
-.carousel-indicators {
-    justify-content: flex-start;
-    padding: 0;
+.swiper-button-next,
+.swiper-button-prev {
+    color: #fff;
+    text-shadow: 0 2px 4px #616161;
 }
 
-    .carousel-indicators li {
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
+    .swiper-button-next:hover:after {
+        transition: ease .3s;
+        margin-left: 4px;
     }
 
-.carousel-item {
+    .swiper-button-prev:hover:after {
+        transition: ease .3s;
+        margin-right: 4px;
+    }
+
+.swiper-pagination-bullet {
+    background-color: #fff;
+    opacity: 1;
+    box-shadow: 0 1px 1px 0 rgb(0 0 0 / 30%);
+}
+
+.products-swiper {
+    padding-top: 15px;
+}
+
+.slider-swiper .swiper-button-next:after,
+.slider-swiper .swiper-button-prev:after {
+    font-size: 24px;
+}
+
+.slider-swiper .swiper-button-next:after {
+    font-weight: bold;
+}
+
+.slider-swiper .swiper-button-prev:after {
+    font-weight: bold;
+}
+
+.swiper-main-menu-slider {
     min-height: 300px;
     height: 550px;
-    background: no-repeat center center scroll;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    border-radius: 15px;
 }
 
-    .carousel-item img {
-        width: 100%;
+    .swiper-main-menu-slider a {
+        border-radius: 15px;
     }
+
+        .swiper-main-menu-slider a img {
+            height: 100%;
+            width: 100%;
+            max-width: 100%;
+            margin: auto;
+            border-radius: 15px;
+        }
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: #fff;
+    text-shadow: 0 2px 4px #616161;
+}
+
+    .swiper-button-next:hover:after {
+        transition: ease .3s;
+        margin-left: 4px;
+    }
+
+    .swiper-button-prev:hover:after {
+        transition: ease .3s;
+        margin-right: 4px;
+    }
+
+.swiper-pagination-bullet {
+    background-color: #fff;
+    opacity: 1;
+    box-shadow: 0 1px 1px 0 rgb(0 0 0 / 30%);
+}
+
+.slider-swiper .swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #FC5400;
+}
 
 
 /* -------------------------------------- slider -------------------------------------- */
@@ -2556,7 +2699,6 @@ ul.breadcrumb {
             justify-content: space-between;
         }
 
-
             .user-data .table-list .filter .filter-input {
                 width: 100%;
                 display: inline-block;
@@ -2596,6 +2738,7 @@ ul.breadcrumb {
                     font-size: 17px;
                     color: #959595;
                 }
+
 
             /* custom select */
 
@@ -2648,7 +2791,7 @@ ul.breadcrumb {
     .general-data div h3 {
         color: #666;
         font-weight: bold;
-        font-family: 'Kalameh', Sahel,sans-serif;
+        font-family: 'Kalameh', Sahel, sans-serif;
         font-size: 15px;
         display: inline-block
     }
@@ -2674,7 +2817,7 @@ ul.breadcrumb {
 .mini-pic-slider {
     border: 1px solid rgb(209, 209, 209);
     border-radius: 8px;
-    margin: 10px 10px 0 10px;
+    margin: 0 10px 10px;
     transition: 0.2s;
     padding: 5px;
     width: 120px;
@@ -2683,7 +2826,9 @@ ul.breadcrumb {
 
     .mini-pic-slider img {
         border-radius: 4px;
-        width: 100%;
+        max-width: 100%;
+        width: auto;
+        margin: auto;
         height: 100%;
     }
 
@@ -3876,7 +4021,6 @@ ul.breadcrumb {
     font-size: 20px;
 }
 
-
 .products-show-compare {
     justify-content: space-between;
     overflow: auto;
@@ -3940,6 +4084,7 @@ ul.breadcrumb {
         display: flex;
         justify-content: space-between;
         flex-wrap: nowrap;
+        font-family: Kalameh, Sahel, sans-serif;
     }
 
         .compare-detail li.value div {
@@ -4447,7 +4592,6 @@ ul.breadcrumb {
             .shopping-page .addresses .address .header .items form {
                 display: inline-block;
             }
-
 
                 .shopping-page .addresses .address .header .items form button i:hover {
                     color: crimson;
