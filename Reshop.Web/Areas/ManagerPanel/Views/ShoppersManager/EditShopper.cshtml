@@ -4,6 +4,7 @@
 }
 
 @section Css{
+    <link href="~/css/calender.min.css" rel="stylesheet" />
     <link href="~/css/select.css" rel="stylesheet" />
 }
 
@@ -34,7 +35,7 @@
 
                 <div class="col-sm-12">
                     <div class="form-field">
-                        <input asp-for="BirthDay" class="date-picker" readonly>
+                        <input asp-for="BirthDay" class="date-picker" readonly="readonly">
                         <label><i class="far fa-user"></i> تاریخ تولد</label>
                         <span asp-validation-for="BirthDay" class="text-danger"></span>
                     </div>
@@ -87,6 +88,7 @@
                                 @:<option value="@item.StoreTitleId" @((Model.SelectedStoreTitles != null && Model.SelectedStoreTitles.Any(c=> c == item.StoreTitleId))? "selected" : "")>@item.StoreTitleName</option>
                             }
                         </select>
+                        <span asp-validation-for="SelectedStoreTitles" class="text-danger"></span>
                     }
                     else
                     {
@@ -107,6 +109,8 @@
                                 @: <option value="@item.RoleId" @(Model.SelectedRoles != null && Model.SelectedRoles.Any(c => c == item.RoleId) ? "selected" : "")>@item.RoleTitle</option>
                             }
                         </select>
+
+                        <span asp-validation-for="SelectedRoles" class="text-danger"></span>
                     }
                     else
                     {

@@ -176,8 +176,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            // check user birthday
+            DateTime birthDay = model.BirthDay.ConvertPersianDateToEnglishDate();
 
-            //// check images is not script
+            if (birthDay.Year >= DateTime.Now.AddYears(-18).Year)
+            {
+                ModelState.AddModelError("BirthDay", "لطفا سال تولد خود را به درستی وارد کنید.");
+                return View(model);
+            }
+
+            // check images is not script
             if (model.OnNationalCardImage != null && !model.OnNationalCardImage.IsImage() ||
                 model.BusinessLicenseImage != null && !model.BusinessLicenseImage.IsImage())
             {
@@ -209,7 +217,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             // edit shopper data
             shopper.StoreName = model.StoreName;
-            shopper.BirthDay = model.BirthDay.ConvertPersianDateToEnglishDate();
+            shopper.BirthDay = birthDay;
             shopper.IsActive = model.IsActive;
 
 

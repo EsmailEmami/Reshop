@@ -64,9 +64,15 @@ namespace Reshop.Domain.DTOs.Shopper
         public string BusinessLicenseImageName { get; set; }
 
         public IEnumerable<StoreTitle> StoreTitles { get; set; }
+
+        [Display(Name = "عناوین فروشنده")]
+        [Required(ErrorMessage = "لطفا {0} را انتخاب کنید.")]
         public IEnumerable<int> SelectedStoreTitles { get; set; }
 
         public IEnumerable<Role> Roles { get; set; }
+
+        [Display(Name = "مقام های فروشنده")]
+        [Required(ErrorMessage = "لطفا {0} را انتخاب کنید.")]
         public IEnumerable<string> SelectedRoles { get; set; }
     }
 }
