@@ -12,6 +12,7 @@ using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Reshop.Application.Services.Shopper
@@ -84,6 +85,17 @@ namespace Reshop.Application.Services.Shopper
 
             data.StoreTitles = _shopperRepository.GetStoreTitles();
             data.Roles = await _permissionRepository.GetRolesAsync();
+
+            return data;
+        }
+
+        public async Task<ShoppersGeneralDataForAdmin> GetShoppersGeneralDataForAdminAsync()
+        {
+            int shoppersCount = await _shopperRepository.GetShoppersCountWithTypeAsync("all");
+            int activeShoppersCount = await _shopperRepository.GetShoppersCountWithTypeAsync("active");
+            int existedShoppersCount = await _shopperRepository.GetShoppersCountWithTypeAsync("existed");
+
+            var data = new ShoppersGeneralDataForAdmin(shoppersCount, activeShoppersCount, existedShoppersCount);
 
             return data;
         }
@@ -740,11 +752,70 @@ namespace Reshop.Application.Services.Shopper
                 return null;
 
 
-            return _shopperRepository.GetLastThirtyDayProductDataChart(shopperProductId);
+            var data = await _shopperRepository.GetLastThirtyDayProductDataChartAsync(shopperProductId);
+
+            if (data == null)
+                return null;
+
+            var finalData = data.GroupBy(c => c.Date)
+            .Select(c => new LastThirtyDayProductDataChart()
+            {
+                Date = c.Key,
+                SellCount = c.Sum(g => g.SellCount),
+                ViewCount = 10
+            }).ToList();
+
+            if (!finalData.Any())
+                return null;
+
+            return finalData;
+        }
+
+        public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(string shopperProductId)
+        {
+            var data = await _shopperRepository.GetLastThirtyDayProductDataChartAsync(shopperProductId);
+
+            if (data == null)
+                return null;
+
+            var finalData = data.GroupBy(c => c.Date)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Key,
+                    SellCount = c.Sum(g => g.SellCount),
+                    ViewCount = 10
+                }).ToList();
+
+            if (!finalData.Any())
+                return null;
+
+            return finalData;
         }
 
         public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId) =>
             _shopperRepository.GetLastThirtyDayColorProductDataChart(shopperProductColorId);
+
+        public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayShopperDataChartAsync(string shopperId)
+        {
+            var data = await _shopperRepository.GetLastThirtyDayShopperDataChartAsync(shopperId);
+
+            if (data is null)
+                return null;
+
+            var finalData = data.GroupBy(c => c.Date)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Key,
+                    SellCount = c.Sum(g => g.SellCount),
+                    ViewCount = 10
+                }).ToList();
+
+            if (!finalData.Any())
+                return null;
+
+            return finalData;
+        }
+
 
         public IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfProductChart(int productId) =>
             _shopperRepository.GetLastThirtyDayBestShoppersOfProductChart(productId);
@@ -765,7 +836,16 @@ namespace Reshop.Application.Services.Shopper
             if (shopperProductId is null)
                 return null;
 
-            return _shopperRepository.GetColorsOfShopperProductDataChart(shopperProductId);
+            return await _shopperRepository.GetColorsOfShopperProductDataChartAsync(shopperProductId);
+        }
+        public async Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(string shopperProductId)
+        {
+            if (shopperProductId is null)
+                return null;
+
+            var data = await _shopperRepository.GetColorsOfShopperProductDataChartAsync(shopperProductId);
+
+            return data;
         }
     }
 }

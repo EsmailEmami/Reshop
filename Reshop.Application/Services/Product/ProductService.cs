@@ -16,6 +16,7 @@ using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Reshop.Application.Services.Product
@@ -1169,10 +1170,46 @@ namespace Reshop.Application.Services.Product
             await _productRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart() =>
-            _productRepository.GetLastThirtyDayProductsDataChart();
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductsDataChart()
+        {
+            var data = _productRepository.GetLastThirtyDayProductsDataChart();
 
-        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId) =>
-            _productRepository.GetLastThirtyDayProductDataChart(productId);
+            if (data == null)
+                return null;
+
+            var finalData = data.GroupBy(c => c.Date)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Key,
+                    SellCount = c.Sum(g => g.SellCount),
+                    ViewCount = 10
+                }).ToList();
+
+            if (!finalData.Any())
+                return null;
+
+            return finalData;
+        }
+
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(int productId)
+        {
+            var data = _productRepository.GetLastThirtyDayProductDataChart(productId);
+
+            if (data == null)
+                return null;
+
+            var finalData = data.GroupBy(c => c.Date)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Key,
+                    SellCount = c.Sum(g => g.SellCount),
+                    ViewCount = 10
+                });
+
+            if (!finalData.Any())
+                return null;
+
+            return finalData;
+        }
     }
 }

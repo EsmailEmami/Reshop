@@ -61,8 +61,8 @@ namespace Reshop.Infrastructure.Repository.Shopper
                         IsActive = c.IsActive,
                         BusinessLicenseImageName = c.BusinessLicenseImageName,
                         OnNationalCardImageName = c.OnNationalCardImageName,
-                        SelectedStoreTitles = c.ShopperTitles.Select(s=> s.StoreTitleId),
-                        SelectedRoles = c.User.UserRoles.Select(s=> s.RoleId)
+                        SelectedStoreTitles = c.ShopperTitles.Select(s => s.StoreTitleId),
+                        SelectedRoles = c.User.UserRoles.Select(s => s.RoleId)
                     }).SingleOrDefaultAsync();
 
         public async Task<string> GetShopperIdOfUserByUserId(string userId) =>
@@ -601,9 +601,22 @@ namespace Reshop.Infrastructure.Repository.Shopper
                     Income = _context.OrderDetails.Where(o => o.ShopperProductColorId == c.ShopperProductColorId && o.Order.IsPayed).Select(s => s.Order.Sum).Sum(),
                 }).SingleOrDefaultAsync();
 
-        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(string shopperProductId) =>
-            _context.OrderDetails.Where(c =>
+        public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(string shopperProductId) =>
+            await _context.OrderDetails.Where(c =>
                     c.ShopperProductColor.ShopperProductId == shopperProductId &&
+                    c.Order.IsPayed &&
+                    c.Order.PayDate >= DateTime.Now.AddDays(-30))
+                .OrderBy(c => c.Order.PayDate)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Order.PayDate.Value.ToShamsiDate(),
+                    ViewCount = 10,
+                    SellCount = c.Count,
+                }).ToListAsync();
+
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId) =>
+            _context.OrderDetails.Where(c =>
+                    c.ShopperProductColor.ShopperProductColorId == shopperProductColorId &&
                     c.Order.IsPayed &&
                     c.Order.PayDate >= DateTime.Now.AddDays(-30))
                 .OrderBy(c => c.Order.PayDate)
@@ -614,9 +627,9 @@ namespace Reshop.Infrastructure.Repository.Shopper
                     SellCount = c.Count,
                 });
 
-        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId) =>
+        public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayShopperDataChartAsync(string shopperId) =>
             _context.OrderDetails.Where(c =>
-                    c.ShopperProductColor.ShopperProductColorId == shopperProductColorId &&
+                    c.ShopperProductColor.ShopperProduct.ShopperId == shopperId &&
                     c.Order.IsPayed &&
                     c.Order.PayDate >= DateTime.Now.AddDays(-30))
                 .OrderBy(c => c.Order.PayDate)
@@ -659,15 +672,15 @@ namespace Reshop.Infrastructure.Repository.Shopper
                 .GroupBy(c => c.ShopperProductColor.ShopperProduct.Shopper.StoreName)
                 .Select(c => new Tuple<string, int>(c.Key, c.Sum(s => s.Count))).Take(20);
 
-        public IEnumerable<Tuple<string, int, int, int>> GetColorsOfShopperProductDataChart(string shopperProductId) =>
-            _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
+        public async Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(string shopperProductId) =>
+            await _context.ShopperProducts.Where(c => c.ShopperProductId == shopperProductId)
                 .SelectMany(c => c.ShopperProductColors)
                 .Select(c => new Tuple<string, int, int, int>(
                     c.Color.ColorName,
                     10,
                     _context.OrderDetails
                         .Where(o => o.ShopperProductColorId == c.ShopperProductColorId)
-                        .Sum(s => s.Count), 10));
+                        .Sum(s => s.Count), 10)).ToListAsync();
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }

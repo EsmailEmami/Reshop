@@ -46,9 +46,11 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var data = await _shopperService.GetShoppersGeneralDataForAdminAsync();
+
+            return View(data);
         }
 
         #region shopper

@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Shopper;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Reshop.Application.Interfaces.Discount;
-using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.API.Controllers
 {
@@ -21,46 +20,210 @@ namespace Reshop.Web.API.Controllers
         }
 
 
-        [HttpGet("GetLastThirtyDayProductData/{productId}")]
+        // this is for current shopper
+        // we get shopperId from current UserId
+        #region current shopper
+
+        [HttpGet("[action]")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetLastThirtyDayProductDataChart(int productId)
+        public async Task<IActionResult> GetLastThirtyDayCurrentShopperProductData(int productId)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             string shopperId = await _shopperService.GetShopperIdOrUserAsync(userId);
 
-            if (shopperId is null)
-            {
+            if (string.IsNullOrEmpty(shopperId))
                 return NotFound();
-            }
 
-            var res = await _shopperService.GetLastThirtyDayProductDataChartAsync(productId, shopperId);
+            var data = await _shopperService.GetLastThirtyDayProductDataChartAsync(productId, shopperId);
 
-            if (res is null)
-            {
+            if (data == null)
                 return NotFound();
-            }
 
-            return new ObjectResult(res);
+
+            return new ObjectResult(data);
         }
 
-        [HttpGet("GetLastThirtyDayBestShoppersOfProduct/{productId}")]
+        [HttpGet("[action]")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public IActionResult GetLastThirtyDayBestShoppersOfProductChart(int productId)
+        public async Task<IActionResult> GetLastThirtyDayCurrentShopperData()
         {
-            var res = _shopperService.GetLastThirtyDayBestShoppersOfProductChart(productId);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (res is null)
-            {
+            string shopperId = await _shopperService.GetShopperIdOrUserAsync(userId);
+
+            if (string.IsNullOrEmpty(shopperId))
                 return NotFound();
-            }
 
-            return new ObjectResult(res);
+            var data = await _shopperService.GetLastThirtyDayShopperDataChartAsync(shopperId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
         }
 
-        [HttpGet("GetBestShoppersOfProduct/{productId}")]
+        #endregion
+
+        #region current shopper product color
+
+        [HttpGet("[action]")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public IActionResult GetBestShoppersOfProductChart(int productId)
+        public async Task<IActionResult> GetColorsOfCurrentShopperProductData(int productId)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            string shopperId = await _shopperService.GetShopperIdOrUserAsync(userId);
+
+            if (string.IsNullOrEmpty(shopperId))
+                return NotFound();
+
+            var data = await _shopperService.GetColorsOfShopperProductDataChartAsync(productId, shopperId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
+        }
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> GetLastThirtyDayCurrentShopperProductColorData(int productId, int colorId)
+        {
+            string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+
+            if (string.IsNullOrEmpty(shopperId))
+                return NotFound();
+
+            string shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperId, productId, colorId);
+
+
+            if (string.IsNullOrEmpty(shopperProductColorId))
+                return NotFound();
+
+            var data = _shopperService.GetLastThirtyDayColorProductDataChart(shopperProductColorId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
+        }
+
+        #endregion
+
+        #region shopper product color
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public IActionResult GetLastThirtyDayBestShoppersOfColorProduct(int productId, int colorId)
+        {
+            var data = _shopperService.GetLastThirtyDayBestShoppersOfColorProductChart(productId, colorId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
+        }
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public IActionResult GetBestShoppersOfColorProduct(int productId, int colorId)
+        {
+            var data = _shopperService.GetBestShoppersOfColorProductChart(productId, colorId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
+        }
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> GetColorsOfShopperProductData(string shopperProductId)
+        {
+            if (string.IsNullOrEmpty(shopperProductId))
+                return NotFound();
+
+            var data = await _shopperService.GetColorsOfShopperProductDataChartAsync(shopperProductId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
+        }
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> GetLastThirtyDayShopperProductColorData(string shopperProductId, int colorId)
+        {
+            if (string.IsNullOrEmpty(shopperProductId))
+                return NotFound();
+
+            string shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperProductId, colorId);
+
+            if (string.IsNullOrEmpty(shopperProductColorId))
+                return NotFound();
+
+            var data = _shopperService.GetLastThirtyDayColorProductDataChart(shopperProductColorId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
+        }
+
+        #endregion
+
+        #region shopper 
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> GetLastThirtyDayShopperProductData(string shopperProductId)
+        {
+            if (string.IsNullOrEmpty(shopperProductId))
+                return NotFound();
+
+            var data = await _shopperService.GetLastThirtyDayProductDataChartAsync(shopperProductId);
+
+            if (data == null)
+                return NotFound();
+
+
+            return new ObjectResult(data);
+        }
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> GetLastThirtyDayShopperData(string shopperId)
+        {
+            if (string.IsNullOrEmpty(shopperId))
+                return NotFound();
+
+            var data = await _shopperService.GetLastThirtyDayShopperDataChartAsync(shopperId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
+        }
+
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public IActionResult GetLastThirtyDayBestShoppersOfProduct(int productId)
+        {
+            var data = _shopperService.GetLastThirtyDayBestShoppersOfProductChart(productId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
+        }
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public IActionResult GetBestShoppersOfProduct(int productId)
         {
             var res = _shopperService.GetBestShoppersOfProductChart(productId);
 
@@ -72,120 +235,58 @@ namespace Reshop.Web.API.Controllers
             return new ObjectResult(res);
         }
 
-        [HttpGet("GetColorsOfShopperProductData/{productId}")]
+        #endregion
+
+        #region current shopper discount
+
+        [HttpGet("[action]")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetColorsOfShopperProductDataChart(int productId)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            string shopperId = await _shopperService.GetShopperIdOrUserAsync(userId);
-
-            if (shopperId is null)
-            {
-                return NotFound();
-            }
-
-            var res = await _shopperService.GetColorsOfShopperProductDataChartAsync(productId, shopperId);
-
-            if (res is null)
-            {
-                return NotFound();
-            }
-
-            return new ObjectResult(res);
-        }
-
-        // this is for shopper and shopperId come from shopperUserId automatically
-        //color
-        [HttpGet("GetLastThirtyDayColorProductData/{productId}/{colorId}")]
-        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetLastThirtyDayColorProductDataChart(int productId, int colorId)
-        {
-            string shopperId =
-                await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            if (shopperId is null)
-            {
-                return NotFound();
-            }
-
-            string shopperProductColorId =
-                await _shopperService.GetShopperProductColorIdAsync(shopperId, productId, colorId);
-
-            if (shopperProductColorId is null)
-            {
-                return NotFound();
-            }
-
-            var res = _shopperService.GetLastThirtyDayColorProductDataChart(shopperProductColorId);
-
-            if (res is null)
-            {
-                return NotFound();
-            }
-
-            return new ObjectResult(res);
-        }
-
-        // here we donot need shoppe id
-        [HttpGet("GetLastThirtyDayBestShoppersOfColorProduct/{productId}/{colorId}")]
-        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public IActionResult GetLastThirtyDayBestShoppersOfColorProductChart(int productId, int colorId)
-        {
-            var res = _shopperService.GetLastThirtyDayBestShoppersOfColorProductChart(productId, colorId);
-
-            if (res is null)
-            {
-                return NotFound();
-            }
-
-            return new ObjectResult(res);
-        }
-        
-        // we do not need shopperId here
-        [HttpGet("GetBestShoppersOfColorProduct/{productId}/{colorId}")]
-        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public IActionResult GetBestShoppersOfColorProductChart(int productId, int colorId)
-        {
-
-            var res = _shopperService.GetBestShoppersOfColorProductChart(productId, colorId);
-
-            if (res is null)
-            {
-                return NotFound();
-            }
-
-            return new ObjectResult(res);
-        }
-
-        //discount
-        [HttpGet("GetLastTwentyDiscountDataOfShopperProductColor/{productId}/{colorId}")]
-        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetLastTwentyDiscountDataOfShopperProductColorChart(int productId, int colorId)
+        public async Task<IActionResult> GetLastTwentyDiscountDataOfCurrentShopperProductColor(int productId, int colorId)
         {
             string shopperId = await _shopperService.GetShopperIdOrUserAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (shopperId is null)
-            {
+            if (string.IsNullOrEmpty(shopperId))
                 return NotFound();
-            }
+
 
             string shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperId, productId, colorId);
 
-            if (shopperProductColorId is null)
-            {
+            if (string.IsNullOrEmpty(shopperProductColorId))
                 return NotFound();
-            }
 
+            var data = _discountService.GetLastTwentyDiscountDataOfShopperProductColorChart(shopperProductColorId);
 
-            var res = _discountService.GetLastTwentyDiscountDataOfShopperProductColorChart(shopperProductColorId);
-
-            if (res is null)
-            {
+            if (data == null)
                 return NotFound();
-            }
 
-            return new ObjectResult(res);
+            return new ObjectResult(data);
         }
+
+        #endregion
+
+        #region shopper discount
+
+        [HttpGet("[action]")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> GetLastTwentyDiscountDataOfShopperProductColor(string shopperProductId, int colorId)
+        {
+            if (string.IsNullOrEmpty(shopperProductId))
+                return NotFound();
+
+
+            string shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperProductId, colorId);
+
+            if (string.IsNullOrEmpty(shopperProductColorId))
+                return NotFound();
+
+            var data = _discountService.GetLastTwentyDiscountDataOfShopperProductColorChart(shopperProductColorId);
+
+            if (data == null)
+                return NotFound();
+
+            return new ObjectResult(data);
+        }
+
+        #endregion
     }
 }

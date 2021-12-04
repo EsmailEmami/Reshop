@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ShoppersGeneralDataForAdmin
+@{
     ViewData["Title"] = "مدیریت فروشندگان";
 }
 @section RightMenu
@@ -9,53 +10,33 @@
     <div class="col-xs-12 col-sm-6 col-xl-3">
         <div class="card-data">
             <div class="header">
-                <h3>تعداد کالاها</h3>
-
+                <h3>تعداد کل فروشندگان</h3>
                 <i class="fas fa-map-signs"></i>
-
             </div>
             <div class="content">
-                @*@ViewData["ProductsCount"]*@
-                0
+                @Model.ShoppersCount.NumSplitter()
             </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-6 col-xl-3">
         <div class="card-data">
             <div class="header">
-                <h3>تعداد کالاها</h3>
-
+                <h3>تعداد فروشندگان فعال</h3>
                 <i class="fas fa-map-signs"></i>
-
             </div>
             <div class="content">
-                12,000,000 <span>تومان</span>
+                @Model.ActiveShoppersCount.NumSplitter()
             </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-6 col-xl-3">
         <div class="card-data">
             <div class="header">
-                <h3>تعداد فروش 30 روز اخیر</h3>
-
+                <h3>تعداد فروشندگان غیر فعال</h3>
                 <i class="fas fa-map-signs"></i>
-
             </div>
             <div class="content">
-                12,000,000 <span>تومان</span>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-6 col-xl-3">
-        <div class="card-data">
-            <div class="header">
-                <h3>تعداد فروش 30 روز اخیر</h3>
-
-                <i class="fas fa-map-signs"></i>
-
-            </div>
-            <div class="content">
-                12,000,000 <span>تومان</span>
+                @Model.ExistedShoppersCount.NumSplitter()
             </div>
         </div>
     </div>
@@ -66,12 +47,9 @@
     <div id="productsLineChart" style="overflow: hidden; width: 100%; min-width: 877px;"></div>
 </section>
 
-<a asp-action="AddOrEditMobile" class="btn btn-success mb-3">افزودن فروشنده</a>
 <section class="table-list" id="tableList">
 
-
     @await Component.InvokeAsync("ShoppersListComponent")
-
 
 </section>
 

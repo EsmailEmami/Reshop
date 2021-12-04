@@ -120,14 +120,15 @@ namespace Reshop.Domain.Interfaces.Shopper
 
         #region Chart
 
-        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(string shopperProductId);
+        Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(string shopperProductId);
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId);
+        Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayShopperDataChartAsync(string shopperId);
         IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfProductChart(int productId);
         IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(int productId, int colorId);
         IEnumerable<Tuple<string, int>> GetBestShoppersOfProductChart(int productId);
         IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(int productId, int colorId);
         // colorName , view , sell , returned
-        IEnumerable<Tuple<string, int, int, int>> GetColorsOfShopperProductDataChart(string shopperProductId);
+        Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(string shopperProductId);
         #endregion
 
         Task SaveChangesAsync();

@@ -15,7 +15,7 @@ namespace Reshop.Web.Components.Shopper
 
         public async Task<IViewComponentResult> InvokeAsync(string type = "all", int pageId = 1, string filter = "")
         {
-            int take = 20;
+            int take = 1;
 
             var products = await _shopperService.GetShoppersInformationWithPagination(type, filter, pageId, take);
 

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Convertors;
 using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
-using Reshop.Application.Security.Attribute;
-using Reshop.Domain.DTOs.Chart;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reshop.Web.API.Controllers
 {
@@ -36,7 +33,7 @@ namespace Reshop.Web.API.Controllers
                 return new JsonResult(null);
 
             var menu = await _productService.SearchProductsAsync(filter);
-            
+
             return new JsonResult(menu);
         }
 
@@ -45,63 +42,36 @@ namespace Reshop.Web.API.Controllers
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetLastThirtyDayProductDataChart(int productId)
         {
-            var res = _productService.GetLastThirtyDayProductDataChart(productId);
+            var data = _productService.GetLastThirtyDayProductDataChart(productId);
 
-            var finalRes = res.GroupBy(c => c.Date)
-                .Select(c => new LastThirtyDayProductDataChart()
-                {
-                    Date = c.Key,
-                    SellCount = c.Sum(g => g.SellCount),
-                    ViewCount = 10
-                });
-
-            if (!finalRes.Any())
+            if (data == null)
                 return NotFound();
 
-
-            return new ObjectResult(finalRes);
+            return new ObjectResult(data);
         }
 
         [HttpGet("GetLastThirtyDayProductsDataChart")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetLastThirtyDayProductsDataChart()
         {
-            var res = _productService.GetLastThirtyDayProductsDataChart();
+            var data = _productService.GetLastThirtyDayProductsDataChart();
 
-            var finalRes = res.GroupBy(c => c.Date)
-                .Select(c => new LastThirtyDayProductDataChart()
-                {
-                    Date = c.Key,
-                    SellCount = c.Sum(g => g.SellCount),
-                    ViewCount = 10
-                });
-
-            if (!finalRes.Any())
+            if (data == null)
                 return NotFound();
 
-
-            return new ObjectResult(finalRes);
+            return new ObjectResult(data);
         }
 
         [HttpGet("GetColorsOfProductData/{productId}")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetColorsOfProductDataChart(int productId)
         {
-            var res = _colorService.GetColorsOfProductDataChart(productId);
+            var data = _colorService.GetColorsOfProductDataChart(productId);
 
-            var finalResult = res.GroupBy(c => c.Item1)
-                .Select(c => new Tuple<string, int, int, int>(
-                    c.Key,
-                    10,
-                    c.Sum(g => g.Item3),
-                    5))
-                .ToList();
-
-            if (!finalResult.Any())
+            if (data == null)
                 return NotFound();
 
-
-            return new ObjectResult(finalResult);
+            return new ObjectResult(data);
         }
 
         //color
@@ -109,21 +79,13 @@ namespace Reshop.Web.API.Controllers
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public IActionResult GetLastThirtyDayColorProductDataChart(int productId, int colorId)
         {
-            var res = _colorService.GetLastThirtyDayColorProductDataChart(productId, colorId);
+            var data = _colorService.GetLastThirtyDayColorProductDataChart(productId, colorId);
 
-            var finalRes = res.GroupBy(c => c.Date)
-                .Select(c => new LastThirtyDayProductDataChart()
-                {
-                    Date = c.Key,
-                    SellCount = c.Sum(g => g.SellCount),
-                    ViewCount = 10
-                });
-
-            if (!finalRes.Any())
+            if (data == null)
                 return NotFound();
 
 
-            return new ObjectResult(finalRes);
+            return new ObjectResult(data);
         }
 
         // store title

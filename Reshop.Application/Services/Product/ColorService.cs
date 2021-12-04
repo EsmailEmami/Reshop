@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
@@ -40,8 +41,26 @@ namespace Reshop.Application.Services.Product
             return new Tuple<IEnumerable<Color>, int, int>(data, pageId, totalPages);
         }
 
-        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId,
-            int colorId) => _colorRepository.GetLastThirtyDayColorProductDataChart(productId, colorId);
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(int productId, int colorId)
+        {
+            var data = _colorRepository.GetLastThirtyDayColorProductDataChart(productId, colorId);
+
+            if (data == null)
+                return null;
+
+            var finalData = data.GroupBy(c => c.Date)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Key,
+                    SellCount = c.Sum(g => g.SellCount),
+                    ViewCount = 10
+                }).ToList();
+
+            if (!finalData.Any())
+                return null;
+
+            return finalData;
+        }
 
         public async Task<ProductColorDetailViewModel> GetProductColorDetailAsync(int productId, int colorId)
         {
@@ -60,8 +79,26 @@ namespace Reshop.Application.Services.Product
             };
         }
 
-        public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId) =>
-            _colorRepository.GetColorsOfProductDataChart(productId);
+        public IEnumerable<Tuple<string, int, int, int>> GetColorsOfProductDataChart(int productId)
+        {
+            var data = _colorRepository.GetColorsOfProductDataChart(productId);
+
+            if (data == null)
+                return null;
+
+            var finalData = data.GroupBy(c => c.Item1)
+            .Select(c => new Tuple<string, int, int, int>(
+                c.Key,
+                10,
+                c.Sum(g => g.Item3),
+                5))
+            .ToList();
+
+            if (!finalData.Any())
+                return null;
+
+            return finalData;
+        }
 
         public async Task<Color> GetColorByIdAsync(int colorId) =>
             await _colorRepository.GetRealColorByIdAsync(colorId);

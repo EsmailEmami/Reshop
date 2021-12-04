@@ -95,7 +95,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/api/Shopper/GetLastThirtyDayColorProductData/'+ @Model.ProductId + '/'+ @Model.ColorId,
+                url: '/api/Shopper/GetLastThirtyDayShopperProductColorData?shopperProductId=@ViewBag.ShopperProductId&colorId=@Model.ColorId',
             }).done(function(res) {
                 var data = new google.visualization.DataTable();
 
@@ -157,7 +157,7 @@
         function @drawLastMonthBestShoppersPieChart () {
             $.ajax({
                 type: 'GET',
-                url: '/api/Shopper/GetLastThirtyDayBestShoppersOfColorProduct/' + @Model.ProductId + '/'+ @Model.ColorId,
+                url: '/api/Shopper/GetLastThirtyDayBestShoppersOfColorProduct?productId=@Model.ProductId&colorId=@Model.ColorId'
             }).done(function(res) {
 
                 var data = new google.visualization.DataTable();
@@ -200,7 +200,7 @@
         function @drawBestShoppersPieChart () {
             $.ajax({
                 type: 'GET',
-                url: '/api/Shopper/GetBestShoppersOfColorProduct/'  + @Model.ProductId + '/'+ @Model.ColorId,
+                url: '/api/Shopper/GetBestShoppersOfColorProduct?productId=@Model.ProductId&colorId=@Model.ColorId'
             }).done(function(res) {
 
                 var data = new google.visualization.DataTable();

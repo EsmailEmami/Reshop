@@ -61,7 +61,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/api/Shopper/GetLastTwentyDiscountDataOfShopperProductColor/'+ Model.ProductId + '/'+ @Model.ColorId,
+                url: '/api/Shopper/GetLastTwentyDiscountDataOfShopperProductColor?shopperProductId=@ViewBag.ShopperProductId&colorId=@Model.ColorId',
             }).done(function(res) {
                 var data = new google.visualization.DataTable();
 
