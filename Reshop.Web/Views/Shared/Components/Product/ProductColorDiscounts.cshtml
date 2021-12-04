@@ -10,14 +10,14 @@
     @if (ViewBag.SearchText != null)
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
+            <input autocomplete="off" type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
             <button type="button"><i class="far fa-search"></i></button>
         </div>
     }
     else
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال کالا بگرد..." id="filter">
+            <input autocomplete="off" type="text" placeholder="دنبال کالا بگرد..." id="filter">
             <button type="button"><i class="far fa-search"></i></button>
         </div>
     }
@@ -25,17 +25,17 @@
 
 @if (Model.Item1.Any())
 {
-
-    <table class="table responsive table-hover table-striped table-bordered">
-        <thead class="thead-dark">
+    <div class="table-responsive">
+        <table class="table responsive table-hover table-striped table-bordered">
+            <thead class="thead-dark">
             <tr>
                 <th scope="col">تاریخ</th>
                 <th scope="col">تعداد فروش</th>
                 <th scope="col">مبلغ تخفیف داده شده</th>
                 <th scope="col">درآمد</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
 
             @foreach (var item in Model.Item1)
             {
@@ -46,8 +46,12 @@
                     <td>@item.Income.NumSplitter() <span class="toman">تومان</span></td>
                 </tr>
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+
+    </div>
+
+
 
     @if (Model.Item3 > 1)
     {

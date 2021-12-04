@@ -4,19 +4,19 @@
 
 <div class="filter">
     <input type="hidden" name="pageId" id="pageId" value="@Model.Item2" />
-        
+
 
     @if (ViewBag.SearchText != null)
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
+            <input autocomplete="off" type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
             <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
         </div>
     }
     else
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال کالا بگرد..." id="filter">
+            <input autocomplete="off" type="text" placeholder="دنبال کالا بگرد..." id="filter">
             <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
         </div>
     }
@@ -25,65 +25,67 @@
         @switch (ViewBag.SelectedType.ToString())
         {
             case "all":
-            {
-                <option value="all" selected>همه</option>
-                <option value="active">فعال</option>
-                <option value="existed">غیر فعال</option>
-                break;
-            }
+                {
+                    <option value="all" selected>همه</option>
+                    <option value="active">فعال</option>
+                    <option value="existed">غیر فعال</option>
+                    break;
+                }
             case "active":
-            {
-                <option value="all">همه</option>
-                <option value="active" selected>فعال</option>
-                <option value="existed">غیر فعال</option>
-                break;
-            }
+                {
+                    <option value="all">همه</option>
+                    <option value="active" selected>فعال</option>
+                    <option value="existed">غیر فعال</option>
+                    break;
+                }
             case "existed":
-            {
-                <option value="all">همه</option>
-                <option value="active">فعال</option>
-                <option value="existed" selected>غیر فعال</option>
-                break;
-            }
+                {
+                    <option value="all">همه</option>
+                    <option value="active">فعال</option>
+                    <option value="existed" selected>غیر فعال</option>
+                    break;
+                }
         }
-      
+
     </select>
 </div>
 
 @if (Model.Item1.Any())
 {
-    
-<table class="table responsive table-hover table-striped table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">نام کالا</th>
-                <th scope="col">برند</th>
-                <th scope="col">نام رسمی</th>
-                <th scope="col">دستورات</th>
-            </tr>
-        </thead>
-        <tbody>
 
-            @foreach (var item in Model.Item1)
-            {
+    <div class="table-responsive">
+        <table class="table responsive table-hover table-striped table-bordered">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@item.ProductTitle</td>
-                    <td>@item.BrandName</td>
-                    <td>@item.OfficialName</td>
-                    <td>
-                        <a asp-action="EditProduct" asp-route-productId="@item.ProductId"
-                           target="_blank" class="btn btn-warning text-white">
-                            ویرایش
-                        </a>
-                        <a asp-action="ProductDetail" asp-route-productId="@item.ProductId"
-                           target="_blank" class="btn btn-info text-white">
-                            جزئیات
-                        </a>
-                    </td>
+                    <th scope="col">نام کالا</th>
+                    <th scope="col">برند</th>
+                    <th scope="col">نام رسمی</th>
+                    <th scope="col">دستورات</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model.Item1)
+                {
+                    <tr>
+                        <td>@item.ProductTitle</td>
+                        <td>@item.BrandName</td>
+                        <td>@item.OfficialName</td>
+                        <td>
+                            <a asp-action="EditProduct" asp-route-productId="@item.ProductId"
+                       target="_blank" class="btn btn-warning text-white">
+                                ویرایش
+                            </a>
+                            <a asp-action="ProductDetail" asp-route-productId="@item.ProductId"
+                       target="_blank" class="btn btn-info text-white">
+                                جزئیات
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
     @if (Model.Item3 > 1)
     {
@@ -111,7 +113,7 @@
     }
 
 
-    
+
     <script>
         function pagination(pageId) {
             $('#pageId').val(pageId);

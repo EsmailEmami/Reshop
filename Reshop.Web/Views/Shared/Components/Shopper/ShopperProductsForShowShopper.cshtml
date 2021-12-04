@@ -25,14 +25,14 @@
     @if (ViewBag.SearchText != null)
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
+            <input autocomplete="off" type="text" placeholder="دنبال کالا بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
             <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
         </div>
     }
     else
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال کالا بگرد..." id="filter">
+            <input autocomplete="off" type="text" placeholder="دنبال کالا بگرد..." id="filter">
             <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
         </div>
     }

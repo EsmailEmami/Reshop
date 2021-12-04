@@ -685,94 +685,88 @@ ul.pagination-custom {
         padding: 20px 5px 0 5px;
     }
 
-        .right-menu.min ul li {
-            line-height: 57px;
-            max-height: 53px;
-            width: 53px;
+        .right-menu.min ul {
+            width: 315px;
+            overflow: scroll;
         }
 
-            .right-menu.min ul li a,
-            .right-menu.min ul li.dropdown span.name {
-                padding-right: 0;
-                text-align: center;
+            .right-menu.min ul li {
+                line-height: 57px;
+                max-height: 53px;
+                width: 53px;
             }
 
-                .right-menu.min ul li a span,
-                .right-menu.min ul li.dropdown span.name span {
+                .right-menu.min ul li a,
+                .right-menu.min ul li.dropdown span.name {
+                    padding-right: 0;
+                    text-align: center;
+                }
+
+                    .right-menu.min ul li a span,
+                    .right-menu.min ul li.dropdown span.name span {
+                        display: none;
+                    }
+
+                    .right-menu.min ul li a i,
+                    .right-menu.min ul li.dropdown span.name i {
+                        padding-left: 0;
+                        font-size: 22px;
+                    }
+
+
+                /* dropdown */
+
+                .right-menu.min ul li.dropdown::after {
                     display: none;
                 }
 
-                .right-menu.min ul li a i,
-                .right-menu.min ul li.dropdown span.name i {
-                    padding-left: 0;
-                    font-size: 22px;
+                .right-menu.min ul li.dropdown:hover {
+                    height: auto;
                 }
 
-
-            /* dropdown */
-
-            .right-menu.min ul li.dropdown::after {
-                display: none;
-            }
-
-            .right-menu.min ul li.dropdown:hover {
-                height: auto;
-            }
-
-            .right-menu.min ul li.dropdown ul {
-                min-width: 200px;
-                width: auto;
-                display: block;
-                background: #FC5400;
-                border-radius: 8px;
-                position: absolute;
-                visibility: hidden;
-                padding: 5px 10px;
-                top: 0;
-                right: 77px;
-                margin: 0;
-                z-index: 9999;
-                opacity: 0;
-            }
-
-            .right-menu.min ul li.dropdown:hover ul,
-            .right-menu.min ul li.dropdown.active ul {
-                visibility: visible;
-                opacity: 1;
-            }
-
-                .right-menu.min ul li.dropdown:hover ul::after,
-                .right-menu.min ul li.dropdown.active ul::after {
-                    content: "";
+                .right-menu.min ul li.dropdown ul {
+                    min-width: 200px;
+                    width: auto;
+                    display: block;
+                    background: #FC5400;
+                    border-radius: 8px 0 0 8px;
                     position: absolute;
-                    top: 17%;
-                    right: -14px;
-                    border-width: 7px;
-                    border-style: solid;
-                    border-color: transparent transparent transparent #FC5400;
+                    visibility: hidden;
+                    padding: 5px 10px;
+                    top: 0;
+                    right: 54px;
+                    margin: 0;
+                    z-index: 1;
+                    opacity: 0;
+                    overflow: visible;
                 }
 
-            .right-menu.min ul li.dropdown ul li {
-                transform: background ease .3s;
-                width: 100%;
-            }
-
-                .right-menu.min ul li.dropdown ul li a {
-                    text-align: start;
-                    padding-right: 22px;
-                    font-size: 15px;
-                    color: #fff;
+                .right-menu.min ul li.dropdown:hover ul {
+                    visibility: visible;
+                    opacity: 1;
                 }
 
-                    .right-menu.min ul li.dropdown ul li a i {
-                        padding-left: 7px;
+                .right-menu.min ul li.dropdown ul li {
+                    transform: background ease .3s;
+                    width: 100%;
+                }
+
+                    .right-menu.min ul li.dropdown ul li a {
+                        text-align: start;
+                        padding-right: 22px;
+                        font-size: 15px;
                         color: #fff;
                     }
 
-                .right-menu.min ul li.dropdown ul li :hover a,
-                .right-menu.min ul li.dropdown ul li :hover a i {
-                    color: #FC5400;
-                }
+                        .right-menu.min ul li.dropdown ul li a i {
+                            padding-left: 7px;
+                            color: #fff;
+                        }
+
+                    .right-menu.min ul li.dropdown ul li :hover a,
+                    .right-menu.min ul li.dropdown ul li :hover a i {
+                        color: #FC5400;
+                    }
 
 
 /* --------------------------------------------------------------------------------- */
@@ -964,7 +958,6 @@ ul.pagination-custom {
                     width: 100%;
                     display: inline-block;
                     position: relative;
-                    width: 100%;
                     height: 38px;
                     margin-right: 10px;
                     margin-left: 10px;
@@ -2162,5 +2155,27 @@ ul.pagination-custom {
 
         .content-page .content-header {
             margin-right: 0;
+        }
+
+        .content-page .content-main .table-list .filter .select-dropdown {
+            width: 170px;
+        }
+}
+
+
+@media screen and (max-width: 550px) {
+    .content-page .content-main .table-list .filter {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+        .content-page .content-main .table-list .filter .select-dropdown {
+            width: 100%;
+            margin: 10px 0 0 0;
+            max-width: 100%;
+        }
+
+        .content-page .content-main .table-list .filter .filter-input {
+            margin: 0;
         }
 }

@@ -22,14 +22,14 @@
     @if (ViewBag.SearchText != null)
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال مقام بگرد..." value="@ViewBag.SearchText.ToString()" id="filterRole">
+            <input autocomplete="off" type="text" placeholder="دنبال مقام بگرد..." value="@ViewBag.SearchText.ToString()" id="filterRole">
             <button type="button" onclick="changeListRole()"><i class="far fa-search"></i></button>
         </div>
     }
     else
     {
         <div class="filter-input">
-            <input type="text" placeholder="دنبال مقام بگرد..." id="filterRole">
+            <input autocomplete="off" type="text" placeholder="دنبال مقام بگرد..." id="filterRole">
             <button type="button" onclick="changeListRole()"><i class="far fa-search"></i></button>
         </div>
     }
@@ -68,11 +68,6 @@
             </tbody>
         </table>
     </div>
-
-
-
-
-
 
     @if (Model.Item3 > 1)
     {
