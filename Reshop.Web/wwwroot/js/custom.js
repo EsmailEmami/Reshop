@@ -293,10 +293,10 @@ headerFilter.oninput = function () {
 
 function AutoComplete(input, itemsList, form) {
 
-        form.classList.add('active');
-    
+    form.classList.add('active');
 
-   
+
+
     if (itemsList == null) {
         closeAllLists();
         return false;
@@ -308,7 +308,7 @@ function AutoComplete(input, itemsList, form) {
         return false;
     }
 
-    
+
     var currentFocus, autoCompleteList;
     var inputValue = input.value;
 
@@ -422,6 +422,34 @@ function AutoComplete(input, itemsList, form) {
     });
 }
 
+const sliderDropdown = new Swiper('.slider-dropdown-menu', {
+    effect: 'creative',
+    creativeEffect: {
+        prev: {
+            shadow: true,
+            translate: [0, 0, -400],
+        },
+        next: {
+            translate: ['100%', 0, 0]
+        }
+    },
+    spaceBetween: 30,
+    centeredSlides: true,
+    loop: true,
+    autoplay: {
+        delay: 2500,
+        disableOnInteraction: false,
+    },
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+        dynamicBullets: true,
+    },
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+});
 
 $(function () {
     let modal = document.getElementById('modal');

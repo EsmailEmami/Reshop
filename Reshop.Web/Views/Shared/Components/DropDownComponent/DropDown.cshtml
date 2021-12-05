@@ -3,10 +3,6 @@
 <nav class="main-nav d-none d-lg-block text-center mx-auto">
     <ul>
         <li><a href="/">خانه</a></li>
-        <li><a asp-controller="Shopper" asp-action="AddShopper">افزودن فروشنده</a></li>
-
-        <li><a asp-area="ManagerPanel" asp-controller="AdminPanel" asp-action="Dashboard">مدیریت کل</a></li>
-
         @foreach (var item in Model)
         {
             if (item.ChildCategories.Any())

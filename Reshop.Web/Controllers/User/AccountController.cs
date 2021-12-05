@@ -37,8 +37,8 @@ namespace Reshop.Web.Controllers.User
         private readonly ICommentService _commentService;
         private readonly IOptions<GoogleReCaptchaKey> _captchaKey;
         private readonly IDataProtector _dataProtector;
-
-        public AccountController(IUserService userService, ICartService cartService, IProductService productService, IOriginService stateService, IOptions<GoogleReCaptchaKey> captchaKey, IDataProtectionProvider dataProtectionProvider, ICommentService commentService)
+        private readonly IPermissionService _permissionService;
+        public AccountController(IUserService userService, ICartService cartService, IProductService productService, IOriginService stateService, IOptions<GoogleReCaptchaKey> captchaKey, IDataProtectionProvider dataProtectionProvider, ICommentService commentService, IPermissionService permissionService)
         {
             _userService = userService;
             _cartService = cartService;
@@ -46,6 +46,7 @@ namespace Reshop.Web.Controllers.User
             _originService = stateService;
             _captchaKey = captchaKey;
             _commentService = commentService;
+            _permissionService = permissionService;
             _dataProtector = dataProtectionProvider.CreateProtector("Reshop.Web.Controllers.User.AccountController",
                 new string[] { "AccountController" });
         }
@@ -247,14 +248,14 @@ namespace Reshop.Web.Controllers.User
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            if (await _permissionService.PermissionCheckerAsync(userId,"Shopper"))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
             var user = await _userService.GetUserDataForEditAsync(userId);
 
             if (user is null)
-            {
-                return NotFound();
-            }
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
-            user.UserId = _dataProtector.Protect(user.UserId);
 
             return View(user);
         }
@@ -266,18 +267,12 @@ namespace Reshop.Web.Controllers.User
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            try
-            {
-                model.UserId = _dataProtector.Unprotect(model.UserId);
-            }
-            catch
-            {
-                ModelState.AddModelError("", "هنگام ویرایش اطلاعات به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
-            }
+            if (await _permissionService.PermissionCheckerAsync(userId, "Shopper"))
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
-            var user = await _userService.GetUserByIdAsync(model.UserId);
+            var user = await _userService.GetUserByIdAsync(userId);
 
             if (user is null)
             {
@@ -286,7 +281,6 @@ namespace Reshop.Web.Controllers.User
             }
 
             user.FullName = model.FullName;
-            user.PhoneNumber = model.PhoneNumber;
             user.NationalCode = model.NationalCode;
             user.Email = model.Email;
 

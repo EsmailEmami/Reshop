@@ -81,7 +81,6 @@
             });
 
     @{
-
         string drawLastDiscountColumnChartData = "drawLastDiscountColumnChartData" + Model.ColorId.ToString();
     }
 
@@ -92,7 +91,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '/api/Shopper/GetLastTwentyDiscountDataOfShopperProductColor/'+ @Model.ProductId + '/'+ @Model.ColorId,
+                url: '/api/Shopper/GetLastTwentyDiscountDataOfShopperProductColor?productId=@Model.ProductId&colorId=@Model.ColorId'
             }).done(function(res) {
                 var data = new google.visualization.DataTable();
 

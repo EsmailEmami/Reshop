@@ -43,10 +43,8 @@ namespace Reshop.Infrastructure.Repository.User
             await _context.Users.Where(c => c.UserId == userId)
                 .Select(c => new EditUserViewModel()
                 {
-                    UserId = c.UserId,
                     FullName = c.FullName,
                     Email = c.Email,
-                    PhoneNumber = c.PhoneNumber,
                     NationalCode = c.NationalCode,
                 }).SingleOrDefaultAsync();
 

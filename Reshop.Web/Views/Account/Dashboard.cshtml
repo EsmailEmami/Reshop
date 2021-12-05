@@ -28,10 +28,6 @@
                     <ul>
                         <li class="active"><a asp-action="Dashboard">اطلاعات شخصی</a> </li>
                         <li><a asp-action="Address">آدرس</a> </li>
-                        @if (await permissionService.PermissionCheckerAsync(Model.UserId, "Shopper,FullManager"))
-                        {
-                            <li><a asp-action="Address">اطلاعات مغازه</a> </li>
-                        }
                     </ul>
                 </div>
             </div>
@@ -42,7 +38,6 @@
                             <div class="user-item-data">
                                 <div>
                                     <h5>نام و نام خانوادگی</h5>
-                                    <label><i class="far fa-edit"></i></label>
                                 </div>
 
                                 <p>@Model.FullName</p>
@@ -53,9 +48,7 @@
                             <div class="user-item-data">
                                 <div>
                                     <h5>شماره تلفن</h5>
-                                    <label><i class="far fa-edit"></i></label>
                                 </div>
-
                                 <p>@Model.PhoneNumber</p>
                             </div>
                         </div>
@@ -63,7 +56,6 @@
                             <div class="user-item-data">
                                 <div>
                                     <h5>ایمیل</h5>
-                                    <label><i class="far fa-edit"></i></label>
                                 </div>
 
                                 <p>@Model.Email</p>
@@ -73,7 +65,6 @@
                             <div class="user-item-data">
                                 <div>
                                     <h5>کد ملی</h5>
-                                    <label><i class="far fa-edit"></i></label>
                                 </div>
 
                                 <p>@Model.NationalCode</p>
@@ -82,34 +73,39 @@
 
 
                     </div>
-                    
-                    
-                    
-                    <div class="mt-5">
-                        <a class="btn btn-success text-white"
+
+
+
+                    @if (!await permissionService.PermissionCheckerAsync(Model.UserId, PermissionsConstants.Shopper))
+                    {
+                        <div class="mt-5">
+                            <a class="btn btn-success text-white"
                            onclick="ShowModal('@Url.Action("EditUserInformation", "Account", null, Context.Request.Scheme)','ویرایش اطلاعات')">
-                            ویرایش اطلاعات
-                        </a>
-                    </div>
+                                ویرایش اطلاعات
+                            </a>
+                        </div>
+                    }
                 </div>
 
             </div>
 
 
         </div>
-        
-        
-        
+
+
+
     </div>
 </div>
 
 
 @section AfterMainOptions
 {
-    <partial name="_Modal" />
+<partial name="_Modal" />
 
 }
 
 @section Scripts{
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

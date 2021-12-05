@@ -9,7 +9,7 @@ namespace Reshop.Domain.DTOs.User
 {
     public class EditUserViewModel
     {
-        public string UserId { get; set; }
+        //public string UserId { get; set; }
 
         [Display(Name = "نام و نام خانوادگی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -21,11 +21,11 @@ namespace Reshop.Domain.DTOs.User
         [EmailAddress(ErrorMessage = "ایمیل وارد شده معتبر نمی باشد")]
         public string? Email { get; set; }
 
-        [Display(Name = "شماره تلفن")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        [DataType(DataType.PhoneNumber)]
-        public string PhoneNumber { get; set; }
+        //[Display(Name = "شماره تلفن")]
+        //[Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        //[MaxLength(11, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        //[DataType(DataType.PhoneNumber)]
+        //public string PhoneNumber { get; set; }
 
         [Display(Name = "کد ملی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]

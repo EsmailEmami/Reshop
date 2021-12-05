@@ -51,5 +51,8 @@ namespace Reshop.Application.Constants
         public const string AddRole = "AddRole";
         public const string EditRole = "EditRole";
         public const string DeleteRole = "DeleteRole";
-    }
+
+        // shopper
+        public const string Shopper = "Shopper";
+   }
 }

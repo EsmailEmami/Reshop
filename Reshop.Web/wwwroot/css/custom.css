@@ -2864,7 +2864,7 @@ ul.breadcrumb {
     }
 
     .user-item-data > div:first-child a {
-        font-size: 25px;
+        font-size: 18px;
         margin: 0;
     }
 
@@ -4849,7 +4849,7 @@ ul.breadcrumb {
         padding: 0 10px;
         position: relative;
         max-height: 0;
-        overflow-y: hidden;
+        overflow-y: scroll;
         overflow-x: hidden;
         transition: max-height 0.2s ease-out;
     }

@@ -104,35 +104,6 @@
         },
     });
 
-    const sliderDropdown = new Swiper('.slider-dropdown-menu', {
-        effect: 'creative',
-        creativeEffect: {
-            prev: {
-                shadow: true,
-                translate: [0, 0, -400],
-            },
-            next: {
-                translate: ['100%', 0, 0]
-            }
-        },
-        spaceBetween: 30,
-        centeredSlides: true,
-        loop: true,
-        autoplay: {
-            delay: 2500,
-            disableOnInteraction: false,
-        },
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-            dynamicBullets: true,
-        },
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-    });
-
     const products = new Swiper('.products-swiper', {
         spaceBetween: 30,
         centeredSlides: true,

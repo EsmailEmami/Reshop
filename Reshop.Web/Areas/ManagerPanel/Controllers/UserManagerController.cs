@@ -229,8 +229,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 FullName = userData.FullName,
                 Email = userData.Email,
                 NationalCode = userData.NationalCode,
-                PhoneNumber = userData.PhoneNumber,
-                UserId = userData.UserId,
+                UserId = userId,
                 StoreTitles = _shopperService.GetStoreTitles(),
                 States = _originService.GetStates()
             };
@@ -268,7 +267,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             // edit user data
             user.FullName = model.FullName;
-            user.PhoneNumber = model.PhoneNumber;
             user.Email = model.Email;
             user.NationalCode = model.NationalCode;
 

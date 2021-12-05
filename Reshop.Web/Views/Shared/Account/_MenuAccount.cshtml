@@ -17,9 +17,15 @@
         <a asp-action="UnFinallyOrders" class="@(Model == AccountMenuActivePage.Order?"active":"")"><i class="far fa-calendar-week"></i> سفارش های من</a>
         <a asp-action="FavoriteProducts" class="@(Model == AccountMenuActivePage.FavoriteProducts?"active":"")"><i class="far fa-heart"></i> علاقه مندی ها</a>
         <a asp-action="Questions" class="@(Model == AccountMenuActivePage.Question_v_Comment?"active":"")"><i class="far fa-comments-alt"></i> سوالات و نظرات</a>
+
+        @if (await permissionService.PermissionCheckerAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), PermissionsConstants.Shopper))
+        {
             <a asp-controller="shopper" asp-action="ManageProducts" class="@(Model == AccountMenuActivePage.ShopperProduct?"active":"")"><i class="far fa-comments-alt"></i>مدیریت محصولات</a>
-        
-            <a asp-area="ManagerPanel" asp-controller="AdminPanel" asp-action="Dashboard" class="@(Model == AccountMenuActivePage.FullManage?"active":"")"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
-        
+        }
+
+      @if (await permissionService.PermissionCheckerAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), PermissionsConstants.AdminPanel))
+      {
+          <a asp-area="ManagerPanel" asp-controller="AdminPanel" asp-action="Dashboard" class="@(Model == AccountMenuActivePage.FullManage?"active":"")"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
+      }
     </div>
 </div>
