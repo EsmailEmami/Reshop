@@ -246,7 +246,11 @@ namespace Reshop.Application.Services.Product
                 return null;
             }
 
-            return await _productRepository.GetProductDetailForShopperAsync(shopperProductId);
+            var productDetail = await _productRepository.GetProductDetailForShopperAsync(shopperProductId);
+            productDetail.ProductScore = await _commentRepository.GetCommentsScoreOfProductDetailAsync(productDetail.ProductId);
+
+
+            return productDetail;
         }
 
         public async Task<ProductDetailForShow> GetProductDetailForShopperAsync(string shopperProductId) =>
@@ -254,10 +258,12 @@ namespace Reshop.Application.Services.Product
 
         public async Task<ProductDetailForShow> GetProductDetailForAdminAsync(int productId)
         {
-            var model = await _productRepository.GetProductDetailForAdminAsync(productId);
-            model.Colors = _colorRepository.GetProductColors(model.ProductId);
+            var productDetail = await _productRepository.GetProductDetailForAdminAsync(productId);
+            productDetail.Colors = _colorRepository.GetProductColors(productDetail.ProductId);
+            productDetail.ProductScore = await _commentRepository.GetCommentsScoreOfProductDetailAsync(productDetail.ProductId);
 
-            return model;
+
+            return productDetail;
         }
 
         public async Task<ProductDataForCompareViewModel> GetProductDataForCompareAsync(int productId) =>

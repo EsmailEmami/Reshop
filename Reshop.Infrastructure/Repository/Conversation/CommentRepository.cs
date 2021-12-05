@@ -2,14 +2,13 @@
 using Reshop.Application.Calculate;
 using Reshop.Domain.DTOs.CommentAndQuestion;
 using Reshop.Domain.DTOs.User;
-using Reshop.Domain.Entities.User;
+using Reshop.Domain.Entities.Comment;
 using Reshop.Domain.Interfaces.Conversation;
 using Reshop.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Domain.Entities.Comment;
 
 namespace Reshop.Infrastructure.Repository.Conversation
 {
@@ -69,6 +68,22 @@ namespace Reshop.Infrastructure.Repository.Conversation
                 ProductShortKey = c.ShopperProductColor.ShortKey,
                 FeedBacks = c.CommentFeedBacks.Select(f => f.Type)
             });
+        }
+
+        public async Task<double> GetCommentsScoreOfProductDetailAsync(int productId)
+        {
+            IQueryable<Comment> comments = _context.Products
+                .Where(c => c.ProductId == productId)
+                .SelectMany(c => c.Comments);
+
+            int suggestedCommentsCounts = await comments.Where(c => c.OverallScore >= 50).CountAsync();
+            int allCommentsCount = await comments.CountAsync();
+
+            int commentsPercent = CommentCalculator.CalculatePercentOfTwoNumber(suggestedCommentsCounts, allCommentsCount);
+
+            double commentsScore = CommentCalculator.CommentScore(commentsPercent);
+
+            return commentsScore;
         }
 
         public async Task<CommentsOfProductDetailViewModel> GetCommentsOfProductDetailAsync(int productId)
@@ -171,7 +186,7 @@ namespace Reshop.Infrastructure.Repository.Conversation
         public void UpdateCommentFeedBack(CommentFeedback commentFeedback) =>
             _context.CommentFeedBacks.Update(commentFeedback);
 
-        public async Task SaveChangesAsync() => 
+        public async Task SaveChangesAsync() =>
             await _context.SaveChangesAsync();
     }
 }

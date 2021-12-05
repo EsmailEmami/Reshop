@@ -216,7 +216,7 @@ else
     function drawLastMonthBestShoppersPieChart() {
         $.ajax({
             type: 'GET',
-            url: '/api/Shopper/GetLastThirtyDayBestShoppersOfProduct/' + @Model.ProductId,
+            url: '/api/Shopper/GetLastThirtyDayBestShoppersOfProduct?ProductId=@Model.ProductId',
         }).done(function(res) {
 
             var data = new google.visualization.DataTable();
@@ -260,7 +260,7 @@ else
 
         $.ajax({
             type: 'GET',
-            url: '/api/Shopper/GetBestShoppersOfProduct/' + @Model.ProductId,
+            url: '/api/Shopper/GetBestShoppersOfProduct?ProductId=@Model.ProductId',
         }).done(function(res) {
 
             var data = new google.visualization.DataTable();

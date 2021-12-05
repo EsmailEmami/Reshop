@@ -140,9 +140,9 @@ namespace Reshop.Web.API.Controllers
         }
 
         //discount
-        [HttpGet("GetLastTwentyDiscountDataOfProductColor/{productId}/{colorId}")]
+        [HttpGet("[action]")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public IActionResult GetLastTwentyDiscountDataOfProductColorChart(int productId, int colorId)
+        public IActionResult GetLastTwentyDiscountDataOfProductColor(int productId, int colorId)
         {
             var res = _discountService.GetLastTwentyDiscountDataOfProductColorChart(productId, colorId);
 

@@ -11,6 +11,7 @@ namespace Reshop.Domain.Interfaces.Conversation
     {
         Task<int> GetCommentsCountOfProductWithTypeAsync(int productId, string type = "all");
         IEnumerable<ProductCommentsForShow> GetProductCommentsWithPagination(int productId, int skip = 1, int take = 30, string type = "news");
+        Task<double> GetCommentsScoreOfProductDetailAsync(int productId);
         Task<CommentsOfProductDetailViewModel> GetCommentsOfProductDetailAsync(int productId);
         Task AddCommentAsync(Comment comment);
 
