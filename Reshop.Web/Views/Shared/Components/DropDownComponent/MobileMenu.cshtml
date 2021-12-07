@@ -1,0 +1,143 @@
+﻿@model IEnumerable<CategoriesMobileMenuViewModel>
+
+
+<nav class="nav-drill">
+
+    <button class="close-nav-menu">
+        <i class="fas fa-times"></i>
+    </button>
+
+    <div class="nav-header">
+        <a class="nav-logo" href="#">Reshop</a>
+    </div>
+
+    <div id="nav-slider" style="position: relative;">
+
+        <!-- search box -->
+        <form autocomplete="off" action="/Products/All" class="nav-search">
+            <input type="text" name="search" placeholder="دنبال چی میگردی...">
+            <button type="submit"><i class="far fa-search"></i></button>
+        </form>
+
+        <!-- website categories -->
+        <div class="nav-title">
+            دسته بندی ها
+        </div>
+
+        <ul class="nav-items">
+
+            @foreach (var category in Model)
+            {
+                if (category.ChildCategories.Any())
+                {
+                    <!-- category -->
+                    <li class="nav-item nav-expand">
+                        <div class="nav-expand-link">
+                            <a class="nav-link" asp-controller="Product"
+                       asp-action="ProductsOfCategory"
+                       asp-route-categoryId="@category.CategoryId"
+                       asp-route-categoryName="@category.CategoryTitle.Replace(" ","-")">
+                                @category.CategoryTitle
+                            </a>
+                            <span class="nav-next"></span>
+                        </div>
+
+                        <!-- part of child categories -->
+                <ul class="nav-items nav-expand-content">
+                            @foreach (var childCategory in category.ChildCategories)
+                            {
+                                @if (childCategory.TopBrands.Any())
+                                {
+                                    <li class="nav-item nav-expand">
+                                        <div class="nav-expand-link">
+                                            <a class="nav-link" asp-controller="Product" asp-action="ProductsOfChildCategory"
+                               asp-route-childCategoryId="@childCategory.ChildCategoryId"
+                               asp-route-childCategoryName="@childCategory.ChildCategoryName.Replace(" ", "-")">
+                                                @childCategory.ChildCategoryName
+                                            </a>
+                                            <span class="nav-next"></span>
+                                        </div>
+                                        <ul class="nav-items nav-expand-content">
+                                            @foreach (var brand in childCategory.TopBrands)
+                                            {
+                                                <li class="nav-item">
+                                                    <a class="nav-link" asp-controller="Product" asp-action="ProductsOfChildCategory"
+                                   asp-route-childCategoryId="@childCategory.ChildCategoryId"
+                                   asp-route-childCategoryName="@childCategory.ChildCategoryName.Replace(" ","-")"
+                                   asp-route-brands="@brand.Item1">@brand.Item2 (@brand.Item3.NumSplitter())</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-controller="Product" asp-action="ProductsOfChildCategory"
+                           asp-route-childCategoryId="@childCategory.ChildCategoryId"
+                           asp-route-childCategoryName="@childCategory.ChildCategoryName.Replace(" ", "-")">
+                                            @childCategory.ChildCategoryName
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Product"
+                   asp-action="ProductsOfCategory"
+                   asp-route-categoryId="@category.CategoryId"
+                   asp-route-categoryName="@category.CategoryTitle.Replace(" ","-")">
+                            @category.CategoryTitle
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+
+        <!-- static links -->
+        <div class="nav-title">
+            منوی دسترسی
+        </div>
+
+        <ul class="nav-items">
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Product" asp-action="GetProducts" asp-route-type="All">
+                    آخرین کالا ها
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    بلاگ
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    قوانین سایت
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    تماس با ما
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    درباره ما
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    شرایط بازگشت کالا
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</nav>
+<div class="mobile-nav-overly"></div>

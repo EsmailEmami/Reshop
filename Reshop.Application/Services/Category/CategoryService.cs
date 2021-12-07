@@ -35,6 +35,9 @@ namespace Reshop.Application.Services.Category
         public IEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown() =>
             _categoryRepository.GetCategoriesDropdown();
 
+        public IEnumerable<CategoriesMobileMenuViewModel> GetCategoriesMobileMenu() =>
+            _categoryRepository.GetCategoriesMobileMenu();
+
         public async Task<Domain.Entities.Category.Category> GetCategoryByIdAsync(int categoryId)
         {
             return await _categoryRepository.GetCategoryByIdAsync(categoryId);

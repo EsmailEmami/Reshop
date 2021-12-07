@@ -14,6 +14,7 @@ namespace Reshop.Application.Interfaces.Category
         IEnumerable<ChildCategory> GetChildCategories();
 
         IEnumerable<CategoriesDropdownViewModel> GetCategoriesDropdown();
+        IEnumerable<CategoriesMobileMenuViewModel> GetCategoriesMobileMenu();
 
         // get by id
         Task<Domain.Entities.Category.Category> GetCategoryByIdAsync(int categoryId);

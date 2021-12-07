@@ -63,6 +63,33 @@ namespace Reshop.Infrastructure.Repository.Category
                     })
                 });
 
+        public IEnumerable<CategoriesMobileMenuViewModel> GetCategoriesMobileMenu()
+            =>
+                _context.Categories
+                    .Where(c => c.IsActive)
+                    .Select(c => new CategoriesMobileMenuViewModel()
+                    {
+                        CategoryId = c.CategoryId,
+                        CategoryTitle = c.CategoryTitle,
+                        ChildCategories = c.ChildCategories
+                            .Where(ch => ch.IsActive && ch.Products.Any())
+                            .Select(ch => new ChildCategoriesOfCategoryForDropDown()
+                            {
+                                ChildCategoryId = ch.ChildCategoryId,
+                                ChildCategoryName = ch.ChildCategoryTitle,
+                                TopBrands = ch.BrandToChildCategories
+                                    .Select(b => b.Brand)
+                                    .OrderByDescending(p => p.OfficialBrandProducts
+                                        .SelectMany(b => b.Products).Count(b => b.IsActive && b.ShopperProducts.Any(i => i.IsActive && i.ShopperProductColors.Any(co => co.IsActive))))
+                                    .Take(5)
+                                    .Select(p => new Tuple<int, string, int>(
+                                        p.BrandId,
+                                        p.BrandName,
+                                        p.OfficialBrandProducts
+                                            .SelectMany(b => b.Products).Count(b => b.IsActive && b.ShopperProducts.Any(i => i.IsActive && i.ShopperProductColors.Any(co => co.IsActive)))))
+                            })
+                    });
+
 
         public async Task<Domain.Entities.Category.Category> GetCategoryByIdAsync(int categoryId)
         {

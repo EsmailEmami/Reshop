@@ -1,36 +1,77 @@
-﻿if ($('.main-nav').length) {
-    var $mobile_nav = $('.main-nav').clone().prop({
-        class: 'mobile-nav d-lg-none'
-    });
-    $('body').append($mobile_nav);
-    $('body').prepend('<button type="button" class="mobile-nav-toggle d-lg-none"><i class="fa fa-bars"></i></button>');
-    $('body').append('<div class="mobile-nav-overly"></div>');
+﻿const navExpand = [].slice.call(document.querySelectorAll('.nav-expand'));
 
-    $(document).on('click', '.mobile-nav-toggle', function (e) {
-        $('body').toggleClass('mobile-nav-active');
-        $('.mobile-nav-toggle i').toggleClass('fa-times fa-bars');
-        $('.mobile-nav-overly').toggle();
+const navSlider = document.querySelector('#nav-slider');
+
+const backLink = `
+<li class="nav-item">
+	<a class="nav-link nav-back-link" href="javascript:;">
+		بازگشت
+	</a>
+</li>`;
+
+navExpand.forEach(item => {
+
+    var nextPageItems = item.querySelector('.nav-expand-content');
+
+    // append back link to top of the items
+    nextPageItems.insertAdjacentHTML('afterbegin', backLink);
+
+    // nav next on click 
+    item.querySelector('.nav-next').addEventListener('click', () => {
+        item.classList.add('active');
+        nextPageItems.style.height = (navSlider.clientHeight + 75) + 'px';
     });
 
-    $(document).on('click', '.mobile-nav li.drop-down > a', function (e) {
-        e.preventDefault();
-        $(this).parent().toggleClass('active');
+    // nav back on click
+    item.querySelector('.nav-back-link').addEventListener('click', () => {
+        item.classList.remove('active');
     });
+}); // ---------------------------------------
+// not-so-important stuff starts here
 
-    $(document).click(function (e) {
-        var container = $(".mobile-nav, .mobile-nav-toggle");
-        if (!container.is(e.target) && container.has(e.target).length === 0) {
-            if ($('body').hasClass('mobile-nav-active')) {
-                $('body').removeClass('mobile-nav-active');
-                $('.mobile-nav-toggle i').toggleClass('fa-times fa-bars');
-                $('.mobile-nav-overly').fadeOut();
-            }
-        }
+const ham = document.getElementById('ham');
+const navOverly = document.querySelector('.mobile-nav-overly');
+const closeNav = document.querySelector('.close-nav-menu');
+
+ham.addEventListener('click', function () {
+    var nav = document.querySelector('.nav-drill');
+
+    navOverly.style.display = "block";
+
+    if (document.body.classList.contains('nav-is-toggled')) {
+        navOverly.removeAttribute("style");
+        document.body.classList.remove('nav-is-toggled');
+        navExpand.forEach(item => {
+            item.classList.remove('active');
+        });
+    } else {
+
+        document.body.classList.add('nav-is-toggled');
+    }
+});
+
+
+
+// close nav
+closeNav.onclick = function () {
+    navOverly.removeAttribute("style");
+    document.body.classList.remove('nav-is-toggled');
+    navExpand.forEach(item => {
+        item.classList.remove('active');
     });
-} else if ($(".mobile-nav, .mobile-nav-toggle").length) {
-    $(".mobile-nav, .mobile-nav-toggle").hide();
-    $("body").prepend($mobile_nav);
-    $('body').prepend('<div class="mobile-nav-overly"></div>');
+}
+
+// close nav on click overly
+document.body.onclick = function (event) {
+    if (event.target == navOverly) {
+        navOverly.removeAttribute("style");
+
+        document.body.classList.remove('nav-is-toggled');
+
+        navExpand.forEach(item => {
+            item.classList.remove('active');
+        });
+    }
 }
 
 function imageZoom(imgID, resultID) {
