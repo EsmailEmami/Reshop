@@ -792,8 +792,26 @@ namespace Reshop.Application.Services.Shopper
             return finalData;
         }
 
-        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId) =>
-            _shopperRepository.GetLastThirtyDayColorProductDataChart(shopperProductColorId);
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId)
+        {
+            var data = _shopperRepository.GetLastThirtyDayColorProductDataChart(shopperProductColorId);
+
+            if (data is null)
+                return null;
+
+            var finalData = data.GroupBy(c => c.Date)
+                .Select(c => new LastThirtyDayProductDataChart()
+                {
+                    Date = c.Key,
+                    SellCount = c.Sum(g => g.SellCount),
+                    ViewCount = 10
+                }).ToList();
+
+            if (!finalData.Any())
+                return null;
+
+            return finalData;
+        }
 
         public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayShopperDataChartAsync(string shopperId)
         {
