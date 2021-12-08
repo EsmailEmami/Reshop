@@ -56,7 +56,7 @@
     @await Component.InvokeAsync("MainPicsComponent")
 </cache>
 
-<cache expires-after="TimeSpan.FromMinutes(15)">
+@*<cache expires-after="TimeSpan.FromMinutes(15)">*@
     @await Component.InvokeAsync("ProductsForShowComponent",new
     {
     type = ProductTypes.All.ToString(),
@@ -68,7 +68,7 @@
     type = ProductTypes.All.ToString(),
     sortBy = SortTypes.MostSale.ToString()
     })
-</cache>
+@*</cache>*@
 
 
 

@@ -34,14 +34,14 @@
                 @{
                     decimal discountPrice = 0;
 
-                    @if (item.LastDiscount != null && item.LastDiscount.Item2 > DateTime.Now)
+                    @if (item.LastDiscount != null)
                     {
                         discountPrice =  CartCalculator.CalculatePrice(item.ProductPrice, Convert.ToByte(((item.LastDiscount.Item2 > DateTime.Now) ? item.LastDiscount.Item1 : 0)));
                     }
                 }
 
 
-                @if (item.LastDiscount != null && item.LastDiscount.Item2 > DateTime.Now)
+                @if (item.LastDiscount != null)
                 {
                     <div class="discount">
                         <span>@item.LastDiscount.Item1%</span>

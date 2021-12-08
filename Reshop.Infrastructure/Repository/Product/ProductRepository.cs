@@ -118,14 +118,13 @@ namespace Reshop.Infrastructure.Repository.Product
 
             products = products.Skip(skip).Take(take);
 
-
             return await products.Select(c => new ProductViewModel()
             {
                 ProductTitle = c.ShopperProduct.Product.ProductTitle,
                 Image = c.ShopperProduct.Product.ProductGalleries
                     .First(i => i.OrderBy == 1).ImageName,
                 ProductPrice = c.Price,
-                LastDiscount = c.Discounts.OrderByDescending(s => s.EndDate)
+                LastDiscount = c.Discounts.Where(d => d.StartDate < DateTime.Now && d.EndDate > DateTime.Now)
                     .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
                     .FirstOrDefault(),
                 ShopperProductColorId = c.ShopperProductColorId,
@@ -244,9 +243,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 Image = c.ShopperProduct.Product.ProductGalleries
                     .First(i => i.OrderBy == 1).ImageName,
                 ProductPrice = c.Price,
-                LastDiscount = c.Discounts.OrderByDescending(s => s.EndDate)
-                   .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
-                   .FirstOrDefault(),
+                LastDiscount = c.Discounts.Where(d => d.StartDate < DateTime.Now && d.EndDate > DateTime.Now)
+                    .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
+                    .FirstOrDefault(),
                 ShopperProductColorId = c.ShopperProductColorId,
                 ProductId = c.ShopperProduct.ProductId
             });
@@ -318,7 +317,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 Image = c.ShopperProduct.Product.ProductGalleries
                     .First(i => i.OrderBy == 1).ImageName,
                 ProductPrice = c.Price,
-                LastDiscount = c.Discounts.OrderByDescending(s => s.EndDate)
+                LastDiscount = c.Discounts.Where(d => d.StartDate < DateTime.Now && d.EndDate > DateTime.Now)
                     .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
                     .FirstOrDefault(),
                 ShopperProductColorId = c.ShopperProductColorId,
@@ -383,7 +382,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 Image = c.ShopperProduct.Product.ProductGalleries
                     .First(i => i.OrderBy == 1).ImageName,
                 ProductPrice = c.Price,
-                LastDiscount = c.Discounts.OrderByDescending(s => s.EndDate)
+                LastDiscount = c.Discounts.Where(d => d.StartDate < DateTime.Now && d.EndDate > DateTime.Now)
                     .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
                     .FirstOrDefault(),
                 ShopperProductColorId = c.ShopperProductColorId,
@@ -456,7 +455,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 Image = c.ShopperProduct.Product.ProductGalleries
                     .First(i => i.OrderBy == 1).ImageName,
                 ProductPrice = c.Price,
-                LastDiscount = c.Discounts.OrderByDescending(s => s.EndDate)
+                LastDiscount = c.Discounts.Where(d => d.StartDate < DateTime.Now && d.EndDate > DateTime.Now)
                     .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
                     .FirstOrDefault(),
                 ShopperProductColorId = c.ShopperProductColorId,
@@ -841,8 +840,9 @@ namespace Reshop.Infrastructure.Repository.Product
                         Type = c.ShopperProduct.Product.ProductType,
                         Brand = new Tuple<int, string>(c.ShopperProduct.Product.OfficialBrandProduct.BrandId,
                             c.ShopperProduct.Product.OfficialBrandProduct.Brand.BrandName),
-                        LastDiscount = c.Discounts.OrderByDescending(e => e.EndDate)
-                            .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate)).FirstOrDefault(),
+                        LastDiscount = c.Discounts.Where(d => d.StartDate < DateTime.Now && d.EndDate > DateTime.Now)
+                            .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
+                            .FirstOrDefault(),
                     }).SingleOrDefaultAsync();
 
 
@@ -990,8 +990,9 @@ namespace Reshop.Infrastructure.Repository.Product
                     SelectedColor = c.ColorId,
                     Price = c.Price,
                     ProductTitle = c.ShopperProduct.Product.ProductTitle,
-                    LastDiscount = c.Discounts.OrderByDescending(c => c.EndDate)
-                        .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate)).FirstOrDefault(),
+                    LastDiscount = c.Discounts.Where(d => d.StartDate < DateTime.Now && d.EndDate > DateTime.Now)
+                        .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
+                        .FirstOrDefault(),
                 }).SingleOrDefaultAsync();
 
         public Task<int> GetProductIdOfShopperProductColorIdAsync(string shopperProductColorId) =>
@@ -1334,10 +1335,9 @@ namespace Reshop.Infrastructure.Repository.Product
             return favoriteProducts.Select(c => new ProductViewModel()
             {
                 ProductTitle = c.ShopperProduct.Product.ProductTitle,
-                LastDiscount = c.Discounts
-                    .OrderByDescending(e => e.EndDate)
-                   .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
-                   .FirstOrDefault(),
+                LastDiscount = c.Discounts.Where(d => d.StartDate < DateTime.Now && d.EndDate > DateTime.Now)
+                    .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
+                    .FirstOrDefault(),
                 ProductPrice = c.Price,
                 ShopperProductColorId = c.ShopperProductColorId,
                 ProductId = c.ShopperProduct.ProductId,
