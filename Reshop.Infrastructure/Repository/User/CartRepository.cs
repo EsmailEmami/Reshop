@@ -84,11 +84,11 @@ namespace Reshop.Infrastructure.Repository.User
                     ColorName = o.ShopperProductColor.Color.ColorName,
                     TrackingCode = o.TrackingCode,
                     Discount = o.ShopperProductColor.Discounts
-                        .OrderByDescending(c => c.EndDate)
-                        .Select(d => new Tuple<byte, DateTime>(d.DiscountPercent, d.EndDate))
+                        .Where(d => d.StartDate < DateTime.Now && d.EndDate > DateTime.Now)
+                        .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
                         .FirstOrDefault(),
                     ProductTitle = o.ShopperProductColor.ShopperProduct.Product.ProductTitle,
-                    ProductImg = o.ShopperProductColor.ShopperProduct.Product.ProductGalleries.OrderBy(g=> g.OrderBy).First().ImageName,
+                    ProductImg = o.ShopperProductColor.ShopperProduct.Product.ProductGalleries.OrderBy(g => g.OrderBy).First().ImageName,
                     Warranty = o.ShopperProductColor.ShopperProduct.Warranty,
                     ShopperStoreName = o.ShopperProductColor.ShopperProduct.Shopper.StoreName
                 });
@@ -159,7 +159,7 @@ namespace Reshop.Infrastructure.Repository.User
         public async Task<string> GetOrderIdByTrackingCodeAsync(string trackingCode) =>
             await _context.Orders
                 .Where(c => c.TrackingCode == trackingCode)
-                .Select(c=> c.OrderId)
+                .Select(c => c.OrderId)
                 .SingleOrDefaultAsync();
 
         public async Task<string> GetOrderDetailIdByTrackingCodeAsync(string trackingCode) =>

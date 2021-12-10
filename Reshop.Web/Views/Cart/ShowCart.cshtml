@@ -89,7 +89,7 @@ else
                                 @{
                                     byte discount = 0;
 
-                                    if (item.Discount != null && item.Discount.Item2 > DateTime.Now)
+                                    if (item.Discount != null)
                                     {
                                         discount = item.Discount.Item1;
                                     }
@@ -119,7 +119,7 @@ else
                         decimal productsFullPrice = Model.Select(c => c.ProductPrice * c.ProductsCount).Sum();
 
 
-                        decimal productsDiscount = Model.Select(c => ((c.ProductPrice * c.ProductsCount) * (byte)((c.Discount != null && c.Discount.Item2 > DateTime.Now) ? c.Discount.Item1 : 0)) / 100).Sum();
+                        decimal productsDiscount = Model.Select(c => ((c.ProductPrice * c.ProductsCount) * (byte)((c.Discount != null) ? c.Discount.Item1 : 0)) / 100).Sum();
                     }
 
 
