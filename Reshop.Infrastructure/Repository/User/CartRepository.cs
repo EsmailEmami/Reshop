@@ -144,7 +144,7 @@ namespace Reshop.Infrastructure.Repository.User
                     PayDate = c.PayDate.Value,
                     Sum = c.Sum,
                     ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
-                });
+                }).OrderByDescending(c => c.PayDate);
 
         public IEnumerable<OrderForShowViewModel> GetNotReceivedOrders(string userId) =>
             _context.Orders.Where(c => c.UserId == userId && !c.IsReceived && c.IsPayed)
@@ -154,7 +154,7 @@ namespace Reshop.Infrastructure.Repository.User
                     PayDate = c.PayDate.Value,
                     Sum = c.Sum,
                     ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
-                });
+                }).OrderByDescending(c => c.PayDate);
 
         public async Task<string> GetOrderIdByTrackingCodeAsync(string trackingCode) =>
             await _context.Orders

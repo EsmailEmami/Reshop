@@ -20,6 +20,7 @@ using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -240,6 +241,67 @@ namespace Reshop.Web.Controllers.User
 
         #endregion
 
+        #region change user avatar
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUserAvatar(IFormFile avatar)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (avatar == null) return RedirectToAction(nameof(Dashboard));
+
+            var user = await _userService.GetUserByIdAsync(userId);
+
+            // delete user avatar 
+            string path = Path.Combine(Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "images",
+                "UserImages");
+
+            if (user.UserAvatar.ToLower() != "useravatar.jpg")
+                ImageConvertor.DeleteImage($"{path}/{user.UserAvatar}");
+
+
+            // add new image
+            var imageName = await ImageConvertor.CreateNewImage(avatar, path, 400);
+
+            user.UserAvatar = imageName;
+
+            var editUser = await _userService.EditUserAsync(user);
+
+            if (editUser != ResultTypes.Successful)
+                return RedirectToAction(nameof(Dashboard));
+
+            // get user isPersistent
+            Claim claim = ((ClaimsIdentity)User.Identity)?.FindFirst("IsPersistent");
+            bool isPersistent = claim != null && Convert.ToBoolean(claim.Value);
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // settings of user data for login
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Actor,user.UserAvatar.ToString()),
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            var properties = new AuthenticationProperties
+            {
+                IsPersistent = isPersistent,
+            };
+
+            // login user in site
+            await HttpContext.SignInAsync(principal, properties);
+
+            return RedirectToAction(nameof(Dashboard));
+        }
+
+        #endregion
+
         #region edit user data
 
         [HttpGet]
@@ -248,7 +310,7 @@ namespace Reshop.Web.Controllers.User
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (await _permissionService.PermissionCheckerAsync(userId,"Shopper"))
+            if (await _permissionService.PermissionCheckerAsync(userId, "Shopper"))
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
             var user = await _userService.GetUserDataForEditAsync(userId);

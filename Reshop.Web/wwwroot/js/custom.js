@@ -309,7 +309,7 @@ function commaSep(number) {
 }
 
 function SubmitForm(formId) {
-    $('#' + formId).submit();
+    document.getElementById(formId).submit();
 }
 
 
