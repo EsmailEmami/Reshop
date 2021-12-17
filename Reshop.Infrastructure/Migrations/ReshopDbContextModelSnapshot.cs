@@ -289,6 +289,13 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
+                            RoleTitle = "Shopper"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.RolePermission", b =>
@@ -319,6 +326,13 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31",
+                            RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Product.Brand", b =>
@@ -2291,6 +2305,19 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Shoppers");
+
+                    b.HasData(
+                        new
+                        {
+                            ShopperId = "1939fee6-2a0d-4560-84aa-e7cb585bc3fb",
+                            BirthDay = new DateTime(2000, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BusinessLicenseImageName = "",
+                            IsActive = true,
+                            OnNationalCardImageName = "",
+                            RegisterShopper = new DateTime(2021, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            StoreName = "فروشگاه پیش فرض",
+                            UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.ShopperProduct", b =>
@@ -2514,6 +2541,13 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("StoreTitleId");
 
                     b.ToTable("ShopperStoreTitles");
+
+                    b.HasData(
+                        new
+                        {
+                            ShopperId = "1939fee6-2a0d-4560-84aa-e7cb585bc3fb",
+                            StoreTitleId = 1
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreAddress", b =>
@@ -2560,6 +2594,19 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("ShopperId");
 
                     b.ToTable("StoresAddress");
+
+                    b.HasData(
+                        new
+                        {
+                            StoreAddressId = "662e11d3-5e67-41a3-9a2c-f45bad122178",
+                            AddressText = "کمالشهر",
+                            CityId = 1,
+                            LandlinePhoneNumber = "1212121212",
+                            Plaque = "14",
+                            PostalCode = "1212121212",
+                            ShopperId = "1939fee6-2a0d-4560-84aa-e7cb585bc3fb",
+                            StoreName = "فروشگاه پیش فرض"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Shopper.StoreTitle", b =>
@@ -2577,6 +2624,13 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasKey("StoreTitleId");
 
                     b.ToTable("StoreTitles");
+
+                    b.HasData(
+                        new
+                        {
+                            StoreTitleId = 1,
+                            StoreTitleName = "کالای دیجیتال"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Address", b =>
@@ -2645,6 +2699,14 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("StateId");
 
                     b.ToTable("Cities");
+
+                    b.HasData(
+                        new
+                        {
+                            CityId = 1,
+                            CityName = "کمالشهر",
+                            StateId = 1
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.Discount", b =>
@@ -2819,6 +2881,13 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasKey("StateId");
 
                     b.ToTable("States");
+
+                    b.HasData(
+                        new
+                        {
+                            StateId = 1,
+                            StateName = "البرز"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.User", b =>
@@ -2873,6 +2942,23 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31",
+                            AccountBalance = 0m,
+                            Email = "esmailemami84@gmail.com",
+                            FullName = "کاربر پیش فرض",
+                            InviteCode = "6D9698E6D85B4BA3AD0FC1F6B0DDD00F",
+                            InviteCount = 0,
+                            IsBlocked = false,
+                            NationalCode = "1111111111",
+                            PhoneNumber = "09903669556",
+                            RegisterDate = new DateTime(2021, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Score = 0,
+                            UserAvatar = "userAvatar.jpg"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.User.UserDiscountCode", b =>

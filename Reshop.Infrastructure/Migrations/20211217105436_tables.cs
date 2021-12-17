@@ -137,6 +137,19 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImagesPlace",
+                columns: table => new
+                {
+                    ImagePlaceId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Place = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImagesPlace", x => x.ImagePlaceId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LaptopDetails",
                 columns: table => new
                 {
@@ -304,7 +317,7 @@ namespace Reshop.Infrastructure.Migrations
                 {
                     PermissionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PermissionTitle = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    PermissionTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ParentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -683,6 +696,26 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    ImageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    ImagePlaceId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.ImageId);
+                    table.ForeignKey(
+                        name: "FK_Images_ImagesPlace_ImagePlaceId",
+                        column: x => x.ImagePlaceId,
+                        principalTable: "ImagesPlace",
+                        principalColumn: "ImagePlaceId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RolePermissions",
                 columns: table => new
                 {
@@ -758,7 +791,6 @@ namespace Reshop.Infrastructure.Migrations
                     BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RegisterShopper = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OnNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    BackNationalCardImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     BusinessLicenseImageName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -997,13 +1029,13 @@ namespace Reshop.Infrastructure.Migrations
                 columns: table => new
                 {
                     StoreAddressId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StoreName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     ShopperId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CityId = table.Column<int>(type: "int", nullable: false),
                     Plaque = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
                     PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     AddressText = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    LandlinePhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    StateId = table.Column<int>(type: "int", nullable: true)
+                    LandlinePhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1019,12 +1051,6 @@ namespace Reshop.Infrastructure.Migrations
                         column: x => x.ShopperId,
                         principalTable: "Shoppers",
                         principalColumn: "ShopperId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_StoresAddress_States_StateId",
-                        column: x => x.StateId,
-                        principalTable: "States",
-                        principalColumn: "StateId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1245,7 +1271,7 @@ namespace Reshop.Infrastructure.Migrations
                     Warranty = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsSuccess = table.Column<bool>(type: "bit", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -1401,7 +1427,7 @@ namespace Reshop.Infrastructure.Migrations
                     QuantityInStock = table.Column<int>(type: "int", nullable: false),
                     RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsSuccess = table.Column<bool>(type: "bit", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -1696,6 +1722,51 @@ namespace Reshop.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "RoleId", "RoleTitle" },
+                values: new object[] { "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8", "Shopper" });
+
+            migrationBuilder.InsertData(
+                table: "States",
+                columns: new[] { "StateId", "StateName" },
+                values: new object[] { 1, "البرز" });
+
+            migrationBuilder.InsertData(
+                table: "StoreTitles",
+                columns: new[] { "StoreTitleId", "StoreTitleName" },
+                values: new object[] { 1, "کالای دیجیتال" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "AccountBalance", "Email", "FullName", "InviteCode", "InviteCount", "IsBlocked", "NationalCode", "PhoneNumber", "RegisterDate", "Score", "UserAvatar" },
+                values: new object[] { "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31", 0m, "esmailemami84@gmail.com", "کاربر پیش فرض", "6D9698E6D85B4BA3AD0FC1F6B0DDD00F", 0, false, "1111111111", "09903669556", new DateTime(2021, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "userAvatar.jpg" });
+
+            migrationBuilder.InsertData(
+                table: "Cities",
+                columns: new[] { "CityId", "CityName", "StateId" },
+                values: new object[] { 1, "کمالشهر", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Shoppers",
+                columns: new[] { "ShopperId", "BirthDay", "BusinessLicenseImageName", "IsActive", "OnNationalCardImageName", "RegisterShopper", "StoreName", "UserId" },
+                values: new object[] { "1939fee6-2a0d-4560-84aa-e7cb585bc3fb", new DateTime(2000, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "", true, "", new DateTime(2021, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "فروشگاه پیش فرض", "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31" });
+
+            migrationBuilder.InsertData(
+                table: "UserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8", "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31" });
+
+            migrationBuilder.InsertData(
+                table: "ShopperStoreTitles",
+                columns: new[] { "ShopperId", "StoreTitleId" },
+                values: new object[] { "1939fee6-2a0d-4560-84aa-e7cb585bc3fb", 1 });
+
+            migrationBuilder.InsertData(
+                table: "StoresAddress",
+                columns: new[] { "StoreAddressId", "AddressText", "CityId", "LandlinePhoneNumber", "Plaque", "PostalCode", "ShopperId", "StoreName" },
+                values: new object[] { "662e11d3-5e67-41a3-9a2c-f45bad122178", "کمالشهر", 1, "1212121212", "14", "1212121212", "1939fee6-2a0d-4560-84aa-e7cb585bc3fb", "فروشگاه پیش فرض" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_CityId",
                 table: "Addresses",
@@ -1755,6 +1826,11 @@ namespace Reshop.Infrastructure.Migrations
                 name: "IX_FavoriteProducts_UserId",
                 table: "FavoriteProducts",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_ImagePlaceId",
+                table: "Images",
+                column: "ImagePlaceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OfficialBrandProducts_BrandId",
@@ -2007,11 +2083,6 @@ namespace Reshop.Infrastructure.Migrations
                 column: "ShopperId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StoresAddress_StateId",
-                table: "StoresAddress",
-                column: "StateId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserDiscountCodes_DiscountId",
                 table: "UserDiscountCodes",
                 column: "DiscountId");
@@ -2053,6 +2124,9 @@ namespace Reshop.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "FavoriteProducts");
+
+            migrationBuilder.DropTable(
+                name: "Images");
 
             migrationBuilder.DropTable(
                 name: "OrderDetails");
@@ -2104,6 +2178,9 @@ namespace Reshop.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Wallets");
+
+            migrationBuilder.DropTable(
+                name: "ImagesPlace");
 
             migrationBuilder.DropTable(
                 name: "Orders");

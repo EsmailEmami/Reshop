@@ -8,6 +8,7 @@ using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Question;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
+using System;
 
 namespace Reshop.Infrastructure.Context
 {
@@ -225,6 +226,112 @@ namespace Reshop.Infrastructure.Context
                 i.Property(w => w.Price).HasColumnType("Money");
                 i.Property(w => w.ProductDiscountPrice).HasColumnType("Money");
                 i.Property(w => w.Sum).HasColumnType("Money");
+            });
+
+            #endregion
+
+            #region role data seed
+
+            modelBuilder.Entity<Role>().HasData(new Role()
+            {
+                RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
+                RoleTitle = "Shopper",
+            });
+
+            #endregion
+
+            #region user data seed
+
+            modelBuilder.Entity<User>().HasData(new User()
+            {
+                UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31",
+                FullName = "کاربر پیش فرض",
+                Email = "esmailemami84@gmail.com",
+                UserAvatar = "userAvatar.jpg",
+                PhoneNumber = "09903669556",
+                InviteCode = "6D9698E6D85B4BA3AD0FC1F6B0DDD00F",
+                NationalCode = "1111111111",
+                RegisterDate = new DateTime(2021, 11, 20),
+                IsBlocked = false
+            });
+
+            #endregion
+
+            #region origin data seed
+
+            modelBuilder.Entity<State>().HasData(new State()
+            {
+                StateId = 1,
+                StateName = "البرز"
+            });
+
+            modelBuilder.Entity<City>().HasData(new City()
+            {
+                CityId = 1,
+                StateId = 1,
+                CityName = "کمالشهر"
+            });
+
+            #endregion
+
+            #region  store title data seed
+
+            modelBuilder.Entity<StoreTitle>().HasData(new StoreTitle()
+            {
+                StoreTitleId = 1,
+                StoreTitleName = "کالای دیجیتال"
+            });
+
+            #endregion
+
+            #region shopper data seed
+
+            modelBuilder.Entity<Shopper>().HasData(new Shopper()
+            {
+                ShopperId = "1939fee6-2a0d-4560-84aa-e7cb585bc3fb",
+                UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31",
+                StoreName = "فروشگاه پیش فرض",
+                BirthDay = new DateTime(2000, 11, 20),
+                BusinessLicenseImageName = "",
+                OnNationalCardImageName = "",
+                IsActive = true,
+                RegisterShopper = new DateTime(2021, 11, 20),
+            });
+
+            #endregion
+
+            #region store address data seed
+
+            modelBuilder.Entity<StoreAddress>().HasData(new StoreAddress()
+            {
+                StoreAddressId = "662e11d3-5e67-41a3-9a2c-f45bad122178",
+                ShopperId = "1939fee6-2a0d-4560-84aa-e7cb585bc3fb",
+                CityId = 1,
+                Plaque = "14",
+                StoreName = "فروشگاه پیش فرض",
+                PostalCode = "1212121212",
+                AddressText = "کمالشهر",
+                LandlinePhoneNumber = "1212121212"
+            });
+
+            #endregion
+
+            #region shopper store title data seed
+
+            modelBuilder.Entity<ShopperStoreTitle>().HasData(new ShopperStoreTitle()
+            {
+                StoreTitleId = 1,
+                ShopperId = "1939fee6-2a0d-4560-84aa-e7cb585bc3fb",
+            });
+
+            #endregion
+
+            #region user role data seed
+
+            modelBuilder.Entity<UserRole>().HasData(new UserRole()
+            {
+                UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31",
+                RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
             });
 
             #endregion
