@@ -12,7 +12,7 @@ namespace Reshop.Domain.Entities.Permission
         public string RoleId { get; set; }
 
         [ForeignKey("Permission")]
-        public int PermissionId { get; set; }
+        public string PermissionId { get; set; }
 
         #region Relations
 

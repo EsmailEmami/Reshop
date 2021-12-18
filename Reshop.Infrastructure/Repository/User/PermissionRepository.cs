@@ -100,7 +100,7 @@ namespace Reshop.Infrastructure.Repository.User
             return await roles.CountAsync();
         }
 
-        public async Task<Permission> GetPermissionByIdAsync(int permissionId) =>
+        public async Task<Permission> GetPermissionByIdAsync(string permissionId) =>
             await _context.Permissions.FindAsync(permissionId);
 
         public async Task AddPermissionAsync(Permission permission) =>
@@ -124,7 +124,7 @@ namespace Reshop.Infrastructure.Repository.User
                 .Where(c => c.RoleId == roleId)
                 .ToListAsync();
 
-        public async Task<IEnumerable<RolePermission>> GetRolePermissionsOfPermissionAsync(int permissionId) =>
+        public async Task<IEnumerable<RolePermission>> GetRolePermissionsOfPermissionAsync(string permissionId) =>
             await _context.RolePermissions
                         .Where(c => c.PermissionId == permissionId)
                         .ToListAsync();
@@ -133,22 +133,22 @@ namespace Reshop.Infrastructure.Repository.User
         public void RemoveRolePermission(RolePermission rolePermission) =>
             _context.RolePermissions.Remove(rolePermission);
 
-        public IEnumerable<int> GetPermissionsIdOfRole(string roleId) =>
+        public IEnumerable<string> GetPermissionsIdOfRole(string roleId) =>
             _context.RolePermissions.Where(c => c.RoleId == roleId)
                 .Select(c => c.PermissionId);
 
-        public async Task<int> GetPermissionIdByNameAsync(string permissionName) =>
+        public async Task<string> GetPermissionIdByNameAsync(string permissionName) =>
             await _context.Permissions.Where(c => c.PermissionTitle == permissionName)
                     .Select(c => c.PermissionId)
                     .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(int permissionId) =>
+        public async Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(string permissionId) =>
             await _context.RolePermissions
                 .Where(c => c.PermissionId == permissionId)
                 .Select(c => c.RoleId)
                 .ToListAsync();
 
-        public async Task<bool> IsPermissionExistsAsync(int permissionId) =>
+        public async Task<bool> IsPermissionExistsAsync(string permissionId) =>
             await _context.Permissions.AnyAsync(c => c.PermissionId == permissionId);
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();

@@ -35,19 +35,19 @@ namespace Reshop.Domain.Interfaces.User
 
         #region permission
 
-        Task<Permission> GetPermissionByIdAsync(int permissionId);
+        Task<Permission> GetPermissionByIdAsync(string permissionId);
         Task AddPermissionAsync(Permission permission);
         void UpdatePermission(Permission permission);
         void RemovePermission(Permission permission);
         Task<IEnumerable<Permission>> GetPermissionsAsync();
         Task AddRolePermissionAsync(RolePermission rolePermission);
         Task<IEnumerable<RolePermission>> GetRolePermissionsOfRoleAsync(string roleId);
-        Task<IEnumerable<RolePermission>> GetRolePermissionsOfPermissionAsync(int permissionId);
+        Task<IEnumerable<RolePermission>> GetRolePermissionsOfPermissionAsync(string permissionId);
         void RemoveRolePermission(RolePermission rolePermission);
-        IEnumerable<int> GetPermissionsIdOfRole(string roleId);
-        Task<int> GetPermissionIdByNameAsync(string permissionName);
-        Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(int permissionId);
-        Task<bool> IsPermissionExistsAsync(int permissionId);
+        IEnumerable<string> GetPermissionsIdOfRole(string roleId);
+        Task<string> GetPermissionIdByNameAsync(string permissionName);
+        Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(string permissionId);
+        Task<bool> IsPermissionExistsAsync(string permissionId);
 
         #endregion
 

@@ -15,6 +15,6 @@ namespace Reshop.Domain.DTOs.Permission
 
         public IEnumerable<Entities.Permission.Permission> Permissions { get; set; }
 
-        public IEnumerable<int> SelectedPermissions { get; set; }
+        public IEnumerable<string> SelectedPermissions { get; set; }
     }
 }

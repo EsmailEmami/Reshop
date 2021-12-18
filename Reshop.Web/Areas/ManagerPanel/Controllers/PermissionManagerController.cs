@@ -7,7 +7,6 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security.Attribute;
 using Reshop.Domain.DTOs.Permission;
 using Reshop.Domain.Entities.Permission;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -83,7 +82,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 {
                     if (model.SelectedPermissions != null && model.SelectedPermissions.Any())
                     {
-                        var addRolePermission = await _permissionService.AddRolePermissionByRoleAsync(role.RoleId, model.SelectedPermissions as List<int>);
+                        var addRolePermission = await _permissionService.AddRolePermissionByRoleAsync(role.RoleId, model.SelectedPermissions);
                         if (addRolePermission == ResultTypes.Failed)
                         {
                             ModelState.AddModelError("", "هنگام افزودن دسترسی ها به مشکل خوردیم.");
@@ -125,7 +124,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
                 if (model.SelectedPermissions != null && model.SelectedPermissions.Any())
                 {
-                    var addRolePermission = await _permissionService.AddRolePermissionByRoleAsync(role.RoleId, model.SelectedPermissions as List<int>);
+                    var addRolePermission = await _permissionService.AddRolePermissionByRoleAsync(role.RoleId, model.SelectedPermissions);
                     if (addRolePermission == ResultTypes.Failed)
                     {
                         ModelState.AddModelError("", "هنگام ویرایش دسترسی ها به مشکل برخوردیم");
@@ -194,7 +193,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 PermissionTitle = model.PermissionTitle,
             };
 
-            if (model.ParentId > 0)
+            if (!string.IsNullOrEmpty(model.ParentId))
             {
                 permission.ParentId = model.ParentId;
             }
@@ -220,7 +219,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpGet]
         [NoDirectAccess]
         [PermissionJs(false, PermissionsConstants.EditPermission)]
-        public async Task<IActionResult> EditPermission(int permissionId)
+        public async Task<IActionResult> EditPermission(string permissionId)
         {
             var permission = await _permissionService.GetPermissionDataAsync(permissionId);
 
@@ -260,7 +259,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             permission.PermissionTitle = model.PermissionTitle;
             permission.ParentId = null;
 
-            if (model.ParentId > 0)
+            if (!string.IsNullOrEmpty(model.ParentId))
             {
                 permission.ParentId = model.ParentId;
             }
@@ -292,7 +291,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [HttpPost]
         [NoDirectAccess]
         [Permission(PermissionsConstants.DeletePermission)]
-        public async Task<IActionResult> DeletePermission(int permissionId)
+        public async Task<IActionResult> DeletePermission(string permissionId)
         {
             if (!await _permissionService.IsPermissionExistsAsync(permissionId))
                 return NotFound();

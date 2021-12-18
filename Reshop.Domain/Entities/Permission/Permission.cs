@@ -10,8 +10,8 @@ namespace Reshop.Domain.Entities.Permission
         {
         }
 
-        [Key]
-        public int PermissionId { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string PermissionId { get; set; }
 
         [Display(Name = "عنوان نقش")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -30,7 +30,7 @@ namespace Reshop.Domain.Entities.Permission
         /// </summary>
 
 
-        public int? ParentId { get; set; }
+        public string? ParentId { get; set; }
 
 
         #region Relations

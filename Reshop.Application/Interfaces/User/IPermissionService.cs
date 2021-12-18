@@ -30,15 +30,15 @@ namespace Reshop.Application.Interfaces.User
 
         #region Permission
 
-        Task<Permission> GetPermissionByIdAsync(int permissionId);
+        Task<Permission> GetPermissionByIdAsync(string permissionId);
         Task<IEnumerable<Permission>> GetPermissionsAsync();
-        Task<AddOrEditPermissionViewModel> GetPermissionDataAsync(int permissionId);
-        Task<ResultTypes> AddRolePermissionByRoleAsync(string roleId, List<int> permissionsId);
-        Task<ResultTypes> AddRolePermissionByPermissionAsync(int permissionId, List<string> rolesId);
+        Task<AddOrEditPermissionViewModel> GetPermissionDataAsync(string permissionId);
+        Task<ResultTypes> AddRolePermissionByRoleAsync(string roleId, IEnumerable<string> permissionsId);
+        Task<ResultTypes> AddRolePermissionByPermissionAsync(string permissionId, List<string> rolesId);
         Task<ResultTypes> RemoveRolePermissionsByRoleId(string roleId);
-        Task<ResultTypes> RemoveRolePermissionsByPermissionId(int permissionId);
-        Task<bool> IsPermissionExistsAsync(int permissionId);
-        Task<ResultTypes> DeletePermissionAsync(int permissionId);
+        Task<ResultTypes> RemoveRolePermissionsByPermissionId(string permissionId);
+        Task<bool> IsPermissionExistsAsync(string permissionId);
+        Task<ResultTypes> DeletePermissionAsync(string permissionId);
         Task<ResultTypes> AddPermissionAsync(Permission permission);
         Task<ResultTypes> EditPermissionAsync(Permission permission);
 

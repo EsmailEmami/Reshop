@@ -246,13 +246,13 @@ namespace Reshop.Application.Services.User
             return new Tuple<IEnumerable<Role>, int, int>(roles, pageId, totalPages);
         }
 
-        public async Task<Permission> GetPermissionByIdAsync(int permissionId) =>
+        public async Task<Permission> GetPermissionByIdAsync(string permissionId) =>
             await _permissionRepository.GetPermissionByIdAsync(permissionId);
 
         public async Task<IEnumerable<Permission>> GetPermissionsAsync() =>
                await _permissionRepository.GetPermissionsAsync();
 
-        public async Task<AddOrEditPermissionViewModel> GetPermissionDataAsync(int permissionId)
+        public async Task<AddOrEditPermissionViewModel> GetPermissionDataAsync(string permissionId)
         {
             var permission = await _permissionRepository.GetPermissionByIdAsync(permissionId);
 
@@ -267,14 +267,14 @@ namespace Reshop.Application.Services.User
             {
                 PermissionId = permission.PermissionId,
                 PermissionTitle = permission.PermissionTitle,
-                ParentId = permission.ParentId.GetValueOrDefault(0),
+                ParentId = permission.ParentId,
                 Permissions = permissions,
                 Roles = roles,
                 SelectedRoles = selectedRoles
             };
         }
 
-        public async Task<ResultTypes> AddRolePermissionByRoleAsync(string roleId, List<int> permissionsId)
+        public async Task<ResultTypes> AddRolePermissionByRoleAsync(string roleId, IEnumerable<string> permissionsId)
         {
             try
             {
@@ -298,7 +298,7 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<ResultTypes> AddRolePermissionByPermissionAsync(int permissionId, List<string> rolesId)
+        public async Task<ResultTypes> AddRolePermissionByPermissionAsync(string permissionId, List<string> rolesId)
         {
             try
             {
@@ -345,7 +345,7 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<ResultTypes> RemoveRolePermissionsByPermissionId(int permissionId)
+        public async Task<ResultTypes> RemoveRolePermissionsByPermissionId(string permissionId)
         {
             var rolePermissions = await _permissionRepository.GetRolePermissionsOfPermissionAsync(permissionId);
             if (rolePermissions == null)
@@ -368,10 +368,10 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public async Task<bool> IsPermissionExistsAsync(int permissionId) =>
+        public async Task<bool> IsPermissionExistsAsync(string permissionId) =>
             await _permissionRepository.IsPermissionExistsAsync(permissionId);
 
-        public async Task<ResultTypes> DeletePermissionAsync(int permissionId)
+        public async Task<ResultTypes> DeletePermissionAsync(string permissionId)
         {
             try
             {
@@ -450,7 +450,7 @@ namespace Reshop.Application.Services.User
                 {
                     var permissionId = await _permissionRepository.GetPermissionIdByNameAsync(t);
 
-                    if (permissionId == 0)
+                    if (string.IsNullOrEmpty(permissionId))
                         continue;
 
                     var roles = await _permissionRepository.GetRolesIdOfPermissionAsync(permissionId);
