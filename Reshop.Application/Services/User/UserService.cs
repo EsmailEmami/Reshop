@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Application.Security;
 using Reshop.Domain.Interfaces.Conversation;
 using Reshop.Domain.Interfaces.Shopper;
 
@@ -97,9 +98,16 @@ namespace Reshop.Application.Services.User
         public async Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId) =>
             await _userRepository.GetUserAddressesForShowAsync(userId);
 
-        public async Task<bool> IsPhoneExistAsync(string phone)
+        public async Task<bool> IsPhoneNumberExistAsync(string phoneNumber)
         {
-            return await _userRepository.IsPhoneExistAsync(phone);
+            return await _userRepository.IsPhoneNumberExistAsync(phoneNumber);
+        }
+
+        public async Task<bool> IsUserPasswordValidAsync(string userId, string password)
+        {
+            string encodedPass = PasswordHelper.EncodePasswordMd5(password);
+
+            return await _userRepository.IsUserPasswordValidAsync(userId, encodedPass);
         }
 
         public async Task<bool> IsUserExistAsync(string userId)

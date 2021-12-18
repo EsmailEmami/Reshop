@@ -64,6 +64,11 @@ namespace Reshop.Domain.Entities.User
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public DateTime RegisterDate { get; set; }
 
+        [Display(Name = "رمز عبور")]
+        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
+        [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        public string Password { get; set; }
+
         [Display(Name = "وضعیت مسدودیت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool IsBlocked { get; set; }

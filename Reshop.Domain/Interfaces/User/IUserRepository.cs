@@ -23,7 +23,8 @@ namespace Reshop.Domain.Interfaces.User
         Task AddUserInviteAsync(UserInvite userInvite);
         void UpdateUser(Entities.User.User user);
         void RemoveUser(Entities.User.User user);
-        Task<bool> IsPhoneExistAsync(string phone);
+        Task<bool> IsPhoneNumberExistAsync(string phoneNumber);
+        Task<bool> IsUserPasswordValidAsync(string userId, string password);
         Task<bool> IsUserExistAsync(string userId);
 
 

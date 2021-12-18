@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
 using Reshop.Domain.Interfaces.User;
@@ -25,7 +24,10 @@ namespace Reshop.Infrastructure.Repository.User
 
         #region user
 
-        public async Task<bool> IsPhoneExistAsync(string phone) => await _context.Users.AnyAsync(c => c.PhoneNumber == phone);
+        public async Task<bool> IsPhoneNumberExistAsync(string phoneNumber) => await _context.Users.AnyAsync(c => c.PhoneNumber == phoneNumber);
+
+        public async Task<bool> IsUserPasswordValidAsync(string userId, string password) =>
+            await _context.Users.AnyAsync(c => c.UserId == userId && c.Password == password);
 
         public async Task<bool> IsUserExistAsync(string userId) => await _context.Users.AnyAsync(c => c.UserId == userId);
         public async Task AddAddressAsync(Address address) => await _context.Addresses.AddAsync(address);
@@ -61,7 +63,7 @@ namespace Reshop.Infrastructure.Repository.User
                     Email = c.Email,
                     OrdersCount = c.Orders.Count(o => o.IsReceived),
                     RegisterDate = c.RegisterDate,
-                    Addresses = c.Addresses.Select(a=> new AddressForShowViewModel()
+                    Addresses = c.Addresses.Select(a => new AddressForShowViewModel()
                     {
                         AddressId = a.AddressId,
                         CityName = a.City.CityName,

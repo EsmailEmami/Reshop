@@ -9,6 +9,7 @@ using Reshop.Domain.Entities.Question;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using System;
+using Reshop.Application.Security;
 
 namespace Reshop.Infrastructure.Context
 {
@@ -286,7 +287,8 @@ namespace Reshop.Infrastructure.Context
                 InviteCode = "6D9698E6D85B4BA3AD0FC1F6B0DDD00F",
                 NationalCode = "1111111111",
                 RegisterDate = new DateTime(2021, 11, 20),
-                IsBlocked = false
+                IsBlocked = false,
+                Password = PasswordHelper.EncodePasswordMd5("11111111")
             });
 
             #endregion

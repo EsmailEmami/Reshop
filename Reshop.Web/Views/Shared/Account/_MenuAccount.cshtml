@@ -6,16 +6,16 @@
         <form asp-controller="Account" asp-action="Logout" method="post">
             <button type="submit">  <i class="far fa-power-off"></i></button>
         </form>
-        
+
         <div class="img-layer">
-            <form asp-controller="Account" asp-action="ChangeUserAvatar" enctype="multipart/form-data" id="formAvatar" method="post">          
+            <form asp-controller="Account" asp-action="ChangeUserAvatar" enctype="multipart/form-data" id="formAvatar" method="post">
                 <a href="javascript:void(0)" class="change-image">
                     <input type="file" name="avatar" class="ProfileAvatarInput" onchange="SubmitForm('formAvatar')">
                     <i class="far fa-camera"></i>
                 </a>
                 <img id="imgAvatar" src="/images/UserImages/@User.FindFirstValue(ClaimTypes.Actor)">
-            </form>   
-            </div>
+            </form>
+        </div>
 
 
         <p class="text-center">@User.FindFirstValue(ClaimTypes.Name)</p>
@@ -32,9 +32,9 @@
             <a asp-controller="shopper" asp-action="ManageProducts" class="@(Model == AccountMenuActivePage.ShopperProduct?"active":"")"><i class="far fa-comments-alt"></i>مدیریت محصولات</a>
         }
 
- @*     @if (await permissionService.PermissionCheckerAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), PermissionsConstants.AdminPanel))
-      {*@
-          <a asp-area="ManagerPanel" asp-controller="AdminPanel" asp-action="Dashboard" class="@(Model == AccountMenuActivePage.FullManage?"active":"")"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
-     @* }*@
+        @if (await permissionService.PermissionCheckerAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), PermissionsConstants.AdminPanel))
+        {
+            <a asp-area="ManagerPanel" asp-controller="AdminPanel" asp-action="Dashboard" class="@(Model == AccountMenuActivePage.FullManage?"active":"")"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
+        }
     </div>
 </div>

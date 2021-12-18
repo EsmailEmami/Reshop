@@ -23,7 +23,8 @@ namespace Reshop.Application.Interfaces.User
         //Task<Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>> GetShoppersInformationWithPagination(int pageId = 1, int take = 18);
         IEnumerable<Address> GetUserAddresses(string userId);
         Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId);
-        Task<bool> IsPhoneExistAsync(string phone);
+        Task<bool> IsPhoneNumberExistAsync(string phoneNumber);
+        Task<bool> IsUserPasswordValidAsync(string userId, string password);
         Task<bool> IsUserExistAsync(string userId);
         Task<ResultTypes> AddUserAsync(Domain.Entities.User.User user);
         Task<Domain.Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber);

@@ -13,6 +13,7 @@ using Reshop.Application.Generator;
 using Reshop.Application.Interfaces.Conversation;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security;
 using Reshop.Application.Security.Attribute;
 using Reshop.Application.Security.GoogleRecaptcha;
 using Reshop.Application.Validations.Google;
@@ -101,6 +102,7 @@ namespace Reshop.Web.Controllers.User
                 NationalCode = "-",
                 Email = "-",
                 IsBlocked = false,
+                Password = PasswordHelper.EncodePasswordMd5(model.Password)
             };
 
             var result = await _userService.AddUserAsync(user);
@@ -167,44 +169,47 @@ namespace Reshop.Web.Controllers.User
             ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "تلاش شما برای ورود موفقیت امیز نبود. شما میتوانید بار دیگر اقدام به ورود کنید.");
+                ModelState.AddModelError("", "کاربری با مشخصات وارد شده یافت نشد.");
                 return View(model);
             }
 
-
-
-
             var user = await _userService.GetUserByPhoneNumberAsync(model.PhoneNumber);
 
-            if (user != null)
+            var encodedPass = PasswordHelper.EncodePasswordMd5(model.Password);
+
+            if (user == null || user.Password != encodedPass)
             {
-                // settings of user data for login
-                var claims = new List<Claim>()
+                ModelState.AddModelError("", "کاربری با مشخصات وارد شده یافت نشد.");
+                return View(model);
+            }
+
+            // settings of user data for login
+            var claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new Claim(ClaimTypes.Name, user.FullName),
                     new Claim(ClaimTypes.Actor,user.UserAvatar.ToString()),
                 };
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
 
-                var properties = new AuthenticationProperties
-                {
-                    IsPersistent = model.RememberMe,
-                };
+            var properties = new AuthenticationProperties
+            {
+                IsPersistent = model.RememberMe,
+            };
 
-                // login user in site
-                await HttpContext.SignInAsync(principal, properties);
+            // login user in site
+            await HttpContext.SignInAsync(principal, properties);
 
 
-                if (returnUrl != null && Url.IsLocalUrl(returnUrl))
-                {
-                    return Redirect(returnUrl);
-                }
-
-                return Redirect("/");
+            if (returnUrl != null && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
             }
+
+            return Redirect("/");
+
 
             ModelState.AddModelError("", "تلاش شما برای ورود موفقیت امیز نبود. شما میتوانید بار دیگر اقدام به ورود کنید.");
             return View(model);
@@ -296,6 +301,52 @@ namespace Reshop.Web.Controllers.User
 
             // login user in site
             await HttpContext.SignInAsync(principal, properties);
+
+            return RedirectToAction(nameof(Dashboard));
+        }
+
+        #endregion
+
+        #region change user password
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var user = await _userService.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ویرایش رمز عبور شما به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
+
+            string encodedCurrentPass = PasswordHelper.EncodePasswordMd5(model.Password);
+
+            if (user.Password != encodedCurrentPass)
+            {
+                ModelState.AddModelError("", "رمز عبور فعلی شما اشتباه میباشد.");
+                return View(model);
+            }
+
+            user.Password = PasswordHelper.EncodePasswordMd5(model.NewPassword);
+
+            var editUser = await _userService.EditUserAsync(user);
+
+            if (editUser != ResultTypes.Successful)
+            {
+                ModelState.AddModelError("", "متاسفانه هنگام ویرایش رمز عبور شما به مشکلی غیر منتظره برخوردیم.");
+                return View(model);
+            }
 
             return RedirectToAction(nameof(Dashboard));
         }
@@ -674,6 +725,36 @@ namespace Reshop.Web.Controllers.User
                 return NotFound();
             }
         }
+        #endregion
+
+        #region Remote Validations
+
+        [HttpPost]
+        public async Task<IActionResult> IsPhoneNumberValid(string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length < 11)
+            {
+                return Json(true);
+            }
+
+
+            bool isPhoneNumberExist = await _userService.IsPhoneNumberExistAsync(phoneNumber);
+
+            if (!isPhoneNumberExist) return Json(true);
+            return Json("شماره تماس وارد شده توسط شخص دیگری ثبت شده است.");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> IsPasswordValid(string password)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            bool isPhoneNumberExist = await _userService.IsUserPasswordValidAsync(userId, password);
+
+            if (!isPhoneNumberExist) return Json(true);
+            return Json("رمز عبور فعلی شما اشتباه میباشد.");
+        }
+
         #endregion
     }
 }
