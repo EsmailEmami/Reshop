@@ -315,10 +315,9 @@ namespace Reshop.Infrastructure.Migrations
                 name: "Permissions",
                 columns: table => new
                 {
-                    PermissionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PermissionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PermissionTitle = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ParentId = table.Column<int>(type: "int", nullable: true)
+                    ParentId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -720,7 +719,7 @@ namespace Reshop.Infrastructure.Migrations
                 columns: table => new
                 {
                     RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PermissionId = table.Column<int>(type: "int", nullable: false)
+                    PermissionId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1723,9 +1722,22 @@ namespace Reshop.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Permissions",
+                columns: new[] { "PermissionId", "ParentId", "PermissionTitle" },
+                values: new object[,]
+                {
+                    { "32757e0d-0c77-4ecd-bf82-6888acff29f1", null, "AdminPanelMainPage" },
+                    { "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1", null, "Shopper" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "RoleId", "RoleTitle" },
-                values: new object[] { "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8", "Shopper" });
+                values: new object[,]
+                {
+                    { "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8", "Shopper" },
+                    { "e9d0b742-79ff-4439-985e-bba8ae0d214d", "Admin" }
+                });
 
             migrationBuilder.InsertData(
                 table: "States",
@@ -1755,7 +1767,11 @@ namespace Reshop.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "UserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8", "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31" });
+                values: new object[,]
+                {
+                    { "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8", "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31" },
+                    { "e9d0b742-79ff-4439-985e-bba8ae0d214d", "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31" }
+                });
 
             migrationBuilder.InsertData(
                 table: "ShopperStoreTitles",

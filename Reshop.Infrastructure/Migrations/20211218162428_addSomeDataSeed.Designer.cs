@@ -10,8 +10,8 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    [Migration("20211217105436_tables")]
-    partial class tables
+    [Migration("20211218162428_addSomeDataSeed")]
+    partial class addSomeDataSeed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -257,13 +257,12 @@ namespace Reshop.Infrastructure.Migrations
 
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.Permission", b =>
                 {
-                    b.Property<int>("PermissionId")
+                    b.Property<string>("PermissionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("int");
+                    b.Property<string>("ParentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PermissionTitle")
                         .IsRequired()
@@ -275,6 +274,18 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("ParentId");
 
                     b.ToTable("Permissions");
+
+                    b.HasData(
+                        new
+                        {
+                            PermissionId = "32757e0d-0c77-4ecd-bf82-6888acff29f1",
+                            PermissionTitle = "AdminPanelMainPage"
+                        },
+                        new
+                        {
+                            PermissionId = "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1",
+                            PermissionTitle = "Shopper"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.Role", b =>
@@ -297,6 +308,11 @@ namespace Reshop.Infrastructure.Migrations
                         {
                             RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
                             RoleTitle = "Shopper"
+                        },
+                        new
+                        {
+                            RoleId = "e9d0b742-79ff-4439-985e-bba8ae0d214d",
+                            RoleTitle = "Admin"
                         });
                 });
 
@@ -305,14 +321,26 @@ namespace Reshop.Infrastructure.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("int");
+                    b.Property<string>("PermissionId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("RoleId", "PermissionId");
 
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = "e9d0b742-79ff-4439-985e-bba8ae0d214d",
+                            PermissionId = "32757e0d-0c77-4ecd-bf82-6888acff29f1"
+                        },
+                        new
+                        {
+                            RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
+                            PermissionId = "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.UserRole", b =>
@@ -334,6 +362,11 @@ namespace Reshop.Infrastructure.Migrations
                         {
                             UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31",
                             RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8"
+                        },
+                        new
+                        {
+                            UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31",
+                            RoleId = "e9d0b742-79ff-4439-985e-bba8ae0d214d"
                         });
                 });
 

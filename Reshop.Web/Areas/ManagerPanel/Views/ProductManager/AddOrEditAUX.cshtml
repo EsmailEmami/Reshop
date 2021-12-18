@@ -388,7 +388,7 @@
             })
             .then(editor => {
                 window.editor = editor;
-                const wordCountPlugin = editor.plugins.get('WordCount');
+                var wordCountPlugin = editor.plugins.get('WordCount');
 
                 wordCountPlugin.on('update', (evt, data) => {
                     // data is an object with "words" and "characters" field

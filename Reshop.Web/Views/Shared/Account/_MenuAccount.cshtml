@@ -32,9 +32,9 @@
             <a asp-controller="shopper" asp-action="ManageProducts" class="@(Model == AccountMenuActivePage.ShopperProduct?"active":"")"><i class="far fa-comments-alt"></i>مدیریت محصولات</a>
         }
 
-      @if (await permissionService.PermissionCheckerAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), PermissionsConstants.AdminPanel))
-      {
+ @*     @if (await permissionService.PermissionCheckerAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), PermissionsConstants.AdminPanel))
+      {*@
           <a asp-area="ManagerPanel" asp-controller="AdminPanel" asp-action="Dashboard" class="@(Model == AccountMenuActivePage.FullManage?"active":"")"><i class="far fa-comments-alt"></i>ورود به پنل مدیریت</a>
-      }
+     @* }*@
     </div>
 </div>

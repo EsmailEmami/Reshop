@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reshop.Infrastructure.Context;
 
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    partial class ReshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211218161932_tables")]
+    partial class tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -327,18 +329,6 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = "e9d0b742-79ff-4439-985e-bba8ae0d214d",
-                            PermissionId = "32757e0d-0c77-4ecd-bf82-6888acff29f1"
-                        },
-                        new
-                        {
-                            RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
-                            PermissionId = "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1"
-                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.UserRole", b =>

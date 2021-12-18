@@ -230,12 +230,46 @@ namespace Reshop.Infrastructure.Context
 
             #endregion
 
+            // data seeds
+
+            #region permission data seed
+
+            modelBuilder.Entity<Permission>().HasData(new Permission()
+            {
+                PermissionId = "32757e0d-0c77-4ecd-bf82-6888acff29f1",
+                PermissionTitle = "AdminPanelMainPage",
+            }, new Permission()
+            {
+                PermissionId = "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1",
+                PermissionTitle = "Shopper",
+            });
+
+            #endregion
+
             #region role data seed
 
             modelBuilder.Entity<Role>().HasData(new Role()
             {
                 RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
                 RoleTitle = "Shopper",
+            }, new Role()
+            {
+                RoleId = "e9d0b742-79ff-4439-985e-bba8ae0d214d",
+                RoleTitle = "Admin"
+            });
+
+            #endregion
+
+            #region role permission data seed
+
+            modelBuilder.Entity<RolePermission>().HasData(new RolePermission()
+            {
+                RoleId = "e9d0b742-79ff-4439-985e-bba8ae0d214d",
+                PermissionId = "32757e0d-0c77-4ecd-bf82-6888acff29f1",
+            }, new RolePermission()
+            {
+                RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
+                PermissionId = "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1",
             });
 
             #endregion
@@ -332,6 +366,10 @@ namespace Reshop.Infrastructure.Context
             {
                 UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31",
                 RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
+            },new UserRole()
+            {
+                UserId = "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31",
+                RoleId = "e9d0b742-79ff-4439-985e-bba8ae0d214d",
             });
 
             #endregion
