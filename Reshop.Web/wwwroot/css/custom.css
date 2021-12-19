@@ -1081,15 +1081,14 @@ header .top-menu {
     text-align: right;
 }
 
-.mobile-nav-toggle i {
-    margin: 0;
-    color: #ebebeb;
-}
+    .mobile-nav-toggle i {
+        margin: 0;
+        color: #ebebeb;
+    }
 
-.mobile-nav-toggle:hover i {
-    transition: ease .3s
-    color: #fc5400;
-}
+    .mobile-nav-toggle:hover i {
+        transition: ease .3s color: #fc5400;
+    }
 
 /* -------------------------------------- hrader -------------------------------------- */
 
@@ -1152,14 +1151,14 @@ ul.breadcrumb {
 }
 
 .swiper-button-next:hover:after {
-        transition: ease .3s;
-        margin-left: 4px;
-    }
+    transition: ease .3s;
+    margin-left: 4px;
+}
 
-    .swiper-button-prev:hover:after {
-        transition: ease .3s;
-        margin-right: 4px;
-    }
+.swiper-button-prev:hover:after {
+    transition: ease .3s;
+    margin-right: 4px;
+}
 
 .swiper-pagination-bullet {
     background-color: #fff;
@@ -1237,8 +1236,60 @@ ul.breadcrumb {
 /* -------------------------------------- slider -------------------------------------- */
 
 
-/* -------------------------------------- single product -------------------------------------- */
+.login-section {
+    border-radius: 8px;
+    position: relative;
+    border: 1px solid #eee;
+    width: 100%;
+    max-width: 350px;
+    margin: 50px auto;
+    display: block;
+    padding: 20px;
+}
 
+    .login-section .logo {
+        text-align: center;
+        width: 100%;
+        display: block;
+        position: relative;
+    }
+
+        .login-section .logo a {
+            font-size: 35px;
+            color: #fc5400;
+            font-family: sans-serif;
+            font-style: oblique;
+            font-weight: bold;
+        }
+
+    .login-section .login-title {
+        position: relative;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 30px;
+    }
+
+        .login-section .login-title:before {
+            content: "";
+            position: absolute;
+            top: 5px;
+            right: -21px;
+            border-width: 12px;
+            border-style: solid;
+            border-color: transparent #FC5400 transparent transparent;
+        }
+
+    .login-section .fields {
+        border-top: 1px solid #cfcfcf;
+        padding-top: 20px;
+    }
+
+        .login-section .fields .st-btn {
+            width: 200px;
+            margin: 30px 0 0 0;
+            font-weight: bold;
+        }
+/* -------------------------------------- single product -------------------------------------- */
 .box-shadow {
     border: 1px solid #e9e8e8;
     border-radius: 8px;
@@ -1505,9 +1556,9 @@ ul.breadcrumb {
         border-radius: 11px;
     }
 
-.mini-pic-slider:hover {
-    border: 1px solid #fc5400;
-}
+    .mini-pic-slider:hover {
+        border: 1px solid #fc5400;
+    }
 
 .detail-header {
     display: flex;
@@ -2726,7 +2777,7 @@ ul.breadcrumb {
     justify-content: center;
 }
 
-.user-img .img-layer img {
+    .user-img .img-layer img {
         width: 130px;
         height: 130px;
         padding: 3px;
@@ -2738,7 +2789,7 @@ ul.breadcrumb {
         position: relative;
     }
 
-.user-img .img-layer .change-image {
+    .user-img .img-layer .change-image {
         width: 130px;
         height: 130px;
         border-radius: 100%;
@@ -2754,9 +2805,9 @@ ul.breadcrumb {
         opacity: 0;
     }
 
-.user-img .img-layer .change-image i {
-    padding: 0;
-}
+        .user-img .img-layer .change-image i {
+            padding: 0;
+        }
 
     .user-img .img-layer:hover .change-image {
         opacity: 1;
@@ -3367,6 +3418,10 @@ ul.breadcrumb {
     .form-field textarea {
         min-height: 38px;
         height: auto;
+    }
+
+    .form-field input.left {
+        direction: ltr;
     }
 
     .form-field label {

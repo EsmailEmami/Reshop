@@ -13,6 +13,7 @@ namespace Reshop.Application.Enums.User
         Question_v_Comment,
         FavoriteProducts,
         ShopperProduct,
-        FullManage
+        FullManage,
+        ChangePassword
     }
 }

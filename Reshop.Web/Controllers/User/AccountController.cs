@@ -740,8 +740,7 @@ namespace Reshop.Web.Controllers.User
 
             bool isPhoneNumberExist = await _userService.IsPhoneNumberExistAsync(phoneNumber);
 
-            if (!isPhoneNumberExist) return Json(true);
-            return Json("شماره تماس وارد شده توسط شخص دیگری ثبت شده است.");
+            return !isPhoneNumberExist ? Json(true) : Json("شماره تماس وارد شده توسط شخص دیگری ثبت شده است.");
         }
 
         [HttpPost]
@@ -749,10 +748,9 @@ namespace Reshop.Web.Controllers.User
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            bool isPhoneNumberExist = await _userService.IsUserPasswordValidAsync(userId, password);
+            bool isPhoneNumberValid = await _userService.IsUserPasswordValidAsync(userId, password);
 
-            if (!isPhoneNumberExist) return Json(true);
-            return Json("رمز عبور فعلی شما اشتباه میباشد.");
+            return isPhoneNumberValid ? Json(true) : Json("رمز عبور فعلی شما اشتباه میباشد.");
         }
 
         #endregion

@@ -3,34 +3,74 @@
 @{
     ViewData["Title"] = "ورود به سایت";
 }
-<script src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
+<ul class="breadcrumb">
+    <li>
+        <a href="/">ریشاپ</a>
+    </li>
+    <li>
+        <a asp-controller="Account" asp-action="Login">ورود به سایت</a>
+    </li>
+</ul>
 
-<div class="row">
-    <div class="col-md-8">
+<section class="login-section box-shadow">
+    <div class="logo">
+        <a href="/">Reshop</a>
+    </div>
+
+    <div class="login-title">
+        <p>ورود به سایت</p>
+    </div>
+
+    <div class="fields">
+        
         <form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="RememberMe" /> @Html.DisplayNameFor(model => model.RememberMe)
-                </label>
-            </div>
-            <div class="form-group  form-check">
-                <div class="g-recaptcha" data-sitekey="@ReCaptchaKey.Value.RecapchaSiteKey"></div>
-                <span class="text-danger">@ViewBag.RecaptchaErrorMessage</span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-field">
+                        <input asp-for="PhoneNumber">
+                        <label><i class="far  fa-user"></i> شماره موبایل</label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-field">
+                        <input asp-for="Password" class="left">
+                        <label><i class="far  fa-user"></i> رمز عبور</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-12">
+                    <div class="form-check">
+                        <label>
+                            من را به خاطر بسپار
+                            <input type="checkbox" asp-for="RememberMe">
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group  text-center">
+                    <div class="g-recaptcha" data-sitekey="@ReCaptchaKey.Value.RecapchaSiteKey"></div>
+                    <span class="text-danger">@ViewBag.RecaptchaErrorMessage</span>
+                </div>
+                <div class="form-group text-center">
+                    <input type="submit" value="ورود" class="btn btn-success st-btn" />
+                </div>
+
             </div>
         </form>
+
     </div>
-</div>
+</section>
+
 
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+<script src="https://www.google.com/recaptcha/api.js?hl=fa"></script>
 }
