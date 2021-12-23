@@ -10,8 +10,8 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    [Migration("20211218190343_editUser1")]
-    partial class editUser1
+    [Migration("20211223142652_addSomeDataSeedsforPermission")]
+    partial class addSomeDataSeedsforPermission
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -285,6 +285,174 @@ namespace Reshop.Infrastructure.Migrations
                         {
                             PermissionId = "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1",
                             PermissionTitle = "Shopper"
+                        },
+                        new
+                        {
+                            PermissionId = "fa5205e1-7395-4c3e-a464-72e84d38975a",
+                            PermissionTitle = "ProductsMainPage"
+                        },
+                        new
+                        {
+                            PermissionId = "4f27c20b-e51a-4152-9e7d-a5775ab969c6",
+                            ParentId = "fa5205e1-7395-4c3e-a464-72e84d38975a",
+                            PermissionTitle = "AddAUX"
+                        },
+                        new
+                        {
+                            PermissionId = "5feb5422-b00a-47cd-b688-00ab6978441d",
+                            ParentId = "fa5205e1-7395-4c3e-a464-72e84d38975a",
+                            PermissionTitle = "EditAUX"
+                        },
+                        new
+                        {
+                            PermissionId = "d62a9faf-087d-43a3-9bbe-66ae2737a0a5",
+                            ParentId = "fa5205e1-7395-4c3e-a464-72e84d38975a",
+                            PermissionTitle = "ProductDetail"
+                        },
+                        new
+                        {
+                            PermissionId = "8db60935-056d-45a5-8044-a2e6e42e3edf",
+                            ParentId = "d62a9faf-087d-43a3-9bbe-66ae2737a0a5",
+                            PermissionTitle = "ColorDetail-Product"
+                        },
+                        new
+                        {
+                            PermissionId = "91806aaf-6e67-4b3a-9554-faac7a5454f3",
+                            ParentId = "d62a9faf-087d-43a3-9bbe-66ae2737a0a5",
+                            PermissionTitle = "DiscountDetail-Product"
+                        },
+                        new
+                        {
+                            PermissionId = "75a1d67a-8b13-472b-b93e-61186c41f5b2",
+                            PermissionTitle = "BrandsMainPage"
+                        },
+                        new
+                        {
+                            PermissionId = "5a597555-a3ac-4c3a-8ab6-50961b43a4b6",
+                            ParentId = "75a1d67a-8b13-472b-b93e-61186c41f5b2",
+                            PermissionTitle = "AddBrand"
+                        },
+                        new
+                        {
+                            PermissionId = "448e89b5-b5fe-4c65-8f73-49df8a749cc0",
+                            ParentId = "75a1d67a-8b13-472b-b93e-61186c41f5b2",
+                            PermissionTitle = "EditBrand"
+                        },
+                        new
+                        {
+                            PermissionId = "d54aaed6-97f1-47fb-81ec-be6140c24f74",
+                            ParentId = "75a1d67a-8b13-472b-b93e-61186c41f5b2",
+                            PermissionTitle = "BrandDetail"
+                        },
+                        new
+                        {
+                            PermissionId = "e87bb2b0-8c05-40ec-9b48-4008eeac79be",
+                            ParentId = "75a1d67a-8b13-472b-b93e-61186c41f5b2",
+                            PermissionTitle = "AvailableBrand"
+                        },
+                        new
+                        {
+                            PermissionId = "c53de576-d7d5-4f62-9267-a88f17c9a952",
+                            ParentId = "75a1d67a-8b13-472b-b93e-61186c41f5b2",
+                            PermissionTitle = "UnAvailableBrand"
+                        },
+                        new
+                        {
+                            PermissionId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
+                            PermissionTitle = "OfficialBrandProductsMainPage"
+                        },
+                        new
+                        {
+                            PermissionId = "6d4e2f7b-a4bc-47b1-93ac-bcf9a0b3b3f0",
+                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
+                            PermissionTitle = "AddOfficialBrandProduct"
+                        },
+                        new
+                        {
+                            PermissionId = "526a98eb-79fd-4e54-bea8-ed7e85c0497f",
+                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
+                            PermissionTitle = "EditOfficialBrandProduct"
+                        },
+                        new
+                        {
+                            PermissionId = "28cf0756-89f5-4a16-a5f8-64adcb095bce",
+                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
+                            PermissionTitle = "OfficialBrandProductDetail"
+                        },
+                        new
+                        {
+                            PermissionId = "26eb15bc-b6c0-462e-8e7e-9652d56e549b",
+                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
+                            PermissionTitle = "AvailableOfficialBrandProduct"
+                        },
+                        new
+                        {
+                            PermissionId = "c06312fc-c36c-4e12-8964-5f893eeef3cf",
+                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
+                            PermissionTitle = "UnAvailableOfficialBrandProduct"
+                        },
+                        new
+                        {
+                            PermissionId = "8200832d-f2b6-4c7f-be15-b94592db8b0b",
+                            PermissionTitle = "ColorsMainPage"
+                        },
+                        new
+                        {
+                            PermissionId = "2ce5f38d-6e9a-4de2-8fcf-dca1baf0902a",
+                            ParentId = "8200832d-f2b6-4c7f-be15-b94592db8b0b",
+                            PermissionTitle = "AddColor"
+                        },
+                        new
+                        {
+                            PermissionId = "5660f404-46f3-42c9-818e-e5d6a8cc514b",
+                            ParentId = "8200832d-f2b6-4c7f-be15-b94592db8b0b",
+                            PermissionTitle = "EditColor"
+                        },
+                        new
+                        {
+                            PermissionId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9",
+                            PermissionTitle = "PermissionsMainPage"
+                        },
+                        new
+                        {
+                            PermissionId = "afa3e6c4-cd57-4bed-ba82-c656bed921ff",
+                            ParentId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9",
+                            PermissionTitle = "AddPermission"
+                        },
+                        new
+                        {
+                            PermissionId = "949826a7-070f-450a-abd8-effca32350c2",
+                            ParentId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9",
+                            PermissionTitle = "EditPermission"
+                        },
+                        new
+                        {
+                            PermissionId = "4c516b2a-0149-4626-8d19-c2d6ac51a425",
+                            ParentId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9",
+                            PermissionTitle = "DeletePermission"
+                        },
+                        new
+                        {
+                            PermissionId = "ec223189-ef42-41bc-b01f-6d58db051e62",
+                            PermissionTitle = "RolesMainPage"
+                        },
+                        new
+                        {
+                            PermissionId = "00dd702b-1e83-4338-ae4b-3f4db4244aa5",
+                            ParentId = "ec223189-ef42-41bc-b01f-6d58db051e62",
+                            PermissionTitle = "AddRole"
+                        },
+                        new
+                        {
+                            PermissionId = "404efa94-c45f-4c50-ad3d-faaaf6b61807",
+                            ParentId = "ec223189-ef42-41bc-b01f-6d58db051e62",
+                            PermissionTitle = "EditRole"
+                        },
+                        new
+                        {
+                            PermissionId = "c154f3e4-c485-47b2-8957-6d7b177ce466",
+                            ParentId = "ec223189-ef42-41bc-b01f-6d58db051e62",
+                            PermissionTitle = "DeleteRole"
                         });
                 });
 
@@ -2994,7 +3162,7 @@ namespace Reshop.Infrastructure.Migrations
                             InviteCount = 0,
                             IsBlocked = false,
                             NationalCode = "1111111111",
-                            Password = "1B-BD-88-64-60-82-70-15-E5-D6-05-ED-44-25-22-51",
+                            Password = "7F-61-E7-33-23-CD-42-39-B9-38-18-F9-E5-46-23-91",
                             PhoneNumber = "09903669556",
                             RegisterDate = new DateTime(2021, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 0,

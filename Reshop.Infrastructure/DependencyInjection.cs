@@ -110,7 +110,6 @@ namespace Reshop.Infrastructure
             #region Cryptography
 
             services.AddDataProtection()
-                .DisableAutomaticKeyGeneration()
                 .SetDefaultKeyLifetime(new TimeSpan(15, 0, 0, 0));
 
             #endregion

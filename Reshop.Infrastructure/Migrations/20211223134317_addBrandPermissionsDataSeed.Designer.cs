@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reshop.Infrastructure.Context;
 
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    partial class ReshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211223134317_addBrandPermissionsDataSeed")]
+    partial class addBrandPermissionsDataSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -353,104 +355,6 @@ namespace Reshop.Infrastructure.Migrations
                             PermissionId = "c53de576-d7d5-4f62-9267-a88f17c9a952",
                             ParentId = "75a1d67a-8b13-472b-b93e-61186c41f5b2",
                             PermissionTitle = "UnAvailableBrand"
-                        },
-                        new
-                        {
-                            PermissionId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
-                            PermissionTitle = "OfficialBrandProductsMainPage"
-                        },
-                        new
-                        {
-                            PermissionId = "6d4e2f7b-a4bc-47b1-93ac-bcf9a0b3b3f0",
-                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
-                            PermissionTitle = "AddOfficialBrandProduct"
-                        },
-                        new
-                        {
-                            PermissionId = "526a98eb-79fd-4e54-bea8-ed7e85c0497f",
-                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
-                            PermissionTitle = "EditOfficialBrandProduct"
-                        },
-                        new
-                        {
-                            PermissionId = "28cf0756-89f5-4a16-a5f8-64adcb095bce",
-                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
-                            PermissionTitle = "OfficialBrandProductDetail"
-                        },
-                        new
-                        {
-                            PermissionId = "26eb15bc-b6c0-462e-8e7e-9652d56e549b",
-                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
-                            PermissionTitle = "AvailableOfficialBrandProduct"
-                        },
-                        new
-                        {
-                            PermissionId = "c06312fc-c36c-4e12-8964-5f893eeef3cf",
-                            ParentId = "d08d44f8-9f67-4079-b1c7-8f5bc126b66b",
-                            PermissionTitle = "UnAvailableOfficialBrandProduct"
-                        },
-                        new
-                        {
-                            PermissionId = "8200832d-f2b6-4c7f-be15-b94592db8b0b",
-                            PermissionTitle = "ColorsMainPage"
-                        },
-                        new
-                        {
-                            PermissionId = "2ce5f38d-6e9a-4de2-8fcf-dca1baf0902a",
-                            ParentId = "8200832d-f2b6-4c7f-be15-b94592db8b0b",
-                            PermissionTitle = "AddColor"
-                        },
-                        new
-                        {
-                            PermissionId = "5660f404-46f3-42c9-818e-e5d6a8cc514b",
-                            ParentId = "8200832d-f2b6-4c7f-be15-b94592db8b0b",
-                            PermissionTitle = "EditColor"
-                        },
-                        new
-                        {
-                            PermissionId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9",
-                            PermissionTitle = "PermissionsMainPage"
-                        },
-                        new
-                        {
-                            PermissionId = "afa3e6c4-cd57-4bed-ba82-c656bed921ff",
-                            ParentId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9",
-                            PermissionTitle = "AddPermission"
-                        },
-                        new
-                        {
-                            PermissionId = "949826a7-070f-450a-abd8-effca32350c2",
-                            ParentId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9",
-                            PermissionTitle = "EditPermission"
-                        },
-                        new
-                        {
-                            PermissionId = "4c516b2a-0149-4626-8d19-c2d6ac51a425",
-                            ParentId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9",
-                            PermissionTitle = "DeletePermission"
-                        },
-                        new
-                        {
-                            PermissionId = "ec223189-ef42-41bc-b01f-6d58db051e62",
-                            PermissionTitle = "RolesMainPage"
-                        },
-                        new
-                        {
-                            PermissionId = "00dd702b-1e83-4338-ae4b-3f4db4244aa5",
-                            ParentId = "ec223189-ef42-41bc-b01f-6d58db051e62",
-                            PermissionTitle = "AddRole"
-                        },
-                        new
-                        {
-                            PermissionId = "404efa94-c45f-4c50-ad3d-faaaf6b61807",
-                            ParentId = "ec223189-ef42-41bc-b01f-6d58db051e62",
-                            PermissionTitle = "EditRole"
-                        },
-                        new
-                        {
-                            PermissionId = "c154f3e4-c485-47b2-8957-6d7b177ce466",
-                            ParentId = "ec223189-ef42-41bc-b01f-6d58db051e62",
-                            PermissionTitle = "DeleteRole"
                         });
                 });
 

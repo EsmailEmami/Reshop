@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Reshop.Infrastructure.Migrations
 {
-    public partial class tables : Migration
+    public partial class Tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -597,6 +597,7 @@ namespace Reshop.Infrastructure.Migrations
                     NationalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     AccountBalance = table.Column<decimal>(type: "Money", nullable: false),
                     RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IsBlocked = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -1751,13 +1752,22 @@ namespace Reshop.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "AccountBalance", "Email", "FullName", "InviteCode", "InviteCount", "IsBlocked", "NationalCode", "PhoneNumber", "RegisterDate", "Score", "UserAvatar" },
-                values: new object[] { "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31", 0m, "esmailemami84@gmail.com", "کاربر پیش فرض", "6D9698E6D85B4BA3AD0FC1F6B0DDD00F", 0, false, "1111111111", "09903669556", new DateTime(2021, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "userAvatar.jpg" });
+                columns: new[] { "UserId", "AccountBalance", "Email", "FullName", "InviteCode", "InviteCount", "IsBlocked", "NationalCode", "Password", "PhoneNumber", "RegisterDate", "Score", "UserAvatar" },
+                values: new object[] { "02b75aeb-f9a1-4dbc-bf69-4c65cc29ec31", 0m, "esmailemami84@gmail.com", "کاربر پیش فرض", "6D9698E6D85B4BA3AD0FC1F6B0DDD00F", 0, false, "1111111111", "1B-BD-88-64-60-82-70-15-E5-D6-05-ED-44-25-22-51", "09903669556", new DateTime(2021, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "userAvatar.jpg" });
 
             migrationBuilder.InsertData(
                 table: "Cities",
                 columns: new[] { "CityId", "CityName", "StateId" },
                 values: new object[] { 1, "کمالشهر", 1 });
+
+            migrationBuilder.InsertData(
+                table: "RolePermissions",
+                columns: new[] { "PermissionId", "RoleId" },
+                values: new object[,]
+                {
+                    { "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1", "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8" },
+                    { "32757e0d-0c77-4ecd-bf82-6888acff29f1", "e9d0b742-79ff-4439-985e-bba8ae0d214d" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Shoppers",

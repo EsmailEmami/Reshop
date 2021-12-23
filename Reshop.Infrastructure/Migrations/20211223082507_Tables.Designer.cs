@@ -10,8 +10,8 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    [Migration("20211218161932_tables")]
-    partial class tables
+    [Migration("20211223082507_Tables")]
+    partial class Tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -329,6 +329,18 @@ namespace Reshop.Infrastructure.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("RolePermissions");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = "e9d0b742-79ff-4439-985e-bba8ae0d214d",
+                            PermissionId = "32757e0d-0c77-4ecd-bf82-6888acff29f1"
+                        },
+                        new
+                        {
+                            RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
+                            PermissionId = "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1"
+                        });
                 });
 
             modelBuilder.Entity("Reshop.Domain.Entities.Permission.UserRole", b =>
@@ -2946,6 +2958,11 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(11)
@@ -2977,6 +2994,7 @@ namespace Reshop.Infrastructure.Migrations
                             InviteCount = 0,
                             IsBlocked = false,
                             NationalCode = "1111111111",
+                            Password = "1B-BD-88-64-60-82-70-15-E5-D6-05-ED-44-25-22-51",
                             PhoneNumber = "09903669556",
                             RegisterDate = new DateTime(2021, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 0,

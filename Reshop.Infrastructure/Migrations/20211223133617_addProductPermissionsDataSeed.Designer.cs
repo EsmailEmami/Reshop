@@ -10,8 +10,8 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    [Migration("20211218162428_addSomeDataSeed")]
-    partial class addSomeDataSeed
+    [Migration("20211223133617_addProductPermissionsDataSeed")]
+    partial class addProductPermissionsDataSeed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -285,6 +285,41 @@ namespace Reshop.Infrastructure.Migrations
                         {
                             PermissionId = "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1",
                             PermissionTitle = "Shopper"
+                        },
+                        new
+                        {
+                            PermissionId = "fa5205e1-7395-4c3e-a464-72e84d38975a",
+                            PermissionTitle = "ProductsMainPage"
+                        },
+                        new
+                        {
+                            PermissionId = "4f27c20b-e51a-4152-9e7d-a5775ab969c6",
+                            ParentId = "fa5205e1-7395-4c3e-a464-72e84d38975a",
+                            PermissionTitle = "AddAUX"
+                        },
+                        new
+                        {
+                            PermissionId = "5feb5422-b00a-47cd-b688-00ab6978441d",
+                            ParentId = "fa5205e1-7395-4c3e-a464-72e84d38975a",
+                            PermissionTitle = "EditAUX"
+                        },
+                        new
+                        {
+                            PermissionId = "d62a9faf-087d-43a3-9bbe-66ae2737a0a5",
+                            ParentId = "fa5205e1-7395-4c3e-a464-72e84d38975a",
+                            PermissionTitle = "ProductDetail"
+                        },
+                        new
+                        {
+                            PermissionId = "8db60935-056d-45a5-8044-a2e6e42e3edf",
+                            ParentId = "d62a9faf-087d-43a3-9bbe-66ae2737a0a5",
+                            PermissionTitle = "ColorDetail-Product"
+                        },
+                        new
+                        {
+                            PermissionId = "91806aaf-6e67-4b3a-9554-faac7a5454f3",
+                            ParentId = "d62a9faf-087d-43a3-9bbe-66ae2737a0a5",
+                            PermissionTitle = "DiscountDetail-Product"
                         });
                 });
 
@@ -2958,6 +2993,11 @@ namespace Reshop.Infrastructure.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(11)
@@ -2989,6 +3029,7 @@ namespace Reshop.Infrastructure.Migrations
                             InviteCount = 0,
                             IsBlocked = false,
                             NationalCode = "1111111111",
+                            Password = "7F-61-E7-33-23-CD-42-39-B9-38-18-F9-E5-46-23-91",
                             PhoneNumber = "09903669556",
                             RegisterDate = new DateTime(2021, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Score = 0,

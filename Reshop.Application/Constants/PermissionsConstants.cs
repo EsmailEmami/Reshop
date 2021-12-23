@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Reshop.Application.Constants
+﻿namespace Reshop.Application.Constants
 {
-   public static class PermissionsConstants
-   {
-       public const string AdminPanel = "AdminPanelMainPage";
+    public static class PermissionsConstants
+    {
+        public const string AdminPanel = "AdminPanelMainPage";
 
-       // product panel
-       public const string ProductsPage = "ProductsMainPage";
-       public const string AddAux = "AddAUX";
+        // product panel
+        public const string ProductsPage = "ProductsMainPage";
+        public const string AddAux = "AddAUX";
         public const string EditAux = "EditAUX";
         public const string ProductDetail = "ProductDetail";
         public const string ColorDetailOfProduct = "ColorDetail-Product";
@@ -54,5 +48,5 @@ namespace Reshop.Application.Constants
 
         // shopper
         public const string Shopper = "Shopper";
-   }
+    }
 }
