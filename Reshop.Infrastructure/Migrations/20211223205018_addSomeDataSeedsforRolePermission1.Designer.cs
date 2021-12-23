@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reshop.Infrastructure.Context;
 
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    partial class ReshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211223205018_addSomeDataSeedsforRolePermission1")]
+    partial class addSomeDataSeedsforRolePermission1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -504,56 +506,6 @@ namespace Reshop.Infrastructure.Migrations
                         {
                             RoleId = "2762ff27-40af-45a2-9a3a-41046597fce5",
                             RoleTitle = "Full Products Manager"
-                        },
-                        new
-                        {
-                            RoleId = "e54362db-747b-4b70-bc1f-25542d836e48",
-                            RoleTitle = "Roles Manager"
-                        },
-                        new
-                        {
-                            RoleId = "84445749-e035-4bc1-9de5-146980b480a4",
-                            RoleTitle = "Add Role"
-                        },
-                        new
-                        {
-                            RoleId = "c5bf460c-7906-4fd2-a33c-ebddd8afa18d",
-                            RoleTitle = "Edit Role"
-                        },
-                        new
-                        {
-                            RoleId = "901ad48e-244f-4077-86fe-3d76e5495501",
-                            RoleTitle = "Delete Role"
-                        },
-                        new
-                        {
-                            RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36",
-                            RoleTitle = "Full Role Manager"
-                        },
-                        new
-                        {
-                            RoleId = "6193141a-b2c6-4577-b1de-645f0425b8ae",
-                            RoleTitle = "Permissions Manager"
-                        },
-                        new
-                        {
-                            RoleId = "5df4eefa-87e9-4bf4-bbd0-8c90ab66e9b3",
-                            RoleTitle = "Add Permission"
-                        },
-                        new
-                        {
-                            RoleId = "baa40a2f-6e8e-468e-84f6-16c22865231e",
-                            RoleTitle = "Edit Permission"
-                        },
-                        new
-                        {
-                            RoleId = "c3884210-cedf-4cda-8547-ab6cb30731e7",
-                            RoleTitle = "Delete Permission"
-                        },
-                        new
-                        {
-                            RoleId = "211207c1-9669-4099-8955-90cba0639484",
-                            RoleTitle = "Full Permission Manager"
                         });
                 });
 
@@ -611,46 +563,6 @@ namespace Reshop.Infrastructure.Migrations
                         {
                             RoleId = "2762ff27-40af-45a2-9a3a-41046597fce5",
                             PermissionId = "91806aaf-6e67-4b3a-9554-faac7a5454f3"
-                        },
-                        new
-                        {
-                            RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36",
-                            PermissionId = "ec223189-ef42-41bc-b01f-6d58db051e62"
-                        },
-                        new
-                        {
-                            RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36",
-                            PermissionId = "00dd702b-1e83-4338-ae4b-3f4db4244aa5"
-                        },
-                        new
-                        {
-                            RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36",
-                            PermissionId = "404efa94-c45f-4c50-ad3d-faaaf6b61807"
-                        },
-                        new
-                        {
-                            RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36",
-                            PermissionId = "c154f3e4-c485-47b2-8957-6d7b177ce466"
-                        },
-                        new
-                        {
-                            RoleId = "211207c1-9669-4099-8955-90cba0639484",
-                            PermissionId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9"
-                        },
-                        new
-                        {
-                            RoleId = "211207c1-9669-4099-8955-90cba0639484",
-                            PermissionId = "afa3e6c4-cd57-4bed-ba82-c656bed921ff"
-                        },
-                        new
-                        {
-                            RoleId = "211207c1-9669-4099-8955-90cba0639484",
-                            PermissionId = "949826a7-070f-450a-abd8-effca32350c2"
-                        },
-                        new
-                        {
-                            RoleId = "211207c1-9669-4099-8955-90cba0639484",
-                            PermissionId = "4c516b2a-0149-4626-8d19-c2d6ac51a425"
                         });
                 });
 

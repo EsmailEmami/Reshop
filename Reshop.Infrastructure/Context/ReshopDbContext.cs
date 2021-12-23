@@ -418,6 +418,75 @@ namespace Reshop.Infrastructure.Context
                 RoleTitle = "Admin"
             });
 
+            // products role
+            modelBuilder.Entity<Role>().HasData(new Role()
+            {
+                RoleId = "cd2f26bd-0552-4fb0-be45-ca10741a7ab2",
+                RoleTitle = "Products Manager"
+            }, new Role()
+            {
+                RoleId = "36aaf88b-d399-467c-af03-4bc902b4ac6d",
+                RoleTitle = "Add Products"
+            }, new Role()
+            {
+                RoleId = "04d8adb3-f7cc-4595-b049-22d9e1fff55e",
+                RoleTitle = "Product Detail"
+            }, new Role()
+            {
+                RoleId = "4b8c123d-56c2-41d0-baf9-b7794031bf80",
+                RoleTitle = "Edit Products"
+            }, new Role()
+            {
+                RoleId = "2762ff27-40af-45a2-9a3a-41046597fce5",
+                RoleTitle = "Full Products Manager"
+            });
+
+            // role manager role
+            modelBuilder.Entity<Role>().HasData(new Role()
+            {
+                RoleId = "e54362db-747b-4b70-bc1f-25542d836e48",
+                RoleTitle = "Roles Manager"
+            }, new Role()
+            {
+                RoleId = "84445749-e035-4bc1-9de5-146980b480a4",
+                RoleTitle = "Add Role"
+            }, new Role()
+            {
+                RoleId = "c5bf460c-7906-4fd2-a33c-ebddd8afa18d",
+                RoleTitle = "Edit Role"
+            }, new Role()
+            {
+                RoleId = "901ad48e-244f-4077-86fe-3d76e5495501",
+                RoleTitle = "Delete Role"
+            }, new Role()
+            {
+                RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36",
+                RoleTitle = "Full Role Manager"
+            });
+
+            // permission manager role
+            modelBuilder.Entity<Role>().HasData(new Role()
+            {
+                RoleId = "6193141a-b2c6-4577-b1de-645f0425b8ae",
+                RoleTitle = "Permissions Manager"
+            }, new Role()
+            {
+                RoleId = "5df4eefa-87e9-4bf4-bbd0-8c90ab66e9b3",
+                RoleTitle = "Add Permission"
+            }, new Role()
+            {
+                RoleId = "baa40a2f-6e8e-468e-84f6-16c22865231e",
+                RoleTitle = "Edit Permission"
+            }, new Role()
+            {
+                RoleId = "c3884210-cedf-4cda-8547-ab6cb30731e7",
+                RoleTitle = "Delete Permission"
+            }, new Role()
+            {
+                RoleId = "211207c1-9669-4099-8955-90cba0639484",
+                RoleTitle = "Full Permission Manager"
+            });
+
             #endregion
 
             #region role permission data seed
@@ -430,6 +499,71 @@ namespace Reshop.Infrastructure.Context
             {
                 RoleId = "5fd1d3e0-b54c-4ea1-9762-80c6483fd3f8",
                 PermissionId = "3a86d2a6-8582-40c9-9c70-7b8c0efac6c1",
+            });
+
+            // Full Products Manager - role permission
+            modelBuilder.Entity<RolePermission>().HasData(new RolePermission()
+            {
+                RoleId = "2762ff27-40af-45a2-9a3a-41046597fce5", // Full Products Manager
+                PermissionId = "fa5205e1-7395-4c3e-a464-72e84d38975a",// ProductsMainPage
+            }, new RolePermission()
+            {
+                RoleId = "2762ff27-40af-45a2-9a3a-41046597fce5", // Full Products Manager
+                PermissionId = "4f27c20b-e51a-4152-9e7d-a5775ab969c6", // Add AUX
+            }, new RolePermission()
+            {
+                RoleId = "2762ff27-40af-45a2-9a3a-41046597fce5", // Full Products Manager
+                PermissionId = "5feb5422-b00a-47cd-b688-00ab6978441d", // Edit AUX
+            }, new RolePermission()
+            {
+                RoleId = "2762ff27-40af-45a2-9a3a-41046597fce5", // Full Products Manager
+                PermissionId = "d62a9faf-087d-43a3-9bbe-66ae2737a0a5", // ProductDetail
+            }, new RolePermission()
+            {
+                RoleId = "2762ff27-40af-45a2-9a3a-41046597fce5", // Full Products Manager
+                PermissionId = "8db60935-056d-45a5-8044-a2e6e42e3edf", // ColorDetail-Product
+            }, new RolePermission()
+            {
+                RoleId = "2762ff27-40af-45a2-9a3a-41046597fce5", // Full Products Manager
+                PermissionId = "91806aaf-6e67-4b3a-9554-faac7a5454f3", // DiscountDetail-Product
+            });
+
+            // full role manager - role permissions
+            modelBuilder.Entity<RolePermission>().HasData(new RolePermission()
+            {
+                RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36", // full role manager
+                PermissionId = "ec223189-ef42-41bc-b01f-6d58db051e62", // RolesMainPage
+            }, new RolePermission()
+            {
+                RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36", // full role manager
+                PermissionId = "00dd702b-1e83-4338-ae4b-3f4db4244aa5",// AddRole
+            }, new RolePermission()
+            {
+                RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36", // full role manager
+                PermissionId = "404efa94-c45f-4c50-ad3d-faaaf6b61807",// EditRole
+            }, new RolePermission()
+            {
+                RoleId = "64072c6a-f55b-4cfc-a1cf-8f2a98686c36", // full role manager
+                PermissionId = "c154f3e4-c485-47b2-8957-6d7b177ce466",// DeleteRole
+            });
+
+            // full permission manager - role permissions
+            modelBuilder.Entity<RolePermission>().HasData(new RolePermission()
+            {
+                RoleId = "211207c1-9669-4099-8955-90cba0639484", // full permission manager
+                PermissionId = "bef2eb25-1007-40ae-b667-dcff4c4a07a9", // PermissionsMainPage
+            }, new RolePermission()
+            {
+                RoleId = "211207c1-9669-4099-8955-90cba0639484", // full role manager
+                PermissionId = "afa3e6c4-cd57-4bed-ba82-c656bed921ff",// AddPermission
+            }, new RolePermission()
+            {
+                RoleId = "211207c1-9669-4099-8955-90cba0639484", // full role manager
+                PermissionId = "949826a7-070f-450a-abd8-effca32350c2",// EditPermission
+            }, new RolePermission()
+            {
+                RoleId = "211207c1-9669-4099-8955-90cba0639484", // full role manager
+                PermissionId = "4c516b2a-0149-4626-8d19-c2d6ac51a425",// DeletePermission
             });
 
             #endregion
