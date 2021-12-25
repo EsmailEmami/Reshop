@@ -105,16 +105,16 @@ namespace Reshop.Application.Interfaces.Shopper
         #region chart
 
         Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(int productId, string shopperId);
-        Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(string shopperProductId);
+        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(string shopperProductId);
         IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayColorProductDataChart(string shopperProductColorId);
-        Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayShopperDataChartAsync(string shopperId);
+        IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayShopperDataChart(string shopperId);
         IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfProductChart(int productId);
         IEnumerable<Tuple<string, int>> GetLastThirtyDayBestShoppersOfColorProductChart(int productId, int colorId);
         IEnumerable<Tuple<string, int>> GetBestShoppersOfProductChart(int productId);
         IEnumerable<Tuple<string, int>> GetBestShoppersOfColorProductChart(int productId, int colorId);
         // colorName , view , sell , returned
         Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(int productId, string shopperId);
-        Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(string shopperProductId);
+        IEnumerable<Tuple<string, int, int, int>> GetColorsOfShopperProductDataChart(string shopperProductId);
 
         #endregion
     }

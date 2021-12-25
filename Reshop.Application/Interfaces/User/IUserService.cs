@@ -18,11 +18,11 @@ namespace Reshop.Application.Interfaces.User
         Task<UserDetailViewModel> GetUserDetailAsync(string userId);
 
         int GetUserWalletBalance(string userId);
-        IAsyncEnumerable<Domain.Entities.User.User> GetUsers();
+        IEnumerable<Domain.Entities.User.User> GetUsers();
         IEnumerable<UserInformationForListViewModel> GetUsersInformation();
         //Task<Tuple<IAsyncEnumerable<ShopperInformationViewModel>, int, int>> GetShoppersInformationWithPagination(int pageId = 1, int take = 18);
         IEnumerable<Address> GetUserAddresses(string userId);
-        Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId);
+        IEnumerable<AddressForShowViewModel> GetUserAddressesForShow(string userId);
         Task<bool> IsPhoneNumberExistAsync(string phoneNumber);
         Task<bool> IsUserPasswordValidAsync(string userId, string password);
         Task<bool> IsUserExistAsync(string userId);

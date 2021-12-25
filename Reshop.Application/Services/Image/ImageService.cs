@@ -72,16 +72,16 @@ namespace Reshop.Application.Services.Image
             }
         }
 
-        public async Task<IEnumerable<ImageForShowViewModel>> GetImagesForShowAsync() =>
-            await _imageRepository.GetImagesForShowAsync();
+        public IEnumerable<ImageForShowViewModel> GetImagesForShow() =>
+            _imageRepository.GetImagesForShow();
 
-        public async Task<IEnumerable<ImagesForShowInSiteViewModel>> GetImagesOfPlaceAsync(string place) =>
-            await _imageRepository.GetImagesOfPlaceAsync(place);
+        public IEnumerable<ImagesForShowInSiteViewModel> GetImagesOfPlace(string place) =>
+            _imageRepository.GetImagesOfPlace(place);
 
         public async Task<Domain.Entities.Image.Image> GetImageByIdAsync(string imageId) =>
             await _imageRepository.GetImageByIdAsync(imageId);
 
-        public async Task<IEnumerable<ImagePlace>> GetImagesPlaceAsync() =>
-            await _imageRepository.GetImagesPlaceAsync();
+        public IEnumerable<ImagePlace> GetImagesPlace() =>
+            _imageRepository.GetImagesPlace();
     }
 }

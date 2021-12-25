@@ -12,7 +12,7 @@ namespace Reshop.Domain.Interfaces.User
 
         Task<OrderDetail> GetOrderDetailAsync(string orderId, string shopperProductColorId);
         Task<OrderDetail> GetOrderDetailByIdAsync(string orderDetailId);
-        IAsyncEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId);
+        IEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId);
         decimal GetOrderDetailsSumOfOrder(string orderId);
         Task AddOrderDetailAsync(OrderDetail orderDetail);
         Task<bool> IsOrderDetailTrackingCodeExistAsync(string trackingCode);
@@ -24,7 +24,7 @@ namespace Reshop.Domain.Interfaces.User
 
         #region order
 
-        IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time);
+        IEnumerable<Order> GetOrdersAfterDateTime(DateTime time);
         IEnumerable<OrderDetailForShowCartViewModel> GetOrderInCartByUserIdForShowCart(string userId);
         Task<Order> GetOrderInCartByUserIdAsync(string userId);
 

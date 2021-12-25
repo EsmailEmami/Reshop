@@ -71,7 +71,7 @@ namespace Reshop.Application.Services.User
                 // update orderDetails
                 var orderDetails = _cartRepository.GetOrderDetailsOfOrder(orderId);
 
-                await foreach (var orderDetail in orderDetails)
+                 foreach (var orderDetail in orderDetails)
                 {
                     var shopperProductColor = await _shopperRepository.GetShopperProductColorAsync(orderDetail.ShopperProductColorId);
 
@@ -282,10 +282,9 @@ namespace Reshop.Application.Services.User
             }
         }
 
-        public IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time)
-        {
-            return _cartRepository.GetOrdersAfterDateTime(time);
-        }
+        public IEnumerable<Order> GetOrdersAfterDateTime(DateTime time) => 
+            _cartRepository.GetOrdersAfterDateTime(time);
+        
 
         public IEnumerable<OrderForShowViewModel> GetReceivedOrders(string userId) =>
             _cartRepository.GetReceivedOrders(userId);
@@ -294,11 +293,9 @@ namespace Reshop.Application.Services.User
             _cartRepository.GetNotReceivedOrders(userId);
 
 
-        public IAsyncEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId)
-        {
-            return _cartRepository.GetOrderDetailsOfOrder(orderId);
-        }
-
+        public IEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId) =>
+            _cartRepository.GetOrderDetailsOfOrder(orderId);
+        
         public async Task RemoveOrderAsync(Order order)
         {
             _cartRepository.RemoveOrder(order);

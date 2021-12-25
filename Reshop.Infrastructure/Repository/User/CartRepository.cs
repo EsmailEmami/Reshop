@@ -34,9 +34,9 @@ namespace Reshop.Infrastructure.Repository.User
             return await _context.OrderDetails.FindAsync(orderDetailId);
         }
 
-        public IAsyncEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId)
-            =>
-                _context.OrderDetails.Where(c => c.OrderId == orderId) as IAsyncEnumerable<OrderDetail>;
+        public IEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId) =>
+            _context.OrderDetails
+                .Where(c => c.OrderId == orderId);
 
         public decimal GetOrderDetailsSumOfOrder(string orderId)
         {
@@ -68,9 +68,10 @@ namespace Reshop.Infrastructure.Repository.User
             _context.OrderDetails.Remove(orderDetail);
         }
 
-        public IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time)
-            =>
-                _context.Orders.Where(c => !c.IsPayed && !c.IsReceived && c.CreateDate > time) as IAsyncEnumerable<Order>;
+        public IEnumerable<Order> GetOrdersAfterDateTime(DateTime time) =>
+            _context.Orders
+                .Where(c => !c.IsPayed && !c.IsReceived &&
+                            c.CreateDate > time);
 
         public IEnumerable<OrderDetailForShowCartViewModel> GetOrderInCartByUserIdForShowCart(string userId)
         {

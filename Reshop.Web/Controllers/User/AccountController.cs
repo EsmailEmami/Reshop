@@ -186,9 +186,9 @@ namespace Reshop.Web.Controllers.User
             // settings of user data for login
             var claims = new List<Claim>()
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId),
                     new Claim(ClaimTypes.Name, user.FullName),
-                    new Claim(ClaimTypes.Actor,user.UserAvatar.ToString()),
+                    new Claim(ClaimTypes.Actor,user.UserAvatar),
                 };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -209,10 +209,6 @@ namespace Reshop.Web.Controllers.User
             }
 
             return Redirect("/");
-
-
-            ModelState.AddModelError("", "تلاش شما برای ورود موفقیت امیز نبود. شما میتوانید بار دیگر اقدام به ورود کنید.");
-            return View(model);
         }
 
         #endregion
@@ -286,9 +282,9 @@ namespace Reshop.Web.Controllers.User
             // settings of user data for login
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.FullName),
-                new Claim(ClaimTypes.Actor,user.UserAvatar.ToString()),
+                new(ClaimTypes.NameIdentifier, user.UserId),
+                new(ClaimTypes.Name, user.FullName),
+                new(ClaimTypes.Actor,user.UserAvatar),
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -415,11 +411,11 @@ namespace Reshop.Web.Controllers.User
         #region address
 
         [HttpGet]
-        public async Task<IActionResult> Address()
+        public IActionResult Address()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var addresses = await _userService.GetUserAddressesForShowAsync(userId);
+            var addresses = _userService.GetUserAddressesForShow(userId);
 
             return View(addresses);
         }

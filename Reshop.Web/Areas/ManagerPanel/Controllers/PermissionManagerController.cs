@@ -31,9 +31,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [Permission(PermissionsConstants.RolesPage)]
-        public async Task<IActionResult> RoleIndex()
+        public IActionResult RoleIndex()
         {
-            return View(await _permissionService.GetRolesAsync());
+            return View(_permissionService.GetRoles());
         }
 
         [HttpGet]
@@ -45,7 +45,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 var model = new AddOrEditRoleViewModel()
                 {
-                    Permissions = await _permissionService.GetPermissionsAsync()
+                    Permissions = _permissionService.GetPermissions()
                 };
 
                 return View(model);
@@ -64,7 +64,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [PermissionJs(false, PermissionsConstants.AddRole, PermissionsConstants.EditRole)]
         public async Task<IActionResult> AddOrEditRole(AddOrEditRoleViewModel model)
         {
-            model.Permissions = await _permissionService.GetPermissionsAsync();
+            model.Permissions = _permissionService.GetPermissions();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
@@ -154,20 +154,20 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region permission
 
         [Permission(PermissionsConstants.PermissionsPage)]
-        public async Task<IActionResult> PermissionIndex()
+        public IActionResult PermissionIndex()
         {
-            return View(await _permissionService.GetPermissionsAsync());
+            return View(_permissionService.GetPermissions());
         }
 
         [HttpGet]
         [NoDirectAccess]
         [PermissionJs(false, PermissionsConstants.AddPermission)]
-        public async Task<IActionResult> AddPermission()
+        public IActionResult AddPermission()
         {
             var model = new AddOrEditPermissionViewModel()
             {
-                Roles = await _permissionService.GetRolesAsync(),
-                Permissions = await _permissionService.GetPermissionsAsync()
+                Roles = _permissionService.GetRoles(),
+                Permissions = _permissionService.GetPermissions()
             };
 
             return View(model);
@@ -178,8 +178,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [PermissionJs(false, PermissionsConstants.AddPermission)]
         public async Task<IActionResult> AddPermission(AddOrEditPermissionViewModel model)
         {
-            model.Roles = await _permissionService.GetRolesAsync();
-            model.Permissions = await _permissionService.GetPermissionsAsync();
+            model.Roles = _permissionService.GetRoles();
+            model.Permissions = _permissionService.GetPermissions();
 
             if (!ModelState.IsValid)
                 return Json(new
@@ -234,8 +234,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [PermissionJs(false, PermissionsConstants.EditPermission)]
         public async Task<IActionResult> EditPermission(AddOrEditPermissionViewModel model)
         {
-            model.Roles = await _permissionService.GetRolesAsync();
-            model.Permissions = await _permissionService.GetPermissionsAsync();
+            model.Roles = _permissionService.GetRoles();
+            model.Permissions = _permissionService.GetPermissions();
 
             if (!ModelState.IsValid)
                 return Json(new

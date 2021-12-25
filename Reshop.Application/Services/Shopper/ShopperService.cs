@@ -84,7 +84,7 @@ namespace Reshop.Application.Services.Shopper
             var data = await _shopperRepository.GetShopperDataForEditAsync(shopperId);
 
             data.StoreTitles = _shopperRepository.GetStoreTitles();
-            data.Roles = await _permissionRepository.GetRolesAsync();
+            data.Roles = _permissionRepository.GetRoles();
 
             return data;
         }
@@ -377,7 +377,7 @@ namespace Reshop.Application.Services.Shopper
                 ImageConvertor.DeleteImage(path + shopper.OnNationalCardImageName);
 
                 // delete shopper storeTitles
-                var shopperStoreTitles = await _shopperRepository.GetShopperStoreTitlesAsync(shopper.ShopperId);
+                var shopperStoreTitles = _shopperRepository.GetRealShopperStoreTitles(shopper.ShopperId);
 
                 if (shopperStoreTitles != null)
                 {
@@ -632,7 +632,7 @@ namespace Reshop.Application.Services.Shopper
         {
             try
             {
-                var shopperStoreTitles = await _shopperRepository.GetShopperStoreTitlesAsync(shopperId);
+                var shopperStoreTitles = _shopperRepository.GetRealShopperStoreTitles(shopperId);
 
                 if (shopperStoreTitles != null)
                 {
@@ -752,7 +752,7 @@ namespace Reshop.Application.Services.Shopper
                 return null;
 
 
-            var data = await _shopperRepository.GetLastThirtyDayProductDataChartAsync(shopperProductId);
+            var data = _shopperRepository.GetLastThirtyDayProductDataChart(shopperProductId);
 
             if (data == null)
                 return null;
@@ -771,9 +771,9 @@ namespace Reshop.Application.Services.Shopper
             return finalData;
         }
 
-        public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayProductDataChartAsync(string shopperProductId)
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayProductDataChart(string shopperProductId)
         {
-            var data = await _shopperRepository.GetLastThirtyDayProductDataChartAsync(shopperProductId);
+            var data = _shopperRepository.GetLastThirtyDayProductDataChart(shopperProductId);
 
             if (data == null)
                 return null;
@@ -813,9 +813,9 @@ namespace Reshop.Application.Services.Shopper
             return finalData;
         }
 
-        public async Task<IEnumerable<LastThirtyDayProductDataChart>> GetLastThirtyDayShopperDataChartAsync(string shopperId)
+        public IEnumerable<LastThirtyDayProductDataChart> GetLastThirtyDayShopperDataChart(string shopperId)
         {
-            var data = await _shopperRepository.GetLastThirtyDayShopperDataChartAsync(shopperId);
+            var data = _shopperRepository.GetLastThirtyDayShopperDataChart(shopperId);
 
             if (data is null)
                 return null;
@@ -854,16 +854,11 @@ namespace Reshop.Application.Services.Shopper
             if (shopperProductId is null)
                 return null;
 
-            return await _shopperRepository.GetColorsOfShopperProductDataChartAsync(shopperProductId);
+            return _shopperRepository.GetColorsOfShopperProductDataChart(shopperProductId);
         }
-        public async Task<IEnumerable<Tuple<string, int, int, int>>> GetColorsOfShopperProductDataChartAsync(string shopperProductId)
-        {
-            if (shopperProductId is null)
-                return null;
 
-            var data = await _shopperRepository.GetColorsOfShopperProductDataChartAsync(shopperProductId);
+        public IEnumerable<Tuple<string, int, int, int>> GetColorsOfShopperProductDataChart(string shopperProductId) =>
+            _shopperRepository.GetColorsOfShopperProductDataChart(shopperProductId);
 
-            return data;
-        }
     }
 }

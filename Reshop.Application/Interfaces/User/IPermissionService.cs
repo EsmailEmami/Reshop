@@ -1,7 +1,7 @@
-﻿using System;
-using Reshop.Application.Enums;
+﻿using Reshop.Application.Enums;
 using Reshop.Domain.DTOs.Permission;
 using Reshop.Domain.Entities.Permission;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,7 +9,7 @@ namespace Reshop.Application.Interfaces.User
 {
     public interface IPermissionService
     {
-        Task<IEnumerable<Role>> GetRolesAsync();
+        IEnumerable<Role> GetRoles();
         Task<AddOrEditRoleViewModel> GetRoleDataAsync(string roleId);
         Task<ResultTypes> AddRoleAsync(Role role);
         Task<ResultTypes> EditRoleAsync(Role role);
@@ -31,7 +31,7 @@ namespace Reshop.Application.Interfaces.User
         #region Permission
 
         Task<Permission> GetPermissionByIdAsync(string permissionId);
-        Task<IEnumerable<Permission>> GetPermissionsAsync();
+        IEnumerable<Permission> GetPermissions();
         Task<AddOrEditPermissionViewModel> GetPermissionDataAsync(string permissionId);
         Task<ResultTypes> AddRolePermissionByRoleAsync(string roleId, IEnumerable<string> permissionsId);
         Task<ResultTypes> AddRolePermissionByPermissionAsync(string permissionId, List<string> rolesId);

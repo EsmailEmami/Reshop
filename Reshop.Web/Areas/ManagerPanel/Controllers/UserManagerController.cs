@@ -9,14 +9,12 @@ using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.DTOs.User;
-using Reshop.Domain.Entities.Permission;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
@@ -68,7 +66,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             {
                 var model = new AddOrEditUserForAdminViewModel()
                 {
-                    Roles = await _permissionService.GetRolesAsync()
+                    Roles = _permissionService.GetRoles()
                 };
 
                 return View(model);
@@ -92,7 +90,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> AddOrEditUser(AddOrEditUserForAdminViewModel model)
         {
-            model.Roles = await _permissionService.GetRolesAsync();
+            model.Roles = _permissionService.GetRoles();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });

@@ -83,8 +83,8 @@ namespace Reshop.Infrastructure.Repository.User
                     .Include(c => c.City)
                     .ThenInclude(c => c.State);
 
-        public async Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId) =>
-            await _context.Addresses.Where(c => c.UserId == userId)
+        public IEnumerable<AddressForShowViewModel> GetUserAddressesForShow(string userId) =>
+            _context.Addresses.Where(c => c.UserId == userId)
                 .Select(a => new AddressForShowViewModel()
                 {
                     AddressId = a.AddressId,
@@ -95,13 +95,13 @@ namespace Reshop.Infrastructure.Repository.User
                     PhoneNumber = a.PhoneNumber,
                     PostalCode = a.PostalCode,
                     FullName = a.FullName
-                }).ToListAsync();
+                });
 
         public async Task AddUserAsync(Domain.Entities.User.User user) => await _context.Users.AddAsync(user);
 
         public async Task AddUserInviteAsync(UserInvite userInvite) => await _context.UserInvites.AddAsync(userInvite);
 
-        public IAsyncEnumerable<Domain.Entities.User.User> GetUsers() => _context.Users;
+        public IEnumerable<Domain.Entities.User.User> GetUsers() => _context.Users;
 
         public IEnumerable<UserInformationForListViewModel> GetUsersInformation()
             =>

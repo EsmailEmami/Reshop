@@ -4,7 +4,6 @@ using Reshop.Application.Interfaces.Discount;
 using Reshop.Application.Interfaces.Product;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Reshop.Web.API.Controllers
 {
@@ -27,12 +26,12 @@ namespace Reshop.Web.API.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> SearchFilterMenu(string filter = null)
+        public IActionResult SearchFilterMenu(string filter = null)
         {
             if (string.IsNullOrEmpty(filter))
                 return new JsonResult(null);
 
-            var menu = await _productService.SearchProductsAsync(filter);
+            var menu = _productService.SearchProducts(filter);
 
             return new JsonResult(menu);
         }

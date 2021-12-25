@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Interfaces.Image;
-using System.Threading.Tasks;
 
 namespace Reshop.Web.Components.Image
 {
@@ -13,9 +12,9 @@ namespace Reshop.Web.Components.Image
             _imageService = imageService;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
-            var images = await _imageService.GetImagesOfPlaceAsync("MainPics");
+            var images = _imageService.GetImagesOfPlace("MainPics");
 
             return View("/Views/Shared/Components/Image/MainPics.cshtml", images);
         }

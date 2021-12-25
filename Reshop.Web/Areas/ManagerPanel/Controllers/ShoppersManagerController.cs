@@ -173,7 +173,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         public async Task<IActionResult> EditShopper(EditShopperViewModel model)
         {
             model.StoreTitles = _shopperService.GetStoreTitles();
-            model.Roles = await _permissionService.GetRolesAsync();
+            model.Roles = _permissionService.GetRoles();
 
             if (!ModelState.IsValid)
                 return View(model);

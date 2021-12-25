@@ -1,18 +1,14 @@
-﻿using Reshop.Application.Convertors;
-using Reshop.Application.Enums;
-using Reshop.Application.Enums.User;
+﻿using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.User;
-using Reshop.Domain.DTOs.CommentAndQuestion;
+using Reshop.Application.Security;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
+using Reshop.Domain.Interfaces.Conversation;
+using Reshop.Domain.Interfaces.Shopper;
 using Reshop.Domain.Interfaces.User;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Application.Security;
-using Reshop.Domain.Interfaces.Conversation;
-using Reshop.Domain.Interfaces.Shopper;
 
 namespace Reshop.Application.Services.User
 {
@@ -38,8 +34,8 @@ namespace Reshop.Application.Services.User
         public async Task<AddOrEditUserForAdminViewModel> GetUserDataForAdminAsync(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            var roles = await _roleRepository.GetRolesAsync();
-            var userRoles = await _roleRepository.GetRolesIdOfUserAsync(userId);
+            var roles = _roleRepository.GetRoles();
+            var userRoles = _roleRepository.GetRolesIdOfUser(userId);
 
             return new AddOrEditUserForAdminViewModel()
             {
@@ -82,10 +78,7 @@ namespace Reshop.Application.Services.User
             return (deposit - withdraw);
         }
 
-        public IAsyncEnumerable<Domain.Entities.User.User> GetUsers()
-        {
-            return _userRepository.GetUsers();
-        }
+        public IEnumerable<Domain.Entities.User.User> GetUsers() => _userRepository.GetUsers();
 
         public IEnumerable<UserInformationForListViewModel> GetUsersInformation()
             =>
@@ -95,8 +88,8 @@ namespace Reshop.Application.Services.User
             =>
                 _userRepository.GetUserAddresses(userId);
 
-        public async Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId) =>
-            await _userRepository.GetUserAddressesForShowAsync(userId);
+        public IEnumerable<AddressForShowViewModel> GetUserAddressesForShow(string userId) =>
+            _userRepository.GetUserAddressesForShow(userId);
 
         public async Task<bool> IsPhoneNumberExistAsync(string phoneNumber)
         {
@@ -195,7 +188,7 @@ namespace Reshop.Application.Services.User
             {
                 if (userRoles != null)
                 {
-                    await foreach (var userRole in userRoles)
+                    foreach (var userRole in userRoles)
                     {
                         _roleRepository.RemoveUserRole(userRole);
                     }

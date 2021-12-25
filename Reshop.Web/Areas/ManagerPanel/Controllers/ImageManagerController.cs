@@ -3,12 +3,11 @@ using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Image;
-using Reshop.Domain.DTOs;
+using Reshop.Application.Security;
+using Reshop.Domain.DTOs.Image;
 using Reshop.Domain.Entities.Image;
 using System.IO;
 using System.Threading.Tasks;
-using Reshop.Application.Security;
-using Reshop.Domain.DTOs.Image;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -27,9 +26,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #endregion
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var images = await _imageService.GetImagesForShowAsync();
+            var images = _imageService.GetImagesForShow();
 
             return View(images);
         }
@@ -42,7 +41,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             return View(new AddOrEditImageViewModel()
             {
-                Places = await _imageService.GetImagesPlaceAsync(),
+                Places = _imageService.GetImagesPlace(),
             });
         }
 
@@ -50,7 +49,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> AddImage(AddOrEditImageViewModel model)
         {
-            model.Places = await _imageService.GetImagesPlaceAsync();
+            model.Places = _imageService.GetImagesPlace();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
@@ -97,7 +96,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> EditImage(string imageId)
         {
-            ViewBag.ImagesPlace = await _imageService.GetImagesPlaceAsync();
+            ViewBag.ImagesPlace = _imageService.GetImagesPlace();
 
             var image = await _imageService.GetImageByIdAsync(imageId);
 
@@ -110,7 +109,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 ImageUrl = image.ImageUrl,
                 SelectedImage = image.ImageName,
                 SelectedPlace = image.ImagePlaceId,
-                Places = await _imageService.GetImagesPlaceAsync(),
+                Places = _imageService.GetImagesPlace(),
             };
 
             return View(model);
@@ -120,7 +119,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> EditImage(AddOrEditImageViewModel model)
         {
-            model.Places = await _imageService.GetImagesPlaceAsync();
+            model.Places = _imageService.GetImagesPlace();
 
             if (!ModelState.IsValid)
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });

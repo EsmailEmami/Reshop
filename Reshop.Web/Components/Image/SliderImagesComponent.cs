@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Interfaces.Image;
 
 namespace Reshop.Web.Components.Image
@@ -16,9 +12,9 @@ namespace Reshop.Web.Components.Image
             _imageService = imageService;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
-            var images = await _imageService.GetImagesOfPlaceAsync("SliderMenu");
+            var images = _imageService.GetImagesOfPlace("SliderMenu");
 
             return View("/Views/Shared/Components/Image/SliderImages.cshtml", images);
         }

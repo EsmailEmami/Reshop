@@ -19,13 +19,13 @@ namespace Reshop.Domain.Interfaces.Product
         Task<Entities.Product.Product> GetProductByIdAsync(int productId);
         Task<string> GetProductTypeAsync(int productId);
 
-        Task<IEnumerable<SearchProductViewModel>> SearchProductsAsync(string filter);
+        IEnumerable<SearchProductViewModel> SearchProducts(string filter);
 
         #endregion
 
         #region get with pagination
 
-        Task<IEnumerable<ProductViewModel>> GetProductsWithPaginationAsync(string type, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
+        IEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         IEnumerable<ProductDataForAdmin> GetProductsWithPaginationForAdmin(string type, int skip, int take, string filter);
         IEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         IEnumerable<ProductViewModel> GetProductsOfChildCategoryWithPagination(int childCategoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
@@ -167,8 +167,6 @@ namespace Reshop.Domain.Interfaces.Product
         Task AddToFavoriteProductAsync(FavoriteProduct favoriteProduct);
         void RemoveFavoriteProduct(FavoriteProduct favoriteProduct);
         void UpdateFavoriteProduct(FavoriteProduct favoriteProduct);
-        Task<bool> IsFavoriteProductExistAsync(string favoriteProductId);
-        Task<bool> IsFavoriteProductExistAsync(string userId, string shopperProductColorId);
         Task<FavoriteProduct> GetFavoriteProductAsync(string favoriteProductId);
         Task<FavoriteProduct> GetFavoriteProductAsync(string userId, string shopperProductColorId);
 

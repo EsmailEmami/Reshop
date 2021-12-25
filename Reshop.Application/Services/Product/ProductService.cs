@@ -46,8 +46,8 @@ namespace Reshop.Application.Services.Product
 
         #endregion
 
-        public async Task<IEnumerable<ProductViewModel>> GetProductsForShowAsync(string type = "all", string sortBy = "news", int take = 18, List<int> brands = null) =>
-            await _productRepository.GetProductsWithPaginationAsync(type.FixedText(), sortBy.FixedText(), take: take, brands: brands);
+        public IEnumerable<ProductViewModel> GetProductsForShow(string type = "all", string sortBy = "news", int take = 18, List<int> brands = null) =>
+            _productRepository.GetProductsWithPagination(type.FixedText(), sortBy.FixedText(), take: take, brands: brands);
 
         public async Task<Tuple<IEnumerable<ProductDataForAdmin>, int, int>> GetProductsWithPaginationForAdminAsync(string type = "all", int pageId = 1, int take = 18, string filter = "")
         {
@@ -100,11 +100,11 @@ namespace Reshop.Application.Services.Product
 
             int productsCount = await _productRepository.GetProductsCountAsync(type.FixedText(), filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
-            var products = await _productRepository.GetProductsWithPaginationAsync(type.FixedText(), sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
+            var products = _productRepository.GetProductsWithPagination(type.FixedText(), sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
-            var brandsShow = await _brandRepository.GetBrandsOfProductsAsync(type.FixedText());
+            var brandsShow = _brandRepository.GetBrandsOfProducts(type.FixedText());
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfProductsAsync(type.FixedText(), filter, brands);
             decimal productMinPrice = await _productRepository.GetMinPriceOfProductsAsync(type.FixedText(), filter, brands);
@@ -166,7 +166,7 @@ namespace Reshop.Application.Services.Product
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
 
-            var brandsShow = await _brandRepository.GetBrandsOfShopperAsync(shopperId);
+            var brandsShow = _brandRepository.GetBrandsOfShopper(shopperId);
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfShopperProductsAsync(shopperId, filter, brands);
             decimal productMinPrice = await _productRepository.GetMinPriceOfShopperProductsAsync(shopperId, filter, brands);
@@ -234,8 +234,8 @@ namespace Reshop.Application.Services.Product
             return model;
         }
 
-        public async Task<IEnumerable<SearchProductViewModel>> SearchProductsAsync(string filter) =>
-            await _productRepository.SearchProductsAsync(filter);
+        public IEnumerable<SearchProductViewModel> SearchProducts(string filter) =>
+             _productRepository.SearchProducts(filter);
 
         public async Task<ProductDetailForShow> GetProductDetailForShopperAsync(int productId, string shopperId)
         {

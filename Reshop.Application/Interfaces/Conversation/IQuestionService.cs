@@ -29,11 +29,11 @@ namespace Reshop.Application.Interfaces.Conversation
         IEnumerable<ReportQuestionType> GetReportQuestionTypes();
 
 
-        Task<IEnumerable<int>> GetUserQuestionLikesOfProductAsync(int productId, string userId);
-        Task<IEnumerable<int>> GetUserQuestionReportsOfProductAsync(int productId, string userId);
+        IEnumerable<int> GetUserQuestionLikesOfProduct(int productId, string userId);
+        IEnumerable<int> GetUserQuestionReportsOfProduct(int productId, string userId);
 
-        Task<IEnumerable<int>> GetUserQuestionAnswerLikesOfProductAsync(int productId, string userId);
-        Task<IEnumerable<int>> GetUserQuestionAnswerReportsOfProductAsync(int productId, string userId);
+        IEnumerable<int> GetUserQuestionAnswerLikesOfProduct(int productId, string userId);
+        IEnumerable<int> GetUserQuestionAnswerReportsOfProduct(int productId, string userId);
 
 
 

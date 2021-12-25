@@ -1,5 +1,4 @@
-﻿using System;
-using Reshop.Domain.DTOs.User;
+﻿using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,7 +9,7 @@ namespace Reshop.Domain.Interfaces.User
     {
         #region User
 
-        IAsyncEnumerable<Entities.User.User> GetUsers();
+        IEnumerable<Entities.User.User> GetUsers();
         IEnumerable<UserInformationForListViewModel> GetUsersInformation();
         Task<Entities.User.User> GetUserByInviteCodeAsync(string inviteCode);
         Task<Entities.User.User> GetUserByIdAsync(string userId);
@@ -32,7 +31,7 @@ namespace Reshop.Domain.Interfaces.User
         void UpdateAddress(Address address);
         void RemoveAddress(Address address);
         IEnumerable<Address> GetUserAddresses(string userId);
-        Task<IEnumerable<AddressForShowViewModel>> GetUserAddressesForShowAsync(string userId);
+        IEnumerable<AddressForShowViewModel> GetUserAddressesForShow(string userId);
 
         #endregion
 

@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper.Internal;
 
 namespace Reshop.Infrastructure.Repository.Conversation
 {
@@ -66,7 +65,7 @@ namespace Reshop.Infrastructure.Repository.Conversation
                 .Where(c => c.ProductId == productId)
                 .CountAsync();
 
-        public async Task<IEnumerable<ProductQuestionsForShow>> GetProductQuestionsWithPaginationAsync(int productId, int skip = 1, int take = 30, string type = "news",string filter = "")
+        public IEnumerable<ProductQuestionsForShow> GetProductQuestionsWithPagination(int productId, int skip = 1, int take = 30, string type = "news", string filter = "")
         {
             IQueryable<Question> questions = _context.Questions
                 .Where(c => c.ProductId == productId && !c.IsDelete);
@@ -85,7 +84,7 @@ namespace Reshop.Infrastructure.Repository.Conversation
 
             questions = questions.Skip(skip).Take(take);
 
-            return await questions.Select(c => new ProductQuestionsForShow()
+            return questions.Select(c => new ProductQuestionsForShow()
             {
                 QuestionId = c.QuestionId,
                 FullName = c.User.FullName,
@@ -101,7 +100,7 @@ namespace Reshop.Infrastructure.Repository.Conversation
                     AnswerText = a.AnswerText,
                     Likes = a.QuestionAnswerLikes.Count
                 })
-            }).ToListAsync();
+            });
         }
 
         public async Task<bool> IsUserQuestionAsync(string userId, int questionId) =>
@@ -135,29 +134,29 @@ namespace Reshop.Infrastructure.Repository.Conversation
         public IEnumerable<ReportQuestionType> GetReportQuestionTypes() =>
              _context.ReportQuestionTypes;
 
-        public async Task<IEnumerable<int>> GetUserQuestionLikesOfProductAsync(int productId, string userId) =>
-            await _context.Users.Where(c => c.UserId == userId)
+        public IEnumerable<int> GetUserQuestionLikesOfProduct(int productId, string userId) =>
+             _context.Users.Where(c => c.UserId == userId)
                 .SelectMany(c => c.QuestionLikes)
                 .Where(c => c.Question.ProductId == productId)
-                .Select(c => c.QuestionId).ToListAsync();
+                .Select(c => c.QuestionId);
 
-        public async Task<IEnumerable<int>> GetUserQuestionReportsOfProductAsync(int productId, string userId) =>
-            await _context.Users.Where(c => c.UserId == userId)
+        public IEnumerable<int> GetUserQuestionReportsOfProduct(int productId, string userId) =>
+             _context.Users.Where(c => c.UserId == userId)
                 .SelectMany(c => c.QuestionReports)
                 .Where(c => c.Question.ProductId == productId)
-                .Select(c => c.QuestionId).ToListAsync();
+                .Select(c => c.QuestionId);
 
-        public async Task<IEnumerable<int>> GetUserQuestionAnswerLikesOfProductAsync(int productId, string userId) =>
-            await _context.Users.Where(c => c.UserId == userId)
+        public IEnumerable<int> GetUserQuestionAnswerLikesOfProduct(int productId, string userId) =>
+             _context.Users.Where(c => c.UserId == userId)
                 .SelectMany(c => c.QuestionAnswerLikes)
                 .Where(c => c.QuestionAnswer.Question.ProductId == productId)
-                .Select(c => c.QuestionAnswerId).ToListAsync();
+                .Select(c => c.QuestionAnswerId);
 
-        public async Task<IEnumerable<int>> GetUserQuestionAnswerReportsOfProductAsync(int productId, string userId) =>
-            await _context.Users.Where(c => c.UserId == userId)
+        public IEnumerable<int> GetUserQuestionAnswerReportsOfProduct(int productId, string userId) =>
+             _context.Users.Where(c => c.UserId == userId)
                 .SelectMany(c => c.QuestionAnswerReports)
                 .Where(c => c.QuestionAnswer.Question.ProductId == productId)
-                .Select(c => c.QuestionAnswerId).ToListAsync();
+                .Select(c => c.QuestionAnswerId);
 
         public async Task AddQuestionAnswerAsync(QuestionAnswer questionAnswer) =>
             await _context.QuestionAnswers.AddAsync(questionAnswer);

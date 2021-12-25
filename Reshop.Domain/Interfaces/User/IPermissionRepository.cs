@@ -8,11 +8,11 @@ namespace Reshop.Domain.Interfaces.User
     {
         #region role
 
-        Task<IEnumerable<Role>> GetRolesAsync();
+        IEnumerable<Role> GetRoles();
         Task<Role> GetRoleByIdAsync(string roleId);
         Task<Role> GetRoleByNameAsync(string roleName);
-        Task<IEnumerable<string>> GetRolesIdOfUserAsync(string userId);
-        IAsyncEnumerable<string> GetUsersIdOfRole(string roleId);
+        IEnumerable<string> GetRolesIdOfUser(string userId);
+        IEnumerable<string> GetUsersIdOfRole(string roleId);
         Task AddRoleAsync(Role role);
         void UpdateRole(Role role);
         void RemoveRole(Role role);
@@ -23,12 +23,12 @@ namespace Reshop.Domain.Interfaces.User
         #region user role
 
         Task<UserRole> GetUserRoleAsync(string userId, string roleId);
-        IAsyncEnumerable<UserRole> GetUserRolesByUserId(string userId);
-        IAsyncEnumerable<UserRole> GetUserRolesByRoleId(string roleId);
+        IEnumerable<UserRole> GetUserRolesByUserId(string userId);
+        IEnumerable<UserRole> GetUserRolesByRoleId(string roleId);
         Task AddUserRoleAsync(UserRole userRole);
         void RemoveUserRole(UserRole userRole);
 
-        Task<IEnumerable<Role>> GetRolesOfUserWithPaginationAsync(string userId, int skip, int take, string filter);
+        IEnumerable<Role> GetRolesOfUserWithPagination(string userId, int skip, int take, string filter);
         Task<int> GetUserRolesCountAsync(string userId, string filter);
 
         #endregion
@@ -39,14 +39,14 @@ namespace Reshop.Domain.Interfaces.User
         Task AddPermissionAsync(Permission permission);
         void UpdatePermission(Permission permission);
         void RemovePermission(Permission permission);
-        Task<IEnumerable<Permission>> GetPermissionsAsync();
+        IEnumerable<Permission> GetPermissions();
         Task AddRolePermissionAsync(RolePermission rolePermission);
-        Task<IEnumerable<RolePermission>> GetRolePermissionsOfRoleAsync(string roleId);
-        Task<IEnumerable<RolePermission>> GetRolePermissionsOfPermissionAsync(string permissionId);
+        IEnumerable<RolePermission> GetRolePermissionsOfRole(string roleId);
+        IEnumerable<RolePermission> GetRolePermissionsOfPermission(string permissionId);
         void RemoveRolePermission(RolePermission rolePermission);
         IEnumerable<string> GetPermissionsIdOfRole(string roleId);
         Task<string> GetPermissionIdByNameAsync(string permissionName);
-        Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(string permissionId);
+        IEnumerable<string> GetRolesIdOfPermission(string permissionId);
         Task<bool> IsPermissionExistsAsync(string permissionId);
 
         #endregion

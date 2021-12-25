@@ -24,10 +24,10 @@ namespace Reshop.Application.Interfaces.User
         Task<string> GetOrderDetailIdByTrackingCodeAsync(string trackingCode);
         Task IncreaseOrderDetailCountAsync(string orderDetailId);
         Task ReduceOrderDetailAsync(string orderDetailId);
-        IAsyncEnumerable<Order> GetOrdersAfterDateTime(DateTime time);
+        IEnumerable<Order> GetOrdersAfterDateTime(DateTime time);
         IEnumerable<OrderForShowViewModel> GetReceivedOrders(string userId);
         IEnumerable<OrderForShowViewModel> GetNotReceivedOrders(string userId);
-        IAsyncEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId);
+        IEnumerable<OrderDetail> GetOrderDetailsOfOrder(string orderId);
         Task RemoveOrderAsync(Order order);
         Task<ResultTypes> RemoveOrderDetailAsync(string orderDetailId);
         string GetOpenOrderAddressId(string userId);

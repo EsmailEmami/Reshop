@@ -26,8 +26,8 @@ namespace Reshop.Application.Services.User
 
         #endregion
 
-        public async Task<IEnumerable<Role>> GetRolesAsync() =>
-            await _permissionRepository.GetRolesAsync();
+        public IEnumerable<Role> GetRoles() =>
+            _permissionRepository.GetRoles();
 
         public async Task<AddOrEditRoleViewModel> GetRoleDataAsync(string roleId)
         {
@@ -35,7 +35,7 @@ namespace Reshop.Application.Services.User
 
             if (role is null) return null;
 
-            var permissions = await _permissionRepository.GetPermissionsAsync();
+            var permissions = _permissionRepository.GetPermissions();
             var selectedPermissions = _permissionRepository.GetPermissionsIdOfRole(role.RoleId);
 
             return new AddOrEditRoleViewModel()
@@ -91,11 +91,11 @@ namespace Reshop.Application.Services.User
             try
             {
                 var userRoles = _permissionRepository.GetUserRolesByRoleId(role.RoleId);
-                var rolePermissions = await _permissionRepository.GetRolePermissionsOfRoleAsync(role.RoleId);
+                var rolePermissions = _permissionRepository.GetRolePermissionsOfRole(role.RoleId);
 
                 if (userRoles != null)
                 {
-                    await foreach (var userRole in userRoles)
+                    foreach (var userRole in userRoles)
                     {
                         _permissionRepository.RemoveUserRole(userRole);
                     }
@@ -125,7 +125,7 @@ namespace Reshop.Application.Services.User
 
         public async Task<ResultTypes> AddUserToRoleAsync(string userId, params string[] rolesName)
         {
-            
+
             List<Role> roles = new List<Role>();
 
             foreach (var item in rolesName)
@@ -208,7 +208,7 @@ namespace Reshop.Application.Services.User
 
             if (userRoles != null)
             {
-                await foreach (var userRole in userRoles)
+                foreach (var userRole in userRoles)
                 {
                     _permissionRepository.RemoveUserRole(userRole);
                 }
@@ -239,7 +239,7 @@ namespace Reshop.Application.Services.User
 
             int count = await _permissionRepository.GetUserRolesCountAsync(userId, filter);
 
-            var roles = await _permissionRepository.GetRolesOfUserWithPaginationAsync(userId, skip, take, filter);
+            var roles = _permissionRepository.GetRolesOfUserWithPagination(userId, skip, take, filter);
 
             int totalPages = (int)Math.Ceiling(1.0 * count / take);
 
@@ -249,8 +249,8 @@ namespace Reshop.Application.Services.User
         public async Task<Permission> GetPermissionByIdAsync(string permissionId) =>
             await _permissionRepository.GetPermissionByIdAsync(permissionId);
 
-        public async Task<IEnumerable<Permission>> GetPermissionsAsync() =>
-               await _permissionRepository.GetPermissionsAsync();
+        public IEnumerable<Permission> GetPermissions() =>
+            _permissionRepository.GetPermissions();
 
         public async Task<AddOrEditPermissionViewModel> GetPermissionDataAsync(string permissionId)
         {
@@ -259,9 +259,9 @@ namespace Reshop.Application.Services.User
             if (permission == null)
                 return null;
 
-            var permissions = await _permissionRepository.GetPermissionsAsync();
-            var roles = await _permissionRepository.GetRolesAsync();
-            var selectedRoles = await _permissionRepository.GetRolesIdOfPermissionAsync(permission.PermissionId);
+            var permissions = _permissionRepository.GetPermissions();
+            var roles = _permissionRepository.GetRoles();
+            var selectedRoles = _permissionRepository.GetRolesIdOfPermission(permission.PermissionId);
 
             return new AddOrEditPermissionViewModel()
             {
@@ -324,7 +324,7 @@ namespace Reshop.Application.Services.User
 
         public async Task<ResultTypes> RemoveRolePermissionsByRoleId(string roleId)
         {
-            var rolePermissions = await _permissionRepository.GetRolePermissionsOfRoleAsync(roleId);
+            var rolePermissions = _permissionRepository.GetRolePermissionsOfRole(roleId);
             if (rolePermissions == null)
                 return ResultTypes.Failed;
 
@@ -347,7 +347,7 @@ namespace Reshop.Application.Services.User
 
         public async Task<ResultTypes> RemoveRolePermissionsByPermissionId(string permissionId)
         {
-            var rolePermissions = await _permissionRepository.GetRolePermissionsOfPermissionAsync(permissionId);
+            var rolePermissions = _permissionRepository.GetRolePermissionsOfPermission(permissionId);
             if (rolePermissions == null)
                 return ResultTypes.Failed;
 
@@ -380,7 +380,7 @@ namespace Reshop.Application.Services.User
                 if (permission == null)
                     return ResultTypes.Failed;
 
-                var rolePermissions = await _permissionRepository.GetRolePermissionsOfPermissionAsync(permissionId);
+                var rolePermissions = _permissionRepository.GetRolePermissionsOfPermission(permissionId);
 
                 if (rolePermissions != null)
                 {
@@ -438,9 +438,9 @@ namespace Reshop.Application.Services.User
         {
             try
             {
-                var userRoles = await _permissionRepository.GetRolesIdOfUserAsync(userId) as List<string>;
+                var userRoles = _permissionRepository.GetRolesIdOfUser(userId);
 
-                if (userRoles == null || !userRoles.Any())
+                if (userRoles == null)
                     return false;
 
                 List<string> permissionsRolesId = new List<string>();
@@ -453,7 +453,7 @@ namespace Reshop.Application.Services.User
                     if (string.IsNullOrEmpty(permissionId))
                         continue;
 
-                    var roles = await _permissionRepository.GetRolesIdOfPermissionAsync(permissionId);
+                    var roles = _permissionRepository.GetRolesIdOfPermission(permissionId);
 
                     if (roles == null)
                         continue;

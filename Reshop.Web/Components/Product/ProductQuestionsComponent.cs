@@ -34,10 +34,10 @@ namespace Reshop.Web.Components.Product
             {
                 string userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                userQuestionLikes = await _questionService.GetUserQuestionLikesOfProductAsync(productId, userId);
-                reportedQuestions = await _questionService.GetUserQuestionReportsOfProductAsync(productId, userId);
-                userQuestionAnswerLikes = await _questionService.GetUserQuestionAnswerLikesOfProductAsync(productId, userId);
-                reportedQuestionAnswers = await _questionService.GetUserQuestionAnswerReportsOfProductAsync(productId, userId);
+                userQuestionLikes = _questionService.GetUserQuestionLikesOfProduct(productId, userId);
+                reportedQuestions = _questionService.GetUserQuestionReportsOfProduct(productId, userId);
+                userQuestionAnswerLikes = _questionService.GetUserQuestionAnswerLikesOfProduct(productId, userId);
+                reportedQuestionAnswers = _questionService.GetUserQuestionAnswerReportsOfProduct(productId, userId);
 
             }
 

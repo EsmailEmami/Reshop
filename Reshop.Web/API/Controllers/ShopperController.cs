@@ -55,7 +55,7 @@ namespace Reshop.Web.API.Controllers
             if (string.IsNullOrEmpty(shopperId))
                 return NotFound();
 
-            var data = await _shopperService.GetLastThirtyDayShopperDataChartAsync(shopperId);
+            var data = _shopperService.GetLastThirtyDayShopperDataChart(shopperId);
 
             if (data == null)
                 return NotFound();
@@ -140,12 +140,12 @@ namespace Reshop.Web.API.Controllers
 
         [HttpGet("[action]")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetColorsOfShopperProductData(string shopperProductId)
+        public IActionResult GetColorsOfShopperProductData(string shopperProductId)
         {
             if (string.IsNullOrEmpty(shopperProductId))
                 return NotFound();
 
-            var data = await _shopperService.GetColorsOfShopperProductDataChartAsync(shopperProductId);
+            var data = _shopperService.GetColorsOfShopperProductDataChart(shopperProductId);
 
             if (data == null)
                 return NotFound();
@@ -179,12 +179,12 @@ namespace Reshop.Web.API.Controllers
 
         [HttpGet("[action]")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetLastThirtyDayShopperProductData(string shopperProductId)
+        public IActionResult GetLastThirtyDayShopperProductData(string shopperProductId)
         {
             if (string.IsNullOrEmpty(shopperProductId))
                 return NotFound();
 
-            var data = await _shopperService.GetLastThirtyDayProductDataChartAsync(shopperProductId);
+            var data = _shopperService.GetLastThirtyDayProductDataChart(shopperProductId);
 
             if (data == null)
                 return NotFound();
@@ -195,12 +195,12 @@ namespace Reshop.Web.API.Controllers
 
         [HttpGet("[action]")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<IActionResult> GetLastThirtyDayShopperData(string shopperId)
+        public IActionResult GetLastThirtyDayShopperData(string shopperId)
         {
             if (string.IsNullOrEmpty(shopperId))
                 return NotFound();
 
-            var data = await _shopperService.GetLastThirtyDayShopperDataChartAsync(shopperId);
+            var data = _shopperService.GetLastThirtyDayShopperDataChart(shopperId);
 
             if (data == null)
                 return NotFound();

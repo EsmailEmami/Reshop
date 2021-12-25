@@ -28,8 +28,8 @@ namespace Reshop.Infrastructure.Repository.Product
 
         #endregion
 
-        public async Task<IEnumerable<SearchProductViewModel>> SearchProductsAsync(string filter) =>
-            await _context.Products
+        public IEnumerable<SearchProductViewModel> SearchProducts(string filter) =>
+             _context.Products
                 .Where(c => c.IsActive &&
                             c.ShopperProducts
                                 .Any(i => i.IsActive
@@ -41,10 +41,9 @@ namespace Reshop.Infrastructure.Repository.Product
                 {
                     Title = c.ChildCategoryTitle,
                     Url = $"/ChildCategory/{c.ChildCategoryId}/{c.ChildCategoryTitle.Replace(" ", "-")}?search={filter}"
-                }).ToListAsync();
+                });
 
-
-        public async Task<IEnumerable<ProductViewModel>> GetProductsWithPaginationAsync(string type, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null)
+        public IEnumerable<ProductViewModel> GetProductsWithPagination(string type, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null)
         {
             IQueryable<ShopperProductColor> products = _context.Products
                 .Where(c => c.IsActive &&
@@ -118,7 +117,7 @@ namespace Reshop.Infrastructure.Repository.Product
 
             products = products.Skip(skip).Take(take);
 
-            return await products.Select(c => new ProductViewModel()
+            return products.Select(c => new ProductViewModel()
             {
                 ProductTitle = c.ShopperProduct.Product.ProductTitle,
                 Image = c.ShopperProduct.Product.ProductGalleries
@@ -129,7 +128,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     .FirstOrDefault(),
                 ShopperProductColorId = c.ShopperProductColorId,
                 ProductId = c.ShopperProduct.ProductId
-            }).ToListAsync();
+            });
         }
 
         public IEnumerable<ProductDataForAdmin> GetProductsWithPaginationForAdmin(string type, int skip, int take, string filter)
@@ -1357,14 +1356,6 @@ namespace Reshop.Infrastructure.Repository.Product
 
         public void UpdateFavoriteProduct(FavoriteProduct favoriteProduct) =>
             _context.FavoriteProducts.Update(favoriteProduct);
-
-        public async Task<bool> IsFavoriteProductExistAsync(string favoriteProductId)
-        {
-            return await _context.FavoriteProducts.AnyAsync(c => c.FavoriteProductId == favoriteProductId);
-        }
-
-        public async Task<bool> IsFavoriteProductExistAsync(string userId, string shopperProductColorId) =>
-            await _context.FavoriteProducts.AnyAsync(c => c.UserId == userId && c.ShopperProductColorId == shopperProductColorId);
 
         public async Task<FavoriteProduct> GetFavoriteProductAsync(string favoriteProductId)
         {

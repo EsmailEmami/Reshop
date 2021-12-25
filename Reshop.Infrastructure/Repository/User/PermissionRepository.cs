@@ -23,8 +23,8 @@ namespace Reshop.Infrastructure.Repository.User
 
         #region role
 
-        public async Task<IEnumerable<Role>> GetRolesAsync() =>
-            await _context.Roles.ToListAsync();
+        public IEnumerable<Role> GetRoles() =>
+             _context.Roles;
 
         public async Task<Role> GetRoleByIdAsync(string roleId) => await _context.Roles.FindAsync(roleId);
 
@@ -32,16 +32,15 @@ namespace Reshop.Infrastructure.Repository.User
             =>
                 await _context.Roles.SingleOrDefaultAsync(c => c.RoleTitle == roleName);
 
-        public async Task<IEnumerable<string>> GetRolesIdOfUserAsync(string userId) =>
-               await _context.UserRoles
-                    .Where(c => c.UserId == userId)
-                    .Select(c => c.RoleId)
-                    .ToListAsync();
+        public IEnumerable<string> GetRolesIdOfUser(string userId) =>
+            _context.UserRoles
+                .Where(c => c.UserId == userId)
+                .Select(c => c.RoleId);
 
-        public IAsyncEnumerable<string> GetUsersIdOfRole(string roleId)
-            =>
-                _context.UserRoles.Where(c => c.RoleId == roleId)
-                    .Select(c => c.UserId) as IAsyncEnumerable<string>;
+        public IEnumerable<string> GetUsersIdOfRole(string roleId) =>
+            _context.UserRoles
+                .Where(c => c.RoleId == roleId)
+                .Select(c => c.UserId);
 
         public async Task AddRoleAsync(Role role) => await _context.Roles.AddAsync(role);
 
@@ -59,18 +58,19 @@ namespace Reshop.Infrastructure.Repository.User
             =>
                 await _context.UserRoles.SingleOrDefaultAsync(c => c.UserId == userId && c.RoleId == roleId);
 
-        public IAsyncEnumerable<UserRole> GetUserRolesByUserId(string userId)
-            =>
-                _context.UserRoles.Where(c => c.UserId == userId) as IAsyncEnumerable<UserRole>;
+        public IEnumerable<UserRole> GetUserRolesByUserId(string userId) =>
+            _context.UserRoles
+                .Where(c => c.UserId == userId);
 
-        public IAsyncEnumerable<UserRole> GetUserRolesByRoleId(string roleId)
-            =>
-                _context.UserRoles.Where(c => c.RoleId == roleId) as IAsyncEnumerable<UserRole>;
+        public IEnumerable<UserRole> GetUserRolesByRoleId(string roleId) =>
+            _context.UserRoles
+                .Where(c => c.RoleId == roleId);
 
         public async Task AddUserRoleAsync(UserRole userRole) => await _context.UserRoles.AddAsync(userRole);
 
         public void RemoveUserRole(UserRole userRole) => _context.UserRoles.Remove(userRole);
-        public async Task<IEnumerable<Role>> GetRolesOfUserWithPaginationAsync(string userId, int skip, int take, string filter)
+
+        public IEnumerable<Role> GetRolesOfUserWithPagination(string userId, int skip, int take, string filter)
         {
             IQueryable<Role> roles = _context.UserRoles
                 .Where(c => c.UserId == userId)
@@ -83,7 +83,7 @@ namespace Reshop.Infrastructure.Repository.User
 
             roles = roles.Skip(skip).Take(take);
 
-            return await roles.ToListAsync();
+            return roles;
         }
 
         public async Task<int> GetUserRolesCountAsync(string userId, string filter)
@@ -112,22 +112,19 @@ namespace Reshop.Infrastructure.Repository.User
         public void RemovePermission(Permission permission) =>
             _context.Permissions.Remove(permission);
 
-        public async Task<IEnumerable<Permission>> GetPermissionsAsync() =>
-            await _context.Permissions
-                .ToListAsync();
+        public IEnumerable<Permission> GetPermissions() =>
+            _context.Permissions;
 
         public async Task AddRolePermissionAsync(RolePermission rolePermission) =>
             await _context.RolePermissions.AddAsync(rolePermission);
 
-        public async Task<IEnumerable<RolePermission>> GetRolePermissionsOfRoleAsync(string roleId) =>
-            await _context.RolePermissions
-                .Where(c => c.RoleId == roleId)
-                .ToListAsync();
+        public IEnumerable<RolePermission> GetRolePermissionsOfRole(string roleId) =>
+            _context.RolePermissions
+                .Where(c => c.RoleId == roleId);
 
-        public async Task<IEnumerable<RolePermission>> GetRolePermissionsOfPermissionAsync(string permissionId) =>
-            await _context.RolePermissions
-                        .Where(c => c.PermissionId == permissionId)
-                        .ToListAsync();
+        public IEnumerable<RolePermission> GetRolePermissionsOfPermission(string permissionId) =>
+            _context.RolePermissions
+                .Where(c => c.PermissionId == permissionId);
 
 
         public void RemoveRolePermission(RolePermission rolePermission) =>
@@ -142,11 +139,10 @@ namespace Reshop.Infrastructure.Repository.User
                     .Select(c => c.PermissionId)
                     .SingleOrDefaultAsync();
 
-        public async Task<IEnumerable<string>> GetRolesIdOfPermissionAsync(string permissionId) =>
-            await _context.RolePermissions
+        public IEnumerable<string> GetRolesIdOfPermission(string permissionId) =>
+            _context.RolePermissions
                 .Where(c => c.PermissionId == permissionId)
-                .Select(c => c.RoleId)
-                .ToListAsync();
+                .Select(c => c.RoleId);
 
         public async Task<bool> IsPermissionExistsAsync(string permissionId) =>
             await _context.Permissions.AnyAsync(c => c.PermissionId == permissionId);

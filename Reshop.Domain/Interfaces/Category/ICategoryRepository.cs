@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Reshop.Domain.DTOs.Category;
+﻿using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
-using Reshop.Domain.Entities.Product;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Reshop.Domain.Interfaces.Category
 {
@@ -32,7 +30,7 @@ namespace Reshop.Domain.Interfaces.Category
         // insert
         Task AddCategoryAsync(Entities.Category.Category category);
         Task AddChildCategoryAsync(ChildCategory childCategory);
-         Task AddCategoryGalleryAsync(CategoryGallery categoryGallery);
+        Task AddCategoryGalleryAsync(CategoryGallery categoryGallery);
         void RemoveCategoryGallery(CategoryGallery categoryGallery);
         void UpdateCategoryGallery(CategoryGallery categoryGallery);
         Task<CategoryGallery> GetCategoryGalleryAsync(int categoryId, string imageName);
@@ -42,9 +40,6 @@ namespace Reshop.Domain.Interfaces.Category
         void UpdateCategory(Entities.Category.Category category);
         void UpdateChildCategory(ChildCategory childCategory);
 
-        // remove
-        void RemoveCategory(Entities.Category.Category category);
-        void RemoveChildCategory(ChildCategory childCategory);
         Task SaveChangesAsync();
     }
 }

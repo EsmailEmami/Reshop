@@ -76,7 +76,7 @@ namespace Reshop.Application.Services.Conversation
 
             int totalPages = (int)Math.Ceiling(1.0 * questionsCount / take);
 
-            var questions = await _questionRepository.GetProductQuestionsWithPaginationAsync(productId, skip, take, type.FixedText(), filter);
+            var questions = _questionRepository.GetProductQuestionsWithPagination(productId, skip, take, type.FixedText(), filter);
 
             return new Tuple<IEnumerable<ProductQuestionsForShow>, int, int>(questions, pageId, totalPages);
         }
@@ -199,17 +199,17 @@ namespace Reshop.Application.Services.Conversation
         public IEnumerable<ReportQuestionType> GetReportQuestionTypes() =>
             _questionRepository.GetReportQuestionTypes();
 
-        public async Task<IEnumerable<int>> GetUserQuestionLikesOfProductAsync(int productId, string userId) =>
-            await _questionRepository.GetUserQuestionLikesOfProductAsync(productId, userId);
+        public IEnumerable<int> GetUserQuestionLikesOfProduct(int productId, string userId) =>
+            _questionRepository.GetUserQuestionLikesOfProduct(productId, userId);
 
-        public async Task<IEnumerable<int>> GetUserQuestionReportsOfProductAsync(int productId, string userId) =>
-            await _questionRepository.GetUserQuestionReportsOfProductAsync(productId, userId);
+        public IEnumerable<int> GetUserQuestionReportsOfProduct(int productId, string userId) =>
+            _questionRepository.GetUserQuestionReportsOfProduct(productId, userId);
 
-        public async Task<IEnumerable<int>> GetUserQuestionAnswerLikesOfProductAsync(int productId, string userId) =>
-            await _questionRepository.GetUserQuestionAnswerLikesOfProductAsync(productId, userId);
+        public IEnumerable<int> GetUserQuestionAnswerLikesOfProduct(int productId, string userId) =>
+            _questionRepository.GetUserQuestionAnswerLikesOfProduct(productId, userId);
 
-        public async Task<IEnumerable<int>> GetUserQuestionAnswerReportsOfProductAsync(int productId, string userId) =>
-            await _questionRepository.GetUserQuestionAnswerReportsOfProductAsync(productId, userId);
+        public IEnumerable<int> GetUserQuestionAnswerReportsOfProduct(int productId, string userId) => 
+            _questionRepository.GetUserQuestionAnswerReportsOfProduct(productId, userId);
 
         public async Task<ResultTypes> AddQuestionAnswerAsync(QuestionAnswer questionAnswer)
         {

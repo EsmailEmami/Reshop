@@ -15,7 +15,7 @@ namespace Reshop.Application.Interfaces.Product
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductViewModel>> GetProductsForShowAsync(string type = "all", string sortBy = "news", int take = 18, List<int> brands = null);
+        IEnumerable<ProductViewModel> GetProductsForShow(string type = "all", string sortBy = "news", int take = 18, List<int> brands = null);
 
         // product , pageId , totalPages
         // type = all, active, existed
@@ -29,7 +29,7 @@ namespace Reshop.Application.Interfaces.Product
         // this is for list of shopper products
         Task<ProductsGeneralDataForAdmin> GetProductsGeneralDataForAdminAsync();
 
-        Task<IEnumerable<SearchProductViewModel>> SearchProductsAsync(string filter);
+        IEnumerable<SearchProductViewModel> SearchProducts(string filter);
 
 
         // get by id 

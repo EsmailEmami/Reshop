@@ -23,28 +23,26 @@ namespace Reshop.Infrastructure.Repository.Product
 
         #endregion
 
-        public async Task<IEnumerable<Tuple<int, string, string>>> GetBrandsOfProductsAsync(string type)
+        public IEnumerable<Tuple<int, string, string>> GetBrandsOfProducts(string type)
         {
             if (type == "all")
             {
-               return await _context.Products
-                    .Select(c => c.OfficialBrandProduct)
-                    .Distinct()
-                    .Select(c => c.Brand)
-                    .Distinct()
-                    .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName))
-                    .ToListAsync();
+                return _context.Products
+                     .Select(c => c.OfficialBrandProduct)
+                     .Distinct()
+                     .Select(c => c.Brand)
+                     .Distinct()
+                     .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName));
             }
             else
             {
-                return await _context.Products
-                    .Where(c=> c.ProductType.ToLower() == type)
+                return _context.Products
+                    .Where(c => c.ProductType.ToLower() == type)
                     .Select(c => c.OfficialBrandProduct)
                     .Distinct()
                     .Select(c => c.Brand)
                     .Distinct()
-                    .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName))
-                    .ToListAsync();
+                    .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName));
             }
         }
 
@@ -61,14 +59,13 @@ namespace Reshop.Infrastructure.Repository.Product
                 .Select(c => c.Brand)
                 .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName));
 
-        public async Task<IEnumerable<Tuple<int, string, string>>> GetBrandsOfShopperAsync(string shopperId) =>
-            await _context.ShopperProducts
+        public IEnumerable<Tuple<int, string, string>> GetBrandsOfShopper(string shopperId) =>
+             _context.ShopperProducts
                     .Where(c => c.ShopperId == shopperId && c.IsActive && c.ShopperProductColors.Any(s => s.IsActive))
                     .Select(c => c.Product)
                     .Select(c => c.OfficialBrandProduct.Brand)
                     .Select(c => new Tuple<int, string, string>(c.BrandId, c.BrandName, c.LatinBrandName))
-                    .Distinct()
-                    .ToListAsync();
+                    .Distinct();
 
         public IEnumerable<ChildCategory> GetChildCategoriesOfBrand(int brandId) =>
             _context.BrandToChildCategories.Where(c => c.BrandId == brandId)

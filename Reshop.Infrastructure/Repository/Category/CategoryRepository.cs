@@ -171,16 +171,6 @@ namespace Reshop.Infrastructure.Repository.Category
             _context.ChildCategories.Update(childCategory);
         }
 
-        public void RemoveCategory(Domain.Entities.Category.Category category)
-        {
-            _context.Categories.Remove(category);
-        }
-
-        public void RemoveChildCategory(ChildCategory childCategory)
-        {
-            _context.ChildCategories.Remove(childCategory);
-        }
-
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

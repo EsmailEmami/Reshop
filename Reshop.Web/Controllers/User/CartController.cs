@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
 using Reshop.Application.Enums;
-using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security.Attribute;
 using System.Security.Claims;
@@ -110,11 +108,11 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpGet]
-        public async Task<IActionResult> Address()
+        public IActionResult Address()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return View(await _userService.GetUserAddressesForShowAsync(userId));
+            return View(_userService.GetUserAddressesForShow(userId));
         }
 
         [HttpPost]
