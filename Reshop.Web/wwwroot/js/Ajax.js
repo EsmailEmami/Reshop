@@ -235,6 +235,8 @@ function SubmitFormData(form, isModal) {
             processData: false,
             contentType: false,
             success: function (res) {
+
+
                 var loc;
                 if (res.isValid) {
 

@@ -38,20 +38,23 @@
     </div>
 
     @if (ViewBag.SearchText != null)
-    {  <div class="search-form">
-           <div class="form">
-               <input type="text" id="filter" placeholder="سوال مورد نظر..." value ="@ViewBag.SearchText.ToString()">
-               <button onclick="changeList()"><i class="far fa-search"></i></button>
-           </div>
-       </div>}
+    {
+          <div class="search-form">
+            <div class="form">
+                <input type="text" id="filter" placeholder="سوال مورد نظر..." value="@ViewBag.SearchText.ToString()">
+                <button onclick="changeList()"><i class="far fa-search"></i></button>
+            </div>
+        </div>
+    }
     else
-    {<div class="search-form">
+    {
+        <div class="search-form">
             <div class="form">
                 <input type="text" id="filter" placeholder="سوال مورد نظر...">
                 <button onclick="changeList()"><i class="far fa-search"></i></button>
             </div>
         </div>
-    } 
+    }
 
 
 
@@ -97,7 +100,7 @@
                         <span>@item.QuestionDate.ToShamsiDate()</span>
 
 
-                        @if (reportedQuestions.Any(c => c == item.QuestionId))
+                        @if (reportedQuestions != null && reportedQuestions.Any(c => c == item.QuestionId))
                         {
                             <form id="@reportQuestionBtn" asp-controller="Question" asp-action="RemoveReportQuestion" onsubmit="return RemoveReportComment(this)">
                                 <input type="hidden" name="questionId" value="@item.QuestionId" />
@@ -134,11 +137,11 @@
                                         string likeQuestionAnswerBtn = "like-question-answer-btn" + answer.QuestionAnswerId;
                                     }
 
-                                    @if (reportedQuestionAnswers.Any(c => c == answer.QuestionAnswerId))
+                                    @if (reportedQuestionAnswers != null && reportedQuestionAnswers.Any(c => c == answer.QuestionAnswerId))
                                     {
-                                        <form id="@reportQuestionAnswerBtn" asp-controller="Question" asp-action="RemoveReportQuestionAnswer"method="post"  onsubmit="return RemoveReportQuestionAnswer(this)">
+                                        <form id="@reportQuestionAnswerBtn" asp-controller="Question" asp-action="RemoveReportQuestionAnswer" method="post" onsubmit="return RemoveReportQuestionAnswer(this)">
                                             <input type="hidden" name="questionAnswerId" value="@answer.QuestionAnswerId" />
-                                            <button  type="submit" class="report-answer active">
+                                            <button type="submit" class="report-answer active">
                                                 <i class="far fa-flag "></i>
                                             </button>
                                         </form>
@@ -175,11 +178,11 @@
                     </div>
 
                     <div class="question-footer">
-                        
+
                         <a onclick="ShowModal('@Url.Action("AddQuestionAnswer", "Question" ,new {questionId = item.QuestionId}, Context.Request.Scheme)', 'پاسخ پرسش')" class="report-answer">پاسخ این پرسش</a>
 
-                        
-                        
+
+
 
                         @if (userQuestionLikes != null && userQuestionLikes.Any(c => c == item.QuestionId))
                         {
@@ -201,7 +204,7 @@
                                 </button>
                             </form>
                         }
-                        
+
                     </div>
                 </div>
             </div>

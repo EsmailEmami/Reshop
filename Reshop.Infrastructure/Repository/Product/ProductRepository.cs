@@ -1430,7 +1430,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     Height = c.MobileDetail.Height,
                     Weight = c.MobileDetail.Weight,
                     SimCardQuantity = c.MobileDetail.SimCardQuantity,
-                    SimCardInpute = c.MobileDetail.SimCardInpute,
+                    SimCardInput = c.MobileDetail.SimCardInpute,
                     SeparateSlotMemoryCard = c.MobileDetail.SeparateSlotMemoryCard,
                     Announced = c.MobileDetail.Announced,
                     ChipsetName = c.MobileDetail.ChipsetName,

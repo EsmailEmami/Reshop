@@ -315,7 +315,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                     Height = model.Height,
                     Weight = model.Weight,
                     SimCardQuantity = model.SimCardQuantity,
-                    SimCardInpute = model.SimCardInpute,
+                    SimCardInpute = model.SimCardInput,
                     SeparateSlotMemoryCard = model.SeparateSlotMemoryCard,
                     Announced = model.Announced,
                     ChipsetName = model.ChipsetName,
@@ -418,7 +418,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 mobileDetail.Height = model.Height;
                 mobileDetail.Weight = model.Weight;
                 mobileDetail.SimCardQuantity = model.SimCardQuantity;
-                mobileDetail.SimCardInpute = model.SimCardInpute;
+                mobileDetail.SimCardInpute = model.SimCardInput;
                 mobileDetail.SeparateSlotMemoryCard = model.SeparateSlotMemoryCard;
                 mobileDetail.Announced = model.Announced;
                 mobileDetail.ChipsetName = model.ChipsetName;
