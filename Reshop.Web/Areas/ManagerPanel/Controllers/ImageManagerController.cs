@@ -37,7 +37,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
-        public async Task<IActionResult> AddImage()
+        public IActionResult AddImage()
         {
             return View(new AddOrEditImageViewModel()
             {

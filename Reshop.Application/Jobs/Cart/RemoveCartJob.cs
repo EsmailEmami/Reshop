@@ -13,7 +13,7 @@ namespace Reshop.Application.Jobs.Cart
     [DisallowConcurrentExecution]
     public class RemoveCartJob : IJob
     {
-        private string apiUrl = "https://localhost:44311/api/Cart";
+        //private string apiUrl = "https://localhost:44311/api/Cart";
 
         //private readonly HttpClient _httpClient;
 

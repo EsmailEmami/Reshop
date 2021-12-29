@@ -17,6 +17,7 @@ namespace Reshop.Application.Interfaces.User
         Task<ResultTypes> MakeFinalTheOrder(string orderId);
         Task<ResultTypes> AddToCart(string userId, string shopperProductColorId);
         Task<bool> IsUserOrderAsync(string userId, string orderId);
+        Task<bool> IsUserOrderDetailValidationByTrackingCodeAsync(string userId, string trackingCode);
         Task<bool> IsOrderDetailExistAsync(string orderDetailId);
         Task<string> IsUserBoughtProductAsync(string userId, int productId);
         Task<string> GetUserOpenCartOrderIdAsync(string userId);

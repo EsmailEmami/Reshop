@@ -58,6 +58,11 @@ namespace Reshop.Infrastructure.Repository.User
             return await _context.OrderDetails.AnyAsync(c => c.OrderDetailId == orderDetailId);
         }
 
+        public async Task<bool> IsUserOrderDetailValidationByTrackingCodeAsync(string userId, string trackingCode) =>
+            await _context.OrderDetails
+                .AnyAsync(c => c.TrackingCode == trackingCode &&
+                               c.Order.UserId == userId);
+
         public void UpdateOrderDetail(OrderDetail orderDetail)
         {
             _context.OrderDetails.Update(orderDetail);

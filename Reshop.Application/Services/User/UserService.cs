@@ -108,6 +108,9 @@ namespace Reshop.Application.Services.User
             return await _userRepository.IsUserExistAsync(userId);
         }
 
+        public async Task<int> GetUserAddressesCountAsync(string userId) =>
+            await _userRepository.GetUserAddressesCountAsync(userId);
+
 
         public async Task<ResultTypes> AddUserAsync(Domain.Entities.User.User user)
         {

@@ -56,6 +56,8 @@ namespace Reshop.Web.Controllers.User
 
         #endregion
 
+        private static readonly int _userAddressCountPermission = 5;
+
         #region register
 
         [Route("Register")]
@@ -426,8 +428,17 @@ namespace Reshop.Web.Controllers.User
 
         [HttpGet]
         [NoDirectAccess]
-        public IActionResult NewAddress()
+        public async Task<IActionResult> NewAddress()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // user addresses must not be more than _userAddressCountPermission 
+            int userAddressesCount = await _userService.GetUserAddressesCountAsync(userId);
+
+            if (userAddressesCount >= _userAddressCountPermission)
+                return Json(new { isValid = false, errorType = "danger", errorText = "کاربر گرامی تعداد آدرس های ثبت شده توسط شما بیش از حد مجاز است." });
+
+
             ViewBag.States = _originService.GetStates();
 
             ViewData["selectedState"] = 0;
@@ -449,16 +460,18 @@ namespace Reshop.Web.Controllers.User
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            // user addresses must not be more than _userAddressCountPermission
+            int userAddressesCount = await _userService.GetUserAddressesCountAsync(userId);
+
+            if (userAddressesCount >= _userAddressCountPermission)
+                return Json(new { isValid = false, errorType = "danger", errorText = "کاربر گرامی تعداد آدرس های ثبت شده توسط شما بیش از حد مجاز است." });
+
+
             var city = await _originService.GetCityByIdAsync(model.CityId);
 
 
             // error while is problem from city
-            if (city == null)
-            {
-                ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
-                return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
-            }
-            else if (city.StateId != selectedState)
+            if (city == null || city.StateId != selectedState)
             {
                 ModelState.AddModelError("", "هنگام ثبت ادرس به مشکلی غیر منتظره برخوردیم. لطفا با پشتیبانی تماس بگیرید.");
                 return Json(new { isValid = false, html = RenderViewToString.RenderRazorViewToString(this, model) });
@@ -504,6 +517,13 @@ namespace Reshop.Web.Controllers.User
 
             if (address is null)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+
+            if (address.UserId != userId)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
 
             address.UserId = _dataProtector.Protect(address.UserId);
 
@@ -726,6 +746,7 @@ namespace Reshop.Web.Controllers.User
         #region Remote Validations
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> IsPhoneNumberValid(string phoneNumber)
         {
             if (string.IsNullOrEmpty(phoneNumber) || phoneNumber.Length < 11)

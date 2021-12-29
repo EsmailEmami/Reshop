@@ -83,6 +83,10 @@ namespace Reshop.Infrastructure.Repository.User
                     .Include(c => c.City)
                     .ThenInclude(c => c.State);
 
+        public async Task<int> GetUserAddressesCountAsync(string userId) => 
+            await _context.Addresses.Where(c => c.UserId == userId)
+                .CountAsync();
+
         public IEnumerable<AddressForShowViewModel> GetUserAddressesForShow(string userId) =>
             _context.Addresses.Where(c => c.UserId == userId)
                 .Select(a => new AddressForShowViewModel()

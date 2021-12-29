@@ -26,6 +26,7 @@ namespace Reshop.Application.Interfaces.User
         Task<bool> IsPhoneNumberExistAsync(string phoneNumber);
         Task<bool> IsUserPasswordValidAsync(string userId, string password);
         Task<bool> IsUserExistAsync(string userId);
+        Task<int> GetUserAddressesCountAsync(string userId);
         Task<ResultTypes> AddUserAsync(Domain.Entities.User.User user);
         Task<Domain.Entities.User.User> GetUserByPhoneNumberAsync(string phoneNumber);
         Task AddUserToInvitesAsync(string inviteCode, string invitedUserId);

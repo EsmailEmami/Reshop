@@ -30,6 +30,41 @@
     }
 }
 
+function UpdateCart(form) {
+    try {
+        $.ajax({
+            type: 'POST',
+            url: form.action,
+            data: new FormData(form),
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.isValid) {
+
+                    if (res.errorType != null && res.errorText != null) {
+                        ShowToast(res.errorType, res.errorText);
+                    }
+
+                    var mainPage = document.querySelector('main');
+
+                    mainPage.innerHTML = res.html;
+
+                    cartCollapse();
+
+                } else {
+                    if (res.errorType != null && res.errorText != null) {
+                        ShowToast(res.errorType, res.errorText);
+                    } 
+                }
+            }
+        });
+        //to prevent default form submit event
+        return false;
+    } catch (ex) {
+        console.log(ex);
+    }
+}
+
 function AddProductToFavorites(form) {
     try {
         $.ajax({

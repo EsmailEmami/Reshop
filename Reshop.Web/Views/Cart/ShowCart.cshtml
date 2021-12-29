@@ -71,15 +71,15 @@ else
                         </div>
 
                         <div class="quantity-selector">
-                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-trackingCode="@item.TrackingCode" asp-route-actionType="Plus">
+                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-trackingCode="@item.TrackingCode" asp-route-actionType="Plus" onsubmit="return UpdateCart(this)">
                                 <button type="submit"><i class="far fa-plus"></i></button>
                             </form>
                             <span>@item.ProductsCount</span>
-                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-trackingCode="@item.TrackingCode" asp-route-actionType="Minus">
+                            <form method="post" asp-action="AddOrRemoveProduct" asp-route-trackingCode="@item.TrackingCode" asp-route-actionType="Minus" onsubmit="return UpdateCart(this)">
                                 <button type="submit"><i class="far fa-minus"></i></button>
                             </form>
 
-                            <form method="post" asp-action="RemoveOrderDetail" asp-route-trackingCode="@item.TrackingCode">
+                            <form method="post" asp-action="RemoveOrderDetail" asp-route-trackingCode="@item.TrackingCode" onsubmit="return UpdateCart(this)">
                                 <button type="submit"><i class="fal fa-trash-alt"></i></button>
                             </form>
                         </div>
@@ -179,7 +179,7 @@ else
 @section Scripts
 {
 <script>
-    $(function () {
+    function cartCollapse() {
         let collapse = document.getElementsByClassName('collapse');
         if (window.innerWidth > 991) {
             for (let i = 0; i < collapse.length; i++) {
@@ -191,8 +191,7 @@ else
             }
         }
 
-        window.addEventListener('resize',
-            function () {
+        window.addEventListener('resize', function () {
                 let collapse = document.getElementsByClassName('collapse');
 
                 if (window.innerWidth > 991) {
@@ -206,6 +205,8 @@ else
                     }
                 }
             });
-    });
+    }
+
+    cartCollapse();
 </script>
 }

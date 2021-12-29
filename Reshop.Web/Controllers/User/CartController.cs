@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
+using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security.Attribute;
@@ -9,6 +11,7 @@ using ZarinpalSandbox;
 
 namespace Reshop.Web.Controllers.User
 {
+    [Authorize]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;
@@ -54,18 +57,29 @@ namespace Reshop.Web.Controllers.User
         }
 
         [HttpPost]
+        [NoDirectAccess]
+        [PermissionJs]
         public async Task<IActionResult> AddOrRemoveProduct(string trackingCode, string actionType)
         {
             if (string.IsNullOrEmpty(trackingCode))
-                return BadRequest();
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            bool isUserOrderDetail = await _cartService.IsUserOrderDetailValidationByTrackingCodeAsync(userId, trackingCode);
+
+            if (!isUserOrderDetail)
+            {
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+            }
 
             var orderDetailId = await _cartService.GetOrderDetailIdByTrackingCodeAsync(trackingCode);
 
             if (string.IsNullOrEmpty(orderDetailId))
-                return NotFound();
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
             if (!await _cartService.IsOrderDetailExistAsync(orderDetailId))
-                return NotFound();
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
 
 
@@ -82,29 +96,45 @@ namespace Reshop.Web.Controllers.User
                     break;
 
                 default:
-                    return BadRequest();
+                    return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
             }
 
-            return RedirectToAction(nameof(ShowCart));
+            var cartData = _cartService.GetUserOpenOrderForShowCart(userId);
+
+            return Json(new { isValid = true, html = RenderViewToString.RenderRazorViewToString(this, "ShowCart", cartData) });
         }
 
         [HttpPost]
+        [NoDirectAccess]
+        [PermissionJs]
         public async Task<IActionResult> RemoveOrderDetail(string trackingCode)
         {
             if (string.IsNullOrEmpty(trackingCode))
-                return BadRequest();
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            bool isUserOrderDetail = await _cartService.IsUserOrderDetailValidationByTrackingCodeAsync(userId, trackingCode);
+
+            if (!isUserOrderDetail)
+            {
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
+            }
 
             var orderDetailId = await _cartService.GetOrderDetailIdByTrackingCodeAsync(trackingCode);
 
             if (string.IsNullOrEmpty(orderDetailId))
-                return NotFound();
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
             var result = await _cartService.RemoveOrderDetailAsync(orderDetailId);
 
-            if (result == ResultTypes.Failed) return BadRequest();
+            if (result == ResultTypes.Failed)
+                return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است! لطفا دوباره تلاش کنید." });
 
 
-            return RedirectToAction(nameof(ShowCart));
+            var cartData = _cartService.GetUserOpenOrderForShowCart(userId);
+
+            return Json(new { isValid = true, html = RenderViewToString.RenderRazorViewToString(this, " ShowCart", cartData) });
         }
 
         [HttpGet]

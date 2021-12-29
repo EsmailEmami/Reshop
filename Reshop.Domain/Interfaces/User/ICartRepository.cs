@@ -17,6 +17,7 @@ namespace Reshop.Domain.Interfaces.User
         Task AddOrderDetailAsync(OrderDetail orderDetail);
         Task<bool> IsOrderDetailTrackingCodeExistAsync(string trackingCode);
         Task<bool> IsOrderDetailExistAsync(string orderDetailId);
+        Task<bool> IsUserOrderDetailValidationByTrackingCodeAsync(string userId, string trackingCode);
         void UpdateOrderDetail(OrderDetail orderDetail);
         void RemoveOrderDetail(OrderDetail orderDetail);
 

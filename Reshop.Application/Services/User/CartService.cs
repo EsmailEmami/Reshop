@@ -210,6 +210,9 @@ namespace Reshop.Application.Services.User
         public async Task<bool> IsUserOrderAsync(string userId, string orderId) =>
             await _cartRepository.IsUserOrderAsync(userId, orderId);
 
+        public async Task<bool> IsUserOrderDetailValidationByTrackingCodeAsync(string userId, string trackingCode) =>
+            await _cartRepository.IsUserOrderDetailValidationByTrackingCodeAsync(userId, trackingCode);
+
         public async Task<bool> IsOrderDetailExistAsync(string orderDetailId)
         {
             return await _cartRepository.IsOrderDetailExistAsync(orderDetailId);
