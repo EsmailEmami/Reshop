@@ -1420,7 +1420,7 @@ ul.breadcrumb {
 
 .product-img .discount {
     position: absolute;
-    left: -42px;
+    right: calc(100% - 30px);
     top: 10px;
     background: #FC5400;
     display: inline-block;
@@ -1507,6 +1507,7 @@ ul.breadcrumb {
     }
 
     .product-item:hover .product-img .discount {
+        right: auto;
         left: 0;
     }
 

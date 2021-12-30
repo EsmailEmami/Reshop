@@ -46,7 +46,7 @@ namespace Reshop.Web.Controllers
             return View();
         }
 
-        [Route("FrequentlyQuestions")]
+        [Route("FQS")]
         public IActionResult FrequentlyQuestions()
         {
             return View();

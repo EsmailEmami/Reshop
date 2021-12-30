@@ -118,32 +118,7 @@
 @section Scripts{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
-        $('.owl-carousel').owlCarousel({
-            rtl: true,
-            loop: false,
-            dots: false,
-            nav: false,
-            margin: 10,
-            animateOut: 'slideOutDown',
-            animateIn: 'flipInX',
-            smartSpeed: 1000,
-            autoWidth: true,
-            responsive: {
-                0: {
-                    items: 1
-                },
-                720: {
-                    items: 2
-                },
-
-                1100: {
-                    items: 3
-                }
-            }
-        });
-
-
-
+  
         function changeAddress(addressId) {
             document.getElementById('addressId').value = addressId;
         }

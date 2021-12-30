@@ -75,7 +75,7 @@
 @section Scripts
 {
 <script type="text/javascript">
-    const sliderSwiper = new Swiper('.slider-swiper', {
+    var sliderSwiper = new Swiper('.slider-swiper', {
         effect: 'creative',
         creativeEffect: {
             prev: {
@@ -90,7 +90,7 @@
         centeredSlides: true,
         loop: true,
         autoplay: {
-            delay: 2500,
+            delay: 10000,
             disableOnInteraction: false,
         },
         pagination: {
@@ -104,7 +104,16 @@
         },
     });
 
-    const products = new Swiper('.products-swiper', {
+
+    $('.slider-swiper').on('mouseover', function() {
+        sliderSwiper.autoplay.stop();
+    });
+
+    $('.slider-swiper').on('mouseout', function() {
+        sliderSwiper.autoplay.start();
+    });
+
+    var products = new Swiper('.products-swiper', {
         spaceBetween: 30,
         centeredSlides: true,
         loop: true,
