@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Drawing;
+using System.Linq;
 
 namespace Reshop.Application.Security
 {
@@ -12,6 +13,20 @@ namespace Reshop.Application.Security
                 Image.FromStream(file.OpenReadStream());
 
                 return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool IsImage(this IFormFile file, params string[] ext)
+        {
+            try
+            {
+                Image.FromStream(file.OpenReadStream());
+
+                return ext.Any(c => c == file.FileName);
             }
             catch
             {

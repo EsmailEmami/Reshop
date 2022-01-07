@@ -1418,19 +1418,16 @@ namespace Reshop.Infrastructure.Repository.Product
                     SelectedBrand = c.OfficialBrandProduct.BrandId,
                     SelectedChildCategory = c.ChildCategoryId,
                     //img
-                    SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
-                    SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
-                    SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
-                    SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
-                    SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
-                    SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
+                    SelectedImages = c.ProductGalleries
+                        .OrderBy(i => i.OrderBy)
+                        .Select(i=> i.ImageName),
                     // detail
-                    Lenght = c.MobileDetail.Lenght,
+                    Length = c.MobileDetail.Length,
                     Width = c.MobileDetail.Width,
                     Height = c.MobileDetail.Height,
                     Weight = c.MobileDetail.Weight,
                     SimCardQuantity = c.MobileDetail.SimCardQuantity,
-                    SimCardInput = c.MobileDetail.SimCardInpute,
+                    SimCardInput = c.MobileDetail.SimCardInput,
                     SeparateSlotMemoryCard = c.MobileDetail.SeparateSlotMemoryCard,
                     Announced = c.MobileDetail.Announced,
                     ChipsetName = c.MobileDetail.ChipsetName,

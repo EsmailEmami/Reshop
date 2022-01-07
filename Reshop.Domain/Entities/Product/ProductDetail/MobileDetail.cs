@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 namespace Reshop.Domain.Entities.Product.ProductDetail
 {
@@ -18,7 +17,7 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         [Display(Name = "طول")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string Lenght { get; set; }
+        public string Length { get; set; }
 
         [Display(Name = "عرض")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
@@ -37,16 +36,16 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         [Display(Name = "تعداد سیم کارت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(2, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [Range(0, 2, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public int SimCardQuantity { get; set; }
 
 
         [Display(Name = "ورودی سیم کارت")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string SimCardInpute { get; set; }
+        public string SimCardInput { get; set; }
 
-        [Display(Name = "ورودی جداگانه برای حافظه جانبی")]
+        [Display(Name = "ورودی کارت حافظه")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool SeparateSlotMemoryCard { get; set; }
 
@@ -86,12 +85,12 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         [Display(Name = "حافظه ی داخلی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(40, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [Range(0, 1000, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public int InternalStorage { get; set; }
 
         [Display(Name = "Ram حافظه")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(40, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [Range(0, 500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public int Ram { get; set; }
 
         [Display(Name = "پشتیانی از حافظه ی جانبی")]
@@ -153,8 +152,6 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string MoreInformation { get; set; }
-
-
 
         //Connections
 
@@ -218,17 +215,17 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         [Display(Name = "تعداد لنز های دوربین")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(2, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [Range(0, 100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public int CameraQuantity { get; set; }
 
         [Display(Name = "رزولوشن عکس دوربین اصلی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(4, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [Range(0, 100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public int PhotoResolutation { get; set; }
 
         [Display(Name = "رزولوشن عکس دوربین سلفی")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(4, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [Range(0, 100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public int SelfiCameraPhoto { get; set; }
 
 
@@ -269,7 +266,7 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         [Display(Name = "نسخه ی سیستم عامل")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(3, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [Range(0, 100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public int OsVersion { get; set; }
 
         [Display(Name = "رابط کاربری")]
@@ -290,7 +287,7 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         [Display(Name = "ظرفیت باتری")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(6, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [Range(0, 100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public int BatteryCapacity { get; set; }
 
         [Display(Name = "باتری قابل تعویض")]
