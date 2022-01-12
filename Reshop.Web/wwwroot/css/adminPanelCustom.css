@@ -1827,7 +1827,7 @@ ul.pagination-custom {
 
     .form-field label {
         position: absolute;
-        top: .58rem;
+        top: .5rem;
         right: 15px;
         margin: 0;
         padding: 0;
@@ -2016,6 +2016,12 @@ ul.pagination-custom {
         color: #222;
     }
 
+        .form-check label.radio {
+            display: inline-block;
+            padding-right: 0;
+            cursor: auto;
+        }
+
         .form-check label input {
             position: absolute;
             opacity: 0;
@@ -2084,6 +2090,59 @@ ul.pagination-custom {
             transform: rotate( 45deg);
         }
 
+
+.hidden-radio {
+    display: inline-block;
+    padding-right: 10px;
+}
+
+    .hidden-radio .item {
+        display: inline-block;
+        position: relative;
+        margin: 0 5px;
+    }
+
+        .hidden-radio .item input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            visibility: hidden;
+        }
+
+        .hidden-radio .item label {
+            display: block;
+            position: relative;
+            color: #222222;
+            font-weight: 500;
+            padding: 3px 17px;
+            font-size: 14px;
+            border-radius: 25px;
+            transition: 0.3s;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .hidden-radio .item input:checked ~ label {
+            background-color: #fc5400;
+            color: #fcfcfc;
+            box-shadow: 0 0 3px #fc5400;
+        }
+
+        .hidden-radio .item label:hover {
+            background-color: #e8e8e8;
+            color: #2f2c2c;
+        }
+
+.ProfileAvatarInput {
+    position: absolute;
+    cursor: pointer;
+    opacity: 0 !important;
+    height: 100%;
+    width: 100%;
+    right: 0;
+}
+
+
 .image-field {
     border: 2px solid #ced4da;
     border-radius: 5px;
@@ -2093,27 +2152,58 @@ ul.pagination-custom {
     margin-left: auto;
 }
 
-    .image-field .form-field {
-        margin: 8px 8px 6px 8px;
-    }
-
-        .image-field .form-field input {
-            direction: ltr;
-        }
 
     .image-field .image-area {
         padding: 5px;
         position: relative;
         height: 270px;
-        width: 100%;
+        width: 350px;
         margin: 0 auto;
+        position: relative;
+        z-index: 1;
+        position: relative;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -webkit-justify-content: center;
+        -ms-flex-pack: center;
+        justify-content: center;
     }
 
         .image-field .image-area img {
             width: 100%;
             height: 100%;
-            border-radius: 5px;
-            border: 1px solid #ced4da;
+            padding: 3px;
+            z-index: 1;
+            position: relative;
+            border-radius: 7px
+        }
+
+        .image-field .image-area .change-image {
+            width: 100%;
+            height: 100%;
+            line-height: 265px;
+            text-align: center;
+            font-size: 32px;
+            color: #fff;
+            background-color: rgba(228,235,245,0.4);
+            position: absolute;
+            z-index: 2;
+            opacity: 0;
+        }
+
+            .image-field .image-area .change-image .change-image i {
+                padding: 0;
+            }
+
+        .image-field .image-area:hover .change-image {
+            opacity: 1;
         }
 
 .file-field {
@@ -2129,9 +2219,12 @@ ul.pagination-custom {
 
 .title-header {
     width: 100%;
-    font-size: 17px;
+    font-size: 20px;
     font-weight: bold;
     color: #222;
+    text-align: center;
+    border-bottom: 2px solid #3f3f3f;
+    margin-bottom: 40px;
 }
 
 /* media queries */

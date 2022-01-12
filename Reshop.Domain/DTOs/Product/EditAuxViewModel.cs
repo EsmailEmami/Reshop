@@ -7,7 +7,7 @@ using Reshop.Domain.Entities.Category;
 
 namespace Reshop.Domain.DTOs.Product
 {
-    public class AddOrEditAUXViewModel
+    public class EditAuxViewModel
     {
         // product 
         public int ProductId { get; set; }
@@ -52,37 +52,12 @@ namespace Reshop.Domain.DTOs.Product
 
         // ---------------------------------------------------------------------------IMG
 
-        [Display(Name = "عکس شماره 1")]
-        public IFormFile SelectedImage1 { get; set; }
-
-        [Display(Name = "عکس شماره 2")]
-        public IFormFile SelectedImage2 { get; set; }
-
-        [Display(Name = "عکس شماره 3")]
-        public IFormFile SelectedImage3 { get; set; }
-
-        [Display(Name = "عکس شماره 4")]
-        public IFormFile SelectedImage4 { get; set; }
-
-        [Display(Name = "عکس شماره 5")]
-        public IFormFile SelectedImage5 { get; set; }
-
-        [Display(Name = "عکس شماره 6")]
-        public IFormFile SelectedImage6 { get; set; }
+        public List<IFormFile> Images { get; set; }
 
 
         // for show on edit
+        public IEnumerable<string> SelectedImages { get; set; }
 
-        public string SelectedImage1IMG { get; set; }
-
-        public string SelectedImage2IMG { get; set; }
-
-        public string SelectedImage3IMG { get; set; }
-
-        public string SelectedImage4IMG { get; set; }
-
-        public string SelectedImage5IMG { get; set; }
-
-        public string SelectedImage6IMG { get; set; }
+        public IEnumerable<string> ChangedImages { get; set; }
     }
 }

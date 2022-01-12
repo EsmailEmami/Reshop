@@ -535,7 +535,7 @@ namespace Reshop.Application.Services.Product
             return model;
         }
 
-        public async Task<AddOrEditAUXViewModel> GetTypeAUXProductDataAsync(int productId)
+        public async Task<EditAuxViewModel> GetTypeAUXProductDataAsync(int productId)
         {
             var model = await _productRepository.GetTypeAUXProductDataForEditAsync(productId);
 

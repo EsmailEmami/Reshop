@@ -1890,10 +1890,10 @@ namespace Reshop.Infrastructure.Repository.Product
                         MoreInformation = c.MemoryCardDetail.MoreInformation,
                     }).SingleOrDefaultAsync();
 
-        public async Task<AddOrEditAUXViewModel> GetTypeAUXProductDataForEditAsync(int productId) =>
+        public async Task<EditAuxViewModel> GetTypeAUXProductDataForEditAsync(int productId) =>
             await _context.Products
                 .Where(c => c.ProductId == productId)
-                .Select(c => new AddOrEditAUXViewModel()
+                .Select(c => new EditAuxViewModel()
                 {
                     ProductId = c.ProductId,
                     ProductTitle = c.ProductTitle,
@@ -1904,12 +1904,9 @@ namespace Reshop.Infrastructure.Repository.Product
                     SelectedBrand = c.OfficialBrandProduct.BrandId,
                     SelectedChildCategory = c.ChildCategoryId,
                     //img
-                    SelectedImage1IMG = c.ProductGalleries.First(i => i.OrderBy == 1).ImageName,
-                    SelectedImage2IMG = c.ProductGalleries.First(i => i.OrderBy == 2).ImageName,
-                    SelectedImage3IMG = c.ProductGalleries.First(i => i.OrderBy == 3).ImageName,
-                    SelectedImage4IMG = c.ProductGalleries.First(i => i.OrderBy == 4).ImageName,
-                    SelectedImage5IMG = c.ProductGalleries.First(i => i.OrderBy == 5).ImageName,
-                    SelectedImage6IMG = c.ProductGalleries.First(i => i.OrderBy == 6).ImageName,
+                     SelectedImages = c.ProductGalleries
+                         .OrderBy(g=> g.OrderBy)
+                         .Select(g=> g.ImageName),
                     // detail
                     CableMaterial = c.AuxDetail.CableMaterial,
                     CableLenght = c.AuxDetail.CableLenght

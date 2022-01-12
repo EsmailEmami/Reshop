@@ -61,6 +61,171 @@ function readURL(input, imgId) {
     }
 }
 
+
+function addImageToProduct(input, imgId) {
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            document.getElementById(imgId).setAttribute('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    // create new add image part
+
+    var inputs = document.querySelectorAll('#images-part input');
+
+    let lastElement = inputs[inputs.length - 1];
+
+    if (input.files[0] == lastElement.files[0]) {
+        var imageField = document.createElement('div');
+        imageField.className = 'image-field';
+
+        var imageArea = document.createElement('div');
+        imageArea.className = 'image-area';
+
+        var changeImage = document.createElement('a');
+        changeImage.className = 'change-image';
+        changeImage.setAttribute('href', 'javascript:void(0)');
+
+        var imageInput = document.createElement('input');
+        imageInput.setAttribute('type', 'file');
+        imageInput.setAttribute('multiple', '');
+        imageInput.setAttribute('name', 'Images');
+        imageInput.setAttribute('class', 'ProfileAvatarInput');
+
+        var imageI = document.createElement('i');
+        imageI.setAttribute('class', 'far fa-camera');
+
+        var areaImage = document.createElement('img');
+        areaImage.setAttribute('src', '/images/pattern/placeholder-image.png');
+        areaImage.setAttribute('alt', 'تصویر کالا');
+
+        var imagesPart = document.querySelectorAll('#images-part .col-auto');
+
+        var imagesPartLength = parseInt(imagesPart.length) + 1;
+
+        areaImage.setAttribute('id', 'imgProduct' + imagesPartLength);
+
+        imageInput.onchange = function () {
+            addImageToProduct(this, 'imgProduct' + imagesPartLength);
+        }
+
+        var addImageSection = document.createElement('div');
+        addImageSection.className = 'col-auto';
+
+
+        changeImage.appendChild(imageInput);
+        changeImage.appendChild(imageI);
+        imageArea.appendChild(changeImage);
+        imageArea.appendChild(areaImage);
+        imageField.appendChild(imageArea);
+        addImageSection.appendChild(imageField);
+
+        var lastImage = imagesPart[imagesPart.length - 1];
+
+        lastImage.after(addImageSection);
+    }
+}
+
+function editImageOfProduct(input, imgId) {
+
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            document.getElementById(imgId).setAttribute('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    // create new add image part
+
+    var inputs = document.querySelectorAll('#images-part input');
+
+    var changedNum = parseInt(imgId.replace(/\D/g, ""));
+
+
+    var isLast = false;
+    
+    if (inputs.length == changedNum) {
+        isLast = true;
+    }
+
+    debugger;
+
+    if (isLast == false) {
+
+        var changedNum = imgId.replace(/\D/g, "");
+
+
+        // this if for say witch image have been changed
+
+        var changedInput = document.createElement('input');
+        changedInput.setAttribute('type', 'hidden');
+        changedInput.setAttribute('multiple', '');
+        changedInput.setAttribute('name', 'ChangedImages');
+        changedInput.setAttribute('value', changedNum);
+
+        document.getElementById('edited-images').appendChild(changedInput);
+    }
+
+    if (isLast == true) {
+
+        var imageField = document.createElement('div');
+        imageField.className = 'image-field';
+
+        var imageArea = document.createElement('div');
+        imageArea.className = 'image-area';
+
+        var changeImage = document.createElement('a');
+        changeImage.className = 'change-image';
+        changeImage.setAttribute('href', 'javascript:void(0)');
+
+        var imageInput = document.createElement('input');
+        imageInput.setAttribute('type', 'file');
+        imageInput.setAttribute('multiple', '');
+        imageInput.setAttribute('name', 'Images');
+        imageInput.setAttribute('class', 'ProfileAvatarInput');
+
+        var imageI = document.createElement('i');
+        imageI.setAttribute('class', 'far fa-camera');
+
+        var areaImage = document.createElement('img');
+        areaImage.setAttribute('src', '/images/pattern/placeholder-image.png');
+        areaImage.setAttribute('alt', 'تصویر کالا');
+
+        var imagesPart = document.querySelectorAll('#images-part .col-auto');
+
+        var imagesPartLength = parseInt(imagesPart.length) + 1;
+
+        areaImage.setAttribute('id', 'imgProduct' + imagesPartLength);
+
+        imageInput.onchange = function () {
+            editImageOfProduct(this, 'imgProduct' + imagesPartLength);
+        }
+
+        var addImageSection = document.createElement('div');
+        addImageSection.className = 'col-auto';
+
+
+        changeImage.appendChild(imageInput);
+        changeImage.appendChild(imageI);
+        imageArea.appendChild(changeImage);
+        imageArea.appendChild(areaImage);
+        imageField.appendChild(imageArea);
+        addImageSection.appendChild(imageField);
+
+        var lastImage = imagesPart[imagesPart.length - 1];
+
+        lastImage.after(addImageSection);
+    }
+}
+
 function changeDetailImg(imgSrc) { document.getElementById("zoom").src = imgSrc; }
 
 $(function () {
@@ -80,23 +245,23 @@ function ShowToast(type, text, returnUrl) {
     let toast;
 
     switch (type) {
-    case "success":
-        toast = document.getElementById("toast-success");
-        $("#toast-success").find("span").text(text);
-        break;
-    case "warning":
-        toast = document.getElementById("toast-warning");
-        $("#toast-warning").find("span").text(text);
-        break;
+        case "success":
+            toast = document.getElementById("toast-success");
+            $("#toast-success").find("span").text(text);
+            break;
+        case "warning":
+            toast = document.getElementById("toast-warning");
+            $("#toast-warning").find("span").text(text);
+            break;
 
-    case "danger":
-        toast = document.getElementById("toast-wrong");
-        $("#toast-wrong").find("span").text(text);
-        break;
+        case "danger":
+            toast = document.getElementById("toast-wrong");
+            $("#toast-wrong").find("span").text(text);
+            break;
 
-    default:
-        toast = document.getElementById("toast-success");
-        break;
+        default:
+            toast = document.getElementById("toast-success");
+            break;
     }
     toast.className = "show";
     setTimeout(function () {

@@ -73,7 +73,7 @@ namespace Reshop.Domain.DTOs.Product
         [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string SimCardInput { get; set; }
 
-        [Display(Name = "ورودی کارت حافظه")]
+        [Display(Name = "شیار کارت حافظه")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         public bool SeparateSlotMemoryCard { get; set; }
 
@@ -335,7 +335,6 @@ namespace Reshop.Domain.DTOs.Product
 
         // ---------------------------------------------------------------------------IMG
 
-        [Required(ErrorMessage = "لطفا برای کالا تصویری انتخاب کنید")]
         public List<IFormFile> Images { get; set; }
 
 

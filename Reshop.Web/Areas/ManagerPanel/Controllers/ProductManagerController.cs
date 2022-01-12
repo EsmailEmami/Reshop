@@ -17,6 +17,7 @@ using Reshop.Domain.Entities.Product;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -201,7 +202,7 @@ public class ProductManagerController : Controller
             ProductTypes.FlashMemory => RedirectToAction("AddOrEditFlashMemory", "ProductManager",
                 new { productId }),
 
-            ProductTypes.AUX => RedirectToAction("AddOrEditAUX", "ProductManager",
+            ProductTypes.AUX => RedirectToAction("EditAux", "ProductManager",
                 new { productId }),
 
             ProductTypes.NotFound => NotFound(),
@@ -233,7 +234,6 @@ public class ProductManagerController : Controller
     }
 
     [HttpPost]
-
     public async Task<IActionResult> AddOrEditMobile(AddOrEditMobileProductViewModel model)
     {
         // data for select Product
@@ -264,6 +264,18 @@ public class ProductManagerController : Controller
 
         if (model.ProductId == 0)
         {
+            if (model.Images == null)
+            {
+                ModelState.AddModelError("", "لطفا تصاویر کالا را انتخاب کنید.");
+                return View(model);
+            }
+            else if (model.Images.Count <= 2)
+            {
+                ModelState.AddModelError("", "تصاویر کالا باید حداقل 3 تصویر باشد.");
+                return View(model);
+            }
+
+
             var product = new Product()
             {
                 ProductTitle = model.ProductTitle,
@@ -439,7 +451,7 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, model.Images, model.SelectedImages as List<string>);
+                //await EditImg(product.ProductId, model.Images, model.SelectedImages as List<string>);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -692,15 +704,15 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
+                //await EditImg(product.ProductId, new List<IFormFile>()
+                //    {
+                //        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                //        model.SelectedImage5, model.SelectedImage6
+                //    }, new List<string>()
+                //    {
+                //        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                //        model.SelectedImage5IMG, model.SelectedImage6IMG
+                //    });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -977,15 +989,15 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
+                //await EditImg(product.ProductId, new List<IFormFile>()
+                //    {
+                //        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                //        model.SelectedImage5, model.SelectedImage6
+                //    }, new List<string>()
+                //    {
+                //        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                //        model.SelectedImage5IMG, model.SelectedImage6IMG
+                //    });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -1152,15 +1164,15 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
+                //await EditImg(product.ProductId, new List<IFormFile>()
+                //    {
+                //        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                //        model.SelectedImage5, model.SelectedImage6
+                //    }, new List<string>()
+                //    {
+                //        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                //        model.SelectedImage5IMG, model.SelectedImage6IMG
+                //    });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -1391,15 +1403,15 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
+                //await EditImg(product.ProductId, new List<IFormFile>()
+                //    {
+                //        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                //        model.SelectedImage5, model.SelectedImage6
+                //    }, new List<string>()
+                //    {
+                //        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                //        model.SelectedImage5IMG, model.SelectedImage6IMG
+                //    });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -1593,15 +1605,15 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
+                //await EditImg(product.ProductId, new List<IFormFile>()
+                //    {
+                //        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                //        model.SelectedImage5, model.SelectedImage6
+                //    }, new List<string>()
+                //    {
+                //        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                //        model.SelectedImage5IMG, model.SelectedImage6IMG
+                //    });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -1763,15 +1775,15 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
+                //await EditImg(product.ProductId, new List<IFormFile>()
+                //    {
+                //        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                //        model.SelectedImage5, model.SelectedImage6
+                //    }, new List<string>()
+                //    {
+                //        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                //        model.SelectedImage5IMG, model.SelectedImage6IMG
+                //    });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -1995,15 +2007,15 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
+                //await EditImg(product.ProductId, new List<IFormFile>()
+                //    {
+                //        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                //        model.SelectedImage5, model.SelectedImage6
+                //    }, new List<string>()
+                //    {
+                //        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                //        model.SelectedImage5IMG, model.SelectedImage6IMG
+                //    });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -2196,15 +2208,15 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
+                //await EditImg(product.ProductId, new List<IFormFile>()
+                //    {
+                //        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                //        model.SelectedImage5, model.SelectedImage6
+                //    }, new List<string>()
+                //    {
+                //        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                //        model.SelectedImage5IMG, model.SelectedImage6IMG
+                //    });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -2381,15 +2393,15 @@ public class ProductManagerController : Controller
             if (result == ResultTypes.Successful)
             {
                 // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
+                //await EditImg(product.ProductId, new List<IFormFile>()
+                //    {
+                //        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                //        model.SelectedImage5, model.SelectedImage6
+                //    }, new List<string>()
+                //    {
+                //        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
+                //        model.SelectedImage5IMG, model.SelectedImage6IMG
+                //    });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -2407,12 +2419,105 @@ public class ProductManagerController : Controller
     #region AUX
 
     [HttpGet]
-    [Permission(PermissionsConstants.AddAux, PermissionsConstants.EditAux)]
-    public async Task<IActionResult> AddOrEditAUX(int productId = 0)
+    [Permission(PermissionsConstants.AddAux)]
+    public IActionResult AddAux()
+    {
+        var newModel = new AddAuxViewModel()
+        {
+            StoreTitles = _shopperService.GetStoreTitles()
+        };
+
+        return View(newModel);
+    }
+
+    [HttpPost]
+    [Permission(PermissionsConstants.EditAux)]
+    public async Task<IActionResult> AddAux(AddAuxViewModel model)
+    {
+        // data for select Product
+        model.StoreTitles = _shopperService.GetStoreTitles();
+        model.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+        model.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
+        model.ChildCategories = _brandService.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+        if (!ModelState.IsValid) return View(model);
+
+        // in this section we check that all images are ok
+
+        #region images security
+
+        if (model.Images != null)
+        {
+            foreach (var image in model.Images)
+            {
+                if (!image.IsImage())
+                {
+                    ModelState.AddModelError("", "لطفا تصاویر خود را به درستی انتخاب کنید");
+                    return View(model);
+                }
+            }
+        }
+
+        #endregion
+
+
+
+        if (model.Images == null)
+        {
+            ModelState.AddModelError("", "لطفا تصاویر کالا را انتخاب کنید.");
+            return View(model);
+        }
+        else if (model.Images.Count <= 2)
+        {
+            ModelState.AddModelError("", "تصاویر کالا باید حداقل 3 تصویر باشد.");
+            return View(model);
+        }
+
+
+        var product = new Product()
+        {
+            ProductTitle = model.ProductTitle,
+            Description = model.Description,
+            ProductType = ProductTypes.AUX.ToString(),
+            OfficialBrandProductId = model.OfficialBrandProductId,
+            IsActive = model.IsActive,
+            ChildCategoryId = model.SelectedChildCategory
+        };
+
+        var auxDetail = new AUXDetail()
+        {
+            CableMaterial = model.CableMaterial,
+            CableLenght = model.CableLenght
+        };
+
+
+        var result = await _productService.AddAUXAsync(product, auxDetail);
+
+        if (result == ResultTypes.Successful)
+        {
+            // add product images
+            await AddImg(model.Images, product.ProductId);
+
+
+            return RedirectToAction(nameof(Index));
+        }
+        else
+        {
+            ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+
+            return View(model);
+        }
+
+    }
+
+
+    [HttpGet]
+    [Permission(PermissionsConstants.EditAux)]
+    public async Task<IActionResult> EditAux(int productId = 0)
     {
         if (productId == 0)
         {
-            var newModel = new AddOrEditAUXViewModel()
+            var newModel = new EditAuxViewModel()
             {
                 StoreTitles = _shopperService.GetStoreTitles()
             };
@@ -2432,8 +2537,8 @@ public class ProductManagerController : Controller
     }
 
     [HttpPost]
-    [Permission(PermissionsConstants.AddAux, PermissionsConstants.EditAux)]
-    public async Task<IActionResult> AddOrEditAUX(AddOrEditAUXViewModel model)
+    [Permission(PermissionsConstants.EditAux)]
+    public async Task<IActionResult> EditAux(EditAuxViewModel model)
     {
         // data for select Product
         model.StoreTitles = _shopperService.GetStoreTitles();
@@ -2444,141 +2549,64 @@ public class ProductManagerController : Controller
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
+
         #region images security
 
-        if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
+        if (model.Images != null)
         {
-            ModelState.AddModelError("SelectedImage1", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
-            return View(model);
-        }
-        else if (model.SelectedImage2 != null && !model.SelectedImage2.IsImage())
-        {
-            ModelState.AddModelError("SelectedImage2", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
-            return View(model);
-        }
-        else if (model.SelectedImage3 != null && !model.SelectedImage3.IsImage())
-        {
-            ModelState.AddModelError("SelectedImage3", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
-            return View(model);
-        }
-        else if (model.SelectedImage4 != null && !model.SelectedImage4.IsImage())
-        {
-            ModelState.AddModelError("SelectedImage4", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
-            return View(model);
-        }
-        else if (model.SelectedImage5 != null && !model.SelectedImage5.IsImage())
-        {
-            ModelState.AddModelError("SelectedImage5", "ادمین عزیز لطفا تعصیر خود را به درستی انتخاب کنید.");
-            return View(model);
-        }
-        else if (model.SelectedImage6 != null && !model.SelectedImage6.IsImage())
-        {
-            ModelState.AddModelError("SelectedImage6", "ادمین عزیز لطفا تصاویر را درست انتخاب کنید.");
-            return View(model);
+            foreach (var image in model.Images)
+            {
+                if (!image.IsImage())
+                {
+                    ModelState.AddModelError("", "لطفا تصاویر خود را به درستی انتخاب کنید");
+                    return View(model);
+                }
+            }
         }
 
         #endregion
 
-        if (model.ProductId == 0)
+
+        var product = await _productService.GetProductByIdAsync(model.ProductId);
+
+        if (product?.AuxDetailId == null)
+            return NotFound();
+
+
+        var auxDetail = await _productService.GetAUXByIdAsync(product.AuxDetailId.Value);
+
+        if (auxDetail == null)
+            return NotFound();
+
+
+
+        //  update product
+        product.ProductTitle = model.ProductTitle;
+        product.Description = model.Description;
+        product.OfficialBrandProductId = model.OfficialBrandProductId;
+        product.IsActive = model.IsActive;
+        product.ChildCategoryId = model.SelectedChildCategory;
+
+        // update mobile cover detail
+        auxDetail.CableLenght = model.CableLenght;
+        auxDetail.CableMaterial = model.CableMaterial;
+
+
+
+        var result = await _productService.EditAUXAsync(product, auxDetail);
+
+        if (result == ResultTypes.Successful)
         {
-            // images could not be null
-            if (model.SelectedImage1 == null || model.SelectedImage2 == null ||
-                model.SelectedImage3 == null || model.SelectedImage4 == null ||
-                model.SelectedImage5 == null || model.SelectedImage6 == null)
-            {
-                ModelState.AddModelError("", "ادمین عزیز لطفا تمام عکس ها را وارد کنید.");
-                return View(model);
-            }
+            // edit product images
+            await EditImg(product.ProductId, model.Images, model.SelectedImages as List<string>, model.ChangedImages as List<string>);
 
-            var product = new Product()
-            {
-                ProductTitle = model.ProductTitle,
-                Description = model.Description,
-                ProductType = ProductTypes.AUX.ToString(),
-                OfficialBrandProductId = model.OfficialBrandProductId,
-                IsActive = model.IsActive,
-                ChildCategoryId = model.SelectedChildCategory
-            };
-
-            var auxDetail = new AUXDetail()
-            {
-                CableMaterial = model.CableMaterial,
-                CableLenght = model.CableLenght
-            };
-
-
-            var result = await _productService.AddAUXAsync(product, auxDetail);
-
-            if (result == ResultTypes.Successful)
-            {
-                // add product images
-                await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
-
-
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
-
-                return View(model);
-            }
+            return RedirectToAction(nameof(Index));
         }
         else
         {
-            var product = await _productService.GetProductByIdAsync(model.ProductId);
+            ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
-            if (product?.AuxDetailId == null)
-                return NotFound();
-
-
-            var auxDetail = await _productService.GetAUXByIdAsync(product.AuxDetailId.Value);
-
-            if (auxDetail == null)
-                return NotFound();
-
-
-
-            //  update product
-            product.ProductTitle = model.ProductTitle;
-            product.Description = model.Description;
-            product.OfficialBrandProductId = model.OfficialBrandProductId;
-            product.IsActive = model.IsActive;
-            product.ChildCategoryId = model.SelectedChildCategory;
-
-            // update mobile cover detail
-            auxDetail.CableLenght = model.CableLenght;
-            auxDetail.CableMaterial = model.CableMaterial;
-
-
-
-            var result = await _productService.EditAUXAsync(product, auxDetail);
-
-            if (result == ResultTypes.Successful)
-            {
-                // edit product images
-                await EditImg(product.ProductId, new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, new List<string>()
-                    {
-                        model.SelectedImage1IMG,model.SelectedImage2IMG, model.SelectedImage3IMG, model.SelectedImage4IMG,
-                        model.SelectedImage5IMG, model.SelectedImage6IMG
-                    });
-
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
-
-                return View(model);
-            }
+            return View(model);
         }
     }
 
@@ -2626,39 +2654,89 @@ public class ProductManagerController : Controller
         }
     }
 
-    // توجه داشته باشید عکس های قبلی و جدید به ترتیب داده شده باشند
-    private async Task EditImg(int productId, List<IFormFile> images, List<string> imagesName)
+    // 
+    private async Task EditImg(int productId, List<IFormFile> newImages, List<string> imagesName, List<string> editedImages)
     {
-        for (int i = 0; i < images.Count; i++)
+        if (newImages == null) return;
+
+        
+        int editImageCounter = 0;
+        // edit images
+        if (editedImages != null && editedImages.Count > 0)
         {
-            if (images[i] != null && images.Count > 0)
+            editedImages = editedImages.Distinct().ToList();
+
+            foreach (string editedImage in editedImages)
             {
-                var imageInDatabase = await _productService.GetProductGalleryAsync(productId, imagesName[i]);
+                int num = int.Parse(editedImage) - 1;
 
-                if (imageInDatabase != null)
+                var imageName = imagesName[num];
+                IFormFile imageFile = newImages[editImageCounter];
+
+                editImageCounter++;
+
+                if (imageFile is { Length: > 0 })
                 {
-                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "images",
-                        "ProductImages");
+                    var imageInDatabase = await _productService.GetProductGalleryAsync(productId, imageName);
 
-                    // delete last image
-                    ImageConvertor.DeleteImage(filePath + "/" + imagesName[i]);
-
-                    await _productService.DeleteProductGalleryAsync(imageInDatabase);
-                    // create new image
-
-                    var newImageName = await ImageConvertor.CreateNewImage(images[i], filePath, 1600);
-
-                    var newProductGallery = new ProductGallery()
+                    if (imageInDatabase != null)
                     {
-                        ProductId = productId,
-                        ImageName = newImageName,
-                        OrderBy = i + 1,
-                    };
+                        int imageOrderBy = imageInDatabase.OrderBy;
 
-                    await _productService.AddProductGalleryAsync(newProductGallery);
+
+                        string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                            "wwwroot",
+                            "images",
+                            "ProductImages");
+
+                        // delete last image
+                        ImageConvertor.DeleteImage(filePath + "/" + imageName);
+
+                        await _productService.DeleteProductGalleryAsync(imageInDatabase);
+                        // create new image
+
+                        var newImageName = await ImageConvertor.CreateNewImage(imageFile, filePath, 1600);
+
+                        var newProductGallery = new ProductGallery()
+                        {
+                            ProductId = productId,
+                            ImageName = newImageName,
+                            OrderBy = imageOrderBy,
+                        };
+
+                        await _productService.AddProductGalleryAsync(newProductGallery);
+                    }
+
                 }
+            }
+        }
+
+        // skip edited images and add new images
+        var newImagesList = newImages.Skip(editedImages.Count);
+
+        int newImagesOrderByCounter = imagesName.Count + 1;
+
+        foreach (var image in newImagesList)
+        {
+            if (image.Length > 0)
+            {
+                string path = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "images",
+                    "ProductImages");
+
+                string imgName = await ImageConvertor.CreateNewImage(image, path, 1600);
+
+                var productGallery = new ProductGallery()
+                {
+                    ProductId = productId,
+                    ImageName = imgName,
+                    OrderBy = newImagesOrderByCounter,
+                };
+
+                await _productService.AddProductGalleryAsync(productGallery);
+
+                newImagesOrderByCounter++;
             }
         }
     }

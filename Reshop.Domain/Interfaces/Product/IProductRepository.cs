@@ -109,7 +109,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataForEditAsync(int productId);
         Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataForEditAsync(int productId);
         Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataForEditAsync(int productId);
-        Task<AddOrEditAUXViewModel> GetTypeAUXProductDataForEditAsync(int productId);
+        Task<EditAuxViewModel> GetTypeAUXProductDataForEditAsync(int productId);
 
         #endregion
 

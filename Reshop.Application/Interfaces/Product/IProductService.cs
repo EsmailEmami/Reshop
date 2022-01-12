@@ -75,7 +75,7 @@ namespace Reshop.Application.Interfaces.Product
         Task<AddOrEdirWristWatchViewModel> GetTypeWristWatchProductDataAsync(int productId);
         Task<AddOrEditSmartWatchViewModel> GetTypeSmartWatchProductDataAsync(int productId);
         Task<AddOrEditMemoryCardViewModel> GetTypeMemoryCardProductDataAsync(int productId);
-        Task<AddOrEditAUXViewModel> GetTypeAUXProductDataAsync(int productId);
+        Task<EditAuxViewModel> GetTypeAUXProductDataAsync(int productId);
 
         // inserts
         Task<ResultTypes> AddMobileAsync(Domain.Entities.Product.Product product, MobileDetail mobileDetail);
