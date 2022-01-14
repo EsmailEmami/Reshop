@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Product.Options;
+using OperatingSystem = Reshop.Domain.Entities.Product.Options.OperatingSystem;
 
 namespace Reshop.Application.Services.Product
 {
@@ -426,7 +428,7 @@ namespace Reshop.Application.Services.Product
         public async Task<Tuple<string, string>> GetBestSellerOfProductAsync(int productId) =>
             await _productRepository.GetBestSellerOfProductAsync(productId);
 
-        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId)
+        public async Task<EditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId)
         {
             var model = await _productRepository.GetTypeMobileProductDataForEditAsync(productId);
 
@@ -1217,5 +1219,20 @@ namespace Reshop.Application.Services.Product
 
             return finalData;
         }
+
+        public IEnumerable<Chipset> GetChipsets() => _productRepository.GetChipsets();
+
+        public IEnumerable<Cpu> GetCpusOfChipset(string chipsetId) =>
+            _productRepository.GetCpusOfChipset(chipsetId);
+
+        public IEnumerable<Gpu> GetGpusOfChipset(string chipsetId) =>
+            _productRepository.GetGpusOfChipset(chipsetId);
+
+        public IEnumerable<CpuArch> GetCpuArches() => _productRepository.GetCpuArches();
+
+        public IEnumerable<OperatingSystem> GetOperatingSystems() => _productRepository.GetOperatingSystems();
+
+        public IEnumerable<OperatingSystemVersion> GetOperatingSystemVersionsOfOperatingSystem(string operatingSystemId) =>
+            _productRepository.GetOperatingSystemVersionsOfOperatingSystem(operatingSystemId);
     }
 }

@@ -10,6 +10,8 @@ using Reshop.Domain.Entities.Shopper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Product.Options;
+using OperatingSystem = Reshop.Domain.Entities.Product.Options.OperatingSystem;
 
 namespace Reshop.Application.Interfaces.Product
 {
@@ -66,7 +68,7 @@ namespace Reshop.Application.Interfaces.Product
 
         Task<Tuple<string, string>> GetBestSellerOfProductAsync(int productId);
         // get product types
-        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId);
+        Task<EditMobileProductViewModel> GetTypeMobileProductDataAsync(int productId);
         Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataAsync(int productId);
         Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataAsync(int productId);
         Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataAsync(int productId);
@@ -135,6 +137,16 @@ namespace Reshop.Application.Interfaces.Product
 
         #endregion
 
+        #region Add Or Edit Product Options
 
+        IEnumerable<Chipset> GetChipsets();
+        IEnumerable<Cpu> GetCpusOfChipset(string chipsetId);
+        IEnumerable<Gpu> GetGpusOfChipset(string chipsetId);
+        IEnumerable<CpuArch> GetCpuArches();
+        IEnumerable<OperatingSystem> GetOperatingSystems();
+        IEnumerable<OperatingSystemVersion> GetOperatingSystemVersionsOfOperatingSystem(string operatingSystemId);
+
+
+        #endregion
     }
 }

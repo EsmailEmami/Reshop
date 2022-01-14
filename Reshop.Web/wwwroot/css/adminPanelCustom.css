@@ -2000,6 +2000,12 @@ ul.pagination-custom {
     padding: 0;
     margin-bottom: 1.5rem;
     position: relative;
+    display: inline-block;
+    margin-left: 30px;
+}
+
+.form-check:last-of-type {
+    margin-left: 0;
 }
 
     .form-check label {
@@ -2020,6 +2026,7 @@ ul.pagination-custom {
             display: inline-block;
             padding-right: 0;
             cursor: auto;
+            margin-left: 25px;
         }
 
         .form-check label input {

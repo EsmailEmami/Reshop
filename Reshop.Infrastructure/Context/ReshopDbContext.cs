@@ -10,6 +10,8 @@ using Reshop.Domain.Entities.Question;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Entities.User;
 using System;
+using Reshop.Domain.Entities.Product.Options;
+using OperatingSystem = Reshop.Domain.Entities.Product.Options.OperatingSystem;
 
 namespace Reshop.Infrastructure.Context
 {
@@ -55,6 +57,17 @@ namespace Reshop.Infrastructure.Context
         public virtual DbSet<BatteryChargerDetail> BatteryChargerDetails { get; set; }
         public virtual DbSet<MemoryCardDetail> MemoryCardDetails { get; set; }
         public virtual DbSet<MobileCoverDetail> MobileCoverDetails { get; set; }
+
+        #endregion
+
+        #region product options
+
+        public virtual DbSet<Chipset> Chipsets { get; set; }
+        public virtual DbSet<Cpu> Cpus { get; set; }
+        public virtual DbSet<Gpu> Gpus { get; set; }
+        public virtual DbSet<CpuArch> CpuArches { get; set; }
+        public virtual DbSet<OperatingSystem> OperatingSystems { get; set; }
+        public virtual DbSet<OperatingSystemVersion> OperatingSystemVersions { get; set; }
 
         #endregion
 

@@ -1,0 +1,1004 @@
+﻿@model EditMobileProductViewModel
+@{
+    ViewData["Title"] = "ویرایش موبایل";
+
+    int imageCounter = 1;
+    int imageNameCounter = 1;
+    string imageId = $"imgProduct{imageCounter}";
+    string imageName = $"imageName{imageNameCounter}";
+}
+@section RightMenu
+{
+    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.ProductPage); }
+}
+
+@section Css{
+    <link href="~/css/select.css" rel="stylesheet" />
+    <link href="~/css/ckEditor.css" rel="stylesheet" />
+    <link href="~/css/calender.min.css" rel="stylesheet" />
+}
+
+<form asp-action="EditMobile" method="post" enctype="multipart/form-data">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    
+<div id="edited-images"></div>    
+<div id="selectedImages">
+    @foreach (var image in Model.SelectedImages)
+    {
+        <input type="hidden" value="@image" multiple name="SelectedImages" id="@imageName" />
+
+        imageNameCounter++;
+        imageName = $"imageName{imageNameCounter}";
+    }
+</div>
+
+<input type="hidden" asp-for="ProductId" />
+    <h3 class="title-header">مشخصات کالا</h3>
+    <div class="row">
+
+        <div class="col-sm-12 col-md-6">
+            <div class="form-field">
+                <input type="text" asp-for="ProductTitle" />
+                <label asp-for="ProductTitle"></label>
+                <span asp-validation-for="ProductTitle" class="text-danger"></span>
+            </div>
+        </div>
+
+        @*store titles *@
+        <div class="col-sm-12 col-md-6">
+            <select onchange="GetBrandsOfStoreTitle(this.value)" asp-for="SelectedStoreTitle">
+                <option value="">عنوان کالا</option>
+
+                @if (Model.StoreTitles != null)
+                {
+                    @foreach (var item in Model.StoreTitles)
+                    {
+                        @:<option value="@item.StoreTitleId" @(Model.SelectedStoreTitle == item.StoreTitleId ? "selected" : "")>@item.StoreTitleName</option>
+                    }
+                }
+            </select>
+        </div>
+        @* this is for brand *@
+        <div class="col-sm-12 col-lg-4">
+            <select id="brand" onchange="updateSelectsOfBand(this.value)" asp-for="SelectedBrand">
+                @if (Model.Brands != null)
+                {
+                    <option value=""> لطفا برند را انتخاب کنید</option>
+                    @foreach (var item in Model.Brands)
+                    {
+                        @:<option value="@item.Item1" @(Model.SelectedBrand == item.Item1 ? "selected" : "")>@item.Item2</option>
+                    }
+                }
+                else
+                {
+                    <option value="">لطفا عنوان کالا را انتخاب کنید</option>
+                }
+            </select>
+        </div>
+        @* this is for official product *@
+        <div class="col-sm-12 col-lg-4">
+            <select id="officialProduct" asp-for="OfficialBrandProductId">
+                @if (Model.OfficialProducts != null)
+                {
+                    <option value="">لطفا نام اختصاصی کالا را انتخاب کنید</option>
+                    @foreach (var item in Model.OfficialProducts)
+                    {
+                        @:<option value="@item.Item1" @(Model.OfficialBrandProductId == item.Item1 ? "selected" : "")>@item.Item2</option>
+                    }
+                }
+                else
+                {
+                    <option value="">لطفا برند را انتخاب کنید</option>
+                }
+            </select>
+        </div>
+
+        @* this is for child categories *@
+        <div class="col-sm-12 col-lg-4">
+            <select id="childCategory" asp-for="SelectedChildCategory">
+                <option>لطفا برند را انتخاب کنید</option>
+                @if (Model.ChildCategories != null)
+                {
+                    @foreach (var item in Model.ChildCategories)
+                    {
+                        @:<option value="@item.ChildCategoryId" @(Model.SelectedChildCategory == item.ChildCategoryId? "selected" : "")>@item.ChildCategoryTitle - @item.IsActive.BoolToText("فعال")</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="col-sm-12 mb-4">
+            <textarea id="editor" asp-for="Description"> </textarea>
+
+            <div class="word-count">
+                <div id="word-count">
+                    کلمه ها : 0
+                </div>
+                <div id="character-count">
+                    کاراکتر ها : 0
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="form-check">
+                <label>
+                    این کالا فعال است
+                    <input type="checkbox" checked asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="title-header">تصاویر</h3>
+
+<div class="row justify-content-around" id="images-part">
+        
+    @if (Model.SelectedImages != null)
+    {
+        foreach (var image in Model.SelectedImages)
+        {
+            <div class="col-auto">
+                <div class="image-field">
+                    <div class="image-area">
+                        <a href="javascript:void(0)" class="change-image">
+                            <input type="file" name="Images" multiple class="ProfileAvatarInput" onchange="editImageOfProduct(this, '@imageId' )">
+                            <i class="far fa-camera"></i>
+                        </a>
+                        <img src="~/images/ProductImages/@image" alt="تصویر کالا" id="@imageId">
+                    </div>
+                </div>
+            </div>
+
+            imageCounter++;
+            imageId = $"imgProduct{imageCounter}";
+        }
+    }
+
+    <div class="col-auto">
+        <div class="image-field">
+            <div class="image-area">
+                <a href="javascript:void(0)" class="change-image">
+                    <input type="file" name="Images" multiple class="ProfileAvatarInput" onchange="editImageOfProduct(this, '@imageId')">
+                    <i class="far fa-camera"></i>
+                </a>
+                <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا" id="@imageId">
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<h3 class="title-header">اطلاعات کلی موبایل</h3>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-3">
+            <div class="form-field">
+                <input type="text" asp-for="Length" />
+                <label asp-for="Length"></label>
+                <span asp-validation-for="Length" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <div class="form-field">
+                <input type="text" asp-for="Width" />
+                <label asp-for="Width"></label>
+                <span asp-validation-for="Width" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <div class="form-field">
+                <input type="text" asp-for="Height" />
+                <label asp-for="Height"></label>
+                <span asp-validation-for="Height" class="text-danger"></span>
+            </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-3">
+            <div class="form-field">
+                <input asp-for="Announced" class="date-picker" readonly>
+                <label asp-for="Announced"></label>
+                <span asp-validation-for="Announced" class="text-danger"></span>
+            </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-4">
+            <div class="form-check">
+                <label asp-for="SimCardQuantity" class="radio"></label>
+                <div class="hidden-radio">
+                    <div class="item">
+                        <input type="radio" asp-for="SimCardQuantity" value="1" id="one-SimCardQuantity" checked="">
+                        <label for="one-SimCardQuantity">یک</label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" asp-for="SimCardQuantity" value="2" id="two-SimCardQuantity">
+                        <label for="two-SimCardQuantity">دو</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-4">
+            <div class="form-check">
+                <label asp-for="SimCardInput" class="radio"></label>
+                <div class="hidden-radio">
+                    <div class="item">
+                        <input type="radio" asp-for="SimCardInput" value="nano" id="nano-SimCardInput" checked="">
+                        <label for="nano-SimCardInput">nano</label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" asp-for="SimCardInput" value="micro" id="micro-SimCardInput">
+                        <label for="micro-SimCardInput">micro</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+     
+        <div class="col-sm-12 col-md-4">
+            <div class="form-check">
+                <label asp-for="SeparateSlotMemoryCard" class="radio"></label>
+                <div class="hidden-radio">
+                    <div class="item">
+                        <input type="radio" asp-for="SeparateSlotMemoryCard" value="true" id="yes-SeparateSlotMemoryCard" checked="">
+                        <label for="yes-SeparateSlotMemoryCard">دارد</label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" asp-for="SeparateSlotMemoryCard" value="false" id="no-SeparateSlotMemoryCard">
+                        <label for="no-SeparateSlotMemoryCard">ندارد</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <h3 class="title-header">تراشه</h3>
+<div class="row">
+    <div class="col-sm-12 col-md-3">
+        <select asp-for="SelectedChipset">
+            <option value="">لطفا تراشه را انتخاب کنید</option>
+            @foreach (var chipset in Model.Chipsets)
+            {
+                @:<option value="@chipset.ChipsetId" @(Model.SelectedChipset == chipset.ChipsetId ? "selected" : "")>@chipset.ChipsetName</option> 
+            }
+        </select>
+        <span asp-validation-for="SelectedChipset" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <select id="cpu" asp-for="SelectedCpu">
+            @if (Model.Cpus != null)
+            {
+                <option value="">لطفا پردازنده مرکزی را انتخاب کنید</option>
+                @foreach (var item in Model.Cpus)
+                {
+                    @:<option value="@item.CpuId" @(Model.SelectedCpu == item.CpuId ? "selected" : "")>@item.CpuName</option>
+                }
+            }
+            else
+            {
+                <option value="">لطفا تراشه را انتخاب کنید</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedCpu" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="CpuAndFrequency" />
+            <label asp-for="CpuAndFrequency"></label>
+            <span asp-validation-for="CpuAndFrequency" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <select asp-for="SelectedCpuArch">
+            @if (Model.CpuArches != null)
+            {
+                <option value="">لطفا معماری پردازنده را انتخاب کنید</option>
+                @foreach (var item in Model.CpuArches)
+                {
+                    @:<option value="@item.CpuArchId" @(Model.SelectedCpuArch == item.CpuArchId ? "selected" : "")>@item.CpuArchName</option>
+                }
+            }
+            else
+            {
+                <option value="">لطفا معماری پردازنده را انتخاب کنید</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedCpuArch" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <select id="gpu" asp-for="SelectedGpu">
+            @if (Model.Cpus != null)
+            {
+                <option value="">لطفا پردازنده گرافیکی را انتخاب کنید</option>
+                @foreach (var item in Model.Gpus)
+                {
+                    @:<option value="@item.GpuId" @(Model.SelectedGpu == item.GpuId ? "selected" : "")>@item.GpuName</option>
+                }
+            }
+            else
+            {
+                <option value="">لطفا تراشه را انتخاب کنید</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedGpu" class="text-danger"></span>
+    </div>
+</div>
+
+<h3 class="title-header">حافظه</h3>
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        <div class="form-field">
+            <input type="text" asp-for="InternalStorage" />
+            <label asp-for="InternalStorage"></label>
+            <span asp-validation-for="InternalStorage" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="form-field">
+            <input type="text" asp-for="Ram" />
+            <label asp-for="Ram"></label>
+            <span asp-validation-for="Ram" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="form-field">
+            <input type="text" asp-for="SdCard" />
+            <label asp-for="SdCard"></label>
+            <span asp-validation-for="SdCard" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select id="gpu" asp-for="SelectedGpu">
+            @if (Model.Cpus != null)
+            {
+                <option value="">لطفا پردازنده گرافیکی را انتخاب کنید</option>
+                @foreach (var item in Model.Gpus)
+                {
+                    @:<option value="@item.GpuId" @(Model.SelectedGpu == item.GpuId ? "selected" : "")>@item.GpuName</option>
+                }
+            }
+            else
+            {
+                <option value="">لطفا تراشه را انتخاب کنید</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedGpu" class="text-danger"></span>
+    </div>
+</div>
+
+<h3 class="title-header">نمایشگر</h3>
+<div class="row">
+    <div class="col-sm-12 col-md-4">
+        <div class="form-check">
+            <label asp-for="ColorDisplay" class="radio"></label>
+            <div class="hidden-radio">
+                <div class="item">
+                    <input type="radio" asp-for="ColorDisplay" value="true" id="yes-ColorDisplay" checked="">
+                    <label for="yes-ColorDisplay">دارد</label>
+                </div>
+                <div class="item">
+                    <input type="radio" asp-for="ColorDisplay" value="false" id="no-ColorDisplay">
+                    <label for="no-ColorDisplay">ندارد</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-4">
+        <div class="form-check">
+            <label asp-for="TouchDisplay" class="radio"></label>
+            <div class="hidden-radio">
+                <div class="item">
+                    <input type="radio" asp-for="TouchDisplay" value="true" id="yes-TouchDisplay" checked="">
+                    <label for="yes-ColorDisplay">دارد</label>
+                </div>
+                <div class="item">
+                    <input type="radio" asp-for="TouchDisplay" value="false" id="no-TouchDisplay">
+                    <label for="no-ColorDisplay">ندارد</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="DisplayTechnology">
+            <option value="">لطفا تراشه را انتخاب کنید</option>
+        </select>
+        <span asp-validation-for="DisplayTechnology" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="DisplaySize" />
+            <label asp-for="DisplaySize"></label>
+            <span asp-validation-for="DisplaySize" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="Resolution" />
+            <label asp-for="Resolution"></label>
+            <span asp-validation-for="Resolution" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="PixelDensity" />
+            <label asp-for="PixelDensity"></label>
+            <span asp-validation-for="PixelDensity" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="ScreenToBodyRatio" />
+            <label asp-for="ScreenToBodyRatio"></label>
+            <span asp-validation-for="ScreenToBodyRatio" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="col-sm-12 col-md-3">
+        <select asp-for="ImageRatio">
+            <option value="">نسبت تصویر</option>
+        </select>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <select asp-for="DisplayProtection">
+            <option value="">محافظت</option>
+        </select>
+    </div>
+    
+    <div class="col-sm-12">
+        <textarea asp-for="DisplayMoreInformation"></textarea>
+        <label asp-for="DisplayMoreInformation"></label>
+        <span asp-validation-for="DisplayMoreInformation" class="text-danger"></span>
+    </div>
+</div>
+
+<h3 class="title-header">ارتباطات</h3>
+<div class="row">
+    <div class="col-sm-12 ">
+        <div class="form-check">
+            <label asp-for="ConnectionsNetwork" class="radio"></label>
+            <div class="form-check">
+                <label>
+                    2G
+                    <input value="2G" type="checkbox" asp-for="ConnectionsNetwork">
+                    <span></span>
+                </label>
+            </div>
+            <div class="form-check">
+                <label>
+                    3G
+                    <input value="3G" type="checkbox" asp-for="ConnectionsNetwork">
+                    <span></span>
+                </label>
+            </div>
+            <div class="form-check">
+                <label>
+                    4G
+                    <input value="4G" type="checkbox" asp-for="ConnectionsNetwork">
+                    <span></span>
+                </label>
+            </div>
+            <div class="form-check">
+                <label>
+                    5G
+                    <input value="5G" type="checkbox" asp-for="ConnectionsNetwork">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="GsmNetwork" multiple placeholder="شبکه 2G">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="GsmNetwork" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="HspaNetwork" multiple placeholder="شبکه 3G">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="HspaNetwork" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="LteNetwork" multiple placeholder="شبکه 4G">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="LteNetwork" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="FiveGNetwork" multiple placeholder="شبکه 5G">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="FiveGNetwork" class="text-danger"></span>
+    </div>
+    
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="Bluetooth" multiple placeholder="بلوتوث">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="Bluetooth" class="text-danger"></span>
+    </div>
+    
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="WiFi" multiple placeholder="wifi">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="Bluetooth" class="text-danger"></span>
+    </div>
+    
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="GpsInformation" multiple placeholder="فناوری مکان یابی">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="GpsInformation" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="form-field">
+            <input type="text" asp-for="ConnectionPort" />
+            <label asp-for="ConnectionPort"></label>
+            <span asp-validation-for="ConnectionPort" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-4">
+        <div class="form-check">
+            <label asp-for="Radio" class="radio"></label>
+            <div class="hidden-radio">
+                <div class="item">
+                    <input type="radio" asp-for="Radio" value="true" id="yes-Radio" checked="">
+                    <label for="yes-Radio">دارد</label>
+                </div>
+                <div class="item">
+                    <input type="radio" asp-for="Radio" value="false" id="no-Radio">
+                    <label for="no-Radio">ندارد</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12">
+        <textarea asp-for="ConnectionsMoreInformation"></textarea>
+        <label asp-for="ConnectionsMoreInformation"></label>
+        <span asp-validation-for="ConnectionsMoreInformation" class="text-danger"></span>
+    </div>
+</div>
+
+<h3 class="title-header">دوربین</h3>
+<div class="row">
+    <div class="col-sm-12 ">
+        <div class="form-check">
+            <label asp-for="Cameras" class="radio"></label>
+            <div class="form-check">
+                <label>
+                    اصلی
+                    <input value="اصلی" type="checkbox" asp-for="ConnectionsNetwork">
+                    <span></span>
+                </label>
+            </div>
+            <div class="form-check">
+                <label>
+                    سلفی
+                    <input value="سلفی" type="checkbox" asp-for="ConnectionsNetwork">
+                    <span></span>
+                </label>
+            </div>
+            <div class="form-check">
+                <label>
+                    ماکرو
+                    <input value="ماکرو" type="checkbox" asp-for="ConnectionsNetwork">
+                    <span></span>
+                </label>
+            </div>
+            <div class="form-check">
+                <label>
+                    واید
+                    <input value="واید" type="checkbox" asp-for="ConnectionsNetwork">
+                    <span></span>
+                </label>
+            </div>
+            <div class="form-check">
+                <label>
+                    عمق دید
+                    <input value="عمق دید" type="checkbox" asp-for="ConnectionsNetwork">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="PhotoResolution" />
+            <label asp-for="PhotoResolution"></label>
+            <span asp-validation-for="PhotoResolution" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="SelfiCameraResolution" />
+            <label asp-for="SelfiCameraResolution"></label>
+            <span asp-validation-for="SelfiCameraResolution" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="MacroCameraResolution" />
+            <label asp-for="MacroCameraResolution"></label>
+            <span asp-validation-for="MacroCameraResolution" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="WideCameraResolution" />
+            <label asp-for="WideCameraResolution"></label>
+            <span asp-validation-for="WideCameraResolution" class="text-danger"></span>
+        </div>
+    </div> 
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="DepthCameraResolution" />
+            <label asp-for="DepthCameraResolution"></label>
+            <span asp-validation-for="DepthCameraResolution" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="CameraCapabilities" />
+            <label asp-for="CameraCapabilities"></label>
+            <span asp-validation-for="CameraCapabilities" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="SelfiCameraCapabilities" />
+            <label asp-for="SelfiCameraCapabilities"></label>
+            <span asp-validation-for="SelfiCameraCapabilities" class="text-danger"></span>
+        </div>
+    </div> <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="MacroCameraCapabilities" />
+            <label asp-for="MacroCameraCapabilities"></label>
+            <span asp-validation-for="MacroCameraCapabilities" class="text-danger"></span>
+        </div>
+    </div> 
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="WideCameraCapabilities" />
+            <label asp-for="WideCameraCapabilities"></label>
+            <span asp-validation-for="WideCameraCapabilities" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="DepthCameraCapabilities" />
+            <label asp-for="DepthCameraCapabilities"></label>
+            <span asp-validation-for="DepthCameraCapabilities" class="text-danger"></span>
+        </div>
+    </div>
+</div> 
+
+
+<h3 class="title-header">فیلم برداری</h3>
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="PhotoCameraVideo" multiple placeholder="فیلم برداری دوربین اصلی">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="PhotoCameraVideo" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="SelfiCameraVideo" multiple placeholder="فیلم برداری دوربین سلفی">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="SelfiCameraVideo" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="MacroCameraVideo" multiple placeholder="فیلم برداری دوربین ماکرو">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="MacroCameraVideo" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="WideCameraVideo" multiple placeholder="فیلم برداری دوربین واید">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="WideCameraVideo" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="DepthCameraVideo" multiple placeholder="فیلم برداری دوربین عمق دید">
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+            <option value="salam">salam</option>
+        </select>
+        <span asp-validation-for="DepthCameraVideo" class="text-danger"></span>
+    </div>
+</div>
+
+<h3 class="title-header">صدا</h3>
+<div class="row">
+    <div class="col-sm-12 col-md-4">
+        <div class="form-check">
+            <label asp-for="Speakers" class="radio"></label>
+            <div class="hidden-radio">
+                <div class="item">
+                    <input type="radio" asp-for="Speakers" value="true" id="yes-Speakers" checked="">
+                    <label for="yes-Speakers">دارد</label>
+                </div>
+                <div class="item">
+                    <input type="radio" asp-for="Speakers" value="false" id="no-Speakers">
+                    <label for="no-Speakers">ندارد</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input type="text" asp-for="OutputAudio" />
+            <label asp-for="OutputAudio"></label>
+            <span asp-validation-for="OutputAudio" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="col-sm-12">
+        <textarea asp-for="AudioMoreInformation"></textarea>
+        <label asp-for="AudioMoreInformation"></label>
+        <span asp-validation-for="AudioMoreInformation" class="text-danger"></span>
+    </div>
+</div>    
+
+<h3 class="title-header">نرم افزار</h3>
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="SelectedOS">
+            <option value="">لطفا سیستم عامل را انتخاب کنید</option>
+            @if (Model.OperatingSystems != null)
+            {
+                @foreach (var item in Model.OperatingSystems)
+                {
+                    @:<option value="@item.OperatingSystemId" @(Model.SelectedOS == item.OperatingSystemId ? "selected" : "")>@item.OperatingSystemName</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="SelectedOS" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <select id="osVersion" asp-for="SelectedOsVersion">
+            @if (Model.OperatingSystemVersions != null)
+            {
+                <option value="">لطفا نسخه سیستم عامل را انتخاب کنید</option>
+                @foreach (var item in Model.OperatingSystemVersions)
+                {
+                    @:<option value="@item.OperatingSystemVersionId" @(Model.SelectedOsVersion == item.OperatingSystemVersionId ? "selected" : "")>@item.OperatingSystemVersionName</option>
+                }
+            }
+            else
+            {
+                <option value="">لطفا سیستم عامل را انتخاب کنید</option>
+            }
+        </select>
+        <span asp-validation-for="SelectedOsVersion" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="form-field">
+            <input type="text" asp-for="UiVersion" />
+            <label asp-for="UiVersion"></label>
+            <span asp-validation-for="UiVersion" class="text-danger"></span>
+        </div>
+    </div>
+</div>   
+
+<h3 class="title-header">باتری</h3>
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        <select asp-for="BatteryMaterial">
+            <option value="">لطفا نوع باتری را انتخاب کنید</option>
+        </select>
+        <span asp-validation-for="BatteryMaterial" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <div class="form-field">
+            <input type="text" asp-for="BatteryCapacity" />
+            <label asp-for="BatteryCapacity"></label>
+            <span asp-validation-for="BatteryCapacity" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-sm-12 col-md-4">
+        <div class="form-check">
+            <label asp-for="RemovableBattery" class="radio"></label>
+            <div class="hidden-radio">
+                <div class="item">
+                    <input type="radio" asp-for="RemovableBattery" value="true" id="yes-RemovableBattery" checked="">
+                    <label for="yes-RemovableBattery">دارد</label>
+                </div>
+                <div class="item">
+                    <input type="radio" asp-for="RemovableBattery" value="false" id="no-RemovableBattery">
+                    <label for="no-RemovableBattery">ندارد</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 class="title-header">سایر قابلیت ها</h3>
+<div class="row">
+    <div class="col-sm-12">
+        <textarea asp-for="Sensors"></textarea>
+        <label asp-for="Sensors"></label>
+        <span asp-validation-for="Sensors" class="text-danger"></span>
+    </div>
+    <div class="col-sm-12">
+        <textarea asp-for="ItemsInBox"></textarea>
+        <label asp-for="ItemsInBox"></label>
+        <span asp-validation-for="ItemsInBox" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="text-center">
+        <button type="submit" class="btn btn-success text-white">ثبت</button>
+    </div>
+</form>
+
+
+@section Scripts {
+    <script src="~/js/select.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_CalenderDatePickerPartial");
+    }
+
+    <script src="~/lib/CKEditor/ckeditor.js"></script>
+
+    <script>
+        function updateSelectsOfBand(brandId) {
+            GetOfficialProductsOfBrand(brandId);
+            GetChildCategoriesOfBrand(brandId);
+        }
+    </script>
+
+
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+
+                toolbar: {
+                    items: [
+                        'heading',
+                        '|',
+                        'bold',
+                        'italic',
+                        'link',
+                        'underline',
+                        'bulletedList',
+                        'numberedList',
+                        '|',
+                        'fontFamily',
+                        'fontColor',
+                        'fontSize',
+                        'fontBackgroundColor',
+                        'highlight',
+                        '|',
+                        'imageUpload',
+                        'imageInsert',
+                        'blockQuote',
+                        'insertTable',
+                        'mediaEmbed',
+                        'undo',
+                        'redo',
+                        'findAndReplace'
+                    ]
+                },
+                language: 'fa',
+                image: {
+                    toolbar: [
+                        'imageTextAlternative',
+                        'imageStyle:inline',
+                        'imageStyle:block',
+                        'imageStyle:side',
+                        'linkImage'
+                    ]
+                },
+                table: {
+                    contentToolbar: [
+                        'tableColumn',
+                        'tableRow',
+                        'mergeTableCells',
+                        'tableCellProperties',
+                        'tableProperties'
+                    ]
+                },
+                fileBrowserUploadUrl:'/file_upload',
+                fontFamily: {
+                    options: [
+                        'Sahel, sans-serif'
+                    ]
+                },
+                fontSize: {
+                    options: [
+                        9,
+                        10,
+                        11,
+                        'default',
+                        13,
+                        14,
+                        15,
+                        16,
+                        17,
+                        18,
+                        19
+                    ]
+                },
+
+            })
+            .then(editor => {
+                window.editor = editor;
+                var wordCountPlugin = editor.plugins.get('WordCount');
+
+                wordCountPlugin.on('update', (evt, data) => {
+                    // data is an object with "words" and "characters" field
+                    doSthWithNewWordsNumber(data.words);
+                    doSthWithNewCharactersNumber(data.characters);
+                });
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+
+    <script>
+        function doSthWithNewWordsNumber(count) {
+            document.getElementById('word-count').innerHTML = "کلمه ها" + count;
+        }
+
+        function doSthWithNewCharactersNumber(count) {
+            document.getElementById('character-count').innerHTML = "کاراکتر ها" + count;
+        }
+    </script>
+}

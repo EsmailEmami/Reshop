@@ -172,7 +172,7 @@ public class ProductManagerController : Controller
 
         return productType switch
         {
-            ProductTypes.Mobile => RedirectToAction("AddOrEditMobile", "ProductManager",
+            ProductTypes.Mobile => RedirectToAction("EditMobile", "ProductManager",
                 new { productId }),
 
             ProductTypes.Laptop => RedirectToAction("AddOrEditLaptop", "ProductManager",
@@ -216,25 +216,178 @@ public class ProductManagerController : Controller
     #region mobile
 
     [HttpGet]
-    public async Task<IActionResult> AddOrEditMobile(int productId = 0)
+    public IActionResult AddMobile()
     {
-        if (productId == 0)
+        var newModel = new AddMobileProductViewModel()
         {
-            var newModel = new AddOrEditMobileProductViewModel()
-            {
-                StoreTitles = _shopperService.GetStoreTitles()
-            };
+            StoreTitles = _shopperService.GetStoreTitles(),
+            Chipsets = _productService.GetChipsets(),
+            CpuArches = _productService.GetCpuArches(),
+            OperatingSystems = _productService.GetOperatingSystems()
+        };
 
-            return View(newModel);
-        }
-        else
-        {
-            return View(await _productService.GetTypeMobileProductDataAsync(productId));
-        }
+        return View(newModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddOrEditMobile(AddOrEditMobileProductViewModel model)
+    public async Task<IActionResult> AddMobile(AddMobileProductViewModel model)
+    {
+        // data for select Product
+        model.StoreTitles = _shopperService.GetStoreTitles();
+        model.Brands = _brandService.GetBrandsOfStoreTitle(model.SelectedStoreTitle);
+        model.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
+        model.ChildCategories = _brandService.GetChildCategoriesOfBrand(model.SelectedBrand);
+
+        // data for mobile detail
+        model.Chipsets = _productService.GetChipsets();
+        model.CpuArches = _productService.GetCpuArches();
+        model.OperatingSystems = _productService.GetOperatingSystems();
+        model.Cpus = _productService.GetCpusOfChipset(model.SelectedChipset);
+        model.Gpus = _productService.GetGpusOfChipset(model.SelectedChipset);
+        model.OperatingSystemVersions = _productService.GetOperatingSystemVersionsOfOperatingSystem(model.SelectedOS);
+
+
+        if (!ModelState.IsValid) return View(model);
+
+        // in this section we check that all images are ok
+
+        #region images security
+
+        foreach (var image in model.Images)
+        {
+            if (!image.IsImage())
+            {
+                ModelState.AddModelError("", "لطفا تصاویر خود را به درستی انتخاب کنید");
+                return View(model);
+            }
+        }
+
+        #endregion
+
+        if (model.Images == null)
+        {
+            ModelState.AddModelError("", "لطفا تصاویر کالا را انتخاب کنید.");
+            return View(model);
+        }
+        else if (model.Images.Count <= 2)
+        {
+            ModelState.AddModelError("", "تصاویر کالا باید حداقل 3 تصویر باشد.");
+            return View(model);
+        }
+
+
+        var product = new Product()
+        {
+            ProductTitle = model.ProductTitle,
+            Description = model.Description,
+            ProductType = ProductTypes.AUX.ToString(),
+            OfficialBrandProductId = model.OfficialBrandProductId,
+            IsActive = model.IsActive,
+            ChildCategoryId = model.SelectedChildCategory
+        };
+
+        var mobileDetail = new MobileDetail()
+        {
+            Length = model.Length,
+            Width = model.Width,
+            Height = model.Height,
+            Weight = model.Weight,
+            SimCardQuantity = model.SimCardQuantity,
+            SimCardInput = model.SimCardInput,
+            SeparateSlotMemoryCard = model.SeparateSlotMemoryCard,
+            Announced = model.Announced.ConvertPersianDateToEnglishDate(),
+            ChipsetId = model.SelectedChipset,
+            CpuId = model.SelectedCpu,
+            CpuAndFrequency = model.CpuAndFrequency,
+            CpuArchId = model.SelectedCpuArch,
+            GpuId = model.SelectedGpu,
+            InternalStorage = model.InternalStorage,
+            Ram = model.Ram,
+            SdCard = model.SdCard,
+            SdCardStandard = model.SdCardStandard,
+            ColorDisplay = model.ColorDisplay,
+            TouchDisplay = model.TouchDisplay,
+            DisplayTechnology = model.DisplayTechnology,
+            DisplaySize = model.DisplaySize,
+            Resolution = model.Resolution,
+            PixelDensity = model.PixelDensity,
+            ScreenToBodyRatio = model.ScreenToBodyRatio,
+            ImageRatio = model.ImageRatio,
+            DisplayProtection = model.DisplayProtection,
+            DisplayMoreInformation = model.DisplayMoreInformation,
+            ConnectionsNetwork = model.ConnectionsNetwork.ListToString("&"),
+            GsmNetwork = model.GsmNetwork.ListToString("&"),
+            HspaNetwork = model.HspaNetwork.ListToString("&"),
+            LteNetwork = model.LteNetwork.ListToString("&"),
+            FiveGNetwork = model.FiveGNetwork.ListToString("&"),
+            CommunicationTechnology = model.CommunicationTechnology,
+            WiFi = model.WiFi.ListToString("&"),
+            Radio = model.Radio,
+            Bluetooth = model.Bluetooth.ListToString("&"),
+            GpsInformation = model.GpsInformation.ListToString("&"),
+            ConnectionPort = model.ConnectionPort,
+            ConnectionsMoreInformation = model.ConnectionsMoreInformation,
+            Cameras = model.Cameras.ListToString("&"),
+            PhotoResolution = model.PhotoResolution,
+            SelfiCameraResolution = model.SelfiCameraResolution,
+            MacroCameraResolution = model.MacroCameraResolution,
+            WideCameraResolution = model.WideCameraResolution,
+            DepthCameraResolution = model.DepthCameraResolution,
+            CameraCapabilities = model.CameraCapabilities,
+            SelfiCameraCapabilities = model.SelfiCameraCapabilities,
+            MacroCameraCapabilities = model.MacroCameraCapabilities,
+            WideCameraCapabilities = model.WideCameraCapabilities,
+            DepthCameraCapabilities = model.DepthCameraCapabilities,
+            PhotoCameraVideo = model.PhotoCameraVideo.ListToString("&"),
+            SelfiCameraVideo = model.SelfiCameraVideo.ListToString("&"),
+            MacroCameraVideo = model.MacroCameraVideo.ListToString("&"),
+            WideCameraVideo = model.WideCameraVideo.ListToString("&"),
+            DepthCameraVideo = model.DepthCameraVideo.ListToString("&"),
+            CameraMoreInformation = model.CameraMoreInformation,
+            Speakers = model.Speakers,
+            OutputAudio = model.OutputAudio,
+            AudioMoreInformation = model.AudioMoreInformation,
+            OperatingSystemId = model.SelectedOS,
+            OperatingSystemVersionId = model.SelectedOsVersion,
+            UiVersion = model.UiVersion,
+            MoreInformationSoftWare = model.MoreInformationSoftWare,
+            BatteryMaterial = model.BatteryMaterial,
+            BatteryCapacity = model.BatteryCapacity,
+            Removable‌Battery = model.Removable‌Battery,
+            Sensors = model.Sensors,
+            ItemsInBox = model.ItemsInBox
+        };
+
+        var result = await _productService.AddMobileAsync(product, mobileDetail);
+
+        if (result == ResultTypes.Successful)
+        {
+            // add product images
+            await AddImg(model.Images, product.ProductId);
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+
+        return View(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> EditMobile(int productId)
+    {
+        var data = await _productService.GetTypeMobileProductDataAsync(productId);
+
+        if (data == null)
+            return NotFound();
+
+
+        return View(data);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditMobile(EditMobileProductViewModel model)
     {
         // data for select Product
         model.StoreTitles = _shopperService.GetStoreTitles();
@@ -250,7 +403,7 @@ public class ProductManagerController : Controller
 
         foreach (var image in model.Images)
         {
-            if (!image.IsImage(".jpg", ".png"))
+            if (!image.IsImage())
             {
                 ModelState.AddModelError("", "لطفا تصاویر خود را به درستی انتخاب کنید");
                 return View(model);
@@ -259,209 +412,113 @@ public class ProductManagerController : Controller
 
         #endregion
 
+        var product = await _productService.GetProductByIdAsync(model.ProductId);
+
+        if (product?.MobileDetailId == null)
+            return NotFound();
+
+
+        var mobileDetail = await _productService.GetMobileDetailByIdAsync(product.MobileDetailId.Value);
+
+        if (mobileDetail == null)
+            return NotFound();
 
 
 
-        if (model.ProductId == 0)
+
+        //  update product
+        product.ProductTitle = model.ProductTitle;
+        product.Description = model.Description;
+        product.OfficialBrandProductId = model.OfficialBrandProductId;
+        product.IsActive = model.IsActive;
+        product.ChildCategoryId = model.SelectedChildCategory;
+
+
+        // update mobile detail
+        mobileDetail.Length = model.Length;
+        mobileDetail.Width = model.Width;
+        mobileDetail.Height = model.Height;
+        mobileDetail.Weight = model.Weight;
+        mobileDetail.SimCardQuantity = model.SimCardQuantity;
+        mobileDetail.SimCardInput = model.SimCardInput;
+        mobileDetail.SeparateSlotMemoryCard = model.SeparateSlotMemoryCard;
+        mobileDetail.Announced = model.Announced.ConvertPersianDateToEnglishDate();
+        mobileDetail.ChipsetId = model.SelectedChipset;
+        mobileDetail.CpuId = model.SelectedCpu;
+        mobileDetail.CpuAndFrequency = model.CpuAndFrequency;
+        mobileDetail.CpuArchId = model.SelectedCpuArch;
+        mobileDetail.GpuId = model.SelectedGpu;
+        mobileDetail.InternalStorage = model.InternalStorage;
+        mobileDetail.Ram = model.Ram;
+        mobileDetail.SdCard = model.SdCard;
+        mobileDetail.SdCardStandard = model.SdCardStandard;
+        mobileDetail.ColorDisplay = model.ColorDisplay;
+        mobileDetail.TouchDisplay = model.TouchDisplay;
+        mobileDetail.DisplayTechnology = model.DisplayTechnology;
+        mobileDetail.DisplaySize = model.DisplaySize;
+        mobileDetail.Resolution = model.Resolution;
+        mobileDetail.PixelDensity = model.PixelDensity;
+        mobileDetail.ScreenToBodyRatio = model.ScreenToBodyRatio;
+        mobileDetail.ImageRatio = model.ImageRatio;
+        mobileDetail.DisplayProtection = model.DisplayProtection;
+        mobileDetail.DisplayMoreInformation = model.DisplayMoreInformation;
+        mobileDetail.ConnectionsNetwork = model.ConnectionsNetwork.ListToString("&");
+        mobileDetail.GsmNetwork = model.GsmNetwork.ListToString("&");
+        mobileDetail.HspaNetwork = model.HspaNetwork.ListToString("&");
+        mobileDetail.LteNetwork = model.LteNetwork.ListToString("&");
+        mobileDetail.FiveGNetwork = model.FiveGNetwork.ListToString("&");
+        mobileDetail.CommunicationTechnology = model.CommunicationTechnology;
+        mobileDetail.WiFi = model.WiFi.ListToString("&");
+        mobileDetail.Radio = model.Radio;
+        mobileDetail.Bluetooth = model.Bluetooth.ListToString("&");
+        mobileDetail.GpsInformation = model.GpsInformation.ListToString("&");
+        mobileDetail.ConnectionPort = model.ConnectionPort;
+        mobileDetail.ConnectionsMoreInformation = model.ConnectionsMoreInformation;
+        mobileDetail.Cameras = model.Cameras.ListToString("&");
+        mobileDetail.PhotoResolution = model.PhotoResolution;
+        mobileDetail.SelfiCameraResolution = model.SelfiCameraResolution;
+        mobileDetail.MacroCameraResolution = model.MacroCameraResolution;
+        mobileDetail.WideCameraResolution = model.WideCameraResolution;
+        mobileDetail.DepthCameraResolution = model.DepthCameraResolution;
+        mobileDetail.CameraCapabilities = model.CameraCapabilities;
+        mobileDetail.SelfiCameraCapabilities = model.SelfiCameraCapabilities;
+        mobileDetail.MacroCameraCapabilities = model.MacroCameraCapabilities;
+        mobileDetail.WideCameraCapabilities = model.WideCameraCapabilities;
+        mobileDetail.DepthCameraCapabilities = model.DepthCameraCapabilities;
+        mobileDetail.PhotoCameraVideo = model.PhotoCameraVideo.ListToString("&");
+        mobileDetail.SelfiCameraVideo = model.SelfiCameraVideo.ListToString("&");
+        mobileDetail.MacroCameraVideo = model.MacroCameraVideo.ListToString("&");
+        mobileDetail.WideCameraVideo = model.WideCameraVideo.ListToString("&");
+        mobileDetail.DepthCameraVideo = model.DepthCameraVideo.ListToString("&");
+        mobileDetail.CameraMoreInformation = model.CameraMoreInformation;
+        mobileDetail.Speakers = model.Speakers;
+        mobileDetail.OutputAudio = model.OutputAudio;
+        mobileDetail.AudioMoreInformation = model.AudioMoreInformation;
+        mobileDetail.OperatingSystemId = model.SelectedOS;
+        mobileDetail.OperatingSystemVersionId = model.SelectedOsVersion;
+        mobileDetail.UiVersion = model.UiVersion;
+        mobileDetail.MoreInformationSoftWare = model.MoreInformationSoftWare;
+        mobileDetail.BatteryMaterial = model.BatteryMaterial;
+        mobileDetail.BatteryCapacity = model.BatteryCapacity;
+        mobileDetail.Removable‌Battery = model.Removable‌Battery;
+        mobileDetail.Sensors = model.Sensors;
+        mobileDetail.ItemsInBox = model.ItemsInBox;
+
+
+
+        var result = await _productService.EditMobileAsync(product, mobileDetail);
+
+        if (result == ResultTypes.Successful)
         {
-            if (model.Images == null)
-            {
-                ModelState.AddModelError("", "لطفا تصاویر کالا را انتخاب کنید.");
-                return View(model);
-            }
-            else if (model.Images.Count <= 2)
-            {
-                ModelState.AddModelError("", "تصاویر کالا باید حداقل 3 تصویر باشد.");
-                return View(model);
-            }
+            // edit product images
+            await EditImg(product.ProductId, model.Images, model.SelectedImages as List<string>, model.ChangedImages as List<string>);
 
-
-            var product = new Product()
-            {
-                ProductTitle = model.ProductTitle,
-                Description = model.Description,
-                ProductType = ProductTypes.AUX.ToString(),
-                OfficialBrandProductId = model.OfficialBrandProductId,
-                IsActive = model.IsActive,
-                ChildCategoryId = model.SelectedChildCategory
-            };
-
-            var mobileDetail = new MobileDetail()
-            {
-                Length = model.Length,
-                Width = model.Width,
-                Height = model.Height,
-                Weight = model.Weight,
-                SimCardQuantity = model.SimCardQuantity,
-                SimCardInput = model.SimCardInput,
-                SeparateSlotMemoryCard = model.SeparateSlotMemoryCard,
-                Announced = model.Announced,
-                ChipsetName = model.ChipsetName,
-                Cpu = model.Cpu,
-                CpuAndFrequency = model.CpuAndFrequency,
-                CpuArch = model.CpuArch,
-                Gpu = model.Gpu,
-                InternalStorage = model.InternalStorage,
-                Ram = model.Ram,
-                SdCard = model.SdCard,
-                SdCardStandard = model.SdCardStandard,
-                ColorDisplay = model.ColorDisplay,
-                TouchDisplay = model.TouchDisplay,
-                DisplayTechnology = model.DisplayTechnology,
-                DisplaySize = model.DisplaySize,
-                Resolution = model.Resolution,
-                PixelDensity = model.PixelDensity,
-                ScreenToBodyRatio = model.ScreenToBodyRatio,
-                ImageRatio = model.ImageRatio,
-                DisplayProtection = model.DisplayProtection,
-                MoreInformation = model.MoreInformation,
-                ConnectionsNetwork = model.ConnectionsNetwork,
-                GsmNetwork = model.GsmNetwork,
-                HspaNetwork = model.HspaNetwork,
-                LteNetwork = model.LteNetwork,
-                FiveGNetwork = model.FiveGNetwork,
-                CommunicationTechnology = model.CommunicationTechnology,
-                WiFi = model.WiFi,
-                Radio = model.Radio,
-                Bluetooth = model.Bluetooth,
-                GpsInformation = model.GpsInformation,
-                ConnectionPort = model.ConnectionPort,
-                CameraQuantity = model.CameraQuantity,
-                PhotoResolutation = model.PhotoResolutation,
-                SelfiCameraPhoto = model.SelfiCameraPhoto,
-                CameraCapabilities = model.CameraCapabilities,
-                SelfiCameraCapabilities = model.SelfiCameraCapabilities,
-                Filming = model.Filming,
-                Speakers = model.Speakers,
-                OutputAudio = model.OutputAudio,
-                AudioInformation = model.AudioInformation,
-                OS = model.OS,
-                OsVersion = model.OsVersion,
-                UiVersion = model.UiVersion,
-                MoreInformationSoftWare = model.MoreInformationSoftWare,
-                BatteryMaterial = model.BatteryMaterial,
-                BatteryCapacity = model.BatteryCapacity,
-                Removable‌Battery = model.Removable‌Battery,
-                Sensors = model.Sensors,
-                ItemsInBox = model.ItemsInBox
-            };
-
-            var result = await _productService.AddMobileAsync(product, mobileDetail);
-
-            if (result == ResultTypes.Successful)
-            {
-                // add product images
-                await AddImg(model.Images, product.ProductId);
-
-
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
-
-                return View(model);
-            }
+            return RedirectToAction(nameof(Index));
         }
-        else
-        {
-            var product = await _productService.GetProductByIdAsync(model.ProductId);
 
-            if (product?.MobileDetailId == null)
-                return NotFound();
+        ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
-
-            var mobileDetail = await _productService.GetMobileDetailByIdAsync(product.MobileDetailId.Value);
-
-            if (mobileDetail == null)
-                return NotFound();
-
-
-
-
-            product.ProductTitle = model.ProductTitle;
-            product.Description = model.Description;
-            product.OfficialBrandProductId = model.OfficialBrandProductId;
-            product.IsActive = model.IsActive;
-            product.ChildCategoryId = model.SelectedChildCategory;
-
-
-            // update mobile detail
-            mobileDetail.Length = model.Length;
-            mobileDetail.Width = model.Width;
-            mobileDetail.Height = model.Height;
-            mobileDetail.Weight = model.Weight;
-            mobileDetail.SimCardQuantity = model.SimCardQuantity;
-            mobileDetail.SimCardInput = model.SimCardInput;
-            mobileDetail.SeparateSlotMemoryCard = model.SeparateSlotMemoryCard;
-            mobileDetail.Announced = model.Announced;
-            mobileDetail.ChipsetName = model.ChipsetName;
-            mobileDetail.Cpu = model.Cpu;
-            mobileDetail.CpuAndFrequency = model.CpuAndFrequency;
-            mobileDetail.CpuArch = model.CpuArch;
-            mobileDetail.Gpu = model.Gpu;
-            mobileDetail.InternalStorage = model.InternalStorage;
-            mobileDetail.Ram = model.Ram;
-            mobileDetail.SdCard = model.SdCard;
-            mobileDetail.SdCardStandard = model.SdCardStandard;
-            mobileDetail.ColorDisplay = model.ColorDisplay;
-            mobileDetail.TouchDisplay = model.TouchDisplay;
-            mobileDetail.DisplayTechnology = model.DisplayTechnology;
-            mobileDetail.DisplaySize = model.DisplaySize;
-            mobileDetail.Resolution = model.Resolution;
-            mobileDetail.PixelDensity = model.PixelDensity;
-            mobileDetail.ScreenToBodyRatio = model.ScreenToBodyRatio;
-            mobileDetail.ImageRatio = model.ImageRatio;
-            mobileDetail.DisplayProtection = model.DisplayProtection;
-            mobileDetail.MoreInformation = model.MoreInformation;
-            mobileDetail.ConnectionsNetwork = model.ConnectionsNetwork;
-            mobileDetail.GsmNetwork = model.GsmNetwork;
-            mobileDetail.HspaNetwork = model.HspaNetwork;
-            mobileDetail.LteNetwork = model.LteNetwork;
-            mobileDetail.FiveGNetwork = model.FiveGNetwork;
-            mobileDetail.CommunicationTechnology = model.CommunicationTechnology;
-            mobileDetail.WiFi = model.WiFi;
-            mobileDetail.Radio = model.Radio;
-            mobileDetail.Bluetooth = model.Bluetooth;
-            mobileDetail.GpsInformation = model.GpsInformation;
-            mobileDetail.ConnectionPort = model.ConnectionPort;
-            mobileDetail.CameraQuantity = model.CameraQuantity;
-            mobileDetail.PhotoResolutation = model.PhotoResolutation;
-            mobileDetail.SelfiCameraPhoto = model.SelfiCameraPhoto;
-            mobileDetail.CameraCapabilities = model.CameraCapabilities;
-            mobileDetail.SelfiCameraCapabilities = model.SelfiCameraCapabilities;
-            mobileDetail.Filming = model.Filming;
-            mobileDetail.Speakers = model.Speakers;
-            mobileDetail.OutputAudio = model.OutputAudio;
-            mobileDetail.AudioInformation = model.AudioInformation;
-            mobileDetail.OS = model.OS;
-            mobileDetail.OsVersion = model.OsVersion;
-            mobileDetail.UiVersion = model.UiVersion;
-            mobileDetail.MoreInformationSoftWare = model.MoreInformationSoftWare;
-            mobileDetail.BatteryMaterial = model.BatteryMaterial;
-            mobileDetail.BatteryCapacity = model.BatteryCapacity;
-            mobileDetail.Removable‌Battery = model.Removable‌Battery;
-            mobileDetail.Sensors = model.Sensors;
-            mobileDetail.ItemsInBox = model.ItemsInBox;
-
-
-
-            var result = await _productService.EditMobileAsync(product, mobileDetail);
-
-            if (result == ResultTypes.Successful)
-            {
-                // edit product images
-                //await EditImg(product.ProductId, model.Images, model.SelectedImages as List<string>);
-
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
-
-                return View(model);
-            }
-        }
+        return View(model);
     }
 
     #endregion
@@ -2659,7 +2716,7 @@ public class ProductManagerController : Controller
     {
         if (newImages == null) return;
 
-        
+
         int editImageCounter = 0;
         // edit images
         if (editedImages != null && editedImages.Count > 0)

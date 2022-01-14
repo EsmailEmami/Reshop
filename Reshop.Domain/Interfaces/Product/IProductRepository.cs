@@ -7,6 +7,8 @@ using Reshop.Domain.Entities.Shopper;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Reshop.Domain.Entities.Product.Options;
+using OperatingSystem = Reshop.Domain.Entities.Product.Options.OperatingSystem;
 
 namespace Reshop.Domain.Interfaces.Product
 {
@@ -99,7 +101,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<AUXDetail> GetAUXByIdAsync(int auxId);
 
         // ------------------------------ get for edit ------------------------------
-        Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId);
+        Task<EditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId);
         Task<AddOrEditLaptopProductViewModel> GetTypeLaptopProductDataForEditAsync(int productId);
         Task<AddOrEditPowerBankViewModel> GetTypePowerBankProductDataForEditAsync(int productId);
         Task<AddOrEditMobileCoverViewModel> GetTypeMobileCoverProductDataForEditAsync(int productId);
@@ -179,7 +181,17 @@ namespace Reshop.Domain.Interfaces.Product
 
         #endregion
 
+        #region Add Or Edit Product Options
 
+        IEnumerable<Chipset> GetChipsets();
+        IEnumerable<Cpu> GetCpusOfChipset(string chipsetId);
+        IEnumerable<Gpu> GetGpusOfChipset(string chipsetId);
+        IEnumerable<CpuArch> GetCpuArches();
+        IEnumerable<OperatingSystem> GetOperatingSystems();
+        IEnumerable<OperatingSystemVersion> GetOperatingSystemVersionsOfOperatingSystem(string operatingSystemId);
+
+
+        #endregion
 
         Task SaveChangesAsync();
     }

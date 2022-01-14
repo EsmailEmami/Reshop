@@ -4,6 +4,7 @@ using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Product;
+using Reshop.Domain.Entities.Product.Options;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Interfaces.Product;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OperatingSystem = Reshop.Domain.Entities.Product.Options.OperatingSystem;
 
 namespace Reshop.Infrastructure.Repository.Product
 {
@@ -845,6 +847,7 @@ namespace Reshop.Infrastructure.Repository.Product
                     }).SingleOrDefaultAsync();
 
 
+            if (model == null) return null;
 
 
             object detail = new object();
@@ -935,6 +938,9 @@ namespace Reshop.Infrastructure.Repository.Product
                        ImageName = c.ProductGalleries
                            .First(i => i.OrderBy == 1).ImageName
                    }).SingleOrDefaultAsync();
+
+            if (model == null) return null;
+
 
             object detail = new object();
 
@@ -1390,6 +1396,22 @@ namespace Reshop.Infrastructure.Repository.Product
                     SellCount = c.Count,
                 });
 
+        public IEnumerable<Chipset> GetChipsets() => _context.Chipsets;
+
+        public IEnumerable<Cpu> GetCpusOfChipset(string chipsetId) =>
+            _context.Cpus.Where(c => c.ChipsetId == chipsetId);
+
+        public IEnumerable<Gpu> GetGpusOfChipset(string chipsetId) =>
+            _context.Gpus.Where(c => c.ChipsetId == chipsetId);
+
+        public IEnumerable<CpuArch> GetCpuArches() => _context.CpuArches;
+
+        public IEnumerable<OperatingSystem> GetOperatingSystems() => _context.OperatingSystems;
+
+        public IEnumerable<OperatingSystemVersion> GetOperatingSystemVersionsOfOperatingSystem(string operatingSystemId) =>
+            _context.OperatingSystemVersions
+                .Where(c => c.OperatingSystemId == operatingSystemId);
+
         public async Task<ProductGallery> GetProductGalleryAsync(int productId, string imageName)
             =>
                 await _context.ProductGalleries.SingleOrDefaultAsync(c => c.ProductId == productId && c.ImageName == imageName);
@@ -1403,11 +1425,11 @@ namespace Reshop.Infrastructure.Repository.Product
             return await _context.Products.AnyAsync(c => c.ProductId == productId);
         }
 
-        public async Task<AddOrEditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId)
+        public async Task<EditMobileProductViewModel> GetTypeMobileProductDataForEditAsync(int productId)
         {
             return await _context.Products
                 .Where(c => c.ProductId == productId)
-                .Select(c => new AddOrEditMobileProductViewModel()
+                .Select(c => new EditMobileProductViewModel()
                 {
                     ProductId = c.ProductId,
                     ProductTitle = c.ProductTitle,
@@ -1419,8 +1441,8 @@ namespace Reshop.Infrastructure.Repository.Product
                     SelectedChildCategory = c.ChildCategoryId,
                     //img
                     SelectedImages = c.ProductGalleries
-                        .OrderBy(i => i.OrderBy)
-                        .Select(i=> i.ImageName),
+                        .OrderBy(g => g.OrderBy)
+                        .Select(g => g.ImageName),
                     // detail
                     Length = c.MobileDetail.Length,
                     Width = c.MobileDetail.Width,
@@ -1429,12 +1451,16 @@ namespace Reshop.Infrastructure.Repository.Product
                     SimCardQuantity = c.MobileDetail.SimCardQuantity,
                     SimCardInput = c.MobileDetail.SimCardInput,
                     SeparateSlotMemoryCard = c.MobileDetail.SeparateSlotMemoryCard,
-                    Announced = c.MobileDetail.Announced,
-                    ChipsetName = c.MobileDetail.ChipsetName,
-                    Cpu = c.MobileDetail.Cpu,
+                    Announced = c.MobileDetail.Announced.ToString(),
+                    SelectedChipset = c.MobileDetail.ChipsetId,
+                    Chipsets = _context.Chipsets.ToList(),
+                    SelectedCpu = c.MobileDetail.CpuId,
+                    Cpus = _context.Cpus.Where(p => p.ChipsetId == c.MobileDetail.ChipsetId),
                     CpuAndFrequency = c.MobileDetail.CpuAndFrequency,
-                    CpuArch = c.MobileDetail.CpuArch,
-                    Gpu = c.MobileDetail.Gpu,
+                    SelectedCpuArch = c.MobileDetail.CpuArchId,
+                    CpuArches = _context.CpuArches.ToList(),
+                    SelectedGpu = c.MobileDetail.GpuId,
+                    Gpus = _context.Gpus.Where(p => p.ChipsetId == c.MobileDetail.ChipsetId),
                     InternalStorage = c.MobileDetail.InternalStorage,
                     Ram = c.MobileDetail.Ram,
                     SdCard = c.MobileDetail.SdCard,
@@ -1448,29 +1474,44 @@ namespace Reshop.Infrastructure.Repository.Product
                     ScreenToBodyRatio = c.MobileDetail.ScreenToBodyRatio,
                     ImageRatio = c.MobileDetail.ImageRatio,
                     DisplayProtection = c.MobileDetail.DisplayProtection,
-                    MoreInformation = c.MobileDetail.MoreInformation,
-                    ConnectionsNetwork = c.MobileDetail.ConnectionsNetwork,
-                    GsmNetwork = c.MobileDetail.GsmNetwork,
-                    HspaNetwork = c.MobileDetail.HspaNetwork,
-                    LteNetwork = c.MobileDetail.LteNetwork,
-                    FiveGNetwork = c.MobileDetail.FiveGNetwork,
+                    DisplayMoreInformation = c.MobileDetail.DisplayMoreInformation,
+                    ConnectionsNetwork = c.MobileDetail.ConnectionsNetwork.ToList("&"),
+                    GsmNetwork = c.MobileDetail.GsmNetwork.ToList("&"),
+                    HspaNetwork = c.MobileDetail.HspaNetwork.ToList("&"),
+                    LteNetwork = c.MobileDetail.LteNetwork.ToList("&"),
+                    FiveGNetwork = c.MobileDetail.FiveGNetwork.ToList("&"),
                     CommunicationTechnology = c.MobileDetail.CommunicationTechnology,
-                    WiFi = c.MobileDetail.WiFi,
+                    WiFi = c.MobileDetail.WiFi.ToList("&"),
                     Radio = c.MobileDetail.Radio,
-                    Bluetooth = c.MobileDetail.Bluetooth,
-                    GpsInformation = c.MobileDetail.GpsInformation,
+                    Bluetooth = c.MobileDetail.Bluetooth.ToList("&"),
+                    GpsInformation = c.MobileDetail.GpsInformation.ToList("&"),
                     ConnectionPort = c.MobileDetail.ConnectionPort,
-                    CameraQuantity = c.MobileDetail.CameraQuantity,
-                    PhotoResolutation = c.MobileDetail.PhotoResolutation,
-                    SelfiCameraPhoto = c.MobileDetail.SelfiCameraPhoto,
+                    ConnectionsMoreInformation = c.MobileDetail.ConnectionsMoreInformation,
+                    Cameras = c.MobileDetail.Cameras.ToList("&"),
+                    PhotoResolution = c.MobileDetail.PhotoResolution,
+                    SelfiCameraResolution = c.MobileDetail.SelfiCameraResolution,
+                    MacroCameraResolution = c.MobileDetail.MacroCameraResolution,
+                    WideCameraResolution = c.MobileDetail.WideCameraResolution,
+                    DepthCameraResolution = c.MobileDetail.DepthCameraResolution,
                     CameraCapabilities = c.MobileDetail.CameraCapabilities,
                     SelfiCameraCapabilities = c.MobileDetail.SelfiCameraCapabilities,
-                    Filming = c.MobileDetail.Filming,
+                    MacroCameraCapabilities = c.MobileDetail.MacroCameraCapabilities,
+                    WideCameraCapabilities = c.MobileDetail.WideCameraCapabilities,
+                    DepthCameraCapabilities = c.MobileDetail.DepthCameraCapabilities,
+                    PhotoCameraVideo = c.MobileDetail.PhotoCameraVideo.ToList("&"),
+                    SelfiCameraVideo = c.MobileDetail.SelfiCameraVideo.ToList("&"),
+                    MacroCameraVideo = c.MobileDetail.MacroCameraVideo.ToList("&"),
+                    WideCameraVideo = c.MobileDetail.WideCameraVideo.ToList("&"),
+                    DepthCameraVideo = c.MobileDetail.DepthCameraVideo.ToList("&"),
+                    CameraMoreInformation = c.MobileDetail.CameraMoreInformation,
                     Speakers = c.MobileDetail.Speakers,
                     OutputAudio = c.MobileDetail.OutputAudio,
-                    AudioInformation = c.MobileDetail.AudioInformation,
-                    OS = c.MobileDetail.OS,
-                    OsVersion = c.MobileDetail.OsVersion,
+                    AudioMoreInformation = c.MobileDetail.AudioMoreInformation,
+                    SelectedOS = c.MobileDetail.OperatingSystemId,
+                    OperatingSystems = _context.OperatingSystems.ToList(),
+                    SelectedOsVersion = c.MobileDetail.OperatingSystemVersionId,
+                    OperatingSystemVersions = _context.OperatingSystemVersions
+                        .Where(p => p.OperatingSystemId == c.MobileDetail.OperatingSystemId),
                     UiVersion = c.MobileDetail.UiVersion,
                     MoreInformationSoftWare = c.MobileDetail.MoreInformationSoftWare,
                     BatteryMaterial = c.MobileDetail.BatteryMaterial,
@@ -1904,9 +1945,9 @@ namespace Reshop.Infrastructure.Repository.Product
                     SelectedBrand = c.OfficialBrandProduct.BrandId,
                     SelectedChildCategory = c.ChildCategoryId,
                     //img
-                     SelectedImages = c.ProductGalleries
-                         .OrderBy(g=> g.OrderBy)
-                         .Select(g=> g.ImageName),
+                    SelectedImages = c.ProductGalleries
+                         .OrderBy(g => g.OrderBy)
+                         .Select(g => g.ImageName),
                     // detail
                     CableMaterial = c.AuxDetail.CableMaterial,
                     CableLenght = c.AuxDetail.CableLenght
