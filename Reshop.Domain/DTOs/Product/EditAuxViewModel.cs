@@ -59,5 +59,7 @@ namespace Reshop.Domain.DTOs.Product
         public IEnumerable<string> SelectedImages { get; set; }
 
         public IEnumerable<string> ChangedImages { get; set; }
+
+        public IEnumerable<string> DeletedImages { get; set; }
     }
 }

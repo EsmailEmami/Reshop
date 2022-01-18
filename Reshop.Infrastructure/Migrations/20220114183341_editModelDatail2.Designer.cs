@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reshop.Infrastructure.Context;
 
@@ -11,9 +12,10 @@ using Reshop.Infrastructure.Context;
 namespace Reshop.Infrastructure.Migrations
 {
     [DbContext(typeof(ReshopDbContext))]
-    partial class ReshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220114183341_editModelDatail2")]
+    partial class editModelDatail2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1595,6 +1597,7 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ConnectionsNetwork")
+                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -1626,8 +1629,8 @@ namespace Reshop.Infrastructure.Migrations
 
                     b.Property<string>("DisplayProtection")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
 
                     b.Property<string>("DisplaySize")
                         .IsRequired()
@@ -1640,6 +1643,7 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(40)");
 
                     b.Property<string>("FiveGNetwork")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -1652,6 +1656,7 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("GsmNetwork")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -1661,6 +1666,7 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("HspaNetwork")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -1683,6 +1689,7 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("LteNetwork")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -1797,6 +1804,7 @@ namespace Reshop.Infrastructure.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("WiFi")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 

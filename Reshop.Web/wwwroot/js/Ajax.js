@@ -1280,3 +1280,157 @@ function GetChildCategoriesOfBrand(brandId) {
         selectRefresh(select, selectDropDown);
     }
 }
+
+
+function GetCpusOfChipset(chipsetId) {
+
+    
+    var select = document.getElementById('cpu');
+    if (select == null) {
+        return null;
+    }
+
+    // dropDown 
+    var selectDropDown = document.getElementById('cpu_select');
+    if (selectDropDown == null) {
+        return null;
+    }
+
+    // dropDown Options
+    var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
+    if (selectDropDownList == null) {
+        return null;
+    }
+
+
+    if (chipsetId !== '') {
+        $.ajax({
+            type: "GET",
+            url: "/api/Product/GetCpusOfChipset/" + chipsetId,
+        }).done(function (res) {
+
+            // make empty the select
+            select.querySelectorAll('*').forEach(n => n.remove());
+            selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+            addSelectList(select, selectDropDownList, '', 'لطفا پردازنده مرکزی را انتخاب کنید');
+
+
+            $.each(res, function (index, value) {
+                addSelectList(select, selectDropDownList, value.item1, value.item2);
+            });
+
+            selectRefresh(select, selectDropDown);
+
+        });
+    } else
+    // make empty the select
+        select.querySelectorAll('*').forEach(n => n.remove());
+    selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+    addSelectList(select, selectDropDownList, '', 'لطفا تراشه را انتخاب کنید');
+
+    selectRefresh(select, selectDropDown);
+}
+
+function GetGpusOfChipset(chipsetId) {
+
+
+    var select = document.getElementById('gpu');
+    if (select == null) {
+        return null;
+    }
+
+    // dropDown 
+    var selectDropDown = document.getElementById('gpu_select');
+    if (selectDropDown == null) {
+        return null;
+    }
+
+    // dropDown Options
+    var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
+    if (selectDropDownList == null) {
+        return null;
+    }
+
+
+    if (chipsetId !== '') {
+        $.ajax({
+            type: "GET",
+            url: "/api/Product/GetGpusOfChipset/" + chipsetId,
+        }).done(function (res) {
+
+            // make empty the select
+            select.querySelectorAll('*').forEach(n => n.remove());
+            selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+            addSelectList(select, selectDropDownList, '', 'لطفا پردازنده گرافیکی را انتخاب کنید');
+
+
+            $.each(res, function (index, value) {
+                addSelectList(select, selectDropDownList, value.item1, value.item2);
+            });
+
+            selectRefresh(select, selectDropDown);
+
+        });
+    } else
+    // make empty the select
+        select.querySelectorAll('*').forEach(n => n.remove());
+    selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+    addSelectList(select, selectDropDownList, '', 'لطفا تراشه را انتخاب کنید');
+
+    selectRefresh(select, selectDropDown);
+}
+
+function GetOperatingSystemVersionsOfOperatingSystem(operatingSystemId) {
+
+
+    var select = document.getElementById('operatingSystemVersion');
+    if (select == null) {
+        return null;
+    }
+
+    // dropDown 
+    var selectDropDown = document.getElementById('operatingSystemVersion_select');
+    if (selectDropDown == null) {
+        return null;
+    }
+
+    // dropDown Options
+    var selectDropDownList = selectDropDown.querySelector('.select-dropdown-list');
+    if (selectDropDownList == null) {
+        return null;
+    }
+
+
+    if (operatingSystemId !== '') {
+        $.ajax({
+            type: "GET",
+            url: "/api/Product/GetOperatingSystemVersionsOfOperatingSystem/" + operatingSystemId,
+        }).done(function (res) {
+
+            // make empty the select
+            select.querySelectorAll('*').forEach(n => n.remove());
+            selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+            addSelectList(select, selectDropDownList, '', 'لطفا نسخه سیستم عامل را انتخاب کنید');
+
+
+            $.each(res, function (index, value) {
+                addSelectList(select, selectDropDownList, value.item1, value.item2);
+            });
+
+            selectRefresh(select, selectDropDown);
+
+        });
+    } else
+    // make empty the select
+        select.querySelectorAll('*').forEach(n => n.remove());
+    selectDropDownList.querySelectorAll('*').forEach(n => n.remove());
+
+    addSelectList(select, selectDropDownList, '', 'لطفا سیستم عامل را انتخاب کنید');
+
+    selectRefresh(select, selectDropDown);
+}

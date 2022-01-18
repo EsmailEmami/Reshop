@@ -23,7 +23,7 @@
 
         <div class="col-sm-12 col-md-6">
             <div class="form-field">
-                <input type="text" asp-for="ProductTitle" />
+                <input asp-for="ProductTitle" />
                 <label asp-for="ProductTitle"></label>
                 <span asp-validation-for="ProductTitle" class="text-danger"></span>
             </div>
@@ -120,19 +120,25 @@
 
 <div class="row justify-content-around" id="images-part">
 
-    <div class="col-auto">
+    <div class="col-auto" id="imgProduct1">
         <div class="image-field">
             <div class="image-area">
                 <a href="javascript:void(0)" class="change-image">
                     <input type="file" name="Images" multiple class="ProfileAvatarInput" onchange="addImageToProduct(this, 'imgProduct1')">
                     <i class="far fa-camera"></i>
                 </a>
-                <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا" id="imgProduct1">
+                <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا">
+            </div>
+            <div class="image-field-options">
+                <a onclick="removeImageOnAdd('imgProduct1')">
+                    <i class="far fa-trash"></i>
+                </a>
             </div>
         </div>
     </div>
 
 </div>
+<span asp-validation-for="Images" class="text-danger"></span>
 
 
 
@@ -143,23 +149,31 @@
 <div class="row">
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="Length" />
+            <input asp-for="Length" />
             <label asp-for="Length"></label>
             <span asp-validation-for="Length" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="Width" />
+            <input asp-for="Width" />
             <label asp-for="Width"></label>
             <span asp-validation-for="Width" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="Height" />
+            <input asp-for="Height" />
             <label asp-for="Height"></label>
             <span asp-validation-for="Height" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="col-sm-12 col-md-3">
+        <div class="form-field">
+            <input asp-for="Weight" />
+            <label asp-for="Weight"></label>
+            <span asp-validation-for="Weight" class="text-danger"></span>
         </div>
     </div>
         
@@ -225,7 +239,7 @@
     <h3 class="title-header">تراشه</h3>
 <div class="row">
     <div class="col-sm-12 col-md-4">
-        <select asp-for="SelectedChipset">
+        <select asp-for="SelectedChipset" onchange="updateSelectsOfChipset(this.value)">
             <option value="">لطفا تراشه را انتخاب کنید</option>
           @if (Model.Chipsets != null)
           {
@@ -273,7 +287,7 @@
     </div>
     <div class="col-sm-12 col-md-4">
         <select id="gpu" asp-for="SelectedGpu">
-            @if (Model.Cpus != null)
+            @if (Model.Gpus != null)
             {
                 <option value="">لطفا پردازنده گرافیکی را انتخاب کنید</option>
                 @foreach (var item in Model.Gpus)
@@ -290,7 +304,7 @@
     </div>
     <div class="col-sm-12 col-md-8">
         <div class="form-field">
-            <input type="text" asp-for="CpuAndFrequency" />
+            <input asp-for="CpuAndFrequency" />
             <label asp-for="CpuAndFrequency"></label>
             <span asp-validation-for="CpuAndFrequency" class="text-danger"></span>
         </div>
@@ -301,41 +315,30 @@
 <div class="row">
     <div class="col-sm-12 col-md-6">
         <div class="form-field">
-            <input type="text" asp-for="InternalStorage" />
+            <input asp-for="InternalStorage" />
             <label asp-for="InternalStorage"></label>
             <span asp-validation-for="InternalStorage" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="form-field">
-            <input type="text" asp-for="Ram" />
+            <input asp-for="Ram" />
             <label asp-for="Ram"></label>
             <span asp-validation-for="Ram" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="form-field">
-            <input type="text" asp-for="SdCard" />
+            <input asp-for="SdCard" />
             <label asp-for="SdCard"></label>
             <span asp-validation-for="SdCard" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
-        <select id="gpu" asp-for="SelectedGpu">
-            @if (Model.Cpus != null)
-            {
-                <option value="">لطفا پردازنده گرافیکی را انتخاب کنید</option>
-                @foreach (var item in Model.Gpus)
-                {
-                    @:<option value="@item.GpuId" @(Model.SelectedGpu == item.GpuId ? "selected" : "")>@item.GpuName</option>
-                }
-            }
-            else
-            {
-                <option value="">لطفا تراشه را انتخاب کنید</option>
-            }
+        <select asp-for="SdCardStandard">
+            <option value="SdCardStandard">استاندارد حافظه جانبی</option>
         </select>
-        <span asp-validation-for="SelectedGpu" class="text-danger"></span>
+        <span asp-validation-for="SdCardStandard" class="text-danger"></span>
     </div>
 </div>
 
@@ -345,16 +348,32 @@
     <div class="col-sm-12 col-md-6">
         <div class="form-check">
             <label asp-for="ColorDisplay" class="radio"></label>
-            <div class="hidden-radio">
-                <div class="item">
-                    <input type="radio" asp-for="ColorDisplay" value="true" id="yes-ColorDisplay" checked="">
-                    <label for="yes-ColorDisplay">دارد</label>
+            @if (Model.ColorDisplay)
+            {
+                <div class="hidden-radio">
+                    <div class="item">
+                        <input type="radio" asp-for="ColorDisplay" value="true" id="yes-ColorDisplay" checked>
+                        <label for="yes-ColorDisplay">دارد</label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" asp-for="ColorDisplay" value="false" id="no-ColorDisplay">
+                        <label for="no-ColorDisplay">ندارد</label>
+                    </div>
                 </div>
-                <div class="item">
-                    <input type="radio" asp-for="ColorDisplay" value="false" id="no-ColorDisplay">
-                    <label for="no-ColorDisplay">ندارد</label>
+            }
+            else
+            {
+                <div class="hidden-radio">
+                    <div class="item">
+                        <input type="radio" asp-for="ColorDisplay" value="true" id="yes-ColorDisplay">
+                        <label for="yes-ColorDisplay">دارد</label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" asp-for="ColorDisplay" value="false" id="no-ColorDisplay" checked>
+                        <label for="no-ColorDisplay">ندارد</label>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
@@ -363,11 +382,11 @@
             <div class="hidden-radio">
                 <div class="item">
                     <input type="radio" asp-for="TouchDisplay" value="true" id="yes-TouchDisplay" checked="">
-                    <label for="yes-ColorDisplay">دارد</label>
+                    <label for="yes-TouchDisplay">دارد</label>
                 </div>
                 <div class="item">
                     <input type="radio" asp-for="TouchDisplay" value="false" id="no-TouchDisplay">
-                    <label for="no-ColorDisplay">ندارد</label>
+                    <label for="no-TouchDisplay">ندارد</label>
                 </div>
             </div>
         </div>
@@ -377,34 +396,39 @@
 <div class="row">
     <div class="col-sm-12 col-md-6">
         <select asp-for="DisplayTechnology">
-            <option value="">لطفا تراشه را انتخاب کنید</option>
+            <option value="">لطفا فناوری صفحه نمایش را انتخاب کنید</option>
+            <option value="IPS">IPS</option>
+            <option value="TFT">TFT</option>
+            <option value="AMOLED">AMOLED</option>
+            <option value="Super AMOLED">Super AMOLED</option>
+            <option value="Retina">Retina</option>
         </select>
         <span asp-validation-for="DisplayTechnology" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="DisplaySize" />
+            <input asp-for="DisplaySize" />
             <label asp-for="DisplaySize"></label>
             <span asp-validation-for="DisplaySize" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="Resolution" />
+            <input asp-for="Resolution" />
             <label asp-for="Resolution"></label>
             <span asp-validation-for="Resolution" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="PixelDensity" />
+            <input asp-for="PixelDensity" />
             <label asp-for="PixelDensity"></label>
             <span asp-validation-for="PixelDensity" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="ScreenToBodyRatio" />
+            <input asp-for="ScreenToBodyRatio" />
             <label asp-for="ScreenToBodyRatio"></label>
             <span asp-validation-for="ScreenToBodyRatio" class="text-danger"></span>
         </div>
@@ -412,13 +436,17 @@
     
     <div class="col-sm-12 col-md-3">
         <select asp-for="ImageRatio">
-            <option value="">نسبت تصویر</option>
+            <option value="">لطفا نسبت تصویر را انتخاب کنید</option>
+            <option value="20:9">20:9</option>
         </select>
+        <span asp-validation-for="ImageRatio" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-3">
         <select asp-for="DisplayProtection">
-            <option value="">محافظت</option>
+            <option value="">لطفا محافظت صفحه را انتخاب کنید</option>
+            <option value="Corning Gorilla Glass 5">Corning Gorilla Glass 5</option>
         </select>
+        <span asp-validation-for="DisplayProtection" class="text-danger"></span>
     </div>
     
     <div class="col-sm-12">
@@ -437,28 +465,28 @@
             <div class="form-check">
                 <label>
                     2G
-                    <input value="2G" type="checkbox" name="ConnectionsNetwork">
+                    <input value="2G" type="checkbox" name="ConnectionsNetwork" @((Model.ConnectionsNetwork != null && Model.ConnectionsNetwork.Any(c=> c== "2G"))?"checked":"")>
                     <span></span>
                 </label>
             </div>
             <div class="form-check">
                 <label>
                     3G
-                    <input value="3G" type="checkbox" name="ConnectionsNetwork">
+                    <input value="3G" type="checkbox" name="ConnectionsNetwork" @((Model.ConnectionsNetwork != null && Model.ConnectionsNetwork.Any(c=> c== "3G"))?"checked":"")>
                     <span></span>
                 </label>
             </div>
             <div class="form-check">
                 <label>
                     4G
-                    <input value="4G" type="checkbox" name="ConnectionsNetwork">
+                    <input value="4G" type="checkbox" name="ConnectionsNetwork" @((Model.ConnectionsNetwork != null && Model.ConnectionsNetwork.Any(c=> c== "4G"))?"checked":"")>
                     <span></span>
                 </label>
             </div>
             <div class="form-check">
                 <label>
                     5G
-                    <input value="5G" type="checkbox" name="ConnectionsNetwork">
+                    <input value="5G" type="checkbox" name="ConnectionsNetwork" @((Model.ConnectionsNetwork != null && Model.ConnectionsNetwork.Any(c=> c== "5G"))?"checked":"")>
                     <span></span>
                 </label>
             </div>
@@ -467,94 +495,93 @@
     <div class="col-sm-12 col-md-4">
         <div class="form-check">
             <label asp-for="Radio" class="radio"></label>
-            <div class="hidden-radio">
-                <div class="item">
-                    <input type="radio" asp-for="Radio" value="true" id="yes-Radio" checked="">
-                    <label for="yes-Radio">دارد</label>
+            @if (Model.Radio)
+            {
+                <div class="hidden-radio">
+                    <div class="item">
+                        <input type="radio" asp-for="Radio" value="true" id="yes-Radio" checked>
+                        <label for="yes-Radio">دارد</label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" asp-for="Radio" value="false" id="no-Radio">
+                        <label for="no-Radio">ندارد</label>
+                    </div>
                 </div>
-                <div class="item">
-                    <input type="radio" asp-for="Radio" value="false" id="no-Radio">
-                    <label for="no-Radio">ندارد</label>
+            }
+            else
+            {
+                <div class="hidden-radio">
+                    <div class="item">
+                        <input type="radio" asp-for="Radio" value="true" id="yes-Radio">
+                        <label for="yes-Radio">دارد</label>
+                    </div>
+                    <div class="item">
+                        <input type="radio" asp-for="Radio" value="false" id="no-Radio" checked>
+                        <label for="no-Radio">ندارد</label>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
     <div class="col-sm-12 col-md-6">
         <select asp-for="GsmNetwork" multiple placeholder="شبکه 2G">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-        </select>
+            <option value="GSM 850 / 900 / 1800 / 1900 - SIM 1 & SIM 2 (dual-SIM)">GSM 850 / 900 / 1800 / 1900 - SIM 1 & SIM 2 (dual-SIM)</option>
+            <option value="برای هر دو سیم کارت">برای هر دو سیم کارت</option>
+            </select>
         <span asp-validation-for="GsmNetwork" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-6">
         <select asp-for="HspaNetwork" multiple placeholder="شبکه 3G">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="HSDPA 850 / 900 / 1900 / 2100">HSDPA 850 / 900 / 1900 / 2100</option>
         </select>
         <span asp-validation-for="HspaNetwork" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-6">
         <select asp-for="LteNetwork" multiple placeholder="شبکه 4G">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="1, 2, 3, 5, 7, 8, 20, 28, 38, 40, 41">1, 2, 3, 5, 7, 8, 20, 28, 38, 40, 41</option>
         </select>
         <span asp-validation-for="LteNetwork" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-6">
         <select asp-for="FiveGNetwork" multiple placeholder="شبکه 5G">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="1, 3, 5, 7, 8, 20, 28, 38, 40, 41, 78, 79 SA/NSA/Sub6">1, 3, 5, 7, 8, 20, 28, 38, 40, 41, 78, 79 SA/NSA/Sub6
+            </option>
         </select>
         <span asp-validation-for="FiveGNetwork" class="text-danger"></span>
     </div>
     
+    <div class="col-sm-12">
+        <div class="form-field">
+            <input asp-for="CommunicationTechnology" />
+            <label asp-for="CommunicationTechnology"></label>
+            <span asp-validation-for="CommunicationTechnology" class="text-danger"></span>
+        </div>
+    </div>
+    
     <div class="col-sm-12 col-md-6">
         <select asp-for="Bluetooth" multiple placeholder="بلوتوث">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="LE"></option>
+            <option value="5.0">5.0</option>
         </select>
         <span asp-validation-for="Bluetooth" class="text-danger"></span>
     </div>
     
     <div class="col-sm-12 col-md-6">
         <select asp-for="WiFi" multiple placeholder="wifi">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="Wi-Fi 802.11 a/b/g/n/ac">Wi-Fi 802.11 a/b/g/n/ac</option>
         </select>
-        <span asp-validation-for="Bluetooth" class="text-danger"></span>
+        <span asp-validation-for="WiFi" class="text-danger"></span>
     </div>
     
     <div class="col-sm-12 col-md-6">
         <select asp-for="GpsInformation" multiple placeholder="فناوری مکان یابی">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="GLONASS">GLONASS</option>
         </select>
         <span asp-validation-for="GpsInformation" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="form-field">
-            <input type="text" asp-for="ConnectionPort" />
+            <input asp-for="ConnectionPort" />
             <label asp-for="ConnectionPort"></label>
             <span asp-validation-for="ConnectionPort" class="text-danger"></span>
         </div>
@@ -576,28 +603,28 @@
             <div class="form-check">
                 <label>
                     اصلی
-                    <input value="اصلی" type="checkbox" name="Cameras">
+                    <input value="اصلی" type="checkbox" name="Cameras" @((Model.Cameras != null && Model.Cameras.Any(c=> c== "اصلی"))?"checked":"")>
                     <span></span>
                 </label>
             </div>
             <div class="form-check">
                 <label>
                     سلفی
-                    <input value="سلفی" type="checkbox" name="Cameras">
+                    <input value="سلفی" type="checkbox" name="Cameras" @((Model.Cameras != null && Model.Cameras.Any(c=> c== "سلفی"))?"checked":"")>
                     <span></span>
                 </label>
             </div>
             <div class="form-check">
                 <label>
                     ماکرو
-                    <input value="ماکرو" type="checkbox" name="Cameras">
+                    <input value="ماکرو" type="checkbox" name="Cameras" @((Model.Cameras != null && Model.Cameras.Any(c=> c== "ماکرو"))?"checked":"")>
                     <span></span>
                 </label>
             </div>
             <div class="form-check">
                 <label>
                     واید
-                    <input value="واید" type="checkbox" name="Cameras">
+                    <input value="واید" type="checkbox" name="Cameras" @((Model.Cameras != null && Model.Cameras.Any(c=> c== "واید"))?"checked":"")>
                     <span></span>
                 </label>
             </div>
@@ -612,14 +639,14 @@
     </div>
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="PhotoResolution" />
+            <input asp-for="PhotoResolution" />
             <label asp-for="PhotoResolution"></label>
             <span asp-validation-for="PhotoResolution" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-9">
         <div class="form-field">
-            <input type="text" asp-for="CameraCapabilities" />
+            <input asp-for="CameraCapabilities" />
             <label asp-for="CameraCapabilities"></label>
             <span asp-validation-for="CameraCapabilities" class="text-danger"></span>
         </div>
@@ -627,14 +654,14 @@
 
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="SelfiCameraResolution" />
+            <input asp-for="SelfiCameraResolution" />
             <label asp-for="SelfiCameraResolution"></label>
             <span asp-validation-for="SelfiCameraResolution" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-9">
         <div class="form-field">
-            <input type="text" asp-for="SelfiCameraCapabilities" />
+            <input asp-for="SelfiCameraCapabilities" />
             <label asp-for="SelfiCameraCapabilities"></label>
             <span asp-validation-for="SelfiCameraCapabilities" class="text-danger"></span>
         </div>
@@ -642,14 +669,14 @@
 
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="MacroCameraResolution" />
+            <input asp-for="MacroCameraResolution" />
             <label asp-for="MacroCameraResolution"></label>
             <span asp-validation-for="MacroCameraResolution" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-9">
         <div class="form-field">
-            <input type="text" asp-for="MacroCameraCapabilities" />
+            <input asp-for="MacroCameraCapabilities" />
             <label asp-for="MacroCameraCapabilities"></label>
             <span asp-validation-for="MacroCameraCapabilities" class="text-danger"></span>
         </div>
@@ -657,14 +684,14 @@
 
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="WideCameraResolution" />
+            <input asp-for="WideCameraResolution" />
             <label asp-for="WideCameraResolution"></label>
             <span asp-validation-for="WideCameraResolution" class="text-danger"></span>
         </div>
     </div> 
     <div class="col-sm-12 col-md-9">
         <div class="form-field">
-            <input type="text" asp-for="WideCameraCapabilities" />
+            <input asp-for="WideCameraCapabilities" />
             <label asp-for="WideCameraCapabilities"></label>
             <span asp-validation-for="WideCameraCapabilities" class="text-danger"></span>
         </div>
@@ -672,14 +699,14 @@
 
     <div class="col-sm-12 col-md-3">
         <div class="form-field">
-            <input type="text" asp-for="DepthCameraResolution" />
+            <input asp-for="DepthCameraResolution" />
             <label asp-for="DepthCameraResolution"></label>
             <span asp-validation-for="DepthCameraResolution" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-9">
         <div class="form-field">
-            <input type="text" asp-for="DepthCameraCapabilities" />
+            <input asp-for="DepthCameraCapabilities" />
             <label asp-for="DepthCameraCapabilities"></label>
             <span asp-validation-for="DepthCameraCapabilities" class="text-danger"></span>
         </div>
@@ -691,51 +718,31 @@
 <div class="row">
     <div class="col-sm-12">
         <select asp-for="PhotoCameraVideo" multiple placeholder="فیلم برداری دوربین اصلی">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="فیلم برداری 1152p با سرعت 30 فریم در ثانیه">فیلم برداری 1152p با سرعت 30 فریم در ثانیه</option>
         </select>
         <span asp-validation-for="PhotoCameraVideo" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-6">
         <select asp-for="SelfiCameraVideo" multiple placeholder="فیلم برداری دوربین سلفی">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="فیلم برداری 1152p با سرعت 30 فریم در ثانیه">فیلم برداری 1152p با سرعت 30 فریم در ثانیه</option>
         </select>
         <span asp-validation-for="SelfiCameraVideo" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-6">
         <select asp-for="MacroCameraVideo" multiple placeholder="فیلم برداری دوربین ماکرو">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="فیلم برداری 1152p با سرعت 30 فریم در ثانیه">فیلم برداری 1152p با سرعت 30 فریم در ثانیه</option>
         </select>
         <span asp-validation-for="MacroCameraVideo" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-6">
         <select asp-for="WideCameraVideo" multiple placeholder="فیلم برداری دوربین واید">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="فیلم برداری 1152p با سرعت 30 فریم در ثانیه">فیلم برداری 1152p با سرعت 30 فریم در ثانیه</option>
         </select>
         <span asp-validation-for="WideCameraVideo" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-6">
         <select asp-for="DepthCameraVideo" multiple placeholder="فیلم برداری دوربین عمق دید">
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
-            <option value="salam">salam</option>
+            <option value="فیلم برداری 1152p با سرعت 30 فریم در ثانیه">فیلم برداری 1152p با سرعت 30 فریم در ثانیه</option>
         </select>
         <span asp-validation-for="DepthCameraVideo" class="text-danger"></span>
     </div>
@@ -746,22 +753,38 @@
     <div class="col-sm-12 col-md-3">
         <div class="form-check">
             <label asp-for="Speakers" class="radio"></label>
-            <div class="hidden-radio">
-                <div class="item">
-                    <input type="radio" asp-for="Speakers" value="true" id="yes-Speakers" checked="">
-                    <label for="yes-Speakers">دارد</label>
-                </div>
-                <div class="item">
-                    <input type="radio" asp-for="Speakers" value="false" id="no-Speakers">
-                    <label for="no-Speakers">ندارد</label>
-                </div>
+    @if (Model.Speakers)
+    {
+        <div class="hidden-radio">
+            <div class="item">
+                <input type="radio" asp-for="Speakers" value="true" id="yes-Speakers" checked>
+                <label for="yes-Speakers">دارد</label>
             </div>
+            <div class="item">
+                <input type="radio" asp-for="Speakers" value="false" id="no-Speakers">
+                <label for="no-Speakers">ندارد</label>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="hidden-radio">
+            <div class="item">
+                <input type="radio" asp-for="Speakers" value="true" id="yes-Speakers">
+                <label for="yes-Speakers">دارد</label>
+            </div>
+            <div class="item">
+                <input type="radio" asp-for="Speakers" value="false" id="no-Speakers" checked>
+                <label for="no-Speakers">ندارد</label>
+            </div>
+        </div>
+    }
         </div>
     </div>
     
     <div class="col-sm-12 col-md-9">
         <div class="form-field">
-            <input type="text" asp-for="OutputAudio" />
+            <input asp-for="OutputAudio" />
             <label asp-for="OutputAudio"></label>
             <span asp-validation-for="OutputAudio" class="text-danger"></span>
         </div>
@@ -779,7 +802,7 @@
 <h3 class="title-header">نرم افزار</h3>
 <div class="row">
     <div class="col-sm-12 col-md-6">
-        <select asp-for="SelectedOS">
+        <select asp-for="SelectedOS" onchange="GetOperatingSystemVersionsOfOperatingSystem(this.value)">
             <option value="">لطفا سیستم عامل را انتخاب کنید</option>
             @if (Model.OperatingSystems != null)
             {
@@ -792,7 +815,7 @@
         <span asp-validation-for="SelectedOS" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-6">
-        <select id="osVersion" asp-for="SelectedOsVersion">
+        <select id="operatingSystemVersion" asp-for="SelectedOsVersion">
             @if (Model.OperatingSystemVersions != null)
             {
                 <option value="">لطفا نسخه سیستم عامل را انتخاب کنید</option>
@@ -810,7 +833,7 @@
     </div>
     <div class="col-sm-12">
         <div class="form-field">
-            <input type="text" asp-for="UiVersion" />
+            <input asp-for="UiVersion" />
             <label asp-for="UiVersion"></label>
             <span asp-validation-for="UiVersion" class="text-danger"></span>
         </div>
@@ -822,30 +845,53 @@
     <div class="col-sm-12 col-md-4">
         <select asp-for="BatteryMaterial">
             <option value="">لطفا نوع باتری را انتخاب کنید</option>
+            <option value="lithium">lithium</option>
         </select>
         <span asp-validation-for="BatteryMaterial" class="text-danger"></span>
     </div>
     <div class="col-sm-12 col-md-4">
         <div class="form-field">
-            <input type="text" asp-for="BatteryCapacity" />
+            <input asp-for="BatteryCapacity" />
             <label asp-for="BatteryCapacity"></label>
             <span asp-validation-for="BatteryCapacity" class="text-danger"></span>
         </div>
     </div>
     <div class="col-sm-12 col-md-4">
-        <div class="form-check">
-            <label asp-for="RemovableBattery" class="radio"></label>
-            <div class="hidden-radio">
-                <div class="item">
-                    <input type="radio" asp-for="RemovableBattery" value="true" id="yes-RemovableBattery" checked="">
-                    <label for="yes-RemovableBattery">دارد</label>
-                </div>
-                <div class="item">
-                    <input type="radio" asp-for="RemovableBattery" value="false" id="no-RemovableBattery">
-                    <label for="no-RemovableBattery">ندارد</label>
-                </div>
-            </div>
-        </div>
+  
+      @if (Model.RemovableBattery)
+      {
+          <div class="form-check">
+              <label asp-for="RemovableBattery" class="radio"></label>
+              <div class="hidden-radio">
+                  <div class="item">
+                      <input type="radio" asp-for="RemovableBattery" value="true" id="yes-RemovableBattery" checked>
+                      <label for="yes-RemovableBattery">دارد</label>
+                  </div>
+                  <div class="item">
+                      <input type="radio" asp-for="RemovableBattery" value="false" id="no-RemovableBattery">
+                      <label for="no-RemovableBattery">ندارد</label>
+                  </div>
+              </div>
+          </div>
+      }
+      else
+      {
+          <div class="form-check">
+              <label asp-for="RemovableBattery" class="radio"></label>
+              <div class="hidden-radio">
+                  <div class="item">
+                      <input type="radio" asp-for="RemovableBattery" value="true" id="yes-RemovableBattery">
+                      <label for="yes-RemovableBattery">دارد</label>
+                  </div>
+                  <div class="item">
+                      <input type="radio" asp-for="RemovableBattery" value="false" id="no-RemovableBattery" checked>
+                      <label for="no-RemovableBattery">ندارد</label>
+                  </div>
+              </div>
+          </div>
+      }
+        
+
     </div>
 </div>
 
@@ -886,6 +932,11 @@
         function updateSelectsOfBand(brandId) {
             GetOfficialProductsOfBrand(brandId);
             GetChildCategoriesOfBrand(brandId);
+        }
+
+        function updateSelectsOfChipset(chipsetId) {
+            GetCpusOfChipset(chipsetId);
+            GetGpusOfChipset(chipsetId);
         }
     </script>
 

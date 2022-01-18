@@ -62,25 +62,35 @@ function readURL(input, imgId) {
 }
 
 
-function addImageToProduct(input, imgId) {
-
+function addImageToProduct(input, partitionId) {
     if (input.files && input.files[0]) {
+        var partitionImg = document.getElementById(partitionId).querySelector('img');
+
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            document.getElementById(imgId).setAttribute('src', e.target.result);
+            partitionImg.setAttribute('src', e.target.result);
         }
 
         reader.readAsDataURL(input.files[0]);
     }
 
-    // create new add image part
+    var partitionNum = parseInt(partitionId.replace(/\D/g, ""));
 
-    var inputs = document.querySelectorAll('#images-part input');
+    // get all partitions
+    var partitions = document.querySelectorAll('#images-part .col-auto');
+    var lastPartitionId = partitions[partitions.length - 1].getAttribute('id');
+    var lastPartitionNum = parseInt(lastPartitionId.replace(/\D/g, ""));
 
-    let lastElement = inputs[inputs.length - 1];
+    var isLast = false;
 
-    if (input.files[0] == lastElement.files[0]) {
+    if (partitionNum === lastPartitionNum) {
+        isLast = true;
+    }
+
+
+    if (isLast === true) {
+
         var imageField = document.createElement('div');
         imageField.className = 'image-field';
 
@@ -104,64 +114,69 @@ function addImageToProduct(input, imgId) {
         areaImage.setAttribute('src', '/images/pattern/placeholder-image.png');
         areaImage.setAttribute('alt', 'تصویر کالا');
 
-        var imagesPart = document.querySelectorAll('#images-part .col-auto');
-
-        var imagesPartLength = parseInt(imagesPart.length) + 1;
-
-        areaImage.setAttribute('id', 'imgProduct' + imagesPartLength);
-
         imageInput.onchange = function () {
-            addImageToProduct(this, 'imgProduct' + imagesPartLength);
+            editImageOfProduct(this, 'imgProduct' + (lastPartitionNum + 1));
         }
 
-        var addImageSection = document.createElement('div');
-        addImageSection.className = 'col-auto';
+        var options = document.createElement('div');
+        options.className = 'image-field-options';
 
+        var optionA = document.createElement('a');
+
+        optionA.onclick = function () {
+            removeImageOnAdd('imgProduct' + (lastPartitionNum + 1));
+        }
+
+        var optionI = document.createElement('i');
+        optionI.setAttribute('class', 'far fa-trash');
+
+        var newImagePartition = document.createElement('div');
+        newImagePartition.className = 'col-auto';
+
+        newImagePartition.setAttribute('id', 'imgProduct' + (lastPartitionNum + 1));
 
         changeImage.appendChild(imageInput);
         changeImage.appendChild(imageI);
         imageArea.appendChild(changeImage);
         imageArea.appendChild(areaImage);
         imageField.appendChild(imageArea);
-        addImageSection.appendChild(imageField);
+        optionA.appendChild(optionI);
+        options.appendChild(optionA);
+        imageField.appendChild(options);
+        newImagePartition.appendChild(imageField);
 
-        var lastImage = imagesPart[imagesPart.length - 1];
-
-        lastImage.after(addImageSection);
+        partitions[partitions.length - 1].after(newImagePartition);
     }
 }
 
-function editImageOfProduct(input, imgId) {
+function editImageOfProduct(input, partitionId) {
 
     if (input.files && input.files[0]) {
+        var partitionImg = document.getElementById(partitionId).querySelector('img');
+
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            document.getElementById(imgId).setAttribute('src', e.target.result);
+            partitionImg.setAttribute('src', e.target.result);
         }
 
         reader.readAsDataURL(input.files[0]);
     }
 
-    // create new add image part
+    var partitionNum = parseInt(partitionId.replace(/\D/g, ""));
 
-    var inputs = document.querySelectorAll('#images-part input');
-
-    var changedNum = parseInt(imgId.replace(/\D/g, ""));
-
+    // get all partitions
+    var partitions = document.querySelectorAll('#images-part .col-auto');
+    var lastPartitionId = partitions[partitions.length - 1].getAttribute('id');
+    var lastPartitionNum = parseInt(lastPartitionId.replace(/\D/g, ""));
 
     var isLast = false;
-    
-    if (inputs.length == changedNum) {
+
+    if (partitionNum === lastPartitionNum) {
         isLast = true;
     }
 
-    debugger;
-
-    if (isLast == false) {
-
-        var changedNum = imgId.replace(/\D/g, "");
-
+    if (isLast === false) {
 
         // this if for say witch image have been changed
 
@@ -169,12 +184,12 @@ function editImageOfProduct(input, imgId) {
         changedInput.setAttribute('type', 'hidden');
         changedInput.setAttribute('multiple', '');
         changedInput.setAttribute('name', 'ChangedImages');
-        changedInput.setAttribute('value', changedNum);
+        changedInput.setAttribute('value', partitionNum);
 
         document.getElementById('edited-images').appendChild(changedInput);
     }
 
-    if (isLast == true) {
+    if (isLast === true) {
 
         var imageField = document.createElement('div');
         imageField.className = 'image-field';
@@ -199,30 +214,100 @@ function editImageOfProduct(input, imgId) {
         areaImage.setAttribute('src', '/images/pattern/placeholder-image.png');
         areaImage.setAttribute('alt', 'تصویر کالا');
 
-        var imagesPart = document.querySelectorAll('#images-part .col-auto');
-
-        var imagesPartLength = parseInt(imagesPart.length) + 1;
-
-        areaImage.setAttribute('id', 'imgProduct' + imagesPartLength);
-
         imageInput.onchange = function () {
-            editImageOfProduct(this, 'imgProduct' + imagesPartLength);
+            editImageOfProduct(this, 'imgProduct' + (lastPartitionNum + 1));
         }
 
-        var addImageSection = document.createElement('div');
-        addImageSection.className = 'col-auto';
+        var options = document.createElement('div');
+        options.className = 'image-field-options';
 
+        var optionA = document.createElement('a');
+
+        optionA.onclick = function () {
+            removeImageOnEdit('imgProduct' + (lastPartitionNum + 1));
+        }
+
+        var optionI = document.createElement('i');
+        optionI.setAttribute('class', 'far fa-trash');
+
+        var newImagePartition = document.createElement('div');
+        newImagePartition.className = 'col-auto';
+
+        newImagePartition.setAttribute('id', 'imgProduct' + (lastPartitionNum + 1));
 
         changeImage.appendChild(imageInput);
         changeImage.appendChild(imageI);
         imageArea.appendChild(changeImage);
         imageArea.appendChild(areaImage);
         imageField.appendChild(imageArea);
-        addImageSection.appendChild(imageField);
+        optionA.appendChild(optionI);
+        options.appendChild(optionA);
+        imageField.appendChild(options);
+        newImagePartition.appendChild(imageField);
 
-        var lastImage = imagesPart[imagesPart.length - 1];
+        partitions[partitions.length - 1].after(newImagePartition);
+    }
+}
 
-        lastImage.after(addImageSection);
+
+function removeImageOnAdd(partitionId) {
+    var partitionsParent = document.querySelector('#images-part');
+    var partitions = partitionsParent.querySelectorAll('.col-auto');
+    var lastPartitionId = partitions[partitions.length - 1].getAttribute('id');
+    var lastPartitionNum = parseInt(lastPartitionId.replace(/\D/g, ""));
+
+    var partitionNum = parseInt(partitionId.replace(/\D/g, ""));
+
+    var isLast = false;
+
+    if (partitionNum === lastPartitionNum) {
+        isLast = true;
+    }
+
+    if (isLast === false) {
+
+        var selectedPartition = document.getElementById(partitionId);
+
+        partitionsParent.removeChild(selectedPartition);
+        
+    }
+}
+
+function removeImageOnEdit(partitionId) {
+    var partitionsParent = document.querySelector('#images-part');
+    var partitions = partitionsParent.querySelectorAll('.col-auto');
+    var lastPartitionId = partitions[partitions.length - 1].getAttribute('id');
+    var lastPartitionNum = parseInt(lastPartitionId.replace(/\D/g, ""));
+
+    var partitionNum = parseInt(partitionId.replace(/\D/g, ""));
+
+    var isLast = false;
+
+    if (partitionNum === lastPartitionNum) {
+        isLast = true;
+    }
+
+
+
+    if (isLast === false) {
+
+        var selectedPartition = document.getElementById(partitionId);
+
+        partitionsParent.removeChild(selectedPartition);
+
+        // create new input for deleted Items
+
+        var beforeAddedImagesLength = document.querySelectorAll('#selected-images input').length;
+
+        if (partitionNum <= beforeAddedImagesLength) {
+            var changedInput = document.createElement('input');
+            changedInput.setAttribute('type', 'hidden');
+            changedInput.setAttribute('multiple', '');
+            changedInput.setAttribute('name', 'DeletedImages');
+            changedInput.setAttribute('value', partitionNum);
+
+            document.getElementById('deleted-images').appendChild(changedInput);
+        }
     }
 }
 

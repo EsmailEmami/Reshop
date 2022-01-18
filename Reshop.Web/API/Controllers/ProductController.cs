@@ -138,6 +138,45 @@ namespace Reshop.Web.API.Controllers
             return new ObjectResult(res);
         }
 
+        [HttpGet("GetCpusOfChipset/{chipsetId}")]
+        public IActionResult GetCpusOfChipset(string chipsetId)
+        {
+            var data = _productService.GetCpusOfChipset(chipsetId);
+
+            if (data == null)
+                return NotFound();
+
+            var convertedData = data.Select(c => new Tuple<string, string>(c.CpuId, c.CpuName));
+
+            return new ObjectResult(convertedData);
+        }
+
+        [HttpGet("GetGpusOfChipset/{chipsetId}")]
+        public IActionResult GetGpusOfChipset(string chipsetId)
+        {
+            var data = _productService.GetGpusOfChipset(chipsetId);
+
+            if (data == null)
+                return NotFound();
+
+            var convertedData = data.Select(c => new Tuple<string, string>(c.GpuId, c.GpuName));
+
+            return new ObjectResult(convertedData);
+        }
+
+        [HttpGet("GetOperatingSystemVersionsOfOperatingSystem/{operatingSystem}")]
+        public IActionResult GetOperatingSystemVersionsOfOperatingSystem(string operatingSystem)
+        {
+            var data = _productService.GetOperatingSystemVersionsOfOperatingSystem(operatingSystem);
+
+            if (data == null)
+                return NotFound();
+
+            var convertedData = data.Select(c => new Tuple<string, string>(c.OperatingSystemVersionId, c.OperatingSystemVersionName));
+
+            return new ObjectResult(convertedData);
+        }
+
         //discount
         [HttpGet("[action]")]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]

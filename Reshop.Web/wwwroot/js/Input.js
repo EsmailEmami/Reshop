@@ -32,7 +32,7 @@
                 $(this).removeClass("active");
             }
         });
-    }
+    } 
 }
 
 inputJs();

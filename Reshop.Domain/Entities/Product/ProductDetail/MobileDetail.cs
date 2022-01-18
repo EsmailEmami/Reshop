@@ -139,11 +139,10 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         [Display(Name = "محافظت صفحه")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(9, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string DisplayProtection { get; set; }
 
         [Display(Name = "سایر قابلیت ها")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string DisplayMoreInformation { get; set; }
 
@@ -151,31 +150,26 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         //Separate with &
         [Display(Name = "شبکه های ارتباطی")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(15, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ConnectionsNetwork { get; set; }
 
         //Separate with &
         [Display(Name = "2G شبکه")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string GsmNetwork { get; set; }
 
         //Separate with &
         [Display(Name = "3G شبکه")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string HspaNetwork { get; set; }
 
         //Separate with &
         [Display(Name = "4G شبکه")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string LteNetwork { get; set; }
 
         //Separate with &
         [Display(Name = "5G شبکه")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string FiveGNetwork { get; set; }
 
@@ -186,7 +180,6 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         //Separate with &
         [Display(Name = "Wi-Fi")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string WiFi { get; set; }
 
@@ -202,7 +195,6 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         //Separate with &
         [Display(Name = "فناوری مکان یابی")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string GpsInformation { get; set; }
 
@@ -213,8 +205,7 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
 
         [Display(Name = "سایر قابلیت ها")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ConnectionsMoreInformation { get; set; }
 
         //Camera
@@ -303,8 +294,7 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         public string OutputAudio { get; set; }
 
         [Display(Name = "سایر امکانات")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+        [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string AudioMoreInformation { get; set; }
 
         //Software
@@ -321,9 +311,8 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
         public string UiVersion { get; set; }
 
         [Display(Name = "سایر امکانات نرم افزاری")]
-        [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string MoreInformationSoftWare { get; set; }
+        public string SoftWareMoreInformation { get; set; }
 
         //Battery
 
@@ -334,7 +323,6 @@ namespace Reshop.Domain.Entities.Product.ProductDetail
 
         [Display(Name = "ظرفیت باتری")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-        [Range(0, 100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public int BatteryCapacity { get; set; }
 
         [Display(Name = "باتری قابل تعویض")]

@@ -163,8 +163,17 @@ public static class Fixer
     public static string ListToString(this IEnumerable<int> list, string delimiter) =>
         string.Join(delimiter, list);
 
-    public static string ListToString(this IEnumerable<string> list, string delimiter) =>
-        string.Join(delimiter, list);
+    public static string ListToString(this IEnumerable<string> list, string delimiter)
+    {
+        try
+        {
+            return string.Join(delimiter, list);
+        }
+        catch
+        {
+            return null;
+        }
+    }
 
     public static bool EnumContainValue<T>(string value) where T : Enum
     {
@@ -185,5 +194,7 @@ public static class Fixer
     }
 
     public static List<string> ToList(this string value, string delimiter) =>
-        value.Split(delimiter).ToList();       
+        value == null ? new List<string>() : value.Split(delimiter).ToList();
+
+
 }

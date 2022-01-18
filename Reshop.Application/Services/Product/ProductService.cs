@@ -7,6 +7,7 @@ using Reshop.Domain.DTOs.Chart;
 using Reshop.Domain.DTOs.Product;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.Entities.Product;
+using Reshop.Domain.Entities.Product.Options;
 using Reshop.Domain.Entities.Product.ProductDetail;
 using Reshop.Domain.Entities.Shopper;
 using Reshop.Domain.Interfaces.Category;
@@ -18,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Reshop.Domain.Entities.Product.Options;
 using OperatingSystem = Reshop.Domain.Entities.Product.Options.OperatingSystem;
 
 namespace Reshop.Application.Services.Product
@@ -437,6 +437,14 @@ namespace Reshop.Application.Services.Product
             model.OfficialProducts = _brandRepository.GetBrandOfficialProducts(model.SelectedBrand);
             model.ChildCategories = _brandRepository.GetChildCategoriesOfBrand(model.SelectedBrand);
 
+            // mobile data 
+            model.Chipsets = _productRepository.GetChipsets();
+            model.Cpus = _productRepository.GetCpusOfChipset(model.SelectedChipset);
+            model.CpuArches = _productRepository.GetCpuArches();
+            model.Gpus = _productRepository.GetGpusOfChipset(model.SelectedChipset);
+            model.OperatingSystems = _productRepository.GetOperatingSystems();
+            model.OperatingSystemVersions = _productRepository.GetOperatingSystemVersionsOfOperatingSystem(model.SelectedOS);
+
             return model;
         }
 
@@ -589,18 +597,14 @@ namespace Reshop.Application.Services.Product
         {
             try
             {
-                await _productRepository.AddMobileDetailAsync(mobileDetail);
-                await _productRepository.SaveChangesAsync();
+                _productRepository.UpdateMobileDetail(mobileDetail);
+                _productRepository.UpdateProduct(product);
 
-                product.MobileDetailId = mobileDetail.MobileDetailId;
-                product.MobileDetail = mobileDetail;
-
-                await _productRepository.AddProductAsync(product);
                 await _productRepository.SaveChangesAsync();
 
                 return ResultTypes.Successful;
             }
-            catch
+            catch(Exception e)
             {
                 return ResultTypes.Failed;
             }

@@ -36,7 +36,9 @@ public class ProductManagerController : Controller
     private readonly IDiscountService _discountService;
     private readonly IPermissionService _permissionService;
 
-    public ProductManagerController(IProductService productService, IShopperService shopperService, IBrandService brandService, IColorService colorService, IDiscountService discountService, IPermissionService permissionService)
+    public ProductManagerController(IProductService productService, IShopperService shopperService,
+        IBrandService brandService, IColorService colorService, IDiscountService discountService,
+        IPermissionService permissionService)
     {
         _productService = productService;
         _shopperService = shopperService;
@@ -87,7 +89,8 @@ public class ProductManagerController : Controller
         if (string.IsNullOrEmpty(userId))
             return NotFound();
 
-        var permissionValid = await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.ColorDetailOfProduct);
+        var permissionValid =
+            await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.ColorDetailOfProduct);
         ViewBag.IsValid = true;
 
         if (!permissionValid)
@@ -118,7 +121,8 @@ public class ProductManagerController : Controller
         if (string.IsNullOrEmpty(userId))
             return NotFound();
 
-        var permissionValid = await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.DiscountDetailOfProduct);
+        var permissionValid =
+            await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.DiscountDetailOfProduct);
         ViewBag.IsValid = true;
 
         if (!permissionValid)
@@ -280,7 +284,7 @@ public class ProductManagerController : Controller
         {
             ProductTitle = model.ProductTitle,
             Description = model.Description,
-            ProductType = ProductTypes.AUX.ToString(),
+            ProductType = ProductTypes.Mobile.ToString(),
             OfficialBrandProductId = model.OfficialBrandProductId,
             IsActive = model.IsActive,
             ChildCategoryId = model.SelectedChildCategory
@@ -350,7 +354,7 @@ public class ProductManagerController : Controller
             OperatingSystemId = model.SelectedOS,
             OperatingSystemVersionId = model.SelectedOsVersion,
             UiVersion = model.UiVersion,
-            MoreInformationSoftWare = model.MoreInformationSoftWare,
+            SoftWareMoreInformation = model.SoftWareMoreInformation,
             BatteryMaterial = model.BatteryMaterial,
             BatteryCapacity = model.BatteryCapacity,
             Removable‌Battery = model.Removable‌Battery,
@@ -369,7 +373,8 @@ public class ProductManagerController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+        ModelState.AddModelError("",
+            $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
         return View(model);
     }
@@ -395,18 +400,29 @@ public class ProductManagerController : Controller
         model.OfficialProducts = _brandService.GetBrandOfficialProducts(model.SelectedBrand);
         model.ChildCategories = _brandService.GetChildCategoriesOfBrand(model.SelectedBrand);
 
+        // data for mobile detail
+        model.Chipsets = _productService.GetChipsets();
+        model.CpuArches = _productService.GetCpuArches();
+        model.OperatingSystems = _productService.GetOperatingSystems();
+        model.Cpus = _productService.GetCpusOfChipset(model.SelectedChipset);
+        model.Gpus = _productService.GetGpusOfChipset(model.SelectedChipset);
+        model.OperatingSystemVersions = _productService.GetOperatingSystemVersionsOfOperatingSystem(model.SelectedOS);
+
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
 
         #region images security
 
-        foreach (var image in model.Images)
+        if (model.Images != null)
         {
-            if (!image.IsImage())
+            foreach (var image in model.Images)
             {
-                ModelState.AddModelError("", "لطفا تصاویر خود را به درستی انتخاب کنید");
-                return View(model);
+                if (!image.IsImage())
+                {
+                    ModelState.AddModelError("", "لطفا تصاویر خود را به درستی انتخاب کنید");
+                    return View(model);
+                }
             }
         }
 
@@ -497,7 +513,7 @@ public class ProductManagerController : Controller
         mobileDetail.OperatingSystemId = model.SelectedOS;
         mobileDetail.OperatingSystemVersionId = model.SelectedOsVersion;
         mobileDetail.UiVersion = model.UiVersion;
-        mobileDetail.MoreInformationSoftWare = model.MoreInformationSoftWare;
+        mobileDetail.SoftWareMoreInformation = model.SoftWareMoreInformation;
         mobileDetail.BatteryMaterial = model.BatteryMaterial;
         mobileDetail.BatteryCapacity = model.BatteryCapacity;
         mobileDetail.Removable‌Battery = model.Removable‌Battery;
@@ -511,12 +527,14 @@ public class ProductManagerController : Controller
         if (result == ResultTypes.Successful)
         {
             // edit product images
-            await EditImg(product.ProductId, model.Images, model.SelectedImages as List<string>, model.ChangedImages as List<string>);
+            await EditImg(product.ProductId, model.Images, model.SelectedImages as List<string>,
+                model.ChangedImages as List<string>, model.DeletedImages as List<string>);
 
             return RedirectToAction(nameof(Index));
         }
 
-        ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+        ModelState.AddModelError("",
+            $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
         return View(model);
     }
@@ -555,6 +573,7 @@ public class ProductManagerController : Controller
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
+
         #region images security
 
         if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -671,16 +690,17 @@ public class ProductManagerController : Controller
             {
                 // add product images
                 await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
+                {
+                    model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                    model.SelectedImage5, model.SelectedImage6
+                }, product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -775,7 +795,8 @@ public class ProductManagerController : Controller
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -816,6 +837,7 @@ public class ProductManagerController : Controller
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
+
         #region images security
 
         if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -944,16 +966,17 @@ public class ProductManagerController : Controller
             {
                 // add product images
                 await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
+                {
+                    model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                    model.SelectedImage5, model.SelectedImage6
+                }, product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1060,7 +1083,8 @@ public class ProductManagerController : Controller
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1101,6 +1125,7 @@ public class ProductManagerController : Controller
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
+
         #region images security
 
         if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -1173,16 +1198,17 @@ public class ProductManagerController : Controller
             {
                 // add product images
                 await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
+                {
+                    model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                    model.SelectedImage5, model.SelectedImage6
+                }, product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1235,7 +1261,8 @@ public class ProductManagerController : Controller
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1308,6 +1335,7 @@ public class ProductManagerController : Controller
 
 
         // in this section we check that all images are ok
+
         #region images security
 
         if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -1395,16 +1423,17 @@ public class ProductManagerController : Controller
             {
                 // add product images
                 await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
+                {
+                    model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                    model.SelectedImage5, model.SelectedImage6
+                }, product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1474,7 +1503,8 @@ public class ProductManagerController : Controller
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1517,6 +1547,7 @@ public class ProductManagerController : Controller
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
+
         #region images security
 
         if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -1602,16 +1633,17 @@ public class ProductManagerController : Controller
             {
                 // add product images
                 await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
+                {
+                    model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                    model.SelectedImage5, model.SelectedImage6
+                }, product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1676,7 +1708,8 @@ public class ProductManagerController : Controller
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1718,6 +1751,7 @@ public class ProductManagerController : Controller
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
+
         #region images security
 
         if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -1786,16 +1820,17 @@ public class ProductManagerController : Controller
             {
                 // add product images
                 await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
+                {
+                    model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                    model.SelectedImage5, model.SelectedImage6
+                }, product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1846,7 +1881,8 @@ public class ProductManagerController : Controller
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -1888,6 +1924,7 @@ public class ProductManagerController : Controller
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
+
         #region images security
 
         if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -1987,16 +2024,17 @@ public class ProductManagerController : Controller
             {
                 // add product images
                 await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
+                {
+                    model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                    model.SelectedImage5, model.SelectedImage6
+                }, product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -2078,7 +2116,8 @@ public class ProductManagerController : Controller
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -2119,6 +2158,7 @@ public class ProductManagerController : Controller
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
+
         #region images security
 
         if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -2203,16 +2243,17 @@ public class ProductManagerController : Controller
             {
                 // add product images
                 await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
+                {
+                    model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                    model.SelectedImage5, model.SelectedImage6
+                }, product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -2279,7 +2320,8 @@ public class ProductManagerController : Controller
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -2322,6 +2364,7 @@ public class ProductManagerController : Controller
         if (!ModelState.IsValid) return View(model);
 
         // in this section we check that all images are ok
+
         #region images security
 
         if (model.SelectedImage1 != null && !model.SelectedImage1.IsImage())
@@ -2397,16 +2440,17 @@ public class ProductManagerController : Controller
             {
                 // add product images
                 await AddImg(new List<IFormFile>()
-                    {
-                        model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
-                        model.SelectedImage5, model.SelectedImage6
-                    }, product.ProductId);
+                {
+                    model.SelectedImage1, model.SelectedImage2, model.SelectedImage3, model.SelectedImage4,
+                    model.SelectedImage5, model.SelectedImage6
+                }, product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -2464,7 +2508,8 @@ public class ProductManagerController : Controller
             }
             else
             {
-                ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+                ModelState.AddModelError("",
+                    $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
                 return View(model);
             }
@@ -2560,7 +2605,8 @@ public class ProductManagerController : Controller
         }
         else
         {
-            ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+            ModelState.AddModelError("",
+                $"ادمین عزیز متاسفانه خطایی هنگام ثبت محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
             return View(model);
         }
@@ -2655,13 +2701,15 @@ public class ProductManagerController : Controller
         if (result == ResultTypes.Successful)
         {
             // edit product images
-            await EditImg(product.ProductId, model.Images, model.SelectedImages as List<string>, model.ChangedImages as List<string>);
+            await EditImg(product.ProductId, model.Images, model.SelectedImages as List<string>,
+                model.ChangedImages as List<string>, model.DeletedImages as List<string>);
 
             return RedirectToAction(nameof(Index));
         }
         else
         {
-            ModelState.AddModelError("", $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
+            ModelState.AddModelError("",
+                $"ادمین عزیز متاسفانه خطایی هنگام ویرایش محصول به وجود آمده است! لطفا با پشتیبانی تماس بگیرید.");
 
             return View(model);
         }
@@ -2670,6 +2718,7 @@ public class ProductManagerController : Controller
     #endregion
 
     // ---------------------------------------------------------------------
+
     #region Remove
 
     [HttpPost]
@@ -2711,17 +2760,62 @@ public class ProductManagerController : Controller
         }
     }
 
-    // 
-    private async Task EditImg(int productId, List<IFormFile> newImages, List<string> imagesName, List<string> editedImages)
+    private async Task EditImg(int productId, List<IFormFile> newImages, List<string> imagesName,
+        List<string> editedImages, List<string> deletedImages)
     {
-        if (newImages == null) return;
+        if (newImages == null && deletedImages == null) return;
+
+        imagesName ??= new List<string>();
 
 
-        int editImageCounter = 0;
-        // edit images
-        if (editedImages != null && editedImages.Count > 0)
+        // update edited elements 
+        if (editedImages != null && deletedImages != null)
         {
             editedImages = editedImages.Distinct().ToList();
+
+
+            foreach (var deletedImage in deletedImages)
+            {
+                if (editedImages.Any(c => c == deletedImage))
+                {
+                    editedImages.Remove(deletedImage);
+                }
+            }
+        }
+
+        // delete selected images 
+        if (deletedImages != null && deletedImages.Count > 0)
+        {
+            foreach (string deletedImage in deletedImages)
+            {
+                int num = int.Parse(deletedImage) - 1;
+
+                var imageName = imagesName[num];
+
+                var imageInDatabase = await _productService.GetProductGalleryAsync(productId, imageName);
+
+                if (imageInDatabase != null)
+                {
+                    string filePath = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "images",
+                        "ProductImages");
+
+                    // delete last image
+                    ImageConvertor.DeleteImage(filePath + "/" + imageName);
+                    await _productService.DeleteProductGalleryAsync(imageInDatabase);
+                }
+            }
+        }
+
+        if (newImages == null) return;
+
+        // edit selected Images
+        if (editedImages != null && editedImages.Count > 0)
+        {
+            int editImageCounter = 0;
+            editedImages = editedImages.Distinct().ToList();
+
 
             foreach (string editedImage in editedImages)
             {
@@ -2732,7 +2826,7 @@ public class ProductManagerController : Controller
 
                 editImageCounter++;
 
-                if (imageFile is { Length: > 0 })
+                if (imageFile != null && imageFile.Length > 0)
                 {
                     var imageInDatabase = await _productService.GetProductGalleryAsync(productId, imageName);
 
@@ -2769,11 +2863,14 @@ public class ProductManagerController : Controller
         }
 
         // skip edited images and add new images
-        var newImagesList = newImages.Skip(editedImages.Count);
+        if (editedImages != null)
+        {
+            newImages = newImages.Skip(editedImages.Count).ToList();
+        }
 
         int newImagesOrderByCounter = imagesName.Count + 1;
 
-        foreach (var image in newImagesList)
+        foreach (var image in newImages)
         {
             if (image.Length > 0)
             {

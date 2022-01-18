@@ -171,38 +171,32 @@ public class AddMobileProductViewModel
 
     [Display(Name = "محافظت صفحه")]
     [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-    [MaxLength(9, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+    [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public string DisplayProtection { get; set; }
 
     [Display(Name = "سایر قابلیت ها")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
     [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public string DisplayMoreInformation { get; set; }
 
     //Connections
 
     [Display(Name = "شبکه های ارتباطی")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
     [MaxLength(15, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public IEnumerable<string> ConnectionsNetwork { get; set; }
 
     [Display(Name = "2G شبکه")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
     [MaxLength(50, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public IEnumerable<string> GsmNetwork { get; set; }
 
     [Display(Name = "3G شبکه")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
     [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public IEnumerable<string> HspaNetwork { get; set; }
 
     [Display(Name = "4G شبکه")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
     [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public IEnumerable<string> LteNetwork { get; set; }
 
     [Display(Name = "5G شبکه")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
     [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public IEnumerable<string> FiveGNetwork { get; set; }
 
@@ -212,7 +206,6 @@ public class AddMobileProductViewModel
     public string CommunicationTechnology { get; set; }
 
     [Display(Name = "Wi-Fi")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
     [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public IEnumerable<string> WiFi { get; set; }
 
@@ -226,7 +219,6 @@ public class AddMobileProductViewModel
     public IEnumerable<string> Bluetooth { get; set; }
 
     [Display(Name = "فناوری مکان یابی")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
     [MaxLength(100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public IEnumerable<string> GpsInformation { get; set; }
 
@@ -237,8 +229,7 @@ public class AddMobileProductViewModel
 
 
     [Display(Name = "سایر قابلیت ها")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-    [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+    [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public string ConnectionsMoreInformation { get; set; }
 
 
@@ -321,20 +312,19 @@ public class AddMobileProductViewModel
     public string OutputAudio { get; set; }
 
     [Display(Name = "سایر امکانات")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-    [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+    [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public string AudioMoreInformation { get; set; }
 
     //Software
 
     [Display(Name = "سیستم عامل")]
     [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-    [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+    [MaxLength(40, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public string SelectedOS { get; set; }
 
     [Display(Name = "نسخه ی سیستم عامل")]
     [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-    [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+    [MaxLength(40, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public string SelectedOsVersion { get; set; }
 
     [Display(Name = "رابط کاربری")]
@@ -343,11 +333,11 @@ public class AddMobileProductViewModel
     public string UiVersion { get; set; }
 
     [Display(Name = "سایر امکانات نرم افزاری")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-    public string MoreInformationSoftWare { get; set; }
+    [MaxLength(500, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
+    public string SoftWareMoreInformation { get; set; }
 
     //Battery
-
+     
     [Display(Name = "نوع باتری")]
     [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
     [MaxLength(20, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
@@ -355,7 +345,6 @@ public class AddMobileProductViewModel
 
     [Display(Name = "ظرفیت باتری")]
     [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
-    [Range(0, 100, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
     public int BatteryCapacity { get; set; }
 
     [Display(Name = "باتری قابل تعویض")]

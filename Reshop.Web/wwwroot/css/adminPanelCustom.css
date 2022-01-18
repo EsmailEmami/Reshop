@@ -2004,9 +2004,9 @@ ul.pagination-custom {
     margin-left: 30px;
 }
 
-.form-check:last-of-type {
-    margin-left: 0;
-}
+    .form-check:last-of-type {
+        margin-left: 0;
+    }
 
     .form-check label {
         display: block;
@@ -2213,12 +2213,41 @@ ul.pagination-custom {
             opacity: 1;
         }
 
-.file-field {
-    border-top: 2px solid #ced4da;
-    padding: 2px;
-    height: 38px;
-    padding: 6px 8px;
-}
+
+    .image-field .image-field-options {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ecececab;
+        border: 2px solid #ececec;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        visibility: hidden;
+        opacity: 0;
+        z-index: 9;
+    }
+
+        .image-field .image-field-options a {
+            display: block;
+            text-align: center;
+            line-height: 42px;
+            font-size: 21px;
+            color: #fc5400;
+        }
+
+    .image-field:hover .image-field-options {
+        transition: ease .3s;
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .file-field {
+        border-top: 2px solid #ced4da;
+        padding: 2px;
+        height: 38px;
+        padding: 6px 8px;
+    }
 
     .file-field input {
         line-height: 17px;
