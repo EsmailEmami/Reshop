@@ -135,7 +135,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             image.ImagePlaceId = model.SelectedPlace;
             image.ImageUrl = model.ImageUrl;
 
-            if (image.ImageName != model.SelectedImage)
+            if (model.Image != null && model.Image.Length > 0)
             {
                 var path = Path.Combine(Directory.GetCurrentDirectory(),
                     "wwwroot",

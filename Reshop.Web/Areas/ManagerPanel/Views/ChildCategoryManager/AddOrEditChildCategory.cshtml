@@ -15,7 +15,7 @@
         <div class="col-sm-12 col-lg-7">
             <div class="form-field">
                 <input asp-for="ChildCategoryTitle">
-                <label><i class="far fa-list-alt"></i> نام زیر گروه</label>
+                <label asp-for="ChildCategoryTitle"></label>
                 <span asp-validation-for="ChildCategoryTitle" class="text-danger"></span>
             </div>
         </div>
@@ -25,6 +25,7 @@
             @if (Model.Categories != null)
             {
                 <select asp-for="SelectedCategory">
+                    <option>لطفا گروه را انتخاب کنید</option>
                     @foreach (var item in Model.Categories)
                     {
                         @:<option value="@item.CategoryId" @(Model.SelectedCategory == item.CategoryId ? "selected" : "")>@item.CategoryTitle - @item.IsActive.BoolToText("فعال")</option>
@@ -49,11 +50,9 @@
             </div>
         </div>
         <div class="col-sm-12">
-            <div class="form-field">
-                <button type="submit" class="btn btn-success">
-                    ثبت
+            <button type="submit" class="btn btn-success">
+                ثبت
                 </button>
-            </div>
         </div>
     </div>
 </form>

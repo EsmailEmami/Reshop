@@ -558,7 +558,13 @@ ul.pagination-custom {
         margin-top: 10px;
         list-style: none;
         width: 100%;
+        overflow-y: scroll;
+        height: calc(100% - 100px);
     }
+
+        .right-menu ul::-webkit-scrollbar {
+            width: 0;
+        }
 
         .right-menu ul li {
             margin: 5px 0;
@@ -687,7 +693,6 @@ ul.pagination-custom {
 
         .right-menu.min ul {
             width: 315px;
-            overflow: scroll;
         }
 
             .right-menu.min ul li {
@@ -727,6 +732,7 @@ ul.pagination-custom {
                 .right-menu.min ul li.dropdown ul {
                     min-width: 200px;
                     width: auto;
+                    height: auto;
                     display: block;
                     background: #FC5400;
                     border-radius: 8px 0 0 8px;
@@ -2242,12 +2248,12 @@ ul.pagination-custom {
         opacity: 1;
     }
 
-    .file-field {
-        border-top: 2px solid #ced4da;
-        padding: 2px;
-        height: 38px;
-        padding: 6px 8px;
-    }
+.file-field {
+    border-top: 2px solid #ced4da;
+    padding: 2px;
+    height: 38px;
+    padding: 6px 8px;
+}
 
     .file-field input {
         line-height: 17px;

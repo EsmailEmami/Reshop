@@ -12,7 +12,7 @@
         <div class="col-sm-12 col-lg-7">
             <div class="form-field">
                 <input asp-for="BrandName">
-                <label><i class="far fa-list-alt"></i> نام برند</label>
+                <label asp-for="BrandName"></label>
                 <span asp-validation-for="BrandName" class="text-danger"></span>
             </div>
         </div>
@@ -20,7 +20,7 @@
         <div class="col-sm-12 col-lg-5">
             <div class="form-field">
                 <input asp-for="LatinBrandName">
-                <label><i class="far fa-list-alt"></i> نام لاتین برند</label>
+                <label asp-for="LatinBrandName"></label>
                 <span asp-validation-for="LatinBrandName" class="text-danger"></span>
             </div>
         </div>
@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <div class="form-field">
+        <div class="col-sm-12">
             <button type="submit" class="btn btn-success">
                 ثبت
             </button>

@@ -12,7 +12,7 @@
         <div class="col-sm-12 col-lg-6">
             <div class="form-field">
                 <input asp-for="ColorName">
-                <label><i class="far fa-list-alt"></i> نام رنگ</label>
+                <label asp-for="ColorName"></label>
                 <span asp-validation-for="ColorName" class="text-danger"></span>
             </div>
         </div>
@@ -20,12 +20,12 @@
         <div class="col-sm-12 col-lg-6">
             <div class="form-field">
                 <input asp-for="ColorCode">
-                <label><i class="far fa-list-alt"></i> کد رنگ</label>
+                <label asp-for="ColorCode"></label>
                 <span asp-validation-for="ColorCode" class="text-danger"></span>
             </div>
         </div>
 
-        <div class="form-field">
+        <div class="col-sm-12">
             <button type="submit" class="btn btn-success">
                 ثبت
             </button>

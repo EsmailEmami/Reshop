@@ -17,7 +17,7 @@
 </div>
 
 <a onclick="ShowModal('@Url.Action("AddImage", "ImageManager" ,null, Context.Request.Scheme)', 'افزودن بنر')"
-   class="btn btn-success text-white"><i class="fal fa-user-plus"></i> رنگ جدید</a>
+   class="btn btn-success text-white"><i class="far fa-home"></i> بنر جدید</a>
 
 
 @if (Model != null)
@@ -32,7 +32,7 @@
                     <a href="@item.Url">مشاهده لینک</a>
 
                     <div>
-                        <a asp-action="EditImage" asp-route-imageId="@item.ImageId"
+                        <a onclick="ShowModal('@Url.Action("EditImage", "ImageManager" ,new {imageId = @item.ImageId}, Context.Request.Scheme)', 'ویرایش بنر')"
                            class="btn btn-warning text-white m-0">ویرایش</a>
 
                         <form asp-controller="ImageManager" asp-action="DeleteImage" asp-route-imageId="@item.ImageId" method="post">

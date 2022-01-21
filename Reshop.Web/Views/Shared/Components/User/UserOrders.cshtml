@@ -20,7 +20,7 @@
 <link href="~/css/select.css" rel="stylesheet" />
 
 <div class="filter">
-    <input typeOrder="hidden" name="pageId" id="pageIdOrder" value="@Model.Item2" />
+    <input type="hidden" name="pageId" id="pageIdOrder" value="@Model.Item2" />
 
 
     <select select-search="true" id="typeOrder" onchange="changeListOrder()">
@@ -30,24 +30,31 @@
             case "all":
                 {
                     <option value="all" selected>همه</option>
-                    <option value="active">تحویل شده</option>
-                    <option value="existed">تحویل نشده</option>
+                    <option value="received">تحویل شده</option>
+                    <option value="payed">تحویل نشده</option>
                     break;
                 }
             case "received":
                 {
                     <option value="all">همه</option>
-                    <option value="active" selected>تحویل شده</option>
-                    <option value="existed">تحویل نشده</option>
+                    <option value="received" selected>تحویل شده</option>
+                    <option value="payed">تحویل نشده</option>
                     break;
                 }
             case "payed":
                 {
                     <option value="all">همه</option>
-                    <option value="active">تحویل شده</option>
-                    <option value="existed" selected>تحویل نشده</option>
+                    <option value="received">تحویل شده</option>
+                    <option value="payed" selected>تحویل نشده</option>
                     break;
                 }
+            default:
+            {
+                <option value="all" selected>همه</option>
+                <option value="received">تحویل شده</option>
+                <option value="payed">تحویل نشده</option>
+                break;
+            }
         }
 
     </select>

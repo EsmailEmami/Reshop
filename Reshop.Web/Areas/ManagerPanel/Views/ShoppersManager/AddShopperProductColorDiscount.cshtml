@@ -12,7 +12,7 @@
         <div class="col-sm-12">
             <div class="form-field">
                 <input asp-for="DiscountPercent">
-                <label><i class="far  fa-user"></i> درصد</label>
+                <label asp-for="DiscountPercent"></label>
                 <span asp-validation-for="DiscountPercent" class="text-danger"></span>
             </div>
         </div>
@@ -20,7 +20,7 @@
         <div class="col-sm-12 col-lg-6">
             <div class="form-field">
                 <input asp-for="StartDate" class="date-time-picker">
-                <label><i class="far fa-phone"></i> تاریخ شروع</label>
+                <label asp-for="StartDate"></label>
                 <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
         </div>
@@ -28,7 +28,7 @@
         <div class="col-sm-12 col-lg-6">
             <div class="form-field">
                 <input asp-for="EndDate" class="date-time-picker">
-                <label><i class="far fa-phone"></i> تاریخ پایان</label>
+                <label asp-for="EndDate"></label>
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
         </div>

@@ -11,7 +11,7 @@
         <div class="col-sm-12 col-lg-7">
             <div class="form-field">
                 <input asp-for="OfficialBrandProductName">
-                <label><i class="far fa-list-alt"></i> نام گروه</label>
+                <label asp-for="OfficialBrandProductName"></label>
                 <span asp-validation-for="OfficialBrandProductName" class="text-danger"></span>
             </div>
         </div>
@@ -19,7 +19,7 @@
         <div class="col-sm-12 col-lg-5">
             <div class="form-field">
                 <input asp-for="LatinOfficialBrandProductName">
-                <label><i class="far fa-list-alt"></i> نام لاتین</label>
+                <label asp-for="LatinOfficialBrandProductName"></label>
                 <span asp-validation-for="LatinOfficialBrandProductName" class="text-danger"></span>
             </div>
         </div>
@@ -33,8 +33,7 @@
             @if (brands != null)
             {
                 <select asp-for="BrandId">
-                    <option value="">انتخاب برند</option>
-
+                    <option value="">لطفا برند را انتخاب کنید</option>
                     @foreach (var item in brands)
                     {
                         @: <option value="@item.Item1" @(Model.BrandId == item.Item1 ? "selected" : "")>@item.Item2</option>
@@ -59,7 +58,7 @@
             </div>
         </div>
 
-        <div class="form-field">
+        <div class="col-sm-12">
             <button type="submit" class="btn btn-success">
                 ثبت
             </button>
