@@ -78,7 +78,7 @@ namespace Reshop.Web.Controllers.Comment
 
             if (res == ResultTypes.Successful)
             {
-                return Json(new { isValid = true, returnUrl = "current" });
+                return Json(new { isValid = true, errorType = "success", errorText = "بازخورد شما با موفقیت ثبت شد.", returnUrl = "current" });
             }
             else
             {
@@ -106,7 +106,7 @@ namespace Reshop.Web.Controllers.Comment
                 Id = commentId,
                 Types = _commentService.GetReportCommentTypes()
                     .Select(c => new Tuple<int, string>(
-                        c.ReportCommentTypeId, 
+                        c.ReportCommentTypeId,
                         c.ReportCommentTitle))
             };
 

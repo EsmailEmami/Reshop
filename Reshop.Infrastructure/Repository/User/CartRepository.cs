@@ -73,6 +73,10 @@ namespace Reshop.Infrastructure.Repository.User
             _context.OrderDetails.Remove(orderDetail);
         }
 
+        public async Task<int> GetOrderDetailsCountOfOrderAsync(string orderId) =>
+            await _context.Orders.Where(c => c.OrderId == orderId)
+                .Select(c => c.OrderDetails.Count).SingleOrDefaultAsync();
+
         public IEnumerable<Order> GetOrdersAfterDateTime(DateTime time) =>
             _context.Orders
                 .Where(c => !c.IsPayed && !c.IsReceived &&
@@ -94,7 +98,8 @@ namespace Reshop.Infrastructure.Repository.User
                         .Select(t => new Tuple<byte, DateTime>(t.DiscountPercent, t.EndDate))
                         .FirstOrDefault(),
                     ProductTitle = o.ShopperProductColor.ShopperProduct.Product.ProductTitle,
-                    ProductImg = o.ShopperProductColor.ShopperProduct.Product.ProductGalleries.OrderBy(g => g.OrderBy).First().ImageName,
+                    ProductImg = o.ShopperProductColor.ShopperProduct.Product.ProductGalleries
+                        .OrderBy(g => g.OrderBy).First().ImageName,
                     Warranty = o.ShopperProductColor.ShopperProduct.Warranty,
                     ShopperStoreName = o.ShopperProductColor.ShopperProduct.Shopper.StoreName
                 });
@@ -149,7 +154,8 @@ namespace Reshop.Infrastructure.Repository.User
                     TrackingCode = c.TrackingCode,
                     PayDate = c.PayDate.Value,
                     Sum = c.Sum,
-                    ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
+                    ProPics = c.OrderDetails.Select(p => p.ShopperProductColor
+                        .ShopperProduct.Product.ProductGalleries.OrderBy(g=> g.OrderBy).FirstOrDefault().ImageName)
                 }).OrderByDescending(c => c.PayDate);
 
         public IEnumerable<OrderForShowViewModel> GetNotReceivedOrders(string userId) =>
@@ -159,7 +165,8 @@ namespace Reshop.Infrastructure.Repository.User
                     TrackingCode = c.TrackingCode,
                     PayDate = c.PayDate.Value,
                     Sum = c.Sum,
-                    ProPics = c.OrderDetails.Select(p => p.ShopperProductColor.ShopperProduct.Product.ProductGalleries.FirstOrDefault().ImageName)
+                    ProPics = c.OrderDetails.Select(p => p.ShopperProductColor
+                        .ShopperProduct.Product.ProductGalleries.OrderBy(g => g.OrderBy).FirstOrDefault().ImageName)
                 }).OrderByDescending(c => c.PayDate);
 
         public async Task<string> GetOrderIdByTrackingCodeAsync(string trackingCode) =>

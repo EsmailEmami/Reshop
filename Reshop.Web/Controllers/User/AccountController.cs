@@ -102,7 +102,6 @@ namespace Reshop.Web.Controllers.User
                 InviteCount = 0,
                 Score = 0,
                 NationalCode = "-",
-                Email = "-",
                 IsBlocked = false,
                 Password = PasswordHelper.EncodePasswordMd5(model.Password)
             };
@@ -722,7 +721,7 @@ namespace Reshop.Web.Controllers.User
                 FavoriteProductResultType.Successful => Json(new { success = true, resultType = "Successful" }),
                 FavoriteProductResultType.ProductReplaced => Json(new { success = true, resultType = "ProductReplaced" }),
                 FavoriteProductResultType.NotFound => Json(new { success = false, resultType = "NotFound" }),
-                FavoriteProductResultType.Available => Json(new { success = false, resultType = "Available" }),
+                FavoriteProductResultType.Deleted => Json(new { success = true, resultType = "Deleted" }),
                 _ => Json(new { success = false, resultType = "NotFound" })
             };
         }

@@ -21,19 +21,19 @@
 
 <div class="shopping-page">
     <div class="level">
+        <div>
+            <a  asp-controller="Cart" asp-action="ShowCart">
+                <img src="https://www.banimode.com/themes/new/assets/images/shipping-lev-1.svg" alt="سبد خرید" srcset=""> سبد خرید
+            </a>
+        </div>
         <div class="active">
-            <a href="#">
-                <img src="https://www.banimode.com/themes/new/assets/images/shipping-lev-1.svg" alt="" srcset=""> سبد خرید
+            <a asp-controller="Cart" asp-action="Address">
+                <img src="https://www.banimode.com/themes/new/assets/images/shipping-lev-1.svg" alt="نشانی سفارش" srcset=""> نشانی سفارش
             </a>
         </div>
         <div>
-            <a href="#">
-                <img src="https://www.banimode.com/themes/new/assets/images/shipping-lev-1.svg" alt="" srcset=""> سبد خرید
-            </a>
-        </div>
-        <div>
-            <a href="#">
-                <img src="https://www.banimode.com/themes/new/assets/images/shipping-lev-1.svg" alt="" srcset=""> سبد خرید
+            <a onclick="return SubmitForm('payment')">
+                <img src="https://www.banimode.com/themes/new/assets/images/shipping-lev-1.svg" alt="پرداخت" srcset=""> پرداخت
             </a>
         </div>
     </div>
@@ -105,7 +105,7 @@
 
     </section>
 
-    <form asp-controller="Cart" asp-action="Address" method="post" onsubmit="return SubmitFormData(this, false)">
+    <form asp-controller="Cart" asp-action="Address" id="payment" method="post" onsubmit="return SubmitFormData(this, false)">
         <input type="hidden" name="addressId" id="addressId" />
         <button type="submit" class="btn btn-next">
             پرداخت

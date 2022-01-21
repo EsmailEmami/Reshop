@@ -138,7 +138,7 @@ namespace Reshop.Web.Controllers.Product
 
             ViewData["CategoryName"] = categoryName;
 
-            ViewBag.SortBy = sortBy;
+            ViewBag.SortBy = sortBy.FixedText();
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SearchText = search;
 

@@ -381,6 +381,7 @@ namespace Reshop.Application.Services.Product
             if (product == null)
                 return null;
 
+
             var childCategory = await _categoryRepository.GetProductChildCategoryAsync(product.ProductId);
             var category = await _categoryRepository.GetProductCategoryAsync(product.ProductId);
             var comments = await _commentRepository.GetCommentsOfProductDetailAsync(product.ProductId);
@@ -1143,7 +1144,10 @@ namespace Reshop.Application.Services.Product
                 {
                     if (favoriteProduct.ShopperProductColorId == shopperProductColorId)
                     {
-                        return FavoriteProductResultType.Available;
+                        _productRepository.RemoveFavoriteProduct(favoriteProduct);
+                        await _productRepository.SaveChangesAsync();
+
+                        return FavoriteProductResultType.Deleted;
                     }
                     else
                     {

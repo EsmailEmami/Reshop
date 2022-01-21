@@ -317,7 +317,11 @@ namespace Reshop.Application.Services.User
                 _cartRepository.RemoveOrderDetail(orderDetail);
                 await _cartRepository.SaveChangesAsync();
 
-                if (order.OrderDetails.Any())
+                int orderDetailsCountOfOrder = await _cartRepository.GetOrderDetailsCountOfOrderAsync(order.OrderId);
+
+                
+
+                if (orderDetailsCountOfOrder > 0)
                 {
                     order.Sum = _cartRepository.GetOrderDetailsSumOfOrder(order.OrderId);
 

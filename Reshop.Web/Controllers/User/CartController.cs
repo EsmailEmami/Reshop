@@ -134,7 +134,7 @@ namespace Reshop.Web.Controllers.User
 
             var cartData = _cartService.GetUserOpenOrderForShowCart(userId);
 
-            return Json(new { isValid = true, html = RenderViewToString.RenderRazorViewToString(this, " ShowCart", cartData) });
+            return Json(new { isValid = true, html = RenderViewToString.RenderRazorViewToString(this, "ShowCart", cartData) });
         }
 
         [HttpGet]

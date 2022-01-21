@@ -20,6 +20,7 @@ namespace Reshop.Domain.Interfaces.User
         Task<bool> IsUserOrderDetailValidationByTrackingCodeAsync(string userId, string trackingCode);
         void UpdateOrderDetail(OrderDetail orderDetail);
         void RemoveOrderDetail(OrderDetail orderDetail);
+        Task<int> GetOrderDetailsCountOfOrderAsync(string orderId);
 
         #endregion
 

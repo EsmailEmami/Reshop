@@ -108,7 +108,7 @@
                         }
                         else
                         {
-                            <a id="@reportBtn" onclick="ShowModal('@Url.Action("ReportComment", "Product" ,new {commentId = item.CommentId}, Context.Request.Scheme)', 'گزارش بازخورد')" class="badge">گزارش</a>
+                            <a id="@reportBtn" onclick="ShowModal('@Url.Action("ReportComment", "Comment" ,new {commentId = item.CommentId}, Context.Request.Scheme)', 'گزارش بازخورد')" class="badge">گزارش</a>
                         }
 
                     </div>
@@ -139,7 +139,7 @@
 
                             @if (userFeedBacks.Any(c => c.Item1 == item.CommentId && c.Item2 == false))
                             {
-                                <form asp-action="LikeOrDisLikeComment" asp-route-type="dislike" onsubmit="return LikeOrDisLikeComment(this)">
+                                <form asp-controller="Comment" asp-action="LikeOrDisLikeComment" asp-route-type="dislike" onsubmit="return LikeOrDisLikeComment(this)">
                                     <input type="hidden" name="commentId" value="@item.CommentId" />
                                     <button id="@disLikeBtn" type="submit" class="comment-feed-backs dislike active">
                                         <span>@item.FeedBacks.Count(c => c == false)</span>
@@ -149,7 +149,7 @@
                             }
                             else
                             {
-                                <form asp-action="LikeOrDisLikeComment" asp-route-type="dislike" onsubmit="return LikeOrDisLikeComment(this)">
+                                <form asp-controller="Comment" asp-action="LikeOrDisLikeComment" asp-route-type="dislike" onsubmit="return LikeOrDisLikeComment(this)">
                                     <input type="hidden" name="commentId" value="@item.CommentId" />
                                     <button id="@disLikeBtn" type="submit" class="comment-feed-backs dislike">
                                         <span>@item.FeedBacks.Count(c => c == false)</span>
@@ -160,7 +160,7 @@
 
                             @if (userFeedBacks.Any(c => c.Item1 == item.CommentId && c.Item2))
                             {
-                                <form asp-action="LikeOrDisLikeComment" asp-route-type="like" onsubmit="return LikeOrDisLikeComment(this)">
+                                <form asp-controller="Comment" asp-action="LikeOrDisLikeComment" asp-route-type="like" onsubmit="return LikeOrDisLikeComment(this)">
                                     <input type="hidden" name="commentId" value="@item.CommentId" />
                                     <button id="@likeBtn" type="submit" class="comment-feed-backs like active">
                                         <span>@item.FeedBacks.Count(c => c == true)</span>
@@ -170,7 +170,7 @@
                             }
                             else
                             {
-                                <form asp-action="LikeOrDisLikeComment" asp-route-type="like" onsubmit="return LikeOrDisLikeComment(this)">
+                                <form asp-controller="Comment" asp-action="LikeOrDisLikeComment" asp-route-type="like" onsubmit="return LikeOrDisLikeComment(this)">
                                     <input type="hidden" name="commentId" value="@item.CommentId" />
                                     <button id="@likeBtn" type="submit" class="comment-feed-backs like">
                                         <span>@item.FeedBacks.Count(c => c == true)</span>

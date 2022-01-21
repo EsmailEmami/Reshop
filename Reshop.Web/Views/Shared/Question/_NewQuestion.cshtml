@@ -1,6 +1,6 @@
 ﻿@model AddQuestionViewModel
 
-<form asp-controller="Question" asp-action="AddQuestion" method="post" onsubmit="return AddQuestion(this)">
+<form asp-controller="Question" asp-action="AddQuestion" method="post" onsubmit="return SubmitFormData(this,false)">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <input type="hidden" asp-for="ProductId" />

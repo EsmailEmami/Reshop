@@ -2,6 +2,7 @@
 using Reshop.Domain.Entities.Product;
 using System;
 using System.Collections.Generic;
+using Reshop.Domain.Entities.Product.ProductDetail;
 
 namespace Reshop.Domain.DTOs.Product
 {
@@ -33,9 +34,13 @@ namespace Reshop.Domain.DTOs.Product
         public string Title { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
-        public object Detail { get; set; }
         public decimal Price { get; set; }
         public Tuple<byte, DateTime> LastDiscount { get; set; }
         public int SelectedColor { get; set; }
+
+        // Details 
+        public MobileDetail MobileDetail { get; set; }
+        public AUXDetail AuxDetail { get; set; }
+        public LaptopDetail LaptopDetail { get; set; }
     }
 }

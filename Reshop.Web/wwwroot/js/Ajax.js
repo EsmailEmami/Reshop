@@ -39,7 +39,12 @@ function UpdateCart(form) {
             processData: false,
             contentType: false,
             success: function (res) {
+
+
+                debugger;
+
                 if (res.isValid) {
+
 
                     if (res.errorType != null && res.errorText != null) {
                         ShowToast(res.errorType, res.errorText);
@@ -80,10 +85,10 @@ function AddProductToFavorites(form) {
                         ShowToast('success', 'محصول با موفقیت به علاقه مندی ها اضافه شد.');
                     } else if (res.resultType == "ProductReplaced") {
                         ShowToast('success', 'فروشنده محصول با موفقیت تغییر کرد.');
+                    } else if (res.resultType == "Deleted") {
+                        ShowToast('warning', 'محصول مورد علاقه شما با موفقیت حذف شد.');
                     }
                 } else {
-
-                    debugger;
                     if (res.returnUrl != null) {
                         window.location.href = res.returnUrl;
                     }
@@ -92,9 +97,7 @@ function AddProductToFavorites(form) {
 
                     if (res.resultType == "NotFound") {
                         ShowToast('danger', 'متاسفانه خطایی غیر منتظره رخ داده است.');
-                    } else if (res.resultType == "Available") {
-                        ShowToast('warning', 'محصول در علاقه مندی های شما موجود است.');
-                    }
+                    } 
                 }
             },
         });
@@ -282,7 +285,7 @@ function SubmitFormData(form, isModal) {
                         $(".modal-header-custom .header-title").html('');
                         document.getElementById('modal').style.display = 'none';
                     }
-
+                    
                     if (res.errorType != null && res.errorText != null) {
                         if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
                             loc = window.location.href;
@@ -330,75 +333,6 @@ function SubmitFormData(form, isModal) {
                             ShowToast('warning', 'عملیات با موفقیت انجام نشد.');
                         }
                     }
-                }
-            }
-        });
-        //to prevent default form submit event
-        return false;
-    } catch (ex) {
-        console.log(ex);
-    }
-}
-
-function AddComment(form) {
-    try {
-        $.ajax({
-            type: 'POST',
-            url: form.action,
-            data: new FormData(form),
-            processData: false,
-            contentType: false,
-            success: function (res) {
-                if (res.isValid) {
-                    if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
-                        var loc = window.location.href;
-                        ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.', loc);
-                    } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
-                        ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.', res.returnUrl);
-                    } else {
-                        ShowToast('success', 'بازخورد شما با موفقیت ثبت شد.');
-                    }
-                } else
-
-                    if (res.returnUrl != null) {
-                        window.location.href = res.returnUrl;
-                    }
-
-
-                $("#newComment").html(res.html);
-            }
-        });
-        //to prevent default form submit event
-        return false;
-    } catch (ex) {
-        console.log(ex);
-    }
-}
-
-function AddQuestion(form) {
-    try {
-        $.ajax({
-            type: 'POST',
-            url: form.action,
-            data: new FormData(form),
-            processData: false,
-            contentType: false,
-            success: function (res) {
-                if (res.isValid) {
-                    if (res.returnUrl != null && res.returnUrl.toLowerCase() === 'current') {
-                        var loc = window.location.href;
-                        ShowToast('success', 'پرسش شما با موفقیت ثبت شد.', loc);
-                    } else if (res.returnUrl != null && res.returnUrl.toLowerCase() !== 'current') {
-                        ShowToast('success', 'پرسش شما با موفقیت ثبت شد.', res.returnUrl);
-                    } else {
-                        ShowToast('success', 'پرسش شما با موفقیت ثبت شد.');
-                    }
-                } else {
-                    if (res.returnUrl != null) {
-                        window.location.href = res.returnUrl;
-                    }
-
-                    $("#newQuestion").html(res.html);
                 }
             }
         });

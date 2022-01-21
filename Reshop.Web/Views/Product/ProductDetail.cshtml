@@ -4,32 +4,6 @@
     ViewData["Title"] = $"مشخصات کالای {Model.Product.Title.Replace(" ", "-")}";
 
     string shortKeyUrl = $"https://localhost:44312/p/{Model.Product.ShortKey}";
-
-
-    AUXDetail auxDetail = null;
-    MobileDetail mobileDetail = null;
-    LaptopDetail laptopDetail = null;
-
-    switch (Model.Product.Type)
-    {
-        case ProductConstants.Aux:
-        {
-            auxDetail = Model.Product.Detail as AUXDetail;
-            break;  
-        }
-        case ProductConstants.Mobile:
-        {
-            mobileDetail = Model.Product.Detail as MobileDetail;
-            break;
-        }
-        case ProductConstants.Laptop:
-        {
-            laptopDetail = Model.Product.Detail as LaptopDetail;
-            break;
-        }
-    }
-
-
 }
 
 @section Css{
@@ -246,8 +220,10 @@
                             <div class="feature">
                                 <h5>ویژگی های محصول:</h5>
                                 <ul>
-                                    <li>حافظه داخلی @mobileDetail. گیگ</li>
-                                </ul>
+                                    <li>صفحه نمایش @Model.Product.MobileDetail.DisplaySize اینچی</li>
+                                    <li>حافظه داخلی @Model.Product.MobileDetail.InternalStorage گیگابایتی</li>
+                                    <li>دارای شبکه های ارتباطی @Model.Product.MobileDetail.ConnectionsNetwork.Replace("&","و")</li>
+                                    </ul>
                             </div>
 
                             break;
@@ -280,7 +256,7 @@
 
                 <h5>نقد و بررسی:</h5>
                 <p>
-                    @Model.Product.Description
+                    @Html.Raw(Model.Product.Description)
                 </p>
 
 
@@ -303,18 +279,18 @@
                     {
                         case ProductConstants.Aux:
                         {
-                            @if (auxDetail != null)
+                            @if (Model.Product.AuxDetail != null)
                             {
                                 <li>
                                     <span>نوع کابل</span>
                                     <span>
-                                        @auxDetail.CableMaterial
+                                        @Model.Product.AuxDetail.CableMaterial
                                     </span>
                                 </li>
                                 <li>
                                     <span>طول کابل</span>
                                     <span>
-                                        @auxDetail.CableLenght سانتی متر
+                                        @Model.Product.AuxDetail.CableLenght سانتی متر
             
                                     </span>
                                 </li>
@@ -323,10 +299,541 @@
                         }
                         case ProductConstants.Mobile:
                         {
-                            <li>حافظه داخلی: @mobileDetail.InternalStorage گیگابایت</li>
-                            <li>اندازه صفحه نمایش: @mobileDetail.DisplaySize</li>
-                            <li>شبکه های ارتباطی: @mobileDetail.ConnectionsNetwork</li> 
-                          
+                            <li>
+                                <span>ابعاد</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Height * @Model.Product.MobileDetail.Length * @Model.Product.MobileDetail.Width
+                                </span>
+                            </li>
+                            <li>
+                                <span>وزن</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Weight گرم
+                                </span>
+                            </li>
+                            <li>
+                                <span>تعداد سیمکارت</span>
+                                <span>
+                                    @Model.Product.MobileDetail.SimCardQuantity عدد
+                                </span>
+                            </li>
+                            <li>
+                                <span>ورودی سیمکارت</span>
+                                <span>
+                                    @Model.Product.MobileDetail.SimCardInput
+                                </span>
+                            </li>
+                            <li>
+                                <span>شیار کارت حافظه</span>
+                                <span>
+                                    @Model.Product.MobileDetail.SeparateSlotMemoryCard.BoolToText("دارد","ندارد")
+                                </span>
+                            </li>
+                            <li>
+                                <span>تاریخ معرفی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Announced.ToShamsiDate()
+                                </span>
+                            </li>
+                            <li>
+                                <span>تراشه</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Chipset.ChipsetName
+                                </span>
+                            </li>
+                            <li>
+                                <span>پردازنده مرکزی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Cpu.CpuName
+                                </span>
+                            </li>
+                            <li>
+                                <span>فرکانس پردازنده</span>
+                                <span>
+                                    @Model.Product.MobileDetail.CpuAndFrequency
+                                </span>
+                            </li>
+                            <li>
+                                <span>معماری پردازنده</span>
+                                <span>
+                                    @Model.Product.MobileDetail.CpuArch.CpuArchName
+                                </span>
+                            </li>
+                            <li>
+                                <span>پردازنده گرافیکی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Gpu.GpuName
+                                </span>
+                            </li>
+                            <li>
+                                <span>حافظه داخلی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.InternalStorage گیگابایت
+                                </span>
+                            </li>
+                            <li>
+                                <span>حافظه RAM</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Ram گیگابایت
+                                </span>
+                            </li>
+                            <li>
+                                <span>پشتیانی از حافظه ی جانبی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.SdCard 
+                                </span>
+                            </li>
+                            <li>
+                                <span>استاندارد حافظه جانبی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.SdCardStandard 
+                                </span>
+                            </li>
+                            <li>
+                                <span>صفحه نمایش رنگی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.ColorDisplay.BoolToText("دارد","ندارد") 
+                                </span>
+                            </li>
+                            <li>
+                                <span>صفحه نمایش لمسی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.TouchDisplay.BoolToText("دارد","ندارد") 
+                                </span>
+                            </li>
+                            <li>
+                                <span>فناوری صفحه نمایش</span>
+                                <span>
+                                    @Model.Product.MobileDetail.DisplayTechnology
+                                </span>
+                            </li>
+                            <li>
+                                <span>اندازه صفحه نمایش</span>
+                                <span>
+                                    @Model.Product.MobileDetail.DisplaySize اینچ
+                                </span>
+                            </li>
+                            <li>
+                                <span>رزولوشن</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Resolution پیکسل
+                                </span>
+                            </li>
+                            <li>
+                                <span>تراکم پیکسلی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.PixelDensity
+                                </span>
+                            </li>
+                            <li>
+                                <span>نسبت صفحه نمایش به بدنه</span>
+                                <span>
+                                    @Model.Product.MobileDetail.ScreenToBodyRatio
+                                </span>
+                            </li>
+                            <li>
+                                <span>نسبت تصویر</span>
+                                <span>
+                                    @Model.Product.MobileDetail.ImageRatio
+                                </span>
+                            </li>
+                            <li>
+                                <span>محافظت صفحه</span>
+                                <span>
+                                    @Model.Product.MobileDetail.DisplayProtection
+                                </span>
+                            </li>
+                            @if (Model.Product.MobileDetail.DisplayMoreInformation != null)
+                            {
+                                <li>
+                                    <span>سایر قابلیت ها</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.DisplayMoreInformation
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.ConnectionsNetwork != null)
+                            {
+                                <li>
+                                    <span>شبکه های ارتباطی</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.ConnectionsNetwork.Replace("&","و")
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.GsmNetwork != null)
+                            {
+                                <li>
+                                    <span>2G شبکه</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.GsmNetwork.Replace("&","و")
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.HspaNetwork != null)
+                            {
+                                <li>
+                                    <span>3G شبکه</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.HspaNetwork.Replace("&","و")
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.LteNetwork != null)
+                            {
+                                <li>
+                                    <span>4G شبکه</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.LteNetwork.Replace("&","و")
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.FiveGNetwork != null)
+                            {
+                                <li>
+                                    <span>5G شبکه</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.FiveGNetwork.Replace("&","و")
+                                    </span>
+                                </li>
+                            }
+                            <li>
+                                <span>فناوری ارتباطی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.CommunicationTechnology
+                                </span>
+                            </li>
+                            @if (Model.Product.MobileDetail.WiFi != null)
+                            {
+                                <li>
+                                    <span>WiFi</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.WiFi.Replace("&","و")
+                                    </span>
+                                </li>
+                            }
+                            <li>
+                                <span>رادیو</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Radio.BoolToText("دارد","ندارد") 
+                                </span>
+                            </li>
+                            <li>
+                                <span>بلوتوث</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Bluetooth.Replace("&","و")
+                                </span>
+                            </li>
+                            @if (Model.Product.MobileDetail.GpsInformation != null)
+                            {
+                                <li>
+                                    <span>فناوری مکان یابی</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.GpsInformation.Replace("&","و")
+                                    </span>
+                                </li>
+                            }
+                            <li>
+                                <span>درگاه ارتباطی</span>
+                                <span>
+                                    @Model.Product.MobileDetail.ConnectionPort
+                                </span>
+                            </li>
+                            @if (Model.Product.MobileDetail.ConnectionsMoreInformation != null)
+                            {
+                                <li>
+                                    <span>سایر قابلیت ها</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.ConnectionsMoreInformation
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.Cameras != null)
+                            {
+                                <li>
+                                    <span>دوربین ها</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.Cameras.Replace("&","و")
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.PhotoResolution != 0)
+                            {
+                                <li>
+                                    <span>رزولوشن عکس دوربین اصلی</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.PhotoResolution مگاپیکسل
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.SelfiCameraResolution != 0)
+                            {
+                                <li>
+                                    <span>رزولوشن عکس دوربین سلغی</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.SelfiCameraResolution مگاپیکسل
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.MacroCameraResolution != 0)
+                            {
+                                <li>
+                                    <span>رزولوشن عکس دوربین ماکرو</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.MacroCameraResolution مگاپیکسل
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.WideCameraResolution != 0)
+                            {
+                                <li>
+                                    <span>رزولوشن عکس دوربین واید</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.WideCameraResolution مگاپیکسل
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.DepthCameraResolution != 0)
+                            {
+                                <li>
+                                    <span>رزولوشن عکس دوربین عمق دید</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.DepthCameraResolution مگاپیکسل
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.CameraCapabilities != null)
+                            {
+                                <li>
+                                    <span>قابلیت های دوربین اصلی</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.CameraCapabilities 
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.SelfiCameraCapabilities != null)
+                            {
+                                <li>
+                                    <span>قابلیت های دوربین اصلی</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.SelfiCameraCapabilities 
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.MacroCameraCapabilities != null)
+                            {
+                                <li>
+                                    <span>قابلیت های دوربین ماکرو</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.MacroCameraCapabilities 
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.WideCameraCapabilities != null)
+                            {
+                                <li>
+                                    <span>قابلیت های دوربین واید</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.WideCameraCapabilities 
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.DepthCameraCapabilities != null)
+                            {
+                                <li>
+                                    <span>قابلیت های دوربین عمق دید</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.DepthCameraCapabilities 
+                                    </span>
+                                </li>
+                            }
+                            
+                            @if (Model.Product.MobileDetail.PhotoCameraVideo != null)
+                            {
+                                List<string> items = Model.Product.MobileDetail.PhotoCameraVideo.ToList("&");
+
+                                <li>
+                                    <span>فیلم برداری دوربین اصلی</span>
+                                    <span>
+                                        <ul>
+                                            @foreach (string item in items)
+                                            {
+                                                <li>@item</li>
+                                            }
+                                        </ul>
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.SelfiCameraVideo != null)
+                            {
+                                List<string> items = Model.Product.MobileDetail.SelfiCameraVideo.ToList("&");
+
+                                <li>
+                                    <span>فیلم برداری دوربین اصلی</span>
+                                    <span>
+                                        <ul>
+                                            @foreach (string item in items)
+                                            {
+                                                <li>@item</li>
+                                            }
+                                        </ul>
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.PhotoCameraVideo != null)
+                            {
+                                List<string> items = Model.Product.MobileDetail.PhotoCameraVideo.ToList("&");
+
+                                <li>
+                                    <span>فیلم برداری دوربین سلفی</span>
+                                    <span>
+                                        <ul>
+                                            @foreach (string item in items)
+                                            {
+                                                <li>@item</li>
+                                            }
+                                        </ul>
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.MacroCameraVideo != null)
+                            {
+                                List<string> items = Model.Product.MobileDetail.MacroCameraVideo.ToList("&");
+
+                                <li>
+                                    <span>فیلم برداری دوربین ماکرو</span>
+                                    <span>
+                                        <ul>
+                                            @foreach (string item in items)
+                                            {
+                                                <li>@item</li>
+                                            }
+                                        </ul>
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.WideCameraVideo != null)
+                            {
+                                List<string> items = Model.Product.MobileDetail.WideCameraVideo.ToList("&");
+
+                                <li>
+                                    <span>فیلم برداری دوربین واید</span>
+                                    <span>
+                                        <ul>
+                                            @foreach (string item in items)
+                                            {
+                                                <li>@item</li>
+                                            }
+                                        </ul>
+                                    </span>
+                                </li>
+                            }
+                            @if (Model.Product.MobileDetail.DepthCameraVideo != null)
+                            {
+                                List<string> items = Model.Product.MobileDetail.DepthCameraVideo.ToList("&");
+
+                                <li>
+                                    <span>فیلم برداری دوربین عمق دید</span>
+                                    <span>
+                                        <ul>
+                                            @foreach (string item in items)
+                                            {
+                                                <li>@item</li>
+                                            }
+                                        </ul>
+                                    </span>
+                                </li>
+                            }
+
+                            @if(Model.Product.MobileDetail.CameraMoreInformation != null){ 
+                                <li>
+                                    <span>سایر قابلیت ها</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.CameraMoreInformation
+                                    </span>
+                                </li>
+                            }
+                            <li>
+                                <span>بلندگو</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Speakers.BoolToText("دارد","ندارد") 
+                                </span>
+                            </li>
+                            <li>
+                                <span>خروجی صدا</span>
+                                <span>
+                                    @Model.Product.MobileDetail.OutputAudio
+                                </span>
+                            </li>
+                            @if(Model.Product.MobileDetail.AudioMoreInformation != null){ 
+                                <li>
+                                    <span>سایر قابلیت ها</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.AudioMoreInformation
+                                    </span>
+                                </li>
+                            }
+                            <li>
+                                <span>سیستم عامل</span>
+                                <span>
+                                    @Model.Product.MobileDetail.OperatingSystem.OperatingSystemName
+                                </span>
+                            </li>
+                            <li>
+                                <span>نسخه ی سیستم عامل</span>
+                                <span>
+                                    @Model.Product.MobileDetail.OperatingSystemVersion.OperatingSystemVersionName
+                                </span>
+                            </li>
+                            <li>
+                                <span>رابط کاربری</span>
+                                <span>
+                                    @Model.Product.MobileDetail.UiVersion
+                                </span>
+                            </li>
+                            @if(Model.Product.MobileDetail.SoftWareMoreInformation != null){ 
+                                <li>
+                                    <span>سایر قابلیت ها</span>
+                                    <span>
+                                        @Model.Product.MobileDetail.SoftWareMoreInformation]
+                                    </span>
+                                </li>
+                            }
+                            <li>
+                                <span>نوع باتری</span>
+                                <span>
+                                    @Model.Product.MobileDetail.BatteryMaterial
+                                </span>
+                            </li>
+                            <li>
+                                <span>ظرفیت باتری</span>
+                                <span>
+                                    @Model.Product.MobileDetail.BatteryCapacity
+                                </span>
+                            </li>
+                            <li>
+                                <span>باتری قابل تعویض</span>
+                                <span>
+                                    @Model.Product.MobileDetail.RemovableBattery.BoolToText("دارد","ندارد") 
+                                </span>
+                            </li>
+
+                            <li>
+                                <span>سنسور ها</span>
+                                <span>
+                                    @Model.Product.MobileDetail.Sensors
+                                </span>
+                            </li>
+
+                            <li>
+                                <span>اقلامات داخل جعبه</span>
+                                <span>
+                                    @Model.Product.MobileDetail.ItemsInBox
+                                </span>
+                            </li>
+
+
+
                             break;
                         }
                     }

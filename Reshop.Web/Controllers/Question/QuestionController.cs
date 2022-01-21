@@ -65,7 +65,7 @@ namespace Reshop.Web.Controllers.Question
 
             if (res == ResultTypes.Successful)
             {
-                return Json(new { isValid = true, returnUrl = "current" });
+                return Json(new { isValid = true, errorType = "success", errorText = "پرسش شما با موفقیت ثبت شد.", returnUrl = "current" });
             }
             else
             {
