@@ -44,40 +44,939 @@
     @switch (Model.First().Type)
     {
         case ProductConstants.Aux:
-        {
-            <li class="title">
+            {
+                <li class="title">
                     <div>نوع کابل</div>
                 </li>
-            <li class="value">
-                @foreach (var item in Model)
-                {
-                    if (item.Detail is AUXDetail auxDetail)
+                <li class="value">
+                    @foreach (var item in Model)
                     {
                         <div>
-                            @auxDetail.CableMaterial
+                            @item.AuxDetail.CableMaterial
                         </div>
-                    }
-                }
-            </li>
 
-            <li class="title">
-                <div>طول کابل</div>
-            </li>
-            <li class="value">
-                @foreach (var item in Model)
-                {
-                    if (item.Detail is AUXDetail auxDetail)
+                    }
+                </li>
+
+                <li class="title">
+                    <div>طول کابل</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
                     {
                         <div>
-                            @auxDetail.CableLenght سانتی متر
+                            @item.AuxDetail.CableLenght سانتی متر
                         </div>
+
                     }
-                }
-            </li>
+                </li>
                 break;
             }
         case ProductConstants.Mobile:
             {
+                <li class="title">
+                    <div>ابعاد</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Height * @item.MobileDetail.Length * @item.MobileDetail.Width
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>وزن</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Weight گرم
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>تعداد سیمکارت</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.SimCardQuantity عدد
+                        </div>
+
+                    }
+                </li><li class="title">
+                         <div>ورودی سیمکارت</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.SimCardInput
+                        </div>
+
+                    }
+                </li><li class="title">
+                         <div>شیار کارت حافظه</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.SeparateSlotMemoryCard.BoolToText("دارد","ندارد")
+                        </div>
+
+                    }
+                </li><li class="title">
+                         <div>تاریخ معرفی</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Announced.ToShamsiDate()
+                        </div>
+
+                    }
+                </li><li class="title">
+                         <div>تراشه</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Chipset.ChipsetName
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>پردازنده مرکزی</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Cpu.CpuName
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>فرکانس پردازنده</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.CpuAndFrequency
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>معماری پردازنده</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.CpuArch.CpuArchName
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>پردازنده گرافیکی</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Gpu.GpuName
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>حافظه ی داخلی</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.InternalStorage گیگابایت
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>RAM حافظه</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Ram گیگابایت
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>پشتیانی از حافظه ی جانبی</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.SdCard 
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>استاندارد حافظه جانبی</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.SdCardStandard 
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>صفحه نمایش رنگی</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.ColorDisplay.BoolToText("دارد","ندارد") 
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>صفحه نمایش لمسی</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.TouchDisplay.BoolToText("دارد","ندارد") 
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>فناوری صفحه نمایش</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.DisplayTechnology
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>اندازه</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.DisplaySize اینچ
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>رزولوشن</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Resolution پیکسل
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>تراکم پیکسلی</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.PixelDensity
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>نسبت صفحه نمایش به بدنه</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.ScreenToBodyRatio
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                         <div>نسبت تصویر</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.ScreenToBodyRatio
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>محافظت صفحه</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.DisplayProtection
+                        </div>
+
+                    }
+                </li>
+                @if (Model.Any(c=> c.MobileDetail.DisplayMoreInformation != null))
+                {
+                    <li class="title">
+                        <div>سایر قابلیت ها</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.DisplayMoreInformation
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.ConnectionsNetwork != null))
+                {
+                    <li class="title">
+                        <div>شبکه های ارتباطی</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.ConnectionsNetwork.Replace("&","و")
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.GsmNetwork != null))
+                {
+                    <li class="title">
+                        <div>2G شبکه</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.GsmNetwork.Replace("&","و")
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.HspaNetwork != null))
+                {
+                    <li class="title">
+                        <div>3G شبکه</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.HspaNetwork.Replace("&","و")
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.LteNetwork != null))
+                {
+                    <li class="title">
+                        <div>4G شبکه</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.LteNetwork.Replace("&","و")
+                            </div>
+
+                        }
+                    </li>
+                }@if (Model.Any(c=> c.MobileDetail.FiveGNetwork != null))
+                {
+                    <li class="title">
+                        <div>5G شبکه</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.FiveGNetwork.Replace("&","و")
+                            </div>
+
+                        }
+                    </li>
+                }
+                <li class="title">
+                    <div>فناوری ارتباطی</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.CommunicationTechnology
+                        </div>
+
+                    }
+                </li>
+                @if (Model.Any(c=> c.MobileDetail.WiFi != null))
+                {
+                    <li class="title">
+                        <div>WiFi</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.WiFi.Replace("&","و")
+                            </div>
+
+                        }
+                    </li>
+                }
+                <li class="title">
+                    <div>رادیو</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Radio.BoolToText("دارد","ندارد") 
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>بلوتوث</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Bluetooth.Replace("&","و")
+                        </div>
+
+                    }
+                </li>@if (Model.Any(c=> c.MobileDetail.GpsInformation != null))
+                {
+                    <li class="title">
+                        <div>فناوری مکان یابی</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.GpsInformation.Replace("&","و")
+                            </div>
+
+                        }
+                    </li>
+                }
+                <li class="title">
+                    <div>درگاه ارتباطی</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.ConnectionPort
+                        </div>
+
+                    }
+                </li>@if (Model.Any(c=> c.MobileDetail.ConnectionsMoreInformation != null))
+                {
+                    <li class="title">
+                        <div>سایر قابلیت ها</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.ConnectionsMoreInformation
+                            </div>
+
+                        }
+                    </li>
+                }@if (Model.Any(c=> c.MobileDetail.Cameras != null))
+                {
+                    <li class="title">
+                        <div>تعداد لنز های دوربین</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.Cameras.Replace("&","و")
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.PhotoResolution != 0))
+                {
+                    <li class="title">
+                        <div>رزولوشن عکس دوربین اصلی</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.PhotoResolution مگاپیکسل
+                            </div>
+
+                        }
+                    </li>
+                }@if (Model.Any(c=> c.MobileDetail.SelfiCameraResolution != 0))
+                {
+                    <li class="title">
+                        <div>رزولوشن عکس دوربین سلفی</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.SelfiCameraResolution مگاپیکسل
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.MacroCameraResolution != 0))
+                {
+                    <li class="title">
+                        <div>رزولوشن عکس دوربین ماکرو</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.MacroCameraResolution مگاپیکسل
+                            </div>
+
+                        }
+                    </li>
+                }@if (Model.Any(c=> c.MobileDetail.WideCameraResolution != 0))
+                {
+                    <li class="title">
+                        <div>رزولوشن عکس دوربین واید</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.WideCameraResolution مگاپیکسل
+                            </div>
+
+                        }
+                    </li>
+                }@if (Model.Any(c=> c.MobileDetail.DepthCameraResolution != 0))
+                {
+                    <li class="title">
+                        <div>رزولوشن عکس دوربین عمق دید</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.DepthCameraResolution مگاپیکسل
+                            </div>
+
+                        }
+                    </li>
+                }@if (Model.Any(c=> c.MobileDetail.CameraCapabilities != null))
+                {
+                    <li class="title">
+                        <div>قابلیت های دوربین اصلی</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.CameraCapabilities 
+                            </div>
+
+                        }
+                    </li>
+                }@if (Model.Any(c=> c.MobileDetail.SelfiCameraCapabilities != null))
+                {
+                    <li class="title">
+                        <div>قابلیت های دوربین سلفی</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.SelfiCameraCapabilities 
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.MacroCameraCapabilities != null))
+                {
+                    <li class="title">
+                        <div>قابلیت های دوربین ماکرو</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.MacroCameraCapabilities 
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.WideCameraCapabilities != null))
+                {
+                    <li class="title">
+                        <div>قابلیت های دوربین واید</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.WideCameraCapabilities 
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.DepthCameraCapabilities != null))
+                {
+                    <li class="title">
+                        <div>قابلیت های دوربین عمق دید</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.DepthCameraCapabilities 
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.PhotoCameraVideo != null))
+                {
+                    <li class="title">
+                        <div>فیلم برداری دوربین اصلی</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            List<string> items = item.MobileDetail.PhotoCameraVideo.ToList("&");
+
+
+                            <div>
+                                <ul>
+                                    @foreach (string item2 in items)
+                                    {
+                                        <li>@item2</li>
+                                    }
+                                </ul>
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.SelfiCameraVideo != null))
+                {
+                    <li class="title">
+                        <div>فیلم برداری دوربین سلفی</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            List<string> items = item.MobileDetail.SelfiCameraVideo.ToList("&");
+
+
+                            <div>
+                                <ul>
+                                    @foreach (string item2 in items)
+                                    {
+                                        <li>@item2</li>
+                                    }
+                                </ul>
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.MacroCameraVideo != null))
+                {
+                    <li class="title">
+                        <div>فیلم برداری دوربین ماکرو</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            List<string> items = item.MobileDetail.MacroCameraVideo.ToList("&");
+
+
+                            <div>
+                                <ul>
+                                    @foreach (string item2 in items)
+                                    {
+                                        <li>@item2</li>
+                                    }
+                                </ul>
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.WideCameraVideo != null))
+                {
+                    <li class="title">
+                        <div>فیلم برداری دوربین واید</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            List<string> items = item.MobileDetail.WideCameraVideo.ToList("&");
+
+
+                            <div>
+                                <ul>
+                                    @foreach (string item2 in items)
+                                    {
+                                        <li>@item2</li>
+                                    }
+                                </ul>
+                            </div>
+
+                        }
+                    </li>
+                }
+                @if (Model.Any(c=> c.MobileDetail.DepthCameraVideo != null))
+                {
+                    <li class="title">
+                        <div>فیلم برداری دوربین عمق دید</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            List<string> items = item.MobileDetail.DepthCameraVideo.ToList("&");
+
+
+                            <div>
+                                <ul>
+                                    @foreach (string item2 in items)
+                                    {
+                                        <li>@item2</li>
+                                    }
+                                </ul>
+                            </div>
+
+                        }
+                    </li>
+                }    @if (Model.Any(c=> c.MobileDetail.CameraMoreInformation != null))
+                {
+                    <li class="title">
+                        <div>سایر امکانات</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.CameraMoreInformation
+                            </div>
+
+                        }
+                    </li>
+                }  
+                <li class="title">
+                    <div>بلندگو</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Speakers.BoolToText("دارد","ندارد") 
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>خروجی صدا</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.OutputAudio
+                        </div>
+
+                    }
+                </li>
+
+                @if (Model.Any(c=> c.MobileDetail.AudioMoreInformation != null))
+                {
+                    <li class="title">
+                        <div>سایر امکانات</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.AudioMoreInformation
+                            </div>
+
+                        }
+                    </li>
+                }
+                <li class="title">
+                    <div>سیستم عامل</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.OperatingSystem.OperatingSystemName
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>نسخه ی سیستم عامل</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.OperatingSystemVersion.OperatingSystemVersionName
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>رابط کاربری</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.UiVersion
+                        </div>
+
+                    }
+                </li>
+                @if (Model.Any(c=> c.MobileDetail.SoftWareMoreInformation != null))
+                {
+                    <li class="title">
+                        <div>سایر امکانات</div>
+                    </li>
+                    <li class="value">
+                        @foreach (var item in Model)
+                        {
+                            <div>
+                                @item.MobileDetail.SoftWareMoreInformation]
+                            </div>
+
+                        }
+                    </li>
+                }
+               
+                <li class="title">
+                    <div>نوع باتری</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.BatteryMaterial
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>ظرفیت باتری</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.BatteryCapacity
+                        </div>
+
+                    }
+                </li>
+                <li class="title">
+                    <div>باتری قابل تعویض</div>
+                </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.RemovableBattery.BoolToText("دارد","ندارد") 
+                        </div>
+
+                    }
+                </li><li class="title">
+                         <div>سنسور ها</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.Sensors
+                        </div>
+
+                    }
+                </li><li class="title">
+                         <div>اقلامات داخل جعبه</div>
+                     </li>
+                <li class="value">
+                    @foreach (var item in Model)
+                    {
+                        <div>
+                            @item.MobileDetail.ItemsInBox
+                        </div>
+
+                    }
+                </li>
+                
 
                 break;
             }

@@ -963,32 +963,57 @@ namespace Reshop.Infrastructure.Repository.Product
 
             if (model == null) return null;
 
-
-            object detail = new object();
-
             switch (model.Type.ToLower())
             {
                 case "mobile":
                     {
-                        detail = await _context.Products.Where(c => c.ProductId == model.ProductId)
-                            .Select(c => c.MobileDetail).SingleOrDefaultAsync();
+                        var detailIdOfProduct = await _context.Products.Where(c => c.ProductId == model.ProductId)
+                            .Select(c => c.MobileDetailId).SingleAsync();
+
+                        if (detailIdOfProduct == null)
+                            return null;
+
+
+                        model.MobileDetail = await _context.MobileDetails.Where(c => c.MobileDetailId == detailIdOfProduct)
+                            .Include(c => c.Chipset)
+                            .Include(c => c.Cpu)
+                            .Include(c => c.CpuArch)
+                            .Include(c => c.Gpu)
+                            .Include(c => c.OperatingSystem)
+                            .Include(c => c.OperatingSystemVersion)
+                            .SingleOrDefaultAsync();
+
                         break;
                     }
                 case "laptop":
                     {
-                        detail = await _context.Products.Where(c => c.ProductId == model.ProductId)
-                            .Select(c => c.LaptopDetail).SingleOrDefaultAsync();
+                        var detailIdOfProduct = await _context.Products.Where(c => c.ProductId == model.ProductId)
+                            .Select(c => c.LaptopDetailId).SingleAsync();
+
+                        if (detailIdOfProduct == null)
+                            return null;
+
+                        model.LaptopDetail = await _context.LaptopDetails
+                            .Where(c => c.LaptopDetailId == detailIdOfProduct)
+                            .SingleOrDefaultAsync();
+
                         break;
                     }
                 case "aux":
                     {
-                        detail = await _context.Products.Where(c => c.ProductId == model.ProductId)
-                            .Select(c => c.AuxDetail).SingleOrDefaultAsync();
+                        var detailIdOfProduct = await _context.Products.Where(c => c.ProductId == model.ProductId)
+                            .Select(c => c.LaptopDetailId).SingleAsync();
+
+                        if (detailIdOfProduct == null)
+                            return null;
+
+                        model.AuxDetail = await _context.AuxDetails
+                            .Where(c => c.AUXDetailId == detailIdOfProduct)
+                            .SingleOrDefaultAsync();
+
                         break;
                     }
             }
-
-            model.Detail = detail;
 
             return model;
         }

@@ -7,7 +7,7 @@ namespace Reshop.Domain.DTOs.Category
     {
         public int ChildCategoryId { get; set; }
 
-        [Display(Name = "نام گروه")]
+        [Display(Name = "نام زیر گروه")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(30, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ChildCategoryTitle { get; set; }

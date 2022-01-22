@@ -16,7 +16,7 @@ namespace Reshop.Domain.Entities.Product
         [MaxLength(15, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ColorName { get; set; }
 
-        [Display(Name = "کذ رنگ")]
+        [Display(Name = "کد رنگ")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید.")]
         [MaxLength(10, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
         public string ColorCode { get; set; }

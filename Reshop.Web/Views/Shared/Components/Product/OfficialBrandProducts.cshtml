@@ -21,7 +21,7 @@
     @if (ViewBag.SearchText != null)
     {
         <div class="filter-input">
-            <input autocomplete="off" type="text" placeholder="دنبال برند بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
+            <input autocomplete="off" type="text" placeholder="دنبال نام اختصاصی بگرد..." value="@ViewBag.SearchText.ToString()" id="filter">
             <button type="button" onclick="changeList()"><i class="far fa-search"></i></button>
         </div>
     }
@@ -63,7 +63,7 @@
                                 جزئیات
                             </a>
 
-                            <a onclick="ShowModal('@Url.Action("EditOfficialBrandProduct", "OfficialProductManager", new {officialBrandProductId = item.Item1}, Context.Request.Scheme)', 'ویرایش برند')"
+                            <a onclick="ShowModal('@Url.Action("EditOfficialBrandProduct", "OfficialProductManager", new {officialBrandProductId = item.Item1}, Context.Request.Scheme)', 'ویرایش نام اختصاصی')"
                                class="btn btn-warning text-white">
                                 ویرایش
                             </a>
