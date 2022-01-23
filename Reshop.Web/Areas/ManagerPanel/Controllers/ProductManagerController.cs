@@ -121,8 +121,7 @@ public class ProductManagerController : Controller
         if (string.IsNullOrEmpty(userId))
             return NotFound();
 
-        var permissionValid =
-            await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.DiscountDetailOfProduct);
+        var permissionValid = await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.DiscountDetailOfProduct);
         ViewBag.IsValid = true;
 
         if (!permissionValid)

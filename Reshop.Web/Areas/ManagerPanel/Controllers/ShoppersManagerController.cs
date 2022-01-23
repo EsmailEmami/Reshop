@@ -17,6 +17,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Reshop.Application.Constants;
+using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
@@ -46,6 +48,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
+        [Permission(PermissionsConstants.ShoppersManager)]
         public async Task<IActionResult> Index()
         {
             var data = await _shopperService.GetShoppersGeneralDataForAdminAsync();
@@ -64,6 +67,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet("[action]/{shopperId}")]
+        [Permission(PermissionsConstants.ShopperDetail)]
         public async Task<IActionResult> ShopperDetail(string shopperId)
         {
             if (shopperId == null) return NotFound();
@@ -85,6 +89,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.ShopperRequest)]
         public async Task<IActionResult> ShowShopperProductRequest(string shopperProductRequestId)
         {
             if (string.IsNullOrEmpty(shopperProductRequestId))
@@ -100,6 +105,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.ShopperRequest)]
         public async Task<IActionResult> ShowShopperProductColorRequest(string shopperProductColorRequestId)
         {
             if (string.IsNullOrEmpty(shopperProductColorRequestId))
@@ -115,6 +121,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.FinishShopperRequest)]
         public async Task<IActionResult> FinishShopperProductRequest(FinishShopperRequestViewModel model)
         {
             if (!ModelState.IsValid)
@@ -135,6 +142,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.FinishShopperRequest)]
         public async Task<IActionResult> FinishShopperProductColorRequest(FinishShopperRequestViewModel model)
         {
             if (!ModelState.IsValid)
@@ -158,6 +166,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region edit shopper
 
         [HttpGet]
+        [Permission(PermissionsConstants.EditShopper)]
         public async Task<IActionResult> EditShopper(string shopperId)
         {
             var shopperData = await _shopperService.GetShopperDataForEditAsync(shopperId);
@@ -170,6 +179,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [Permission(PermissionsConstants.EditShopper)]
         public async Task<IActionResult> EditShopper(EditShopperViewModel model)
         {
             model.StoreTitles = _shopperService.GetStoreTitles();
@@ -315,6 +325,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
+        [Permission(PermissionsConstants.ShopperProductDetail)]
         public async Task<IActionResult> ShopperProductDetail(string shopperProductId)
         {
             if (shopperProductId == null)
@@ -339,6 +350,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         // this method open in modal
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddShopperProduct)]
         public async Task<IActionResult> AddShopperProduct(string shopperId)
         {
             if (shopperId == null)
@@ -359,6 +371,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddShopperProduct)]
         public async Task<IActionResult> AddShopperProduct(AddShopperProductViewModel model)
         {
             // data for selectProduct
@@ -427,6 +440,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         // this method open in modal
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditShopperProduct)]
         public async Task<IActionResult> EditShopperProduct(string shopperProductId)
         {
             if (shopperProductId == null)
@@ -445,6 +459,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditShopperProduct)]
         public async Task<IActionResult> EditShopperProduct(EditShopperProductViewModel model)
         {
             if (!ModelState.IsValid)
@@ -512,6 +527,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         // add color request
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddColorToShopperProduct)]
         public IActionResult AddColorToShopperProduct(string shopperProductId)
         {
             if (shopperProductId == null)
@@ -531,6 +547,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddColorToShopperProduct)]
         public async Task<IActionResult> AddColorToShopperProduct(AddColorToShopperProductViewModel model)
         {
             ViewBag.Colors = _shopperService.GetColorsIdAndName();
@@ -595,6 +612,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         // edit color information
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditColorOfShopperProduct)]
         public async Task<IActionResult> EditColorOfShopperProduct(string shopperProductId, int colorId)
         {
             var shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperProductId, colorId);
@@ -611,6 +629,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditColorOfShopperProduct)]
         public async Task<IActionResult> EditColorOfShopperProduct(EditColorOfShopperProductViewModel model)
         {
             if (!ModelState.IsValid)
@@ -676,6 +695,21 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> ShopperProductColorDetail(string shopperProductId, int colorId)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var permissionValid = await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.ShopperProductColorDetail);
+            ViewBag.IsValid = true;
+
+            if (!permissionValid)
+            {
+                ViewBag.IsValid = false;
+
+                return View();
+            }
+
             var shopperProductColorId = await _shopperService.GetShopperProductColorIdAsync(shopperProductId, colorId);
 
 
@@ -700,6 +734,21 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         [NoDirectAccess]
         public async Task<IActionResult> ShopperProductDiscountDetail(string shopperProductId, int colorId)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return NotFound();
+
+            var permissionValid = await _permissionService.PermissionCheckerAsync(userId, PermissionsConstants.ShopperProductDiscountDetail);
+            ViewBag.IsValid = true;
+
+            if (!permissionValid)
+            {
+                ViewBag.IsValid = false;
+
+                return View();
+            }
+
             if (shopperProductId == null || colorId == 0)
                 return Json(new { isValid = false, errorType = "danger", errorText = "مشکلی پیش آمده است. لطفا دوباره تلاش کنید." });
 
@@ -721,6 +770,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         // new discount
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddShopperProductColorDiscount)]
         public async Task<IActionResult> AddShopperProductColorDiscount(string shopperProductId, int colorId)
         {
             if (shopperProductId == null && colorId == 0)
@@ -745,6 +795,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddShopperProductColorDiscount)]
         public async Task<IActionResult> AddShopperProductColorDiscount(AddOrEditShopperProductDiscountViewModel model)
         {
             if (!ModelState.IsValid)
@@ -799,6 +850,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         // edit discount
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditShopperProductColorDiscount)]
         public async Task<IActionResult> EditShopperProductColorDiscount(string shopperProductId, int colorId)
         {
             if (shopperProductId == null && colorId == 0)
@@ -829,6 +881,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditShopperProductColorDiscount)]
         public async Task<IActionResult> EditShopperProductColorDiscount(AddOrEditShopperProductDiscountViewModel model)
         {
             if (!ModelState.IsValid)
@@ -879,6 +932,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region storeTitleList
 
         [HttpGet]
+        [Permission(PermissionsConstants.StoreTitlesManager)]
         public IActionResult ManageStoreTitles()
         {
             return View(_shopperService.GetStoreTitles());
@@ -886,6 +940,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddStoreTitle,PermissionsConstants.EditStoreTitle)]
         public async Task<IActionResult> AddOrEditStoreTitle(int storeTitleId = 0)
         {
             if (storeTitleId == 0)
@@ -906,6 +961,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddStoreTitle,PermissionsConstants.EditStoreTitle)]
         public async Task<IActionResult> AddOrEditStoreTitle(StoreTitle model)
         {
             if (!ModelState.IsValid)
@@ -954,6 +1010,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [NoDirectAccess]
+        [Permission(PermissionsConstants.DeleteStoreTitle)]
         public async Task<IActionResult> DeleteStoreTitle(int storeTitleId)
         {
             var res = await _shopperService.DeleteStoreTitleAsync(storeTitleId);
@@ -972,6 +1030,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddStoreAddress)]
         public async Task<IActionResult> AddStoreAddress(string shopperId)
         {
             if (shopperId == null)
@@ -992,6 +1051,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddStoreAddress)]
         public async Task<IActionResult> AddStoreAddress(StoreAddress model, int selectedState)
         {
             ViewBag.States = _originService.GetStates();
@@ -1048,6 +1108,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditStoreAddress)]
         public async Task<IActionResult> EditStoreAddress(string storeAddressId)
         {
             if (string.IsNullOrEmpty(storeAddressId))
@@ -1072,6 +1133,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditStoreAddress)]
         public async Task<IActionResult> EditStoreAddress(StoreAddress model, int selectedState)
         {
             ViewBag.States = _originService.GetStates();
@@ -1115,6 +1177,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.DeleteStoreAddress)]
         public async Task<IActionResult> DeleteStoreAddress(string storeAddressId)
         {
             var deleteAddress = await _shopperService.DeleteStoreAddressAsync(storeAddressId);
@@ -1133,6 +1196,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.UnAvailableShopperProduct)]
         public async Task<IActionResult> UnAvailableShopperProduct(string shopperProductId)
         {
             if (string.IsNullOrEmpty(shopperProductId))

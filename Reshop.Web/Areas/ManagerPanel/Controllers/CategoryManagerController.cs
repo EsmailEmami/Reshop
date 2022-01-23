@@ -9,10 +9,13 @@ using Reshop.Domain.Entities.Category;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Reshop.Application.Constants;
+using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
+    [Permission(PermissionsConstants.CategoriesPage)]
     public class CategoryManagerController : Controller
     {
         #region constructor
@@ -33,6 +36,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
+        [Permission(PermissionsConstants.AddCategory, PermissionsConstants.EditCategory)]
         public async Task<IActionResult> AddOrEditCategory(int categoryId = 0)
         {
             if (categoryId == 0)
@@ -52,6 +56,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [Permission(PermissionsConstants.AddCategory, PermissionsConstants.EditCategory)]
         public async Task<IActionResult> AddOrEditCategory(AddOrEditCategoryViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
@@ -173,6 +178,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [Permission(PermissionsConstants.DeleteCategory)]
         public async Task<IActionResult> RemoveCategory(int categoryId)
         {
             if (!await _categoryService.IsCategoryExistAsync(categoryId)) return NotFound();

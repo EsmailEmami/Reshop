@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
+using Reshop.Application.Constants;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Generator;
@@ -7,6 +8,7 @@ using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.Shopper;
 using Reshop.Application.Interfaces.User;
 using Reshop.Application.Security;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.DTOs.Shopper;
 using Reshop.Domain.DTOs.User;
 using Reshop.Domain.Entities.Shopper;
@@ -20,6 +22,7 @@ using System.Threading.Tasks;
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
+    [Permission(PermissionsConstants.UsersManager)]
     public class UserManagerController : Controller
     {
         #region constructor
@@ -60,6 +63,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddUser, PermissionsConstants.EditUser)]
         public async Task<IActionResult> AddOrEditUser(string userId = "")
         {
             if (userId == "")
@@ -88,6 +92,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddUser, PermissionsConstants.EditUser)]
         public async Task<IActionResult> AddOrEditUser(AddOrEditUserForAdminViewModel model)
         {
             model.Roles = _permissionService.GetRoles();
@@ -182,6 +187,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [Permission(PermissionsConstants.RemoveUser)]
         public async Task<IActionResult> RemoveUser(string userId)
         {
             if (!await _userService.IsUserExistAsync(userId)) return NotFound();
@@ -196,6 +202,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region detail
 
         [HttpGet("[action]/{userId}")]
+        [Permission(PermissionsConstants.UserDetail)]
         public async Task<IActionResult> UserDetail(string userId)
         {
             if (userId == null)
@@ -213,6 +220,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region add user to shopper
 
         [HttpGet]
+        [Permission(PermissionsConstants.AddUserToShopper)]
         public async Task<IActionResult> AddToShopper(string userId)
         {
             var userData = await _userService.GetUserDataForEditAsync(userId);
@@ -236,6 +244,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [Permission(PermissionsConstants.AddUserToShopper)]
         public async Task<IActionResult> AddToShopper(AddShopperViewModel model)
         {
             model.States = _originService.GetStates();
@@ -375,6 +384,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddUserAddress)]
         public async Task<IActionResult> NewAddress(string userId)
         {
             if (!await _userService.IsUserExistAsync(userId))
@@ -392,6 +402,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddUserAddress)]
         public async Task<IActionResult> NewAddress(Address model, int selectedState)
         {
             ViewBag.States = _originService.GetStates();
@@ -448,6 +459,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditUserAddress)]
         public async Task<IActionResult> EditAddress(string addressId)
         {
             if (string.IsNullOrEmpty(addressId))
@@ -472,6 +484,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditUserAddress)]
         public async Task<IActionResult> EditAddress(Address model, int selectedState)
         {
             ViewBag.States = _originService.GetStates();
@@ -515,6 +528,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(true, PermissionsConstants.DeleteUserAddress)]
         public async Task<IActionResult> DeleteAddress(string addressId)
         {
             var deleteAddress = await _userService.DeleteUserAddressAsync(addressId);
@@ -540,6 +554,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(true, PermissionsConstants.DeleteUserFavoriteProduct)]
         public async Task<IActionResult> DeleteFavoriteProduct(string userId, string shopperProductColorId)
         {
             var res = await _productService.DeleteFavoriteProductAsync(userId, shopperProductColorId);
@@ -565,6 +580,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [Route("[action]/{userId}/{trackingCode}")]
+        [Permission(PermissionsConstants.UserOrderDetail)]
         public async Task<IActionResult> UserOrderDetail(string userId, string trackingCode)
         {
             if (string.IsNullOrEmpty(trackingCode))

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
+using Reshop.Application.Constants;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
 using Reshop.Application.Interfaces.Product;
 using Reshop.Application.Interfaces.User;
+using Reshop.Application.Security.Attribute;
 using Reshop.Domain.Entities.User;
 using System.Threading.Tasks;
 
@@ -27,6 +29,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
 
         [HttpGet]
+        [Permission(PermissionsConstants.StatesPage)]
         public IActionResult ManageStates()
         {
             return View();
@@ -40,6 +43,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpGet]
+        [Permission(PermissionsConstants.CitiesPage)]
         public IActionResult ManageCities()
         {
             return View();
@@ -63,6 +67,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region add or edit state
 
         [HttpGet]
+        [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddState, PermissionsConstants.EditState)]
         public async Task<IActionResult> AddOrEditState(int stateId = 0)
         {
             if (stateId == 0)
@@ -80,6 +86,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddState, PermissionsConstants.EditState)]
         public async Task<IActionResult> AddOrEditState(State model)
         {
             if (!ModelState.IsValid)
@@ -127,6 +135,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #endregion
 
         [HttpPost]
+        [Permission(PermissionsConstants.DeleteState)]
         public async Task<IActionResult> DeleteState(int stateId)
         {
             try
@@ -147,6 +156,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         #region add or edit city
 
         [HttpGet]
+        [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddCity, PermissionsConstants.EditCity)]
         public async Task<IActionResult> AddOrEditCity(int cityId = 0)
         {
             ViewBag.States = _stateService.GetStates();
@@ -166,6 +177,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddCity, PermissionsConstants.EditCity)]
         public async Task<IActionResult> AddOrEditCity(City model)
         {
             ViewBag.States = _stateService.GetStates();
@@ -216,6 +229,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         #endregion
 
+        [HttpPost]
+        [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.DeleteCity)]
         public async Task<IActionResult> DeleteCity(int cityId)
         {
             try

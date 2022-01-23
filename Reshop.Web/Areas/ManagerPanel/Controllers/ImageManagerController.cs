@@ -8,10 +8,13 @@ using Reshop.Domain.DTOs.Image;
 using Reshop.Domain.Entities.Image;
 using System.IO;
 using System.Threading.Tasks;
+using Reshop.Application.Constants;
+using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
+    [Permission(PermissionsConstants.BannersPage)]
     public class ImageManagerController : Controller
     {
         #region constructor
@@ -37,6 +40,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddBanner)]
         public IActionResult AddImage()
         {
             return View(new AddOrEditImageViewModel()
@@ -47,6 +51,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddBanner)]
         public async Task<IActionResult> AddImage(AddOrEditImageViewModel model)
         {
             model.Places = _imageService.GetImagesPlace();
@@ -94,6 +99,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpGet]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditBanner)]
         public async Task<IActionResult> EditImage(string imageId)
         {
             ViewBag.ImagesPlace = _imageService.GetImagesPlace();
@@ -117,6 +123,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.EditBanner)]
         public async Task<IActionResult> EditImage(AddOrEditImageViewModel model)
         {
             model.Places = _imageService.GetImagesPlace();
@@ -166,6 +173,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
         [HttpPost]
         [NoDirectAccess]
+        [Permission(PermissionsConstants.DeleteBanner)]
         public async Task<IActionResult> DeleteImage(string imageId)
         {
             var delete = await _imageService.DeleteImageAsync(imageId);

@@ -6,12 +6,16 @@ using Reshop.Domain.DTOs.Category;
 using Reshop.Domain.Entities.Category;
 using System.Linq;
 using System.Threading.Tasks;
+using Reshop.Application.Attribute;
+using Reshop.Application.Constants;
 using Reshop.Application.Convertors;
 using Reshop.Application.Enums;
+using Reshop.Application.Security.Attribute;
 
 namespace Reshop.Web.Areas.ManagerPanel.Controllers
 {
     [Area("ManagerPanel")]
+    [Permission(PermissionsConstants.ChildCategoriesPage)]
     public class ChildCategoryManagerController : Controller
     {
         #region constructor
@@ -31,7 +35,9 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return View(_categoryService.GetChildCategories());
         }
 
-        [HttpGet]
+        [HttpGet]  
+        [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddChildCategory,PermissionsConstants.EditChildCategory)]
         public async Task<IActionResult> AddOrEditChildCategory(int childCategoryId = 0)
         {
             if (childCategoryId == 0)
@@ -56,6 +62,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [NoDirectAccess]
+        [PermissionJs(PermissionsConstants.AddChildCategory, PermissionsConstants.EditChildCategory)]
         public async Task<IActionResult> AddOrEditChildCategory(AddOrEditChildCategoryViewModel model)
         {
             model.Categories = _categoryService.GetCategories();
@@ -111,6 +119,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         }
 
         [HttpPost]
+        [NoDirectAccess]
+        [Permission(PermissionsConstants.DeleteChildCategory)]
         public async Task<IActionResult> RemoveChildCategory(int childCategoryId)
         {
             if (!await _categoryService.IsChildCategoryExistAsync(childCategoryId)) return NotFound();

@@ -16,8 +16,9 @@
     </li>
 </ul>
 
-
-<div class="data">
+@if (ViewBag.IsValid)
+{
+    <div class="data">
     <div>
         <h3><i class="far fa-tags"></i> نام رنگ: </h3>
         <span>@Model.ColorName</span>
@@ -239,10 +240,13 @@
                 chart.draw(data, options);
             });
         }
-
-
-
+        
         window.addEventListener('resize', @drawLastMonthDataLineChart);
         window.addEventListener('resize', @drawLastMonthBestShoppersPieChart);
         window.addEventListener('resize', @drawBestShoppersPieChart);
 </script>
+}
+else
+{
+    @await Html.PartialAsync("ErrorJs", 403)
+}
