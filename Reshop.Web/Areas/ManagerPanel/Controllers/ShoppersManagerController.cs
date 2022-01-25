@@ -178,7 +178,6 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return View(shopperData);
         }
 
-        [HttpPost]
         [Permission(PermissionsConstants.EditShopper)]
         public async Task<IActionResult> EditShopper(EditShopperViewModel model)
         {
@@ -324,7 +323,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
             return ViewComponent("ShopperProductsOfShopperComponent", new { shopperId, type, pageId, filter });
         }
 
-        [HttpGet]
+        [HttpGet("[action]/{shopperProductId}")]
         [Permission(PermissionsConstants.ShopperProductDetail)]
         public async Task<IActionResult> ShopperProductDetail(string shopperProductId)
         {

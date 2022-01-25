@@ -323,6 +323,7 @@ namespace Reshop.Web.Controllers.Question
         #region  add question answer
 
         [HttpGet]
+        [NoDirectAccess]
         public IActionResult AddQuestionAnswer(int questionId)
         {
             if (questionId == 0)
@@ -338,6 +339,7 @@ namespace Reshop.Web.Controllers.Question
         }
 
         [HttpPost]
+        [NoDirectAccess]
         public async Task<IActionResult> AddQuestionAnswer(AddQuestionAnswerViewModel model)
         {
             if (!ModelState.IsValid)

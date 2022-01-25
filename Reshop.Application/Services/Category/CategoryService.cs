@@ -129,28 +129,18 @@ namespace Reshop.Application.Services.Category
             };
         }
 
-        public async Task<AddOrEditCategoryViewModel> GetCategoryDataAsync(int categoryId)
+        public async Task<EditCategoryViewModel> GetCategoryDataAsync(int categoryId)
         {
             var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
             var imagesName = _categoryRepository.GetCategoryGalleryImagesNameAndUrl(category.CategoryId).ToList();
 
-            return new AddOrEditCategoryViewModel()
+            return new EditCategoryViewModel()
             {
                 CategoryId = category.CategoryId,
                 CategoryTitle = category.CategoryTitle,
                 IsActive = category.IsActive,
-                SelectedImage1IMG = imagesName.Skip(0).First().Item1,
-                SelectedImage2IMG = imagesName.Skip(1).First().Item1,
-                SelectedImage3IMG = imagesName.Skip(2).First().Item1,
-                SelectedImage4IMG = imagesName.Skip(3).First().Item1,
-                SelectedImage5IMG = imagesName.Skip(4).First().Item1,
-                SelectedImage6IMG = imagesName.Skip(5).First().Item1,
-                SelectedImage1URL = imagesName.Skip(0).First().Item2,
-                SelectedImage2URL = imagesName.Skip(1).First().Item2,
-                SelectedImage3URL = imagesName.Skip(2).First().Item2,
-                SelectedImage4URL = imagesName.Skip(3).First().Item2,
-                SelectedImage5URL = imagesName.Skip(4).First().Item2,
-                SelectedImage6URL = imagesName.Skip(5).First().Item2,
+                SelectedImages = imagesName.Select(c => c.Item1),
+                Urls = imagesName.Select(c => c.Item2)
             };
         }
 

@@ -92,7 +92,7 @@
                             @counter
                         </td>
                         <td>@item.ProductName</td>
-                        <td>@item.CreateDate</td>
+                        <td>@item.CreateDate.ToShamsiDateTime()</td>
                         <td>@item.ColorsCount</td>
                         <td>@(item.IsActive ? "فعال" : "غیر فعال")</td>
                         <td>

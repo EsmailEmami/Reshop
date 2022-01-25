@@ -1,0 +1,77 @@
+﻿@model AddCategoryViewModel
+
+@{
+    ViewData["Title"] = "افزودن گروه";
+}
+@section RightMenu
+{
+    @{
+    await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.CategoryPage);
+ }
+}
+
+@section Css{
+<link href="~/css/select.css" rel="stylesheet" />
+}
+
+<form asp-action="AddCategory" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="CategoryTitle">
+                <label asp-for="CategoryTitle"></label>
+                <span asp-validation-for="CategoryTitle" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-check">
+                <label>
+                    این گروه فعال است
+                    <input type="checkbox" asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-around" id="images-part">
+
+        <div class="col-auto" id="imgProduct1">
+            <div class="image-field">
+                <div class="image-area">
+                    <a href="javascript:void(0)" class="change-image">
+                        <input type="file" name="Images" multiple class="ProfileAvatarInput" onchange="addImageToCategory(this, 'imgProduct1')">
+                        <i class="far fa-camera"></i>
+                    </a>
+                    <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا">
+                </div>
+                <div class="image-field-options">
+                    <a onclick="removeImageOnAdd('imgProduct1')">
+                        <i class="far fa-trash"></i>
+                    </a>
+                </div>
+                <div class="form-field">
+                    <input multiple name="Urls" type="text">
+                    <label>آدرس عکس</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <span asp-validation-for="Images" class="text-danger"></span>
+
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-success text-white">ثبت</button>
+    </div>
+
+</form>
+
+@section Scripts {
+<script src="~/js/select.js"></script>
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

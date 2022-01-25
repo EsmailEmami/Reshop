@@ -266,7 +266,7 @@ namespace Reshop.Web.Controllers.Product
         [Route("Products/{type}")]
         [Route("Products/{type}/{pageId}/{sortBy}/{minPrice}/{maxPrice}")]
         [Route("Products/{type}/{pageId}/{sortBy}/{minPrice}/{maxPrice}/{brands}/{search}")]
-        public async Task<IActionResult> GetProducts(string type , int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
+        public async Task<IActionResult> GetProducts(string type, int pageId = 1, string minPrice = null, string maxPrice = null, string search = null, string sortBy = "news", string brands = null)
         {
             if (!Fixer.EnumContainValue<ProductTypes>(type))
                 return NotFound();
@@ -367,7 +367,9 @@ namespace Reshop.Web.Controllers.Product
             if (listProducts == null || !listProducts.Any())
                 return NotFound();
 
-            ViewBag.CurrentProducts = listProducts.ListToString(","); ;
+            string type = await _productService.GetProductTypeStringByIdAsync(listProducts.First());
+
+            ViewBag.CurrentProducts = listProducts.ListToString(",");
 
             if (brands != null && brands.ToLower() == "null")
                 brands = null;
@@ -380,7 +382,7 @@ namespace Reshop.Web.Controllers.Product
             if (selectedBrands == null)
                 return NotFound();
 
-            var result = await _productService.GetChildCategoryProductsWithPaginationAsync(childCategoryId, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
+            var result = await _productService.GetChildCategoryProductsWithPaginationForCompareAsync(childCategoryId, type, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
 
             ViewBag.SortBy = sortBy;
             ViewBag.SelectedBrands = selectedBrands;
@@ -392,6 +394,7 @@ namespace Reshop.Web.Controllers.Product
             if (result != null)
             {
                 ViewBag.SelectedMaxPrice = !string.IsNullOrEmpty(maxPrice) ? int.Parse(maxPrice) : result.ProductsMaxPrice;
+                ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : result.ProductsMinPrice;
                 ViewBag.SelectedMinPrice = !string.IsNullOrEmpty(minPrice) ? int.Parse(minPrice) : result.ProductsMinPrice;
             }
 

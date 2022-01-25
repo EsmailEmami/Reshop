@@ -20,14 +20,14 @@ namespace Reshop.Application.Interfaces.Category
         Task<Domain.Entities.Category.Category> GetCategoryByIdAsync(int categoryId);
         Task<ChildCategory> GetChildCategoryByIdAsync(int childCategoryId);
         Task<AddOrEditChildCategoryViewModel> GetChildCategoryDataAsync(int childCategoryId);
-        Task<AddOrEditCategoryViewModel> GetCategoryDataAsync(int categoryId);
+        Task<EditCategoryViewModel> GetCategoryDataAsync(int categoryId);
         Task<int> GetChildCategoryIdOfProductAsync(int productId);
 
 
         // insert
         Task<ResultTypes> AddCategoryAsync(Domain.Entities.Category.Category category);
         Task<ResultTypes> AddChildCategoryAsync(ChildCategory childCategory);
-         Task<ResultTypes> AddCategoryGalleryAsync(CategoryGallery categoryGallery);
+        Task<ResultTypes> AddCategoryGalleryAsync(CategoryGallery categoryGallery);
         Task<CategoryGallery> GetCategoryGalleryAsync(int categoryId, string imageName);
         Task<ResultTypes> DeleteCategoryGalleryAsync(CategoryGallery categoryGallery);
         Task<ResultTypes> EditCategoryGalleryAsync(CategoryGallery categoryGallery);

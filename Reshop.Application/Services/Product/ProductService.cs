@@ -132,8 +132,6 @@ namespace Reshop.Application.Services.Product
 
             var childCategory = await _categoryRepository.GetChildCategoryByIdAsync(childCategoryId);
 
-            var category = await _categoryRepository.GetCategoryByIdAsync(childCategory.CategoryId);
-
             var products = _productRepository.GetProductsOfChildCategoryWithPagination(childCategoryId, sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -142,6 +140,42 @@ namespace Reshop.Application.Services.Product
 
             decimal productMaxPrice = await _productRepository.GetMaxPriceOfChildCategoryProductsAsync(childCategoryId, filter, brands);
             decimal productMinPrice = await _productRepository.GetMinPriceOfChildCategoryProductsAsync(childCategoryId, filter, brands);
+
+            return new ChildCategoryProductsForShow()
+            {
+                ChildCategoryId = childCategoryId,
+                ChildCategoryName = childCategory.ChildCategoryTitle,
+                Category = new Tuple<int, string>(0, null),
+                Products = products,
+                PageId = pageId,
+                TotalPages = totalPages,
+                Brands = brandsShow,
+                ProductsMaxPrice = productMaxPrice,
+                ProductsMinPrice = productMinPrice
+            };
+        }
+
+        public async Task<ChildCategoryProductsForShow> GetChildCategoryProductsWithPaginationForCompareAsync(int childCategoryId, string type, string sortBy = "news",
+            int pageId = 1, int take = 18, string filter = null, string minPrice = null, string maxPrice = null,
+            List<int> brands = null)
+        {
+            int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
+
+
+            int productsCount = await _productRepository.GetChildCategoryProductsCountAsync(childCategoryId, type.FixedText(), filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
+
+            var childCategory = await _categoryRepository.GetChildCategoryByIdAsync(childCategoryId);
+
+            var category = await _categoryRepository.GetCategoryByIdAsync(childCategory.CategoryId);
+
+            var products = _productRepository.GetProductsOfChildCategoryWithPagination(childCategoryId, type.FixedText(), sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
+
+            int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
+
+            var brandsShow = _brandRepository.GetBrandsOfChildCategory(childCategoryId);
+
+            decimal productMaxPrice = await _productRepository.GetMaxPriceOfChildCategoryProductsAsync(childCategoryId, type.FixedText(), filter, brands);
+            decimal productMinPrice = await _productRepository.GetMinPriceOfChildCategoryProductsAsync(childCategoryId, type.FixedText(), filter, brands);
 
             return new ChildCategoryProductsForShow()
             {
@@ -374,6 +408,9 @@ namespace Reshop.Application.Services.Product
             };
         }
 
+        public async Task<string> GetProductTypeStringByIdAsync(int productId) =>
+            await _productRepository.GetProductTypeAsync(productId);
+
         public async Task<ProductDetailViewModel> GetProductDetailAsync(string shopperProductColorId)
         {
             var product = await _productRepository.GetProductDataForDetailAsync(shopperProductColorId);
@@ -605,7 +642,7 @@ namespace Reshop.Application.Services.Product
 
                 return ResultTypes.Successful;
             }
-            catch(Exception e)
+            catch
             {
                 return ResultTypes.Failed;
             }

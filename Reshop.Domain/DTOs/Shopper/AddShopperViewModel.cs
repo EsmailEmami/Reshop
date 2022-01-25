@@ -79,5 +79,6 @@ namespace Reshop.Domain.DTOs.Shopper
         public IEnumerable<StoreTitle> StoreTitles { get; set; }
         public IEnumerable<int> SelectedStoreTitles { get; set; }
         public IEnumerable<Tuple<int, string>> States { get; set; }
+        public IEnumerable<City> Cities { get; set; }
     }
 }

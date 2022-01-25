@@ -1,0 +1,134 @@
+﻿@model EditCategoryViewModel
+
+@{
+    ViewData["Title"] = "ویرایش گروه";
+
+    int imageCounter = 1;
+    int imageNameCounter = 1;
+    string imageId = $"imgProduct{imageCounter}";
+    string imageName = $"imageName{imageNameCounter}";
+}
+@section RightMenu
+{
+    @{
+    await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.CategoryPage);
+ }
+}
+
+@section Css{
+<link href="~/css/select.css" rel="stylesheet" />
+}
+
+<form asp-action="EditCategory" method="post" enctype="multipart/form-data">
+
+    <div id="edited-images"></div>
+    <div id="edited-urls"></div>
+    <div id="deleted-images"></div>
+    <div id="selected-images">
+        @foreach (var image in Model.SelectedImages)
+        {
+            <input type="hidden" value="@image" multiple name="SelectedImages" id="@imageName" />
+
+            imageNameCounter++;
+            imageName = $"imageName{imageNameCounter}";
+        }
+    </div>
+
+
+    <div class="row">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="CategoryId" />
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-field">
+                <input asp-for="CategoryTitle">
+                <label asp-for="CategoryTitle"></label>
+                <span asp-validation-for="CategoryTitle" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-6">
+            <div class="form-check">
+                <label>
+                    این گروه فعال است
+                    <input type="checkbox" asp-for="IsActive">
+                    <span></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-around" id="images-part">
+
+        @if (Model.SelectedImages != null)
+        {
+            var list = Model.Urls.ToList();
+            foreach (var image in Model.SelectedImages)
+            {
+                int nummer = imageCounter - 1;
+                var url = list[nummer];
+
+
+                <div class="col-auto" id="@imageId">
+                    <div class="image-field">
+                        <div class="image-area">
+                            <a href="javascript:void(0)" class="change-image">
+                                <input type="file" name="Images" multiple class="ProfileAvatarInput" onchange="editImageOfCategory(this, '@imageId' )">
+                                <i class="far fa-camera"></i>
+                            </a>
+                            <img src="~/images/categoryImages/@image" alt="تصویر کالا">
+                        </div>
+                        <div class="image-field-options">
+                            <a onclick="removeImageOnEdit('@imageId')">
+                                <i class="far fa-trash"></i>
+                            </a>
+                        </div>
+                        <div class="form-field">
+                            <input multiple name="Urls" type="text" value="@url" onchange="setChangeUrl('@imageId')">
+                            <label>آدرس عکس</label>
+                        </div>
+                    </div>
+                </div>
+
+                imageCounter++;
+                imageId = $"imgProduct{imageCounter}";
+            }
+        }
+
+        <div class="col-auto" id="@imageId">
+            <div class="image-field">
+                <div class="image-area">
+                    <a href="javascript:void(0)" class="change-image">
+                        <input type="file" name="Images" multiple class="ProfileAvatarInput" onchange="editImageOfProduct(this, '@imageId')">
+                        <i class="far fa-camera"></i>
+                    </a>
+                    <img src="~/images/pattern/placeholder-image.png" alt="تصویر کالا">
+                </div>
+                <div class="image-field-options">
+                    <a onclick="removeImageOnEdit('@imageId')">
+                        <i class="far fa-trash"></i>
+                    </a>
+                </div>
+                <div class="form-field">
+                    <input multiple name="Urls" type="text" onchange="setChangeUrl('@imageId')">
+                    <label>آدرس عکس</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <span asp-validation-for="Images" class="text-danger"></span>
+
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-success text-white">ثبت</button>
+    </div>
+
+</form>
+
+@section Scripts {
+<script src="~/js/select.js"></script>
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}

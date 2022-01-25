@@ -249,9 +249,16 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
         {
             model.States = _originService.GetStates();
             model.StoreTitles = _shopperService.GetStoreTitles();
+            model.Cities = _originService.GetCitiesOfState(model.StateId);
 
             if (!ModelState.IsValid)
                 return View(model);
+
+            if (model.SelectedStoreTitles == null)
+            {
+                ModelState.AddModelError("", "فروشنده عزیز لطفا عناوین خود را انتخاب کنید.");
+                return View(model);
+            }
 
 
             //// check images is not script
@@ -348,7 +355,8 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
                 Plaque = model.Plaque,
                 PostalCode = model.PostalCode,
                 AddressText = model.AddressText,
-                LandlinePhoneNumber = model.LandlinePhoneNumber
+                LandlinePhoneNumber = model.LandlinePhoneNumber,
+                StoreName = model.StoreName
             };
 
             var addStoreAddress = await _shopperService.AddStoreAddressAsync(storeAddress);

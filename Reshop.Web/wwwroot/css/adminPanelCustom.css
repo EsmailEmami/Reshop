@@ -691,88 +691,88 @@ ul.pagination-custom {
         padding: 20px 5px 0 5px;
     }
 
-        .right-menu.min ul {
+        .right-menu.min ul:hover {
             width: 315px;
         }
 
-            .right-menu.min ul li {
-                line-height: 57px;
-                max-height: 53px;
-                width: 53px;
+        .right-menu.min ul li {
+            line-height: 57px;
+            max-height: 53px;
+            width: 53px;
+        }
+
+            .right-menu.min ul li a,
+            .right-menu.min ul li.dropdown span.name {
+                padding-right: 0;
+                text-align: center;
             }
 
-                .right-menu.min ul li a,
-                .right-menu.min ul li.dropdown span.name {
-                    padding-right: 0;
-                    text-align: center;
-                }
-
-                    .right-menu.min ul li a span,
-                    .right-menu.min ul li.dropdown span.name span {
-                        display: none;
-                    }
-
-                    .right-menu.min ul li a i,
-                    .right-menu.min ul li.dropdown span.name i {
-                        padding-left: 0;
-                        font-size: 22px;
-                    }
-
-
-                /* dropdown */
-
-                .right-menu.min ul li.dropdown::after {
+                .right-menu.min ul li a span,
+                .right-menu.min ul li.dropdown span.name span {
                     display: none;
                 }
 
-                .right-menu.min ul li.dropdown:hover {
-                    height: auto;
+                .right-menu.min ul li a i,
+                .right-menu.min ul li.dropdown span.name i {
+                    padding-left: 0;
+                    font-size: 22px;
                 }
 
-                .right-menu.min ul li.dropdown ul {
-                    min-width: 200px;
-                    width: auto;
-                    height: auto;
-                    display: block;
-                    background: #FC5400;
-                    border-radius: 8px 0 0 8px;
-                    position: absolute;
-                    visibility: hidden;
-                    padding: 5px 10px;
-                    top: 0;
-                    right: 54px;
-                    margin: 0;
-                    z-index: 1;
-                    opacity: 0;
-                    overflow: visible;
+
+            /* dropdown */
+
+            .right-menu.min ul li.dropdown::after {
+                display: none;
+            }
+
+            .right-menu.min ul li.dropdown:hover {
+                height: auto;
+            }
+
+            .right-menu.min ul li.dropdown ul {
+                min-width: 200px;
+                width: auto;
+                height: auto;
+                display: block;
+                background: #FC5400;
+                border-radius: 8px 0 0 8px;
+                position: absolute;
+                visibility: hidden;
+                padding: 5px 10px;
+                top: 0;
+                right: 54px;
+                margin: 0;
+                z-index: 1;
+                opacity: 0;
+                overflow: visible;
+            }
+
+            .right-menu.min ul li.dropdown:hover ul {
+                visibility: visible;
+                opacity: 1;
+            }
+
+            .right-menu.min ul li.dropdown ul li {
+                transform: background ease .3s;
+                width: 100%;
+            }
+
+                .right-menu.min ul li.dropdown ul li a {
+                    text-align: start;
+                    padding-right: 22px;
+                    font-size: 15px;
+                    color: #fff;
                 }
 
-                .right-menu.min ul li.dropdown:hover ul {
-                    visibility: visible;
-                    opacity: 1;
-                }
-
-                .right-menu.min ul li.dropdown ul li {
-                    transform: background ease .3s;
-                    width: 100%;
-                }
-
-                    .right-menu.min ul li.dropdown ul li a {
-                        text-align: start;
-                        padding-right: 22px;
-                        font-size: 15px;
+                    .right-menu.min ul li.dropdown ul li a i {
+                        padding-left: 7px;
                         color: #fff;
                     }
 
-                        .right-menu.min ul li.dropdown ul li a i {
-                            padding-left: 7px;
-                            color: #fff;
-                        }
-
-                    .right-menu.min ul li.dropdown ul li :hover a,
-                    .right-menu.min ul li.dropdown ul li :hover a i {
-                        color: #FC5400;
-                    }
+                .right-menu.min ul li.dropdown ul li :hover a,
+                .right-menu.min ul li.dropdown ul li :hover a i {
+                    color: #FC5400;
+                }
 
 
 /* --------------------------------------------------------------------------------- */
@@ -2246,6 +2246,12 @@ ul.pagination-custom {
         transition: ease .3s;
         visibility: visible;
         opacity: 1;
+    }
+
+    .image-field .form-field {
+        padding: 2px;
+        margin: 1.5rem 0 0 0;
+        line-height: 27px;
     }
 
 .file-field {

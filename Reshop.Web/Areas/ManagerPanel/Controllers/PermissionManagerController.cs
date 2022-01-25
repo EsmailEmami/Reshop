@@ -195,7 +195,10 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             if (!string.IsNullOrEmpty(model.ParentId))
             {
-                permission.ParentId = model.ParentId;
+                if (model.ParentId != "0")
+                {
+                    permission.ParentId = model.ParentId;
+                }
             }
 
             var res = await _permissionService.AddPermissionAsync(permission);

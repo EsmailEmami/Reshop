@@ -48,6 +48,12 @@
 
             @{
                 var states = ViewBag.States as IEnumerable<Tuple<int, string>>;
+
+                IEnumerable<City> cities = null;
+                if (ViewBag.Cities != null)
+                {
+                    cities = ViewBag.Cities as IEnumerable<City>;
+                }
             }
 
             <select onchange="GetCitiesOfState(this.value)" name="selectedState">
@@ -65,7 +71,18 @@
         <div class="col-sm-12 col-md-6 col-lg-4">
          
                 <select id="city" asp-for="CityId">
-                    <option value="0">لطفا استان را انتخاب کنید</option>
+                  @if (cities != null)
+                    {
+                        <option value="0">شهر</option>
+                        @foreach (var city in cities)
+                        {
+                            @:<option value="@city.CityId" @((Model.CityId != 0 && city.CityId == Model.CityId) ? "selected" : "" )>@city.CityName</option>
+                        }
+                    }
+                  else
+                  {
+                      <option value="0">لطفا استان را انتخاب کنید</option>
+                  }
                 </select>
 
         </div>

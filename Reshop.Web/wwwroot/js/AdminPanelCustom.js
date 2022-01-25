@@ -249,6 +249,228 @@ function editImageOfProduct(input, partitionId) {
     }
 }
 
+function addImageToCategory(input, partitionId) {
+    if (input.files && input.files[0]) {
+        var partitionImg = document.getElementById(partitionId).querySelector('img');
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            partitionImg.setAttribute('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    var partitionNum = parseInt(partitionId.replace(/\D/g, ""));
+
+    // get all partitions
+    var partitions = document.querySelectorAll('#images-part .col-auto');
+    var lastPartitionId = partitions[partitions.length - 1].getAttribute('id');
+    var lastPartitionNum = parseInt(lastPartitionId.replace(/\D/g, ""));
+
+    var isLast = false;
+
+    if (partitionNum === lastPartitionNum) {
+        isLast = true;
+    }
+
+
+    if (isLast === true) {
+
+        var imageField = document.createElement('div');
+        imageField.className = 'image-field';
+
+        var imageArea = document.createElement('div');
+        imageArea.className = 'image-area';
+
+        var changeImage = document.createElement('a');
+        changeImage.className = 'change-image';
+        changeImage.setAttribute('href', 'javascript:void(0)');
+
+        var imageInput = document.createElement('input');
+        imageInput.setAttribute('type', 'file');
+        imageInput.setAttribute('multiple', '');
+        imageInput.setAttribute('name', 'Images');
+        imageInput.setAttribute('class', 'ProfileAvatarInput');
+
+        var imageI = document.createElement('i');
+        imageI.setAttribute('class', 'far fa-camera');
+
+        var areaImage = document.createElement('img');
+        areaImage.setAttribute('src', '/images/pattern/placeholder-image.png');
+        areaImage.setAttribute('alt', 'تصویر کالا');
+
+        imageInput.onchange = function () {
+            addImageToCategory(this, 'imgProduct' + (lastPartitionNum + 1));
+        }
+
+        var options = document.createElement('div');
+        options.className = 'image-field-options';
+
+        var optionA = document.createElement('a');
+
+        optionA.onclick = function () {
+            removeImageOnAdd('imgProduct' + (lastPartitionNum + 1));
+        }
+
+        var optionI = document.createElement('i');
+        optionI.setAttribute('class', 'far fa-trash');
+
+        var newImagePartition = document.createElement('div');
+        newImagePartition.className = 'col-auto';
+
+        newImagePartition.setAttribute('id', 'imgProduct' + (lastPartitionNum + 1));
+
+        var formField = document.createElement('div');
+        formField.className = 'form-field';
+
+        var formFieldInput = document.createElement('input');
+        formFieldInput.setAttribute('type', 'text');
+        formFieldInput.setAttribute('multiple', '');
+        formFieldInput.setAttribute('name', 'Urls');
+
+        var formFieldLabel = document.createElement('label');
+        formFieldLabel.innerHTML = "آدرس عکس";
+
+
+        changeImage.appendChild(imageInput);
+        changeImage.appendChild(imageI);
+        imageArea.appendChild(changeImage);
+        imageArea.appendChild(areaImage);
+        imageField.appendChild(imageArea);
+        optionA.appendChild(optionI);
+        options.appendChild(optionA);
+        formField.appendChild(formFieldInput);
+        formField.appendChild(formFieldLabel);
+        imageField.appendChild(options);
+        imageField.appendChild(formField);
+        newImagePartition.appendChild(imageField);
+
+        partitions[partitions.length - 1].after(newImagePartition);
+    }
+}
+
+function editImageOfCategory(input, partitionId) {
+
+    if (input.files && input.files[0]) {
+        var partitionImg = document.getElementById(partitionId).querySelector('img');
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            partitionImg.setAttribute('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    var partitionNum = parseInt(partitionId.replace(/\D/g, ""));
+
+    // get all partitions
+    var partitions = document.querySelectorAll('#images-part .col-auto');
+    var lastPartitionId = partitions[partitions.length - 1].getAttribute('id');
+    var lastPartitionNum = parseInt(lastPartitionId.replace(/\D/g, ""));
+
+    var isLast = false;
+
+    if (partitionNum === lastPartitionNum) {
+        isLast = true;
+    }
+
+    if (isLast === false) {
+
+        // this if for say witch image have been changed
+
+        var changedInput = document.createElement('input');
+        changedInput.setAttribute('type', 'hidden');
+        changedInput.setAttribute('multiple', '');
+        changedInput.setAttribute('name', 'ChangedImages');
+        changedInput.setAttribute('value', partitionNum);
+
+        document.getElementById('edited-images').appendChild(changedInput);
+    }
+
+    if (isLast === true) {
+
+        var imageField = document.createElement('div');
+        imageField.className = 'image-field';
+
+        var imageArea = document.createElement('div');
+        imageArea.className = 'image-area';
+
+        var changeImage = document.createElement('a');
+        changeImage.className = 'change-image';
+        changeImage.setAttribute('href', 'javascript:void(0)');
+
+        var imageInput = document.createElement('input');
+        imageInput.setAttribute('type', 'file');
+        imageInput.setAttribute('multiple', '');
+        imageInput.setAttribute('name', 'Images');
+        imageInput.setAttribute('class', 'ProfileAvatarInput');
+
+        var imageI = document.createElement('i');
+        imageI.setAttribute('class', 'far fa-camera');
+
+        var areaImage = document.createElement('img');
+        areaImage.setAttribute('src', '/images/pattern/placeholder-image.png');
+        areaImage.setAttribute('alt', 'تصویر کالا');
+
+        imageInput.onchange = function () {
+            editImageOfCategory(this, 'imgProduct' + (lastPartitionNum + 1));
+        }
+
+        var options = document.createElement('div');
+        options.className = 'image-field-options';
+
+        var optionA = document.createElement('a');
+
+        optionA.onclick = function () {
+            removeImageOnEdit('imgProduct' + (lastPartitionNum + 1));
+        }
+
+        var optionI = document.createElement('i');
+        optionI.setAttribute('class', 'far fa-trash');
+
+        var newImagePartition = document.createElement('div');
+        newImagePartition.className = 'col-auto';
+
+        newImagePartition.setAttribute('id', 'imgProduct' + (lastPartitionNum + 1));
+
+        var formField = document.createElement('div');
+        formField.className = 'form-field';
+
+        var formFieldInput = document.createElement('input');
+        formFieldInput.setAttribute('type', 'text');
+        formFieldInput.setAttribute('multiple', '');
+        formFieldInput.setAttribute('name', 'Urls');
+
+        formFieldInput.addEventListener('change', function () {
+            setChangeUrl('imgProduct' + (lastPartitionNum + 1));
+        });
+
+        var formFieldLabel = document.createElement('label');
+        formFieldLabel.innerHTML = "آدرس عکس";
+
+
+        changeImage.appendChild(imageInput);
+        changeImage.appendChild(imageI);
+        imageArea.appendChild(changeImage);
+        imageArea.appendChild(areaImage);
+        imageField.appendChild(imageArea);
+        optionA.appendChild(optionI);
+        options.appendChild(optionA);
+        formField.appendChild(formFieldInput);
+        formField.appendChild(formFieldLabel);
+        imageField.appendChild(options);
+        imageField.appendChild(formField);
+        newImagePartition.appendChild(imageField);
+
+        partitions[partitions.length - 1].after(newImagePartition);
+    }
+}
+
+
 
 function removeImageOnAdd(partitionId) {
     var partitionsParent = document.querySelector('#images-part');
@@ -269,7 +491,7 @@ function removeImageOnAdd(partitionId) {
         var selectedPartition = document.getElementById(partitionId);
 
         partitionsParent.removeChild(selectedPartition);
-        
+
     }
 }
 
@@ -307,6 +529,40 @@ function removeImageOnEdit(partitionId) {
             changedInput.setAttribute('value', partitionNum);
 
             document.getElementById('deleted-images').appendChild(changedInput);
+        }
+    }
+}
+
+function setChangeUrl(partitionId) {
+    var partitionsParent = document.querySelector('#images-part');
+    var partitions = partitionsParent.querySelectorAll('.col-auto');
+    var lastPartitionId = partitions[partitions.length - 1].getAttribute('id');
+    var lastPartitionNum = parseInt(lastPartitionId.replace(/\D/g, ""));
+
+    var partitionNum = parseInt(partitionId.replace(/\D/g, ""));
+
+    var isLast = false;
+
+    if (partitionNum === lastPartitionNum) {
+        isLast = true;
+    }
+
+
+
+    if (isLast === false) {
+
+        // create new input for deleted Items
+
+        var beforeAddedImagesLength = document.querySelectorAll('#selected-images input').length;
+
+        if (partitionNum <= beforeAddedImagesLength) {
+            var changedInput = document.createElement('input');
+            changedInput.setAttribute('type', 'hidden');
+            changedInput.setAttribute('multiple', '');
+            changedInput.setAttribute('name', 'ChangedUrls');
+            changedInput.setAttribute('value', partitionNum);
+
+            document.getElementById('edited-urls').appendChild(changedInput);
         }
     }
 }

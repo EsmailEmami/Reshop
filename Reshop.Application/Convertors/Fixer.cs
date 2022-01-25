@@ -67,6 +67,49 @@ public static class Fixer
         }
     }
 
+    public static List<int> ToListInt(this List<string> values)
+    {
+        List<int> list = new List<int>();
+
+        try
+        {
+            if (values != null && values.Any())
+            {
+                foreach (var value in values)
+                {
+                    list.Add(Convert.ToInt32(value));
+                }
+            }
+
+            return list;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+    public static List<string> ToListString(this List<int> values)
+    {
+        List<string> list = new List<string>();
+
+        try
+        {
+            if (values != null && values.Any())
+            {
+                foreach (var value in values)
+                {
+                    list.Add(value.ToString());
+                }
+            }
+
+            return list;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public static List<int> SplitToListInt(string value, string splitBy = ",")
     {
         List<int> list = new List<int>();

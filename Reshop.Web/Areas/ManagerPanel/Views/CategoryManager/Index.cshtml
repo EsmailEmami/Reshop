@@ -15,7 +15,7 @@
 </div>
 
 
-<a class="btn btn-success text-white" asp-action="AddOrEditCategory">
+<a class="btn btn-success text-white" asp-action="AddCategory">
     <i class="far fa-bring-forward"></i> افزودن گروه جدید
 </a>
 
@@ -41,7 +41,7 @@
                             @Html.DisplayFor(modelItem => item.CategoryTitle)
                         </td>
                         <td>
-                            <a class="btn btn-warning text-white" asp-action="AddOrEditCategory" asp-route-categoryId="@item.CategoryId">
+                            <a class="btn btn-warning text-white" asp-action="EditCategory" asp-route-categoryId="@item.CategoryId">
                                 <i class="fal fa-marker"></i> ویرایش
                             </a>
                             <form asp-action="RemoveCategory" asp-route-categoryId="@item.CategoryId" method="post" class="d-inline">

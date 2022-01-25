@@ -277,7 +277,7 @@ function SubmitFormData(form, isModal) {
 
                 var loc;
                 if (res.isValid) {
-
+                    
                     if (isModal) {
                         // modal body 
                         $("#modal .modal-body").html('');

@@ -377,9 +377,9 @@ namespace Reshop.Application.Services.Shopper
                 ImageConvertor.DeleteImage(path + shopper.OnNationalCardImageName);
 
                 // delete shopper storeTitles
-                var shopperStoreTitles = _shopperRepository.GetRealShopperStoreTitles(shopper.ShopperId);
+                var shopperStoreTitles = _shopperRepository.GetRealShopperStoreTitles(shopper.ShopperId).ToList();
 
-                if (shopperStoreTitles != null)
+                if (shopperStoreTitles.Any())
                 {
                     foreach (var shopperStoreTitle in shopperStoreTitles)
                     {

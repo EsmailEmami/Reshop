@@ -31,18 +31,21 @@ namespace Reshop.Domain.Interfaces.Product
         IEnumerable<ProductDataForAdmin> GetProductsWithPaginationForAdmin(string type, int skip, int take, string filter);
         IEnumerable<ProductViewModel> GetProductsOfCategoryWithPagination(int categoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         IEnumerable<ProductViewModel> GetProductsOfChildCategoryWithPagination(int childCategoryId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
+        IEnumerable<ProductViewModel> GetProductsOfChildCategoryWithPagination(int childCategoryId, string type, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         IEnumerable<ProductViewModel> GetProductsOfShopperWithPagination(string shopperId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         IEnumerable<ProductViewModel> GetProductsOfBrandWithPagination(int brandId, string sortBy, int skip = 0, int take = 18, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> officialBrandProducts = null);
 
         Task<decimal> GetMaxPriceOfProductsAsync(string type, string filter = null, List<int> brands = null);
         Task<decimal> GetMaxPriceOfCategoryProductsAsync(int categoryId, string filter = null, List<int> brands = null);
         Task<decimal> GetMaxPriceOfChildCategoryProductsAsync(int childCategoryId, string filter = null, List<int> brands = null);
+        Task<decimal> GetMaxPriceOfChildCategoryProductsAsync(int childCategoryId, string type, string filter = null, List<int> brands = null);
         Task<decimal> GetMaxPriceOfShopperProductsAsync(string shopperId, string filter = null, List<int> brands = null);
         Task<decimal> GetMaxPriceOfBrandProductsAsync(int brandId, string filter = null, List<int> officialBrandProducts = null);
 
         Task<decimal> GetMinPriceOfProductsAsync(string type, string filter = null, List<int> brands = null);
         Task<decimal> GetMinPriceOfCategoryProductsAsync(int categoryId, string filter = null, List<int> brands = null);
         Task<decimal> GetMinPriceOfChildCategoryProductsAsync(int childCategoryId, string filter = null, List<int> brands = null);
+        Task<decimal> GetMinPriceOfChildCategoryProductsAsync(int childCategoryId, string type, string filter = null, List<int> brands = null);
         Task<decimal> GetMinPriceOfShopperProductsAsync(string shopperId, string filter = null, List<int> brands = null);
         Task<decimal> GetMinPriceOfBrandProductsAsync(int brandId, string filter = null, List<int> officialBrandProducts = null);
 
@@ -148,6 +151,7 @@ namespace Reshop.Domain.Interfaces.Product
         Task<int> GetProductsCountAsync(string type = "all", string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         Task<int> GetCategoryProductsCountAsync(int categoryId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         Task<int> GetChildCategoryProductsCountAsync(int childCategoryId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
+        Task<int> GetChildCategoryProductsCountAsync(int childCategoryId, string type, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         Task<int> GetShopperProductsCountAsync(string shopperId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> brands = null);
         Task<int> GetBrandProductsCountAsync(int brandId, string filter = null, decimal minPrice = 0, decimal maxPrice = 0, List<int> officialBrandProducts = null);
 
