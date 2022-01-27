@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Reshop.Application.Attribute;
 using Reshop.Application.Convertors;
-using Reshop.Application.Interfaces.Product;
-using Reshop.Application.Interfaces.Shopper;
-using System.Threading.Tasks;
 using Reshop.Application.Enums.Product;
 using Reshop.Application.Interfaces.Category;
+using Reshop.Application.Interfaces.Product;
+using Reshop.Application.Interfaces.Shopper;
 using Reshop.Domain.DTOs.Product;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Reshop.Web.Controllers.Product
 {
@@ -43,9 +43,7 @@ namespace Reshop.Web.Controllers.Product
         public async Task<IActionResult> ProductDetail(string productName, string sellerId)
         {
             if (sellerId == null)
-            {
                 return BadRequest();
-            }
 
             if (!await _shopperService.IsShopperProductColorExistAsync(sellerId))
                 return NotFound();
@@ -173,7 +171,7 @@ namespace Reshop.Web.Controllers.Product
 
             var result = await _productService.GetChildCategoryProductsWithPaginationAsync(childCategoryId, sortBy, pageId, 24, search, minPrice, maxPrice, selectedBrands);
 
-            ViewBag.SortBy = sortBy;
+            ViewBag.SortBy = sortBy.FixedText();
             ViewBag.SelectedBrands = selectedBrands;
             ViewBag.SearchText = search;
 

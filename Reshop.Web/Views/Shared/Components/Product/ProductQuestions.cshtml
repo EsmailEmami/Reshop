@@ -4,36 +4,36 @@
 }
 <section class="question-filter">
 
-    <input type="hidden" value="@Model.Item2" id="pageId" />
-    <input type="hidden" id="type" value="@ViewBag.SelectedType.ToString()" />
+    <input hidden value="@Model.Item2" id="questionPageId" />
+    <input hidden id="questionType" value="@ViewBag.SelectedType.ToString()" />
 
     <div class="mb-4">
         @switch (ViewBag.SelectedType.ToString())
         {
-            case "news":
-                {
-                    <div class="item">
-                        <input type="radio" name="filterQuestion" value="news" id="news-radio" checked onclick="changeType(this.value)">
-                        <label for="news-radio">جدید ترین ها</label>
-                    </div>
-                    <div class="item">
-                        <input type="radio" name="filterQuestion" value="best" id="best-radio" onclick="changeType(this.value)">
-                        <label for="best-radio">مفید ترین</label>
-                    </div>
-                    break;
-                }
+           case "news":
+            {
+                <div class="item">
+                    <input type="radio" name="filterQuestion" value="news" id="questions-news-radio" checked onclick="changeQuestionsType(this.value)">
+                    <label for="questions-news-radio">جدید ترین ها</label>
+                </div>
+                <div class="item">
+                    <input type="radio" name="filterQuestion" value="best" id="questions-best-radio" onclick="changeQuestionsType(this.value)">
+                    <label for="questions-best-radio">مفید ترین</label>
+                </div>
+                break;
+            }
             case "best":
-                {
-                    <div class="item">
-                        <input type="radio" name="filterQuestion" value="news" id="news-radio" onclick="changeType(this.value)">
-                        <label for="news-radio">جدید ترین ها</label>
-                    </div>
-                    <div class="item">
-                        <input type="radio" name="filterQuestion" value="best" id="best-radio" checked onclick="changeType(this.value)">
-                        <label for="best-radio">مفید ترین</label>
-                    </div>
-                    break;
-                }
+            {
+                <div class="item">
+                    <input type="radio" name="filterQuestion" value="news" id="questions-news-radio" onclick="changeQuestionsType(this.value)">
+                    <label for="questions-news-radio">جدید ترین ها</label>
+                </div>
+                <div class="item">
+                    <input type="radio" name="filterQuestion" value="best" id="questions-best-radio" checked onclick="changeQuestionsType(this.value)">
+                    <label for="questions-best-radio">مفید ترین</label>
+                </div>
+                break;
+            }
         }
     </div>
 
@@ -41,8 +41,8 @@
     {
           <div class="search-form">
             <div class="form">
-                <input type="text" id="filter" placeholder="سوال مورد نظر..." value="@ViewBag.SearchText.ToString()">
-                <button onclick="changeList()"><i class="far fa-search"></i></button>
+                <input type="text" id="questionsFilter" placeholder="سوال مورد نظر..." value="@ViewBag.SearchText.ToString()">
+                <button onclick="changeQuestionList()"><i class="far fa-search"></i></button>
             </div>
         </div>
     }
@@ -50,8 +50,8 @@
     {
         <div class="search-form">
             <div class="form">
-                <input type="text" id="filter" placeholder="سوال مورد نظر...">
-                <button onclick="changeList()"><i class="far fa-search"></i></button>
+                <input type="text" id="questionsFilter" placeholder="سوال مورد نظر...">
+                <button onclick="changeQuestionList()"><i class="far fa-search"></i></button>
             </div>
         </div>
     }
@@ -216,18 +216,18 @@
 @if (Model.Item3 > 1)
 {
     <ul class="pagination-custom">
-        <li class="@(Model.Item2<=1?"disabled":"")" onclick="pagination('@(Model.Item2 - 1)')">
+        <li class="@(Model.Item2<=1?"disabled":"")" onclick="questionPagination('@(Model.Item2 - 1)')">
             <i class="far fa-angle-right"></i>
         </li>
 
         @for (var i = 1; i <= Model.Item3; i++)
         {
-            <li class="@(Model.Item2 == i? "active":"")" onclick="pagination('@i')">
+            <li class="@(Model.Item2 == i? "active":"")" onclick="questionPagination('@i')">
                 @i
             </li>
         }
 
-        <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="pagination('@(Model.Item2+1)')">
+        <li class="@(Model.Item2 +1 > Model.Item3?"disabled":"")" onclick="questionPagination('@(Model.Item2+1)')">
             <i class="far fa-angle-left"></i>
         </li>
 
@@ -235,26 +235,25 @@
 }
 
 <script>
-    function pagination(pageId) {
-        $('#pageId').val(pageId);
-        changeList();
+    function questionPagination(pageId) {
+        $('#questionsPageId').val(pageId);
+        changeQuestionList();
     }
 
-    function changeType(inputValue) {
-        $('#type').val(inputValue);
-        changeList();
+    function changeQuestionsType(inputValue) {
+        $('#questionType').val(inputValue);
+        changeQuestionList();
     }
 
-    function changeList() {
-        let pageId = $('#pageId').val();
-        let type = $('#type').val();
-        let filter = $('#filter').val();
+    function changeQuestionList() {
+        let pageId = $('#questionPageId').val();
+        let type = $('#questionType').val();
+        let filter = $('#questionsFilter').val();
 
         $.ajax({
             type: 'GET',
             url: '/Question/ProductQuestionsList?productId=@ViewBag.ProductId.ToString()&pageId=' + pageId + '&type=' + type + '&filter=' + filter,
             }).done(function (res) {
-
 
                 $("#tableQuestions").html(res);
             });

@@ -193,7 +193,7 @@ namespace Reshop.Web.Controllers.User
 
             var payment = new Payment((int)order.Item2);
 
-            var res = await payment.PaymentRequest($"خرید فاکتور {order.Item3}", "https://localhost:44312/OnlinePayment/" + order.Item1, "esmaeilemami84@gmail.com", "09903669556");
+            var res = await payment.PaymentRequest($"خرید فاکتور {order.Item3}", "https://testesico.ir/OnlinePayment/" + order.Item1, "esmailemami84@gmail.com", "09903669556");
 
             if (res.Status == 100)
             {

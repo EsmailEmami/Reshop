@@ -1,7 +1,5 @@
 ﻿@model IEnumerable<ProductViewModel>
 
-
-
 <section class="product-section box-shadow">
     @if (Model != null && Model.Any())
     {
@@ -12,18 +10,16 @@
 
         <div class="product-section-header">
             <div>
-                <h2 class="section-title"><i class="far fa-tv" style="color: crimson"></i> پر بازدید ترین ها</h2>
+                <h2 class="section-title">
+                    <i class="@ViewBag.Icon.ToString()" style="color: @ViewBag.IconColorId"></i> @ViewBag.Title.ToString()
+                </h2>
             </div>
         </div>
 
 
         <div class="swiper products-swiper">
             <div class="swiper-wrapper">
-
                 @await Html.PartialAsync("Product/_CarouselBoxProducts", Model)
-
-
-
             </div>
 
             <div class="swiper-button-prev"></div>
@@ -33,7 +29,7 @@
 
         <div class="btn-more-and-nav-slider">
             <a asp-controller="Product" asp-action="GetProducts" asp-route-type="@ViewBag.SelectedType.ToString()"
-           class="btn btn-more-info">مشاهده ی همه</a>
+               class="btn btn-more-info">مشاهده ی همه</a>
         </div>
 
 

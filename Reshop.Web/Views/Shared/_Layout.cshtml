@@ -20,130 +20,124 @@
 </head>
 
 <body>
-<button type="button" class="mobile-nav-toggle d-lg-none" id="ham"><i class="fa fa-bars"></i></button>
-<header>
-    <div class="top-menu">
+    <button type="button" class="mobile-nav-toggle d-lg-none" id="ham"><i class="fa fa-bars"></i></button>
+    <header>
+        <div class="top-menu">
 
-        <div class="d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between max-width-1300 mx-auto">
+            <div class="d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between max-width-1300 mx-auto">
 
-            <a class="logo" href="/">Reshop</a>
-
-
-            <form autocomplete="off" action="/Products/All" class="search-header mx-auto mx-lg-0" id="header-filter-form">
-                <input type="text" id="header-filter" name="search" placeholder="دنبال چی میگردی ...">
-                <button type="submit"><i class="far fa-search"></i></button>
-            </form>
+                <a class="logo" href="/">Reshop</a>
 
 
-            <div class="header-icons">
+                <form autocomplete="off" action="/Products/All" class="search-header mx-auto mx-lg-0" id="header-filter-form">
+                    <input type="text" id="header-filter" name="search" placeholder="دنبال چی میگردی ...">
+                    <button type="submit"><i class="far fa-search"></i></button>
+                </form>
+
+
+                <div class="header-icons">
 
 
 
 
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <a asp-area="" asp-controller="Account" asp-action="Dashboard">
-                        <i class="far fa-user"></i>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-area="" asp-controller="Account" asp-action="Dashboard">
+                            <i class="far fa-user"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="pl-0">
+                            <i class="far fa-user"></i> ورود
+                        </a>
+                    }
+                    <a asp-controller="Cart" asp-action="ShowCart">
+                        <i class="far fa-shopping-cart"></i>
                     </a>
-                }
-                else
-                {
-                    <a asp-controller="Account" asp-action="Login">
-                        <i class="far fa-user"></i> ورود
-                    </a>
 
-                    <a asp-controller="Account" asp-action="Register">
-                        <i class="far fa-user"></i> ثبت نام
-                    </a>
-                }
-                <a asp-controller="Cart" asp-action="ShowCart">
-                    <i class="far fa-shopping-cart"></i>
-                </a>
+                </div>
+            </div>
 
+        </div>
+        @*<cache expires-after="@TimeSpan.FromHours(3)">*@
+        @await Component.InvokeAsync(nameof(DropDownComponent))
+        @*</cache>*@
+
+    </header>
+    <main class="screen-width-1450 mt-2">
+        @RenderBody()
+    </main>
+
+    @await RenderSectionAsync("AfterMainOptions", required: false)
+
+    @await Component.InvokeAsync(nameof(MobileMenuComponent))
+
+    <footer>
+
+        <div class="row p-3 screen-width-1450">
+
+            <div class="col-md-3">
+                <div class="logo-in-footer">
+                    <img src="~/images/UserImages/userAvatar.jpg" alt="Reshop Logo" />
+                </div>
+                <div class="Social-network-icons">
+                    <a href="#"> <i class="fab fa-telegram"></i></a>
+                    <a href="#"> <i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-md-3 footer-part">
+                <h5>خدمات</h5>
+                <ul>
+                    <li><a asp-controller="Home" asp-action="Guide">راهنمای خرید</a></li>
+                    <li><a href="#">همکاری با ریشاپ</a></li>
+                    <li><a href="#">شرایط مرجوع کردن کالا</a></li>
+                    <li><a asp-controller="Home" asp-action="FrequentlyQuestions">سوالات متداول</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 footer-part">
+                <h5>درباره ی ریشاپ</h5>
+                <ul>
+                    <li><a asp-controller="Home" asp-action="AboutUs">درباره ی ما</a></li>
+                    <li><a href="#">قوانین و مقررات</a></li>
+                    <li><a href="#">شعبه های ریشاپ</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 footer-part">
+                <h5>پشتیبانی</h5>
+                <ul>
+                    <li><a asp-controller="Home" asp-action="ContactUs">تماس با ما</a></li>
+                    <li><a href="#">مورد 2</a></li>
+                    <li><a href="#">مورد 3</a></li>
+                    <li><a href="#">مورد 4</a></li>
+                </ul>
             </div>
         </div>
-
-    </div>
-    @*<cache expires-after="@TimeSpan.FromHours(3)">*@
-    @await Component.InvokeAsync(nameof(DropDownComponent))
-    @*</cache>*@
-
-</header>
-<main class="screen-width-1450 mt-2">
-    @RenderBody()
-</main>
-
-@await RenderSectionAsync("AfterMainOptions", required: false)
-
-@await Component.InvokeAsync(nameof(MobileMenuComponent))
-
-<footer>
-
-    <div class="row p-3 screen-width-1450">
-
-        <div class="col-md-3">
-            <div class="logo-in-footer">
-                <img src="~/images/UserImages/userAvatar.jpg" alt="Reshop Logo"/>
-            </div>
-            <div class="Social-network-icons">
-                <a href="#"> <i class="fab fa-telegram" style="width: 40px; height: 40px; color: orange; margin: 5px;"></i></a>
-                <a href="#"> <i class="fab fa-instagram" style="width: 40px; height: 40px; color: orange; margin: 5px;"></i></a>
-            </div>
+        <div class="footer-part site-description screen-width-1450">
+            <h4> فروشگاه اینترنتی ریشاپ</h4>
+            <p>
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Expedita debitis voluptas, possimus laudantium quisquam aliquam fuga? Expedita et doloremque non nulla hic nobis sed voluptate odio eligendi. Minima iste asperiores non autem quaerat
+                modi eius. Laudantium, tempore dolores totam quidem autem aut exercitationem quas harum similique quos? Facilis sit, molestias placeat repellendus sapiente adipisci eaque recusandae quasi cum illum, voluptates suscipit atque ea animi quia.
+                Temporibus consequatur, sint saepe distinctio nisi nobis officiis ducimus illum quae dicta sit veritatis odit cupiditate est, ab excepturi aspernatur ex tempora aliquam sed mollitia expedita? Molestias exercitationem sunt quasi. Aspernatur
+                delectus repudiandae minima hic molestias quidem ex voluptates numquam odio voluptate, nostrum modi suscipit dolores excepturi doloribus. Et nulla, ad eveniet minus labore quos sed ex? Reprehenderit, alias sint quae consequuntur dolor
+                aperiam id, hic facilis nam cum dolore quod aut tempora asperiores, inventore voluptatum provident totam dolores modi molestiae mollitia est possimus? Qui tempora natus sequi recusandae neque autem. Corporis atque maxime, nulla ipsa ad
+                velit recusandae, fugit magni vitae exercitationem impedit doloremque vero eveniet eaque at laudantium? Quia sunt voluptates totam fugit, perferendis hic. Dolore reiciendis quasi fugit commodi consectetur cum porro non consequuntur, aperiam
+                sapiente, incidunt dolorem asperiores pariatur omnis praesentium?
+            </p>
         </div>
-        <div class="col-md-3 footer-part">
-            <h5>خدمات</h5>
-            <ul>
-                <li><a href="#">راهنمای خرید</a></li>
-                <li><a href="#">همکاری با ریشاپ</a></li>
-                <li><a href="#">شرایط مرجوع کردن کالا</a></li>
-            </ul>
+        <div class="copyright">
+            <span>تمامی حقوق این سایت محفوظ میباشد :)</span>
         </div>
-        <div class="col-md-3 footer-part">
-            <h5>درباره ی ریشاپ</h5>
-            <ul>
-                <li><a href="#">درباره ی ما</a></li>
-                <li><a href="#">قوانین و مقررات</a></li>
-                <li><a href="#">شعبه های ریشاپ</a></li>
-            </ul>
-        </div>
-        <div class="col-md-3 footer-part">
-            <h5>پشتیبانی</h5>
-            <ul>
-                <li><a href="#">مورد 1</a></li>
-                <li><a href="#">مورد 2</a></li>
-                <li><a href="#">مورد 3</a></li>
-                <li><a href="#">مورد 4</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-part screen-width-1450">
-        <h4 style="color: #FC5400;"> فروشگاه اینترنتی ریشاپ</h4>
-        <p class="text-justify">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Expedita debitis voluptas, possimus laudantium quisquam aliquam fuga? Expedita et doloremque non nulla hic nobis sed voluptate odio eligendi. Minima iste asperiores non autem quaerat
-            modi eius. Laudantium, tempore dolores totam quidem autem aut exercitationem quas harum similique quos? Facilis sit, molestias placeat repellendus sapiente adipisci eaque recusandae quasi cum illum, voluptates suscipit atque ea animi quia.
-            Temporibus consequatur, sint saepe distinctio nisi nobis officiis ducimus illum quae dicta sit veritatis odit cupiditate est, ab excepturi aspernatur ex tempora aliquam sed mollitia expedita? Molestias exercitationem sunt quasi. Aspernatur
-            delectus repudiandae minima hic molestias quidem ex voluptates numquam odio voluptate, nostrum modi suscipit dolores excepturi doloribus. Et nulla, ad eveniet minus labore quos sed ex? Reprehenderit, alias sint quae consequuntur dolor
-            aperiam id, hic facilis nam cum dolore quod aut tempora asperiores, inventore voluptatum provident totam dolores modi molestiae mollitia est possimus? Qui tempora natus sequi recusandae neque autem. Corporis atque maxime, nulla ipsa ad
-            velit recusandae, fugit magni vitae exercitationem impedit doloremque vero eveniet eaque at laudantium? Quia sunt voluptates totam fugit, perferendis hic. Dolore reiciendis quasi fugit commodi consectetur cum porro non consequuntur, aperiam
-            sapiente, incidunt dolorem asperiores pariatur omnis praesentium?
-        </p>
-    </div>
-    <div class="footer-part permissions-img">
-        <!-- place permissions-photo -->
-    </div>
-    <div class="copyright">
-        <span>تمامی حقوق این سایت محفوظ میباشد :)</span>
-    </div>
 
-</footer>
+    </footer>
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
-<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
-<script src="~/js/custom.js"></script>
-<script src="~/js/Ajax.js"></script>
-@await RenderSectionAsync("Scripts", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/js/Ajax.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 </html>

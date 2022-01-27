@@ -14,7 +14,7 @@ namespace Reshop.Web.Components.Product
         }
 
 
-        public IViewComponentResult Invoke(string type, string sortBy, int take = 24, string brands = null)
+        public IViewComponentResult Invoke(string type, string sortBy, string title, string icon, string iconColorId, int take = 24, string brands = null)
         {
             if (brands != null && brands.ToLower() == "null")
                 brands = null;
@@ -24,6 +24,10 @@ namespace Reshop.Web.Components.Product
             var products = _productService.GetProductsForShow(type, sortBy, take, selectedBrands);
 
             ViewBag.SelectedType = type;
+            ViewBag.Title = title;
+            ViewBag.Icon = icon;
+            ViewBag.IconColorId = iconColorId;
+
 
             return View("/Views/Shared/Components/Product/ProductsForShow.cshtml", products);
         }

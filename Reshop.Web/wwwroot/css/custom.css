@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
     font-family: Sahel;
     src: url('/Fonts/SahelFarsi/Sahel-FD.eot') format('embedded-opentype');
     src: url('/Fonts/SahelFarsi/Sahel-FD.ttf') format('truetype');
@@ -1289,6 +1289,24 @@ ul.breadcrumb {
             margin: 30px 0 0 0;
             font-weight: bold;
         }
+
+        .login-section .fields .field-options {
+            margin-top: 20px;
+            border-top: 1px solid #cfcfcf;
+            padding-top: 10px;
+            font-size: 15px;
+            color: #000;
+        }
+
+            .login-section .fields .field-options a {
+                color: #0d6efd;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+                .login-section .fields .field-options a:hover {
+                    text-decoration: underline;
+                }
 /* -------------------------------------- single product -------------------------------------- */
 .box-shadow {
     border: 1px solid #e9e8e8;
@@ -1310,7 +1328,8 @@ ul.breadcrumb {
     transition: all 0.3s ease 0s;
     margin: 0 10px 30px 10px;
     border: 1px solid #f0f0f0;
-    width: 250px;
+    width: 220px;
+    min-width: 220px;
     box-shadow: 0 0 8px #d6d6d6;
     background: #fff;
     border-radius: 8px;
@@ -2103,7 +2122,8 @@ ul.breadcrumb {
     border-radius: 25px;
 }
 
-.detail-comments #newComment button[type="submit"] {
+.detail-comments #newComment button[type="submit"],
+.detail-comments #newQuestion button[type="submit"] {
     border-radius: 25px;
     margin-right: 1rem;
     width: 100px;
@@ -2781,7 +2801,6 @@ ul.breadcrumb {
     .user-img .img-layer img {
         width: 130px;
         height: 130px;
-        padding: 3px;
         border: 3px solid #ecf1f8;
         border-radius: 100%;
         -moz-border-radius: 100%;
@@ -3106,6 +3125,19 @@ ul.breadcrumb {
         justify-content: space-between;
         flex-direction: row;
     }
+
+        .user-item-data div:nth-child(1) form {
+            display: inline-block;
+        }
+
+            .user-item-data div:nth-child(1) form button {
+                background: transparent;
+                font-size: 18px;
+                color: #3f3f3f;
+                margin: 0;
+                outline: none;
+                border: none;
+            }
 
     .user-item-data:hover {
         transition: ease .5s;
@@ -3768,7 +3800,7 @@ ul.breadcrumb {
 
 .product-section {
     position: relative;
-    padding: 20px 0;
+    padding: 10px 0;
     border-radius: 8px;
     background: #f8f8f8;
     width: 100%;
@@ -3787,10 +3819,10 @@ ul.breadcrumb {
     font-weight: bold;
     margin: 0 20px 0 0;
     font-size: 23px;
+    font-family: Kalameh, Sahel, sans-serif;
 }
 
     .section-title i {
-        color: #0c9712;
         font-size: 26px;
     }
 
@@ -4010,7 +4042,8 @@ ul.breadcrumb {
 
     .error-page img {
         display: block;
-        width: 530px;
+        width: 100%;
+        max-width: 530px;
         margin: 0 auto 20px;
     }
 
@@ -5283,14 +5316,39 @@ footer {
 }
 
     .logo-in-footer img {
-        border: 1px solid black;
         width: 150px;
         height: 150px;
         margin-bottom: 20px;
+        border-radius: 8px;
+        border: 3px solid #ecf1f8;
     }
+
+.footer-part h5 {
+    color: #d3d3d3;
+}
+
+.footer-part a {
+    color: #0d6efd;
+    text-decoration: none;
+}
 
 .Social-network-icons {
     text-align: center;
+}
+
+    .Social-network-icons a {
+        font-size: 25px;
+        color: #fcdd00;
+        margin: 5px;
+    }
+
+.site-description h4 {
+    color: #FC5400;
+}
+
+.site-description p {
+    text-align: justify;
+    color: #d3d3d3;
 }
 
 .copyright {
@@ -5772,6 +5830,12 @@ footer {
 
     .colors .item .item-content {
         margin-top: 20px;
+    }
+}
+
+@media screen and (max-width: 510px) {
+    .product-item {
+        width: 100%;
     }
 }
 

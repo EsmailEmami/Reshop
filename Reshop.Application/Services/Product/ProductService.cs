@@ -132,6 +132,8 @@ namespace Reshop.Application.Services.Product
 
             var childCategory = await _categoryRepository.GetChildCategoryByIdAsync(childCategoryId);
 
+            var category = await _categoryRepository.GetCategoryByIdAsync(childCategory.CategoryId);
+
             var products = _productRepository.GetProductsOfChildCategoryWithPagination(childCategoryId, sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -145,7 +147,7 @@ namespace Reshop.Application.Services.Product
             {
                 ChildCategoryId = childCategoryId,
                 ChildCategoryName = childCategory.ChildCategoryTitle,
-                Category = new Tuple<int, string>(0, null),
+                Category = new Tuple<int, string>(category.CategoryId, category.CategoryTitle),
                 Products = products,
                 PageId = pageId,
                 TotalPages = totalPages,
@@ -161,13 +163,10 @@ namespace Reshop.Application.Services.Product
         {
             int skip = (pageId - 1) * take; // 1-1 * 4 = 0 , 2-1 * 4 = 4
 
-
             int productsCount = await _productRepository.GetChildCategoryProductsCountAsync(childCategoryId, type.FixedText(), filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
             var childCategory = await _categoryRepository.GetChildCategoryByIdAsync(childCategoryId);
-
-            var category = await _categoryRepository.GetCategoryByIdAsync(childCategory.CategoryId);
-
+            
             var products = _productRepository.GetProductsOfChildCategoryWithPagination(childCategoryId, type.FixedText(), sortBy.FixedText(), skip, take, filter, minPrice.ToDecimal(), maxPrice.ToDecimal(), brands);
 
             int totalPages = (int)Math.Ceiling(1.0 * productsCount / take);
@@ -181,7 +180,7 @@ namespace Reshop.Application.Services.Product
             {
                 ChildCategoryId = childCategoryId,
                 ChildCategoryName = childCategory.ChildCategoryTitle,
-                Category = new Tuple<int, string>(category.CategoryId, category.CategoryTitle),
+                Category = new Tuple<int, string>(0, null),
                 Products = products,
                 PageId = pageId,
                 TotalPages = totalPages,

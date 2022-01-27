@@ -124,7 +124,7 @@ namespace Reshop.Web.Controllers.User
                     await _userService.AddUserToInvitesAsync(inviteCode, user.UserId);
                 }
 
-                return Redirect("/");
+                return RedirectToAction(nameof(Login));
             }
 
             ModelState.AddModelError("", "کاربر گرامی متاسفانه هنگام ثبت نام با مشگلی غیر منتظره مواجه شده ایم. لطفا با پشتیبانی تماس بگیرید.");
@@ -604,6 +604,7 @@ namespace Reshop.Web.Controllers.User
         #region delete address
 
         [HttpPost]
+        [NoDirectAccess]
         public async Task<IActionResult> DeleteAddress(string addressId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

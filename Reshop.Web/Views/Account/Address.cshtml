@@ -4,7 +4,7 @@
     ViewData["Title"] = "آدرس ها";
 }
 @section Css{
-    <link href="~/css/select.css" rel="stylesheet" />
+<link href="~/css/select.css" rel="stylesheet" />
 }
 <ul class="breadcrumb">
     <li>
@@ -48,7 +48,7 @@
                         <div class="basket-empty">
                             <img src="/icons/Address.svg" alt="Address" />
                             <h1>
-                                آدرسی یافت نشد! برای افزودن آدرس جدید بر روی     <a onclick="ShowModal('@Url.Action("NewAddress", "Account", null, Context.Request.Scheme)','آدرس جدید')">
+                                آدرسی یافت نشد! برای افزودن آدرس جدید بر روی     <a style="color: #198754; text-decoration: none;" onclick="ShowModal('@Url.Action("NewAddress", "Account", null, Context.Request.Scheme)','آدرس جدید')">
                                     آدرس جدید
                                 </a> کلیک کنید.
                             </h1>
@@ -57,11 +57,11 @@
                     else
                     {
                         <a class="btn btn-success text-white"
-                           onclick="ShowModal('@Url.Action("NewAddress", "Account", null, Context.Request.Scheme)','آدرس جدید')">
+                       onclick="ShowModal('@Url.Action("NewAddress", "Account", null, Context.Request.Scheme)','آدرس جدید')">
                             افزودن ادرس  جدید
                         </a>
 
-                        <div class="row">
+                        <div class="row m-0">
                             @foreach (var address in Model)
                             {
                                 <div class="col-sm-12">
@@ -70,6 +70,11 @@
                                             <h5>@address.FullName - @address.PhoneNumber</h5>
                                             <span>
                                                 <a onclick="ShowModal('@Url.Action("EditAddress", "Account", new {addressId =address.AddressId}, Context.Request.Scheme)','ویرایش آدرس')"><i class="far fa-edit"></i></a>
+                                                <form asp-controller="Account" asp-action="DeleteAddress" asp-route-addressId="@address.AddressId" onsubmit="return SubmitFormData(this,false)">
+                                                    <button>
+                                                        <i class="far fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
                                             </span>
                                         </div>
 
@@ -90,13 +95,15 @@
 
 @section AfterMainOptions
 {
-    <partial name="_Modal" />
+<partial name="_Modal" />
 
 }
 
 @section Scripts{
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 
 
-    <script src="~/js/select.js"></script>
+<script src="~/js/select.js"></script>
 }

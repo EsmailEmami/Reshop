@@ -61,9 +61,7 @@ namespace Reshop.Web.Areas.ManagerPanel.Controllers
 
             return ViewComponent("CitiesListComponent", new { pageId, filter, states = selectedStates });
         }
-
-
-
+        
         #region add or edit state
 
         [HttpGet]

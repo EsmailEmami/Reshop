@@ -6,13 +6,15 @@
 }
 @section RightMenu
 {
-    @{ await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.CategoryPage); }
+    @{
+    await Html.RenderPartialAsync("_RightMenu", RightMenuActivePage.CategoryPage);
+ }
 }
 
 
 
 @section Css{
-    <link href="~/css/select.css" rel="stylesheet" />
+<link href="~/css/select.css" rel="stylesheet" />
 }
 
 <div class="display-6 text-center">
@@ -36,6 +38,7 @@
                     <th>
                         @Html.DisplayNameFor(model => model.ChildCategoryTitle)
                     </th>
+                    <th>وضعیت</th>
                     <th>دستورات</th>
                 </tr>
             </thead>
@@ -47,16 +50,19 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.ChildCategoryTitle)
                         </td>
+                        <td>@item.IsActive.BoolToText("فعال","غیر فعال")</td>
                         <td>
-                            <a class="btn btn-warning text-white"
-                               onclick="ShowModal('@Url.Action("AddOrEditChildCategory", "ChildCategoryManager",new {childCategoryId = item.ChildCategoryId} , Context.Request.Scheme)', 'ویرایش زیر گروه')">
+                            <a class="btn btn-warning text-white" onclick="ShowModal('@Url.Action("AddOrEditChildCategory", "ChildCategoryManager",new {childCategoryId = item.ChildCategoryId} , Context.Request.Scheme)', 'ویرایش زیر گروه')">
                                 <i class="fal fa-marker"></i> ویرایش
                             </a>
-                            <form asp-action="RemoveChildCategory" asp-route-childCategoryId="@item.ChildCategoryId" method="post" class="d-inline-block ml-2">
-                                <button type="submit" class="btn btn-danger text-white me-2">
-                                    <i class="fal fa-trash-alt"></i> حذف
-                                </button>
-                            </form>
+                            @if (item.IsActive)
+                            {
+                                <form asp-action="RemoveChildCategory" asp-route-childCategoryId="@item.ChildCategoryId" method="post" class="d-inline-block ml-2">
+                                    <button type="submit" class="btn btn-danger text-white me-2">
+                                        <i class="fal fa-trash-alt"></i> غیرفعال
+                                    </button>
+                                </form>
+                            }
                         </td>
                     </tr>
                     rowCount++;
@@ -77,11 +83,13 @@ else
 
 @section AfterMainOptions
 {
-    <partial name="_Modal" />
+<partial name="_Modal" />
 
 }
 
 @section Scripts{
-    <script src="~/js/select.js"></script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script src="~/js/select.js"></script>
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
 }

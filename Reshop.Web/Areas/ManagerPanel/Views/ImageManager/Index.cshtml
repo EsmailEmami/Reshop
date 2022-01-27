@@ -22,7 +22,7 @@
 
 @if (Model != null)
 {
-    <h3 class="title">تصاویر منو اسلایدر</h3>
+    <h3 class="title-header">تصاویر منو اسلایدر</h3>
     <section class="images-part">
         @foreach (var item in Model.Where(c=> c.PlaceName == ImageConstants.Slider))
         {
@@ -45,7 +45,7 @@
         }
     </section>
 
-    <h3 class="title">تصاویر میانی</h3>
+    <h3 class="title-header">تصاویر میانی</h3>
     <section class="images-part">
         @foreach (var item in Model.Where(c=> c.PlaceName == ImageConstants.MainMenu))
         {
@@ -55,7 +55,7 @@
                     <a href="@item.Url">مشاهده لینک</a>
 
                     <div>
-                        <a asp-action="EditImage" asp-route-imageId="@item.ImageId"
+                        <a onclick="ShowModal('@Url.Action("EditImage", "ImageManager" ,new {imageId = @item.ImageId}, Context.Request.Scheme)', 'ویرایش بنر')"
                            class="btn btn-warning text-white m-0">ویرایش</a>
 
                         <form asp-controller="ImageManager" asp-action="DeleteImage" asp-route-imageId="@item.ImageId" method="post">

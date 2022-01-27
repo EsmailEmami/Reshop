@@ -11,7 +11,7 @@
 @*</cache>*@
 
 <section class="Category-shortcut">
-    
+
     <h3>دسته بندی های سایت!</h3>
 
 
@@ -55,17 +55,35 @@
 </cache>
 
 @*<cache expires-after="TimeSpan.FromMinutes(15)">*@
-    @await Component.InvokeAsync("ProductsForShowComponent",new
+@await Component.InvokeAsync("ProductsForShowComponent",new
     {
-    type = ProductTypes.All.ToString(),
-    sortBy = SortTypes.MostSale.ToString()
+        type = ProductTypes.All.ToString(),
+        sortBy = SortTypes.MostSale.ToString(),
+        title = "پر فروش ترین کالاها",
+        icon = "far fa-sparkles",
+        iconColorId = "#FC5400",
     })
 
-    @await Component.InvokeAsync("ProductsForShowComponent",new
+@await Component.InvokeAsync("ProductsForShowComponent",new
     {
-    type = ProductTypes.All.ToString(),
-    sortBy = SortTypes.MostSale.ToString()
+        type = ProductTypes.All.ToString(),
+        sortBy = SortTypes.News.ToString(),
+        title = "جدید ترین کالاها",
+        icon = "far fa-layer-plus",
+        iconColorId = "#0c9712",
     })
+
+
+@await Component.InvokeAsync("ProductsForShowComponent",new
+{
+    type = ProductTypes.Mobile.ToString(),
+    sortBy = SortTypes.News.ToString(),
+    title = "جدید ترین موبایل ها",
+    icon = "far fa-mobile",
+    iconColorId = "#9d00ff",
+})
+
+
 @*</cache>*@
 
 
@@ -112,18 +130,20 @@
     });
 
     var products = new Swiper('.products-swiper', {
-        spaceBetween: 30,
-        centeredSlides: true,
+        slidesPerView: 'auto',
+        slidesPerGroup: 1,
         loop: true,
-        autoplay: {
-            delay: 2500,
-            disableOnInteraction: false,
+        loopFillGroupWithBlank: true,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
         },
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
         },
     });
+
 
 
 </script>

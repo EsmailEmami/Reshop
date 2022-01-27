@@ -1032,7 +1032,7 @@ namespace Reshop.Infrastructure.Repository.Product
                 case "aux":
                     {
                         var detailIdOfProduct = await _context.Products.Where(c => c.ProductId == model.ProductId)
-                            .Select(c => c.LaptopDetailId).SingleAsync();
+                            .Select(c => c.AuxDetailId).SingleAsync();
 
                         if (detailIdOfProduct == null)
                             return null;

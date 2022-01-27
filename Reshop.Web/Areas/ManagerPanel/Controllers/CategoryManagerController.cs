@@ -205,6 +205,9 @@ public class CategoryManagerController : Controller
     {
         if (newImages == null && deletedImages == null && editedUrls == null) return;
 
+        // remove last item of urls that is null
+        urls.Remove(urls.Last());
+
         imagesName ??= new List<string>();
 
         if (editedUrls != null)
@@ -222,7 +225,7 @@ public class CategoryManagerController : Controller
 
         }
 
-        // update edited elements
+        // update elements
         if (editedImages != null && deletedImages != null)
         {
             editedImages = editedImages.Distinct().ToList();
@@ -337,11 +340,19 @@ public class CategoryManagerController : Controller
         }
 
         // skip edited images and add new images
-        var newUrls = urls.Skip(imagesName.Count).ToList();
         if (editedImages != null)
         {
             newImages = newImages.Skip(editedImages.Count).ToList();
         }
+
+        var skip = imagesName.Count;
+
+        if (deletedImages != null)
+        {
+            skip -= deletedImages.Count;
+        }
+
+        var newUrls = urls.Skip(skip).ToList();
 
         int newImagesOrderByCounter = imagesName.Count + 1;
 

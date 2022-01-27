@@ -22,8 +22,7 @@
 <div class="filter">
     <input type="hidden" name="pageId" id="pageIdOrder" value="@Model.Item2" />
 
-
-    <select select-search="true" id="typeOrder" onchange="changeListOrder()">
+    <select id="typeOrder" onchange="changeListOrder()">
 
         @switch (ViewBag.Selectedtype.ToString())
         {
@@ -154,7 +153,7 @@
 }
 else
 {
-    <div class="alert alert-warning">
+    <div class="w-100 alert alert-warning">
         سفارشی از کاربر یافت نشد
     </div>
 }

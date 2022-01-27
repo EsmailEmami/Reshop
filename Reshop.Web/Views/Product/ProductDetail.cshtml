@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = $"مشخصات کالای {Model.Product.Title.Replace(" ", "-")}";
 
-    string shortKeyUrl = $"https://localhost:44312/p/{Model.Product.ShortKey}";
+    string shortKeyUrl = $"https://testesico.ir/p/{Model.Product.ShortKey}";
 }
 
 @section Css{
@@ -879,7 +879,7 @@
                 </div>
 
                 <hr />
-                <h5 style="margin-bottom: 5px;">نظر کاربران:</h5>
+                <h5 style="margin-bottom: 10px;">نظر کاربران:</h5>
 
                 <button class="new-comment" type="button" data-toggle="collapse" data-target="#newComment" aria-expanded="false" aria-controls="newComment">
                     بازخورد جدید
