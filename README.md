@@ -2,14 +2,12 @@
 This Project is a full-stack Web Marketing application of Asp.Net Core 5.0. It is based clean-architecture
 
 # Techical Stack
-
-- Asp.Net Core and C# 10 for cross-platform back-end with:
-  - Asp.Core 5.0 Web Application
-  - ASP.NET WebApi Core
-  - Entity Framework Core
-  - Authentication
-  - Google reCAPTCHA
-  - MSSQL
+- Asp.Core 5.0 Web Application
+- ASP.NET WebApi Core
+- Entity Framework Core
+- Authentication
+- Google reCAPTCHA
+- MSSQL
 
 # Design Patterns
 - Clean Archtecture
