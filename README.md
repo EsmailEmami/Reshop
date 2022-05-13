@@ -1,5 +1,5 @@
 # Wellcome to Reshop
-This Project is a full-stack Web Marketing application of Asp.Net Core 5.0. It is based clean-architecture
+This Project is a full-stack Digital Marketing Web application of Asp.Net Core 5.0. It is based clean-architecture
 
 # Techical Stack
 - Asp.Core 5.0 Web Application
